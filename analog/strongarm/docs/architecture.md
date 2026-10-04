@@ -72,3 +72,27 @@ vs 2.10 mV Pelgrom). Sizing now uses `docs/mismatch.py`.
 | Monte Carlo (30, tt_mm) | PASS | mean 0.14 mV, σ 1.84 mV, 3σ 5.5 mV < 10 mV |
 
 AnalogIOC reference (its hand sizing, latch 1.0/4.5 µm): flip at +2 mV, 0.48 ns.
+
+## Liberty model (GPurify, 2026-10-04)
+
+`gpurify lib output/gen/strongarm.gds --spec layout/liberty.json --accuracy spice` writes
+`output/lib/strongarm__{tt_025C_1v80,ss_100C_1v60,ff_n40C_1v95}.lib` (worst case) and
+`output/lib/min/` (best case, for `read_liberty -min`), plus the blackbox `strongarm.v`.
+OpenSTA loads them with no warnings.
+
+| tt value | |
+|---|---|
+| clk↑ → outp↓ (evaluate, 50 mV overdrive, worst) | 0.925 ns |
+| clk↓ → out↑ (reset) | 0.27 ns |
+| C(vinp) / C(vinn) | 28 fF / 31 fF (wide 0.6 µm pair + Miller) |
+| C(clk) | 10 fF |
+| leakage | 3.2 nW |
+| max_capacitance on outp/outn | 20 fF |
+
+Design findings from characterization:
+- **Output load limits the decision.** If only the measured output is loaded, the load
+  imbalance acts as a ~20–30 mV offset at 25 fF, so decisions at ≤20 mV overdrive come out
+  wrong. At 181 fF even 50 mV flips at slow clock slews. The 20 fF `max_capacitance` is the
+  honest limit. To drive more, put matched buffers on **both** outp and outn.
+- **Slow evaluate.** With the 0.42 µm tail, evaluate at high load doesn't finish within a
+  20 ns vector, so the spec uses 20 ns vectors and 60 ns settle.
