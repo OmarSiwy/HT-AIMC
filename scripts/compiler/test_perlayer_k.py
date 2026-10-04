@@ -16,7 +16,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "metrics"))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)),
-                                "analog", "schematics"))
+                                "analog", "docs"))
 import specs                       # noqa: E402
 import perlayer_k as plk           # noqa: E402
 

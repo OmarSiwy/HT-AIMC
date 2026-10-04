@@ -23,12 +23,12 @@ import math
 import os
 import sys
 
-_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, os.path.join(_ROOT, "analog", "schematics"))
+_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(_ROOT, "analog", "docs"))
 import specs                                              # noqa: E402
-from library.pdks.sky130 import Sky130                    # noqa: E402
-from library.pdks.asap7_proj import Asap7Proj             # noqa: E402
-from library.pdks.tsmc_n4_proj import TsmcN4Proj          # noqa: E402
+from pdk_specs import Sky130                    # noqa: E402
+from pdk_specs import Asap7Proj             # noqa: E402
+from pdk_specs import TsmcN4Proj          # noqa: E402
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                    "THROUGHPUT_CEILING.md")

@@ -26,15 +26,15 @@ import sys
 import numpy as np
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_HERE))
-sys.path.insert(0, os.path.join(_ROOT, "analog", "schematics"))
+_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_HERE)))
+sys.path.insert(0, os.path.join(_ROOT, "analog", "docs"))
 sys.path.insert(0, os.path.join(_ROOT, "scripts"))
 
 import specs                                             # noqa: E402
 from sizing import lookup                                # noqa: E402
-from library.pdks.sky130 import Sky130                   # noqa: E402
-from library.pdks.asap7_proj import Asap7Proj            # noqa: E402
-from library.pdks.tsmc_n4_proj import TsmcN4Proj         # noqa: E402
+from pdk_specs import Sky130                   # noqa: E402
+from pdk_specs import Asap7Proj            # noqa: E402
+from pdk_specs import TsmcN4Proj         # noqa: E402
 from compiler.metrics.pdk_projections import (           # noqa: E402
     evaluate, DUTY_SQ, DIE_MM2, FILL, TILE_MM2, SCALES)
 

@@ -38,8 +38,8 @@ import sys
 
 import numpy as np
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, os.path.join(ROOT, "analog", "schematics"))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(ROOT, "analog", "docs"))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 import specs                                             # noqa: E402
@@ -47,7 +47,7 @@ from golden import model as G                            # noqa: E402
 from compiler.compile import tiles4, nib16               # noqa: E402
 import compiler.metrics.perlayer_k as PK                 # noqa: E402
 import compiler.metrics.pdk_projections as pj            # noqa: E402
-from library.pdks.tsmc_n4_proj import TsmcN4Proj         # noqa: E402
+from pdk_specs import TsmcN4Proj         # noqa: E402
 
 OUT = os.path.join(ROOT, "scripts", "compiler", "out")
 MD = os.path.join(os.path.dirname(os.path.abspath(__file__)),

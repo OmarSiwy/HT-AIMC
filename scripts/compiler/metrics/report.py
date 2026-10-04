@@ -17,22 +17,18 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))), "analog", "schematics"))
+    os.path.dirname(os.path.abspath(__file__))))), "analog", "docs"))
 import specs
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))))
+    os.path.abspath(__file__)))))
 TB_OUT = os.path.join(ROOT, "analog", "testbenches", "out",
                       "tile_energy.json")
 PASSES = os.path.join(ROOT, "scripts", "compiler", "out", "passes.json")
 
 # ---- A3/A1 measured block numbers (STATUS.md citations) ----
 A3 = {
-    "kv_write_fJ_cell": 7.5,        # A3 tb_gain_cell
-    "kv_read_pJ_8row": 2.4,         # A3 tb_gain_cell (8-row PWM pass)
     "dac_pJ_slot": 1.2,             # A3 tb_write_dac
-    "softmax_settle_us": 0.99,      # A3 tb_softmax
-    "softmax_static_uW": 2.1,       # A3 tb_softmax
     "sidecar_pJ_op": 67.0,          # A3 tb_lora (outer-product op)
     "sidecar_pJ_cellwrite": 7.1,    # A3 tb_lora
 }
@@ -64,11 +60,8 @@ def main():
     e_analog = sum(mean.values()) if mean else float("nan")
     e_pass = e_analog + DIG_E_PASS_PJ
     # per-token totals (counted schedules x measured per-op)
-    kv_ops_pJ = (16 * 8 * A3["kv_write_fJ_cell"] / 1000    # 16 col writes
-                 + 16 * A3["dac_pJ_slot"]
-                 + 2 * A3["kv_read_pJ_8row"]               # qK^T + A.V
-                 + A3["softmax_static_uW"] * A3["softmax_settle_us"])
-    tok_j = n_pass * e_pass * 1e-12 + kv_ops_pJ * 1e-12
+    # attention scores/softmax/A.V run on the digital rail: not counted here
+    tok_j = n_pass * e_pass * 1e-12
     tok_s = n_pass * PASS_S
     fj_mac = e_analog * 1000 / 256                     # 256 MACs/pass
     lines = [
@@ -95,10 +88,7 @@ def main():
                 "| measured, tb_tile_mvm (item 8: previously uncounted) |")
     lines += [
         f"| digital rail / pass | {DIG_E_PASS_PJ:.1f} pJ | estimated: {DIG_CELLS} cells (counted, yosys) x 3 fF x VDD^2 x a=0.1 x 8 cyc |",
-        f"| KV cell write | {A3['kv_write_fJ_cell']} fJ | measured, A3 |",
-        f"| KV 8-row read pass | {A3['kv_read_pJ_8row']} pJ | measured, A3 |",
         f"| write-DAC slot | {A3['dac_pJ_slot']} pJ | measured, A3 |",
-        f"| softmax op (settle x static) | {A3['softmax_static_uW'] * A3['softmax_settle_us']:.2f} pJ | measured, A3 |",
         f"| LoRA sidecar outer-product op | {A3['sidecar_pJ_op']} pJ | measured, A3 |",
         "",
         "## E_conv vs |code| (early termination, measured)",
@@ -110,7 +100,7 @@ def main():
                      f"(coarse {p['e_coarse_pJ']:.2f})")
     if "ffn_e2e_fullchip_pJ" in te:
         f = te["ffn_e2e_fullchip_pJ"]
-        lines += ["", f"Full-chip FFN pass (sidecar+KV+softmax resident): "
+        lines += ["", f"Full-chip FFN pass (sidecar resident): "
                   f"tile {f['tile']} + coarse {f['coarse']} + fine "
                   f"{f['fine']} pJ _(measured, tb_ffn_e2e)_"]
     lines += [
@@ -122,8 +112,6 @@ def main():
         "= 2 tau of the integrator absorb, specs.coarse_cadence, O1 "
         "falsified) -> pass "
         f"{PASS_S*1e6:.2f} us _(measured)_",
-        f"- KV col write slot 150 ns (settle 17 ns, A1); softmax settle "
-        f"{A3['softmax_settle_us']} us _(measured)_",
         "",
         "## Mini-chip tokens/s and tokens/J (one tile, time-multiplexed)",
         "",
@@ -132,8 +120,6 @@ def main():
         f"- per-token analog+digital MVM energy = {n_pass} x "
         f"{e_pass:.1f} pJ = {n_pass * e_pass * 1e-6:.2f} uJ "
         "_(measured x counted + estimated digital)_",
-        f"- per-token KV/softmax adds {kv_ops_pJ:.1f} pJ _(measured x "
-        "counted: 16 col writes + 2 read passes + softmax settle)_",
         f"- **tok/s (sim grid) = {1/tok_s:.1f}** (token time "
         f"{tok_s*1e3:.1f} ms) _(measured x counted)_",
         f"- **tok/J = {1/tok_j:,.0f}** ({tok_j*1e6:.2f} uJ/token) "
@@ -177,7 +163,7 @@ def main():
         f"{1268}/{DIG_CELLS} abft cells (counted).",
         "",
     ]
-    out = os.path.join(ROOT, "METRICS.md")
+    out = os.path.join(ROOT, "docs", "src", "content", "Project", "METRICS.md")
     open(out, "w").write("\n".join(lines))
     print(f"wrote {out}")
     print("PASS" if mean else "PARTIAL (tile_energy.json incomplete)")

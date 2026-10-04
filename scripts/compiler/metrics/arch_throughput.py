@@ -25,12 +25,12 @@ import math
 import os
 import sys
 
-_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, os.path.join(_ROOT, "analog", "schematics"))
+_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(_ROOT, "analog", "docs"))
 sys.path.insert(0, os.path.join(_ROOT, "scripts"))
 
 import specs                                              # noqa: E402
-from library.pdks.tsmc_n4_proj import TsmcN4Proj          # noqa: E402
+from pdk_specs import TsmcN4Proj          # noqa: E402
 from compiler.metrics import pdk_projections as pp        # noqa: E402
 from compiler.metrics import throughput_ceiling as tc     # noqa: E402
 

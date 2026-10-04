@@ -11,7 +11,7 @@ TOP_LAYOUT = analogioc
 # symbol can be placed here, and makes `make deps` build it first.
 #
 # Set with: make AddAnalogBlock BLOCK_NAME=ota DEPENDS="bandgap diffpair"
-DEPENDS = async_ctrl gain_cell_array integrator_conv lora_sidecar ota rstring_ladder translinear_softmax weight_tile write_dac
+DEPENDS = async_ctrl gain_cell_array integrator_conv lora_sidecar ota rstring_ladder weight_tile write_dac
 
 # Simulator for `make -C build/sim`. ngspice is the one to trust for anything headed
 # to silicon; vacask is the other SpiceRack backend. ESPice (ARPice) and EGSpice are not

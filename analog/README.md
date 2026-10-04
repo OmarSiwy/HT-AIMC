@@ -32,36 +32,6 @@ flowchart LR
     sm -- "A.V drive currents" --> kv
 ```
 
-## Chip 2: attention engine (`chip2_attention`)
-
-```mermaid
-flowchart LR
-    q[["q as PWM on rd rows"]]
-    kb[gain_cell_array<br/>K bank]
-    wta[wta<br/>running max m_hat]
-    tsm[translinear_softmax<br/>a_j branch currents, V_ls]
-    res[rescale<br/>g <= 1]
-    comb[softmax_combine<br/>group logsumexp]
-    vb[gain_cell_array<br/>V bank]
-    bias[ptat_bias]
-    out[["(o, m, l) to Chip 1<br/>fp32 island, digital"]]
-
-    q --> kb
-    kb -- "qK score voltages" --> wta
-    kb -- "qK score voltages" --> tsm
-    wta -- "m_hat" --> tsm
-    wta -- "m_hat" --> res
-    tsm -- "V_ls" --> comb
-    tsm -- "a_j -> I->T ramp -> PWM" --> vb
-    vb -- "o (charge)" --> out
-    res --> out
-    comb -- "l" --> out
-    bias -. "vb_tail" .-> wta & tsm & res & comb
-```
-
-Parallel super-tile (`chip_supertile`): K `weight_tile` windows, each with its own
-`integrator_conv`, summed on the digital fabric.
-
 ## Block hierarchy
 
 ```mermaid
@@ -77,25 +47,25 @@ flowchart TD
     rstring_ladder --> cmos_switch
 ```
 
-| Block | Role |
-|---|---|
-| `ota` | Telescopic-cascode OTA, column integrator amplifier |
-| `strongarm` | Clocked latch comparator (coarse loop, SAR trials) |
-| `cmos_switch` | Transmission gate: steering, resets, tap muxes |
-| `pwm_driver` | PWM envelope onto the two-phase SC grid |
-| `async_ctrl` | Self-timed sequencer + `tq_chain` t_q tap line |
-| `ptat_bias` | PTAT reference, softmax-class tail bias |
-| `rescale` | Translinear ratio pair, g = exp(beta dV) <= 1 |
-| `softmax_combine` | Level-1 group logsumexp over banks' V_ls |
-| `translinear_softmax` | 8-input subthreshold softmax, source node = logsumexp |
-| `wta` | Source-follower running max with replica VGS cancel |
-| `gain_cell_array` | 8x8 2T gain cells, column write, PWM row read |
-| `write_dac` | 4b R-string DAC, programs gain cells |
-| `rstring_ladder` | 4b R-string, converter thresholds and SAR span |
-| `weight_tile` | 16x(16+1) charge-domain crossbar, 4b diff cap banks |
-| `integrator_conv` | Column converter: integrator, event-rate loop, 4b SAR |
-| `lora_sidecar` | Rank-1 LoRA summing onto tile columns |
-| `analogioc`, `chip2_attention`, `chip_supertile` | Top-level assemblies |
+| Block                                            | Role                                                  |
+| ------------------------------------------------ | ----------------------------------------------------- |
+| `ota`                                            | Telescopic-cascode OTA, column integrator amplifier   |
+| `strongarm`                                      | Clocked latch comparator (coarse loop, SAR trials)    |
+| `cmos_switch`                                    | Transmission gate: steering, resets, tap muxes        |
+| `pwm_driver`                                     | PWM envelope onto the two-phase SC grid               |
+| `async_ctrl`                                     | Self-timed sequencer + `tq_chain` t_q tap line        |
+| `ptat_bias`                                      | PTAT reference, softmax-class tail bias               |
+| `rescale`                                        | Translinear ratio pair, g = exp(beta dV) <= 1         |
+| `softmax_combine`                                | Level-1 group logsumexp over banks' V_ls              |
+| `translinear_softmax`                            | 8-input subthreshold softmax, source node = logsumexp |
+| `wta`                                            | Source-follower running max with replica VGS cancel   |
+| `gain_cell_array`                                | 8x8 2T gain cells, column write, PWM row read         |
+| `write_dac`                                      | 4b R-string DAC, programs gain cells                  |
+| `rstring_ladder`                                 | 4b R-string, converter thresholds and SAR span        |
+| `weight_tile`                                    | 16x(16+1) charge-domain crossbar, 4b diff cap banks   |
+| `integrator_conv`                                | Column converter: integrator, event-rate loop, 4b SAR |
+| `lora_sidecar`                                   | Rank-1 LoRA summing onto tile columns                 |
+| `analogioc`, `chip2_attention`, `chip_supertile` | Top-level assemblies                                  |
 
 Shared python lives in `common/` (bench, corners, devices, pex, substrate2 layout).
 Components that other projects will reuse go in `library/` (submodule, see `AGENTS.md`).

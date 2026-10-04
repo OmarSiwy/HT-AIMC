@@ -42,14 +42,14 @@ import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE))
-sys.path.insert(0, os.path.join(ROOT, "analog", "schematics"))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
+sys.path.insert(0, os.path.join(ROOT, "analog", "docs"))
 sys.path.insert(0, HERE)
 import specs                                    # noqa: E402
 import pdk_projections as pj                    # noqa: E402
-from library.pdks.sky130 import Sky130          # noqa: E402
-from library.pdks.asap7_proj import Asap7Proj   # noqa: E402
-from library.pdks.tsmc_n4_proj import TsmcN4Proj  # noqa: E402
+from pdk_specs import Sky130          # noqa: E402
+from pdk_specs import Asap7Proj   # noqa: E402
+from pdk_specs import TsmcN4Proj  # noqa: E402
 
 MANIFEST = os.path.join(ROOT, "scripts", "compiler", "out", "manifest.json")
 OUT = os.path.join(ROOT, "scripts", "compiler", "out", "perlayer_k_schedule.json")

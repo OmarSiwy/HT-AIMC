@@ -1,9 +1,0 @@
-.subckt softmax_combine vls0 vls1 igrp0 igrp1 vls_group vb_tail vdd vss
-Xtail vls_group vb_tail vss vss sky130_fd_pr__nfet_01v8 W=63.12 L=2.4 nf=6
-Xb0 d0 vls0 vls_group vss sky130_fd_pr__nfet_01v8 W=63.12 L=2.4 nf=6
-Xmd0 d0 d0 vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
-Xmo0 igrp0 d0 vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
-Xb1 d1 vls1 vls_group vss sky130_fd_pr__nfet_01v8 W=63.12 L=2.4 nf=6
-Xmd1 d1 d1 vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
-Xmo1 igrp1 d1 vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
-.ends softmax_combine

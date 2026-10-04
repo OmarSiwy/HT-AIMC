@@ -48,9 +48,9 @@ import time
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
-sys.path.insert(0, os.path.join(ROOT, "analog", "schematics"))
+sys.path.insert(0, os.path.join(ROOT, "analog", "docs"))
 sys.path.insert(0, HERE)
 
 from compiler.gguf_reader import GGUF, tokenize_greedy      # noqa: E402
@@ -399,7 +399,7 @@ def throughput(snr_t, snr_s_by_class, parallel=False):
     for n in mats:
         c = pk.tensor_class(n)
         sched[n], clears[c] = kfor(snr_s_by_class[c])
-    from library.pdks.tsmc_n4_proj import TsmcN4Proj
+    from pdk_specs import TsmcN4Proj
     pdk = TsmcN4Proj()
     saved = (specs.TQ_SIM, specs.sar_time)
     try:

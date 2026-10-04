@@ -19,11 +19,11 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))), "analog", "schematics"))
+    os.path.dirname(os.path.abspath(__file__))))), "analog", "docs"))
 import specs
-from library.pdks.sky130 import Sky130
-from library.pdks.asap7_proj import Asap7Proj
-from library.pdks.tsmc_n4_proj import TsmcN4Proj
+from pdk_specs import Sky130
+from pdk_specs import Asap7Proj
+from pdk_specs import TsmcN4Proj
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                    "PDK_PROJECTIONS.md")

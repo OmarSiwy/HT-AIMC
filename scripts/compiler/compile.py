@@ -435,16 +435,11 @@ def pass_table(mats, T):
         "tile_passes_per_token_total": total,
         "prompt_tokens": T,
         "tile_passes_prompt_total": total * T,
-        # 8x8 gain-cell KV bank units at d_head=64 (8 array configurations)
-        "kv_col_writes_per_token": 16,
-        "qk_read_ops_token_t": "8*(t+1)",
-        "av_read_ops_token_t": "8*(t+1)",
-        "softmax_bank_evals_token_t": "ceil((t+1)/8)",
         "tok_per_s_formula":
             "1 / (tile_passes_per_token_total * t_pass_measured + attn_aux);"
             " one physical tile time-multiplexed (silicon reuse); t_pass from"
-            " A2 SPICE (PWM windows + conversion done-time), attn_aux from"
-            " A3 KV/softmax measured ops.",
+            " A2 SPICE (PWM windows + conversion done-time), attn_aux = digital"
+            " scores/softmax/A.V on the rail.",
     }
 
 
@@ -588,11 +583,7 @@ def csd_report(mats, stream):
     }
 
 
-def run(prompt=PROMPT, out=OUT, model_path=MODEL, quiet=False, csd=False,
-        score_temp=None):
-    # score_temp: opt-in device temperature (Kelvin) for #18/#25 PTAT score
-    # pre-scaling. None -> gain 1.0 -> default path byte-identical.
-    score_gain = 1.0 if score_temp is None else G.ptat_score_gain(score_temp)
+def run(prompt=PROMPT, out=OUT, model_path=MODEL, quiet=False, csd=False):
     t_start = time.time()
     log = (lambda *a: None) if quiet else print
     out = Path(out)
@@ -614,19 +605,14 @@ def run(prompt=PROMPT, out=OUT, model_path=MODEL, quiet=False, csd=False,
     for name, W, X in (("attn_q", m["Wq"], A_in), ("attn_k", m["Wk"], A_in),
                        ("attn_v", m["Wv"], A_in)):
         mats[name] = compile_matrix(name, W, X, csd=csd)
-    qf, kf, vf, avf = float_attention(m, A_in)
+    _, _, _, avf = float_attention(m, A_in)
     mats["attn_o"] = compile_matrix("attn_o", m["Wo"], avf, csd=csd)
-    # static gain-cell / requant scales for the analog attention chain
-    dq8 = float(np.max(np.abs(qf))) / G.X_MAX or 1.0
-    dk4 = float(np.max(np.abs(kf))) / G.W_MAX or 1.0
-    dv4 = float(np.max(np.abs(vf))) / G.W_MAX or 1.0
-    mats["attn_q"]["dq8"], mats["attn_k"]["dk4"], mats["attn_v"]["dv4"] = dq8, dk4, dv4
 
     # --- bit-true attention through the golden model ---
     rope = lambda v, t: G.rope_norm(v, t, base=m["rope_base"])  # noqa: E731
     o8, atr = G.attention_forward(mats["attn_q"], mats["attn_k"],
                                   mats["attn_v"], mats["attn_o"], A_in,
-                                  sm_beta=1.0, rope=rope, score_gain=score_gain)
+                                  sm_beta=1.0, rope=rope)
     attn_out = o8 * mats["attn_o"]["dy"]                      # head-0 contribution
     H = E + attn_out
     F_in = rms_rows(H, m["ffn_norm"], m["rms_eps"])
@@ -700,8 +686,8 @@ def run(prompt=PROMPT, out=OUT, model_path=MODEL, quiet=False, csd=False,
     np.savez_compressed(
         out / "golden_trace.npz",
         ids=np.array(ids), E=E, A_in=A_in,
-        q8=np.stack([a["q8"] for a in atr]), q8p=np.stack([a["q8p"] for a in atr]),
-        k4=np.stack([a["k4"] for a in atr]), v4=np.stack([a["v4"] for a in atr]),
+        q8=np.stack([a["q8"] for a in atr]),
+        k8=np.stack([a["k8"] for a in atr]), v8=np.stack([a["v8"] for a in atr]),
         p=Tpad, av8=np.stack([a["av8"] for a in atr]), attn_out8=o8,
         H=H, F_in=F_in,
         g8=np.stack([f["g8"] for f in ffn]), u8=np.stack([f["u8"] for f in ffn]),
@@ -753,12 +739,8 @@ def run(prompt=PROMPT, out=OUT, model_path=MODEL, quiet=False, csd=False,
                      "exits, asserts relu_en on LO only when code_hi==0, and "
                      "the fabric ReLU-clamps the recombined y12 to >=0 (see "
                      "golden tile_mvm docstring for the exactness bound).",
-        "attention": {"dq8": dq8, "dk4": dk4, "dv4": dv4, "sm_beta": 1.0,
-                      "rope_base": m["rope_base"], "rms_eps": m["rms_eps"],
-                      # PTAT score pre-scale (#25); only emitted when opted in
-                      # so the default path stays byte-identical.
-                      **({"score_temp_k": score_temp, "score_gain": score_gain}
-                         if score_temp is not None else {})},
+        "attention": {"sm_beta": 1.0,
+                      "rope_base": m["rope_base"], "rms_eps": m["rms_eps"]},
     }
     (out / "digital_config.json").write_text(json.dumps(dig, indent=1))
 
@@ -821,10 +803,6 @@ if __name__ == "__main__":
                          "+ measured CSNR gain curve)")
     ap.add_argument("--prompt", default=PROMPT)
     ap.add_argument("--out", default=None)
-    ap.add_argument("--score-temp", type=float, default=None,
-                    help="device temp (Kelvin) for #18/#25 PTAT score "
-                         "pre-scale (score spread x T/T0); unset = T0 = "
-                         "byte-identical default path")
     a = ap.parse_args()
     if a.dps48:
         assert a.wfmt == "int4" and a.afmt == "int8" and not a.csd, \
@@ -838,7 +816,7 @@ if __name__ == "__main__":
         lattice.run_lattice(prompt=a.prompt, out=a.out)
     elif a.wfmt == "int4" and a.afmt == "int8" and a.target_bits == F.BY_CEIL_BITS:
         out = Path(a.out) if a.out else (OUT.parent / "out_csd" if a.csd else OUT)
-        run(prompt=a.prompt, out=out, csd=a.csd, score_temp=a.score_temp)
+        run(prompt=a.prompt, out=out, csd=a.csd)
     else:
         assert not a.csd, "--csd applies to the default int4 path"
         run_formats(a.wfmt, a.afmt, prompt=a.prompt, target=a.target_bits,

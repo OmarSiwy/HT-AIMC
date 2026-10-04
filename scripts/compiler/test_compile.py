@@ -121,7 +121,7 @@ def test_e2e_real_model():
         assert d["abft"]["max_clean_residual"] <= d["abft"]["budget"]
     assert (out / "golden_trace.npz").exists()
     tr = np.load(out / "golden_trace.npz")
-    assert np.allclose(tr["p"].sum(1), 1)                     # softmax KCL
+    assert np.allclose(tr["p"].sum(1), 1)                     # softmax rows sum to 1
 
 
 def test_emitted_pass_files():

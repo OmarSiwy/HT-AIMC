@@ -402,25 +402,6 @@ def _mask_conv(cv, kill):
 # analog residual flows through the whole real blk.0 forward unchanged. Only
 # scripts/compiler/test_error_impact.py sets it; it is reset there in a finally.
 TILE_ERR = None
-ATTN_OUT_ERR = None      # task #26 opt-in: perturb attention output o8 code (default None -> byte-identical)
-
-
-def make_attn_out_err(lsb, seed=0):
-    """Chip2 measured o_t error model (STATUS 'A-CHIP2 inc4', tb_attention_chip2_e2e):
-    the analog exp+A.V translinear residual (~1.4% class) surviving into the
-    attention output o_t, roughly GAUSSIAN on the per-head o_t vector, up to
-    `lsb` LSB of the o_t range. o8 is INT8 (+-127) so 1 code == 1 o_t LSB; we
-    draw gaussian sigma s.t. max|err| ~ lsb (sigma = lsb/3, 3-sigma clip), fresh
-    per token. Returns a stateful f(o8, t)."""
-    rng = np.random.default_rng(seed)
-    sigma = lsb / 3.0
-
-    def f(o8, t):
-        o8 = np.asarray(o8, dtype=np.int64)
-        e = np.rint(np.clip(rng.normal(0.0, sigma, size=o8.shape),
-                            -lsb, lsb)).astype(np.int64)
-        return np.clip(o8 + e, -X_MAX, X_MAX)
-    return f
 
 
 def make_tile_err(lsb, seed=0, thresh=20):
@@ -779,202 +760,14 @@ def csnr_db(y_ideal, y_hat):
 
 
 # ----------------------------------------------------------------------------
-# 8. gain-cell KV path
-# ----------------------------------------------------------------------------
-
-def kv_quant(V, dv=None):
-    """4b K/V quant for gain cells: dv = max|V|/7, codes in [-7,7]."""
-    if dv is None:
-        dv = np.max(np.abs(V)) / W_MAX
-        dv = 1.0 if dv == 0 else dv
-    return np.clip(np.rint(V / dv), -W_MAX, W_MAX).astype(np.int64), dv
-
-
-def kv_read(codes, dt=0.0, tau=None):
-    """Gain-cell read with retention decay hook: v(t) = code * exp(-dt/tau).
-
-    Contract: storage node droops with tau = C_S/G_leak; tau=None = ideal.
-    Returns float values in code units.
-    """
-    v = codes.astype(np.float64)
-    return v if tau is None else v * np.exp(-dt / tau)
-
-
-# ----------------------------------------------------------------------------
-# 9. translinear softmax reference
+# 8. softmax reference (digital rail; attention is an application, not analog)
 # ----------------------------------------------------------------------------
 
 def softmax_ref(z, beta=1.0):
-    """p_i = exp(beta*z_i)/sum_j exp(beta*z_j); analog output = I_i = p_i*I_b.
-
-    KCL checksum: sum_i p_i = 1 exactly (currents sum to the tail I_b).
-    beta = temperature knob (subthreshold: beta ~ kappa/U_T * input scale).
-    """
+    """p_i = exp(beta*z_i)/sum_j exp(beta*z_j), max-subtracted. sum_i p_i = 1."""
     z = np.asarray(z, dtype=np.float64) * beta
     e = np.exp(z - np.max(z))
     return e / np.sum(e)
-
-
-def block_reduce(scores, values=None, beta=1.0):
-    """Level-0 bank reduce: one score block -> its monoid partial (m, l, o).
-
-    Contract (CHIP2_SPEC 4 / THE_COMPILER_STRUCTURE 6): a block of KV scores
-    reduces LOCALLY to
-        m = max_j scores_j
-        l = sum_j exp(beta*(scores_j - m))          (log-domain denominator)
-        o = sum_j exp(beta*(scores_j - m)) * values_j   (weighted V accum)
-    with the max factored out so l,o are overflow-proof. values default to 1
-    (denominator-only path, l becomes sum of unnormalized weights). This is
-    exactly what the analog bank produces: WTA -> m, V_ls -> log l, softmax
-    currents -> o on the column integrators.
-    """
-    s = np.asarray(scores, dtype=np.float64)
-    m = float(np.max(s))
-    w = np.exp(beta * (s - m))                      # <=1, safe
-    l = float(np.sum(w))
-    if values is None:
-        return m, l, 0.0
-    o = w @ np.asarray(values, dtype=np.float64)
-    return m, l, o
-
-
-def monoid_combine(p, q, beta=1.0):
-    """The associative online-softmax combine (THE_COMPILER_STRUCTURE 6):
-
-        (m1,l1,o1) o (m2,l2,o2) =
-            (m, l1*e^(beta(m1-m)) + l2*e^(beta(m2-m)),
-                o1*e^(beta(m1-m)) + o2*e^(beta(m2-m))),  m = max(m1,m2)
-
-    Each rescale e^(beta*(old_m - m)) <= 1 (the g the analog B5 pair applies).
-    beta carries the analog temperature: m lives in score volts, so the
-    rescale exponent is beta*Δm, matching the translinear ratio exp(beta*ΔV).
-    """
-    m1, l1, o1 = p
-    m2, l2, o2 = q
-    m = max(m1, m2)
-    g1 = np.exp(beta * (m1 - m))                    # rescale for partial 1
-    g2 = np.exp(beta * (m2 - m))                    # rescale for partial 2
-    return m, l1 * g1 + l2 * g2, o1 * g1 + o2 * g2
-
-
-def online_softmax_monoid(blocks, beta=1.0):
-    """Stream score blocks, fold with monoid_combine, return running (m,l,o).
-
-    blocks: list of (scores, values|None). Reduces each to a partial via
-    block_reduce, then left-folds the associative combine — the running
-    accumulator the analog single-bank stream tracks. Returns the final
-    (m, l, o). o_t = o/l is the attention output (the reciprocal stays
-    host-side fp32, CHIP2_SPEC 3).
-
-    Equivalence: for a single value stream this equals plain softmax over the
-    concatenated scores (asserted in test_golden). Associativity: any grouping
-    of the blocks yields the same (m,l,o) in exact arithmetic (asserted).
-    """
-    acc = None
-    for scores, values in blocks:
-        part = block_reduce(scores, values, beta)
-        acc = part if acc is None else monoid_combine(acc, part, beta)
-    return acc
-
-
-def group_combine(partials, beta=1.0):
-    """Level-1 GROUP combine of G bank partials (CHIP2_SPEC 4 level 1).
-
-    partials: list of (m, l, o) level-0 bank partials (from block_reduce).
-    Folds them with the associative monoid into ONE group partial (m, l, o) --
-    exactly the analog level-1 stage (softmax_combine group logsumexp +
-    per-bank rescale g_b = l_b/l_group). Spatial: banks reduce in parallel, no
-    stored charge is rescaled here (the retroactive rescale lives at level 2).
-
-    This is a plain left-fold of monoid_combine; it exists as a NAMED reference
-    for tb_combine_tree so the analog group (m,l,o) has a golden to hit, and to
-    make the offload-legality property explicit: group_combine of any grouping
-    of the same partials is bit-equal (associativity, tested).
-    """
-    acc = None
-    for p in partials:
-        acc = p if acc is None else monoid_combine(acc, p, beta)
-    return acc
-
-
-def digitize_group_partial(m, l, o, m_lsb, o_bits=8):
-    """Digitize one analog group partial into the level-1 -> level-2 crossing
-    format (CHIP2_SPEC 4 'Precision per partial'):
-
-      m -> 8b score-voltage code (integrator_conv, +-1 LSB): quantize to m_lsb.
-      l -> fp32 (V_ls is a LOG-domain 8b code; the island exp()s it to fp32 --
-           we model the crossing as l carried at fp32 relative precision, the
-           precision-table mandate for the long-axis denominator).
-      o -> d_h x o_bits codes + ONE shared per-group scale (analog block-FP,
-           the inter-tile format row). o_scale = max|o| / (2^(o_bits-1) - 1);
-           o_code = round(o / o_scale), reconstruct o_hat = o_code * o_scale.
-
-    Returns (m_hat, l, o_hat) in fp32 -- the exact values the fp32 island sees
-    after the O_PARTIAL flit. Bit growth stays out of the analog core: the m
-    quantization is the only lossy step here (l/o carried at their format
-    precision), matching the spec's "8b code of V_ls / d_h*8b o" rows.
-    """
-    o = np.atleast_1d(np.asarray(o, dtype=np.float64))
-    m_hat = float(np.round(m / m_lsb) * m_lsb)              # 8b score code
-    peak = float(np.max(np.abs(o)))
-    o_scale = peak / (2 ** (o_bits - 1) - 1) if peak > 0 else 1.0
-    o_code = np.clip(np.round(o / o_scale),
-                     -(2 ** (o_bits - 1) - 1), 2 ** (o_bits - 1) - 1)
-    return m_hat, float(l), o_code * o_scale
-
-
-def fp32_island_combine(group_partials, beta=1.0, m_lsb=None, o_bits=8,
-                        divide=True):
-    """LEVEL-2 root: the digital fp32 island (CHIP2_SPEC 4 level 2, block B7).
-
-    Takes the analog level-1 GROUP partials (each an (m, l, o) tuple, e.g. from
-    the analog datapath or group_combine) and:
-      1. DIGITIZES each partial to the level-1->2 crossing format
-         (digitize_group_partial): m to 8b, o to block-FP d_h*o_bits+scale,
-         l to fp32.
-      2. RETROACTIVE-RESCALE MONOID across groups (and, when a session window
-         exceeds the resident banks, across time-multiplexed passes -- the same
-         fold) in fp32. This is where a new max raising m rescales the STORED
-         l,o -- the operation inc3's tb_o_charge PROVED must be fp32, not analog
-         SC redistribution (it compounds per rescale). Runs monoid_combine, but
-         in fp64/fp32 numpy so every retroactive rescale e^(beta*dm) is exact.
-      3. FINAL DIVIDE o_t = o / l in fp32 (the ONE reciprocal per query row,
-         CHIP2_SPEC 3: Chip 2 never divides; the island does o/l where the
-         output projection consumes it).
-
-    m_lsb: score-voltage LSB for the 8b m code. Default = span/255 over the
-    partials' m range (integrator_conv +-1 LSB, +-127 full-scale).
-    divide=False returns the combined (m, l, o) partial instead of o_t (for the
-    O_PARTIAL flit that ships raw (o, m, l) to Chip 1's fp32 rail).
-
-    Returns o_t (d_h,) if divide else (m, l, o). fp32 throughout -- exact
-    reference for the e2e o_t the analog+island produces.
-    """
-    ms = [float(p[0]) for p in group_partials]
-    if m_lsb is None:
-        span = (max(ms) - min(ms)) if len(ms) > 1 else max(abs(max(ms)), 1e-9)
-        m_lsb = max(span, 1e-9) / 255.0
-    dig = [digitize_group_partial(m, l, o, m_lsb, o_bits)
-           for (m, l, o) in group_partials]
-    acc = None
-    for p in dig:
-        acc = p if acc is None else monoid_combine(acc, p, beta)
-    m, l, o = acc
-    if not divide:
-        return m, l, o
-    return np.asarray(o, dtype=np.float64) / float(l)       # fp32 o_t = o/l
-
-
-def ptat_score_gain(t_kelvin, t0_kelvin=300.15):
-    """Compiler PTAT score pre-scale (mirror of analog ptat_bias.ptat_score_gain).
-
-    The translinear softmax ratio I_i/I_j = exp(beta(T)*(V_i-V_j)) depends ONLY
-    on beta(T) = 1/(n*U_T) ~ 1/T. #18's analog tail-PTAT stabilizes I_b but
-    CANNOT remove that beta(T) sharpness drift (tail-PTAT alone: -13% ratio
-    drift 27->85 C). Pre-scaling the qK^T score SPREAD (dV about the common
-    mode) by T/T0 makes beta(T)*dV_scaled temperature-invariant. T=T0 -> 1.0.
-    """
-    return t_kelvin / t0_kelvin
 
 
 # ----------------------------------------------------------------------------
@@ -1037,22 +830,18 @@ def proj(C, xq, relu=False):
             "passes": n, "info": info}
 
 
-def attention_forward(Wq_c, Wk_c, Wv_c, Wo_c, X, sm_beta=1.0, tau=None,
-                      t_tok=0.0, rope=None, score_gain=1.0):
+def attention_forward(Wq_c, Wk_c, Wv_c, Wo_c, X, sm_beta=1.0, rope=None):
     """Causal single-head attention, bit-true through the quantized path.
 
-    Per token: x -> smoothed INT8 -> tile MVMs q,k,v -> (optional digital
-    RoPE on q,k) -> K,V to 4b gain cells (per-token column write) ->
-    scores = q8 . K4 charge MAC on the KV array -> analog softmax on
-    dequantized scores (temperature sm_beta; 1/sqrt(d) folded in) ->
-    AV = sum_u p_u V4[u] (convex: range of V, no bit growth) -> INT8 -> Wo.
-    All scales static from the compiled dicts. Returns (out8 (T,O), trace).
-
-    score_gain: opt-in PTAT score pre-scale (see ptat_score_gain); multiplies
-    the score spread so beta(T)*dV stays T-invariant. Default 1.0 -> unchanged.
+    The four projections are IMC tile MVMs; everything between them is
+    digital. Per token: x -> smoothed INT8 -> tile MVMs q,k,v -> (optional
+    RoPE on q,k) -> K,V cached as dequantized INT8 tile outputs -> scores,
+    softmax (temperature sm_beta; 1/sqrt(d) folded in) and A.V on the digital
+    rail -> INT8 -> Wo tile MVM. All scales static from the compiled dicts.
+    Returns (out8 (T,O), trace).
     """
     T, d = X.shape
-    Kc, Vc, trace, outs = [], [], [], []
+    K, V, trace, outs = [], [], [], []
     for t in range(T):
         # each matrix has its own smoothing + input scale -> per-matrix quant
         xq = quant_in(Wq_c, X[t])
@@ -1062,30 +851,16 @@ def attention_forward(Wq_c, Wk_c, Wv_c, Wo_c, X, sm_beta=1.0, tau=None,
         qv, kv_ = q8 * Wq_c["dy"], k8 * Wk_c["dy"]
         if rope is not None:
             qv, kv_ = rope(qv, t), rope(kv_, t)
-        # digital 8b/4b re-quant into the gain-cell arrays (static scales)
-        q8p = np.clip(np.rint(qv / Wq_c["dq8"]), -X_MAX, X_MAX).astype(np.int64)
-        k4 = np.clip(np.rint(kv_ / Wk_c["dk4"]), -W_MAX, W_MAX).astype(np.int64)
-        v4 = np.clip(np.rint(v8 * Wv_c["dy"] / Wv_c["dv4"]), -W_MAX, W_MAX).astype(np.int64)
-        Kc.append(k4)
-        Vc.append(v4)
-        K = np.stack([kv_read(k, (t - u) * t_tok, tau) for u, k in enumerate(Kc)])
-        V = np.stack([kv_read(v, (t - u) * t_tok, tau) for u, v in enumerate(Vc)])
-        # analog chain, no conversion until after A.V (contract: qK^T ->
-        # softmax -> A.V all in charge/current domain)
-        sc_int = K @ q8p                              # KV-array charge MAC
-        # score_gain = PTAT score pre-scale (T/T0): scales the score SPREAD dV
-        # about the common mode so beta(T)*dV_scaled is T-invariant (#18/#25).
-        # Default 1.0 (T=T0) -> byte-identical.
-        z = sc_int * (Wq_c["dq8"] * Wk_c["dk4"]) / np.sqrt(len(qv)) * score_gain
-        p = softmax_ref(z, sm_beta)                   # currents / I_b
-        av = (p @ V) * Wv_c["dv4"]                    # real units, range of V
-        av8 = quant_in(Wo_c, av)   # AV converter + smoothing requant folded;
-        o8 = proj(Wo_c, av8)["out8"]                  # +-1 LSB acceptance
-        if ATTN_OUT_ERR is not None:      # task #26 opt-in o_t analog-error model
-            o8 = ATTN_OUT_ERR(o8, t)      # Chip2 exp+A.V translinear residual on o_t
+        K.append(kv_)
+        V.append(v8 * Wv_c["dy"])
+        z = np.stack(K) @ qv / np.sqrt(len(qv))
+        p = softmax_ref(z, sm_beta)
+        av = p @ np.stack(V)                         # real units, range of V
+        av8 = quant_in(Wo_c, av)
+        o8 = proj(Wo_c, av8)["out8"]
         outs.append(o8)
-        trace.append({"xq": xq, "q8": q8, "q8p": q8p, "k4": k4, "v4": v4,
-                      "scores_int": sc_int, "p": p, "av8": av8, "out8": o8})
+        trace.append({"xq": xq, "q8": q8, "k8": k8, "v8": v8,
+                      "scores": z, "p": p, "av8": av8, "out8": o8})
     return np.stack(outs), trace
 
 

@@ -59,25 +59,6 @@ OTA_COORDS = {
 }
 
 
-# Chip-2 softmax / attention path — shared by ptat_bias, rescale, wta, translinear_softmax,
-# softmax_combine (one source; each block used to carry its own copy).
-I_B = 500e-9             # A, softmax tail design current at 27 C (AnalogIOC I_B_NOM; band 0.1-1 uA)
-TL_FRAC = 25 / 27.35     # AnalogIOC's translinear coordinate: gm/ID 25 at sky130's L = 1 um
-                         # weak-inversion ceiling 27.35, kept as a fraction of the ceiling
-L_SOFTMAX = 1.0          # um, ABSOLUTE long-channel length (matching, low gds): a design
-                         # choice, not Lmin-scaled (6.7 Lmin on sky130, 3.6 on gf180)
-SCORE_SPAN = 0.25        # V, score window width (CHIP2_SPEC 2.4: 0.6-0.85 V on sky130)
-VOS_SOFTMAX = 5e-3       # V, 3-sigma offset budget of score-path blocks (rescale, wta)
-
-
-def gmid_softmax(pdk=None):
-    """THE softmax-path gm/ID (bank tail/branch, ptat_bias, wta, rescale): one number for
-    every block, so the exponential slope beta ~ gm/ID agrees end to end. TL_FRAC of the
-    nfet weak-inversion ceiling at L_SOFTMAX on the active PDK (sky130: 25.0)."""
-    pdk = pdk or get_pdk()
-    return TL_FRAC * float(lookup.load_table("nfet", L_SOFTMAX)["gm_ID"].max())
-
-
 def ota_L(dev, pdk=None):
     """Drawn L [um] of an OTA device on the active PDK (snapped to 10 nm)."""
     pdk = pdk or get_pdk()
