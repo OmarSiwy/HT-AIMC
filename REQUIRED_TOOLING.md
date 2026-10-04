@@ -6,7 +6,7 @@ workarounds, are listed in [`analog/docs/TOOL_ISSUES.md`](analog/docs/TOOL_ISSUE
 
 | # | Gap | Blocks | Owner |
 |---|---|---|---|
-| 1 | LibreLane digital top-level template | chip integration, tape-out | `.flows/` template |
+| 1 | LibreLane integration in the template: analog macros in harden + digital sim | chip integration, tape-out | `.flows/` template (LibreLane itself is used as-is) |
 | 2 | Analog macro `.lib` generator | 1 (timing-closed digital around the IMC macro) | new tool |
 | 3 | cktImg: hierarchy, rendered output | block diagrams, top-level schematics | cktImg |
 | 4 | SpiceRack: upstream local fixes, `X()` params, more backends | every testbench | SpiceRack |
@@ -20,9 +20,19 @@ inside `Digital.nix`, and leaves hardening and GDS to the TinyTapeout GitHub
 action. The analog side produces a separate GDS. Nothing puts the analog IMC macro
 and the digital rail into one hardened top level.
 
-**Want:** a `.flows/digital` template built on
-[LibreLane](https://github.com/librelane/librelane) (the OpenLane 2 successor) that
-hardens a top level which **contains the analog IMC macro**:
+**Want:** to integrate [LibreLane](https://github.com/librelane/librelane), the OpenLane 2
+successor, into the `.flows/digital` template. LibreLane itself stays unmodified; only the
+template changes. Declare each analog macro **once**, then use that declaration both to
+harden the top level containing the macro and to run the digital simulations with the macro
+in place:
+
+- **Macro declaration:** one file per digital top (e.g. `digital/<top>/build/macros.yaml`)
+  lists each analog macro and its views: GDS, LEF, `.lib`, Verilog blackbox (for harden),
+  and a Verilog behavioural model (for simulation). It also gives placement and the pg pin
+  mapping. The LibreLane `MACROS` config is generated from this file.
+- **Simulation:** cocotb/iverilog/verilator tbs compile the behavioural model, and harden
+  uses the blackbox. A check confirms that the behavioural model, the blackbox and the
+  `.subckt` all have identical port lists.
 
 - **Packaging:** LibreLane comes from nix (EDA-Packaged or nixpkgs) and is pinned
   together with the PDK version that `shell.nix` enables. No `pip install` in a shell hook.
