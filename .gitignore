@@ -33,3 +33,4 @@ docs/node_modules/
 **/build/librelane/runs/
 **/build/librelane/smoke/build/
 digital/*/output/
+docs/dist/
