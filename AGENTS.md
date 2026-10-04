@@ -16,7 +16,7 @@ AnalogIOC/
 │   ├── <block>/             # netlist/ va/ test/ docs/ schematics/ layout/ build/ output/
 │   ├── common/              # shared python: bench, corners, devices, pex
 │   ├── docs/                # system architecture, specs.py, gm/Id tables, PDK char
-│   └── library/             # UW-ASIC analog library (ADC, DAC, LDO, OpAmp, TIAs)
+│   └── library/             # submodule: UW-ASIC/AnalogLibrary, components shared across projects
 ├── digital/analogioc/       # RTL (src/), iverilog testbenches (test/), synth.ys
 ├── scripts/
 │   ├── compiler/            # GGUF -> hardware compiler + metrics/ campaigns
@@ -98,7 +98,8 @@ upstream the fix and re-copy it.
 | What | Where |
 |---|---|
 | Analog block (netlist, `.va`, tb, docs) | `analog/<block>/`, following `analog-design-flow` |
-| Shared analog python | `analog/common/` |
+| Reusable component other projects will use (OTA, comparator, DAC, LDO, ...) | `analog/library/<Module>/`, following `analog/library/ADDING_MODULE.md` |
+| Shared analog python (this repo only) | `analog/common/` |
 | System specs / design math | `analog/docs/specs.py`, `analog/docs/architecture.md` |
 | RTL / digital tbs | `digital/analogioc/src/`, `digital/analogioc/test/` |
 | Compiler, metrics campaigns | `scripts/compiler/`, `scripts/compiler/metrics/` |
@@ -106,6 +107,13 @@ upstream the fix and re-copy it.
 | Test weights | `scripts/models/` (gitignored, never committed) |
 | Research / design docs | `docs/src/content/Project/*.md` (plain markdown, shows up on the site automatically) |
 | Tool or env dependency | `.flows/env/Analog.nix` / `Digital.nix` |
+
+`analog/library/` is a git submodule
+([UW-ASIC/AnalogLibrary](https://github.com/UW-ASIC/AnalogLibrary)). Put a component
+there when other projects will reuse it, and keep blocks specific to AnalogIOC in
+`analog/<block>/`. Commit changes inside the submodule and push them to its own repo,
+then commit the updated submodule pointer here. After cloning, run
+`git submodule update --init`.
 
 ## Running tests
 
