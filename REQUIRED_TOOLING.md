@@ -12,7 +12,7 @@ workarounds, are listed in [`analog/docs/TOOL_ISSUES.md`](analog/docs/TOOL_ISSUE
 | 4 | SpiceRack: upstream local fixes, `X()` params, more backends | every testbench | SpiceRack |
 | 5 | GmIDVisualizer in the nix env | gm/Id sizing, `scripts/compiler/metrics/*` projections | EDA-Packaged |
 
-## 1. LibreLane digital top-level template
+## 1. LibreLane integration: analog macros in harden and digital sim
 
 **Today:** the digital flow is the original TinyTapeout template. It runs yosys
 synthesis per module (`digital/<module>/build/`), uses OpenLane 2.3.10 from `pip`
