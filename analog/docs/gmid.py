@@ -170,24 +170,24 @@ def gm_ID(vgs, L, dev="nfet"):
     return pchip(tab["VGS"], tab["gm_ID"], vgs)
 
 
-def _inv_lookup(gm_id, L, dev, col, log=False):
-    br = _monotone_branch(load_table(dev, L))
+def _inv_lookup(gm_id, L, dev, col, log=False, pdk=None):
+    br = _monotone_branch(load_table(dev, L, pdk))
     y = np.log10(br[col]) if log else br[col]
     v = pchip(br["gm_ID"], y, gm_id)
     return 10 ** v if log else v
 
 
-def J_D(gm_id, L, dev="nfet"):
+def J_D(gm_id, L, dev="nfet", pdk=None):
     """Drain current density ID/W [A/um] at (gm/ID, L). Log-interpolated."""
-    return _inv_lookup(gm_id, L, dev, "ID_per_W", log=True)
+    return _inv_lookup(gm_id, L, dev, "ID_per_W", log=True, pdk=pdk)
 
 
-def VGS(gm_id, L, dev="nfet"):
-    return _inv_lookup(gm_id, L, dev, "VGS")
+def VGS(gm_id, L, dev="nfet", pdk=None):
+    return _inv_lookup(gm_id, L, dev, "VGS", pdk=pdk)
 
 
-def gm_gds(gm_id, L, dev="nfet"):
-    return _inv_lookup(gm_id, L, dev, "gm_gds")
+def gm_gds(gm_id, L, dev="nfet", pdk=None):
+    return _inv_lookup(gm_id, L, dev, "gm_gds", pdk=pdk)
 
 
 def ft(gm_id, L, dev="nfet"):
@@ -195,9 +195,9 @@ def ft(gm_id, L, dev="nfet"):
                               "characterise cgg with a SpiceRack AC sweep if needed")
 
 
-def W_for_gm(gm, gm_id, L, dev="nfet"):
+def W_for_gm(gm, gm_id, L, dev="nfet", pdk=None):
     """Width [um] to realise gm [S] at (gm/ID, L): W = (gm/gm_ID) / J_D."""
-    return (gm / gm_id) / J_D(gm_id, L, dev)
+    return (gm / gm_id) / J_D(gm_id, L, dev, pdk)
 
 
 if __name__ == "__main__":

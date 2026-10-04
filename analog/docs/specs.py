@@ -281,11 +281,16 @@ def ota(pdk=None, i_side=I_SIDE):
     Loop-gain need: > 200 for 0.5% transfer (SIZING.md); measured 330 at
     the A1 point — constant-J re-bias keeps gain, trades gm for power."""
     pdk = pdk or get_pdk()
+    # Projection PDKs have no SPICE models: size on sky130 tables at the same
+    # min-L multiple and keep W/L (I_D/(W/L) ~ const at fixed inversion level;
+    # mobility/Cox differences between nodes are ignored -> "projected").
+    ref = pdk if pdk.installed else get_pdk("sky130")
     out = {"i_side": i_side, "i_tail": 2 * i_side}
     for dev, (gmid, _, typ) in OTA_COORDS.items():
-        L = ota_L(dev, pdk)
+        L, L_ref = ota_L(dev, pdk), ota_L(dev, ref)
         i_d = 2 * i_side if dev == "ota_tail" else i_side
-        out[dev] = (round(float(i_d / lookup.J_D(gmid, L, typ)), 2), L)
+        w_ref = i_d / lookup.J_D(gmid, L_ref, typ, pdk=ref)
+        out[dev] = (round(float(w_ref * L / L_ref), 2), L)
     out["gm_in"] = i_side * OTA_COORDS["ota_in"][0]
     out["sr"] = 2 * i_side / c_int(pdk)          # V/s into C_int
     out["tau_cl"] = c_int(pdk) / out["gm_in"]    # unloaded closed-loop tau

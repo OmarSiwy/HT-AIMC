@@ -50,6 +50,8 @@ in
     philisPkg
     openvafPkg
     edaPkgs.vera
+    # gm/ID lookup library for analog/docs/gmid.py (ctypes via GMID_LIB)
+    edaPkgs.gmidvisualizer
 
     # Rust toolchain from nixpkgs (+ protoc: the substrate2 `cache` crate compiles
     # protobufs at build time — analog/common/layout generators need it)
@@ -63,6 +65,7 @@ in
   shellHook = ''
     # === Design-flow tools ===
     export PHILIS_PDK_DIR="${philisPkg}/share/philis/pdks"
+    export GMID_LIB="${edaPkgs.gmidvisualizer}/lib/libGmIDVisualizer.so"
     # contract.zig must come from the same VerA commit as the binary (ABI check)
     if [ -f "${edaPkgs.vera}/share/vera/contract.zig" ]; then
       export VERA_CONTRACT="${edaPkgs.vera}/share/vera/contract.zig"

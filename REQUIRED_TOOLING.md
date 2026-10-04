@@ -10,7 +10,7 @@ workarounds, are listed in [`analog/docs/TOOL_ISSUES.md`](analog/docs/TOOL_ISSUE
 | 2 | Analog macro `.lib` generator | 1 (timing-closed digital around the IMC macro) | new tool |
 | 3 | cktImg: hierarchy, rendered output | block diagrams, top-level schematics | cktImg |
 | 4 | SpiceRack: upstream local fixes, `X()` params, more backends | every testbench | SpiceRack |
-| 5 | GmIDVisualizer in the nix env | gm/Id sizing, `scripts/compiler/metrics/*` projections | EDA-Packaged |
+| 5 | GmIDVisualizer: export cgg (for `gmid.ft`) | `gating_value.py` | GmIDVisualizer |
 
 ## 1. LibreLane integration: analog macros in harden and digital sim
 
@@ -117,12 +117,14 @@ features with `raw_spice`.
 - **A corner/Monte-Carlo runner** that returns per-corner metric tables in one call. Today
   `analog/common/corners.py` loops by hand.
 
-## 5. GmIDVisualizer in the nix env
+## 5. GmIDVisualizer: export cgg
 
-`scripts/compiler/metrics/{pdk_projections,arch_throughput,throughput_ceiling}.py`
-stop with `libGmIDVisualizer.so not found: set $GMID_LIB`. The library is not
-packaged; its flake has only a dev shell, which builds Xyce from source.
+**Done (2026-10-04):** GmIDVisualizer is packaged in EDA-Packaged (`gmidvisualizer`),
+included in `Analog.nix`, and `GMID_LIB` is exported. The PMOS `abs()` and relative
+`model_file` fixes are upstream (`OmarSiwy/GmIDVisualizer` `fab7970`).
 
-**Want:** a GmIDVisualizer package in EDA-Packaged, included in `Analog.nix`, with
-`GMID_LIB` exported by the shell hook. Also upstream the PMOS `abs()` fix and the
-absolute-`model_file` fix listed in `TOOL_ISSUES.md`.
+**Still missing:** `analog/docs/gmid.py:ft()` raises `NotImplementedError` because the
+LUTs carry no gate capacitance, so `scripts/compiler/metrics/gating_value.py` stops there.
+
+**Want:** GmIDVisualizer also sweeps `cgg` (ngspice `@m[cgg]`, or `cgs + cgd + cgb`) into
+the LUT, so `ft = gm / (2π·cgg)` can be interpolated like `J_D`.
