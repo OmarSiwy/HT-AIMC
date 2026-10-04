@@ -1,0 +1,54 @@
+// WTA running-max — behavioural golden model, ports 1:1 with netlist/wta.
+// Shared-source follower-max in subthreshold: the rail is a soft max (logsumexp) of the
+// 9 follower gates (vin0..7, vin_hold) with n*UT smoothing, and follows the gates with
+// slope kappa (body effect); the replica gives the same slope at vref, so the consumer's
+// m_hat = mrail - rrail + vref = vref + kappa*(lse(vin) - vref) + voff.
+//
+// Continuous form (OpenVAF subset): an internal RC per rail for the settle (tau), a
+// Thevenin output (rout), and a constant 2*itail supply draw (main + replica tails).
+// nut / kappa defaults: fitted to DUT=sch tt 27 C (all-equal +82 mV, winner-low +92 mV);
+// AnalogIOC measured n*UT = 1/beta = 36.6 mV on the softmax bank.
+// Not modelled: vb_tail (bias is a parameter here, not a port function), finite tail
+// headroom, Vds-dependent replica residual (lumped into voff), mismatch.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module wta(vin0, vin1, vin2, vin3, vin4, vin5, vin6, vin7, vin_hold, vref, mrail, rrail,
+           vb_tail, vdd, vss);
+    inout vin0, vin1, vin2, vin3, vin4, vin5, vin6, vin7, vin_hold, vref, mrail, rrail,
+          vb_tail, vdd, vss;
+    electrical vin0, vin1, vin2, vin3, vin4, vin5, vin6, vin7, vin_hold, vref, mrail,
+               rrail, vb_tail, vdd, vss;
+    electrical fm, fr;                               // settled rails before rout
+
+    parameter real nut = 38e-3 from (0:inf);         // n*UT at 27 C, soft-max smoothing (V)
+    parameter real kappa = 0.8 from (0:1];           // rail slope vs gate (body effect)
+    parameter real vgs = 0.5 from [0:inf);           // follower VGS at I_tail (V)
+    parameter real voff = 0.0 from [-0.1:0.1];       // replica residual on m_hat (V)
+    parameter real tau = 50e-9 from (0:inf);         // rail settle time constant (s)
+    parameter real rout = 1e3 from (0:inf);          // rail output resistance (ohm)
+    parameter real itail = 0.5e-6 from [0:inf);      // per-tail current (A)
+
+    real mx, s, lse, rf, nt;
+
+    analog begin
+        mx = max(max(max(V(vin0, vss), V(vin1, vss)), max(V(vin2, vss), V(vin3, vss))),
+                 max(max(V(vin4, vss), V(vin5, vss)), max(V(vin6, vss), V(vin7, vss))));
+        mx = max(mx, V(vin_hold, vss));
+        nt = nut * $temperature / 300.15;                // n*UT ~ T
+        s = exp((V(vin0, vss) - mx) / nt) + exp((V(vin1, vss) - mx) / nt)
+          + exp((V(vin2, vss) - mx) / nt) + exp((V(vin3, vss) - mx) / nt)
+          + exp((V(vin4, vss) - mx) / nt) + exp((V(vin5, vss) - mx) / nt)
+          + exp((V(vin6, vss) - mx) / nt) + exp((V(vin7, vss) - mx) / nt)
+          + exp((V(vin_hold, vss) - mx) / nt);
+        lse = mx + nt * ln(s);
+        rf = 1e3;
+        I(fm, vss) <+ (V(fm, vss) - (kappa * lse - vgs + kappa * voff)) / rf;
+        I(fm, vss) <+ tau / rf * ddt(V(fm, vss));
+        I(fr, vss) <+ (V(fr, vss) - (kappa * V(vref, vss) - vgs - (1.0 - kappa) * voff)) / rf;
+        I(fr, vss) <+ tau / rf * ddt(V(fr, vss));
+        I(mrail, vss) <+ (V(mrail, vss) - V(fm, vss)) / rout;
+        I(rrail, vss) <+ (V(rrail, vss) - V(fr, vss)) / rout;
+        I(vdd, vss) <+ 2.0 * itail;
+    end
+endmodule

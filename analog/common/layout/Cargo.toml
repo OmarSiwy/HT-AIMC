@@ -1,0 +1,29 @@
+[workspace]
+
+[package]
+name = "analog-layout"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+substrate = { version = "0.10.3", registry = "substrate" }
+sky130 = { version = "0.10.3", registry = "substrate" }
+atoll = { version = "0.1.4", registry = "substrate" }
+layir = { version = "0.2.2", registry = "substrate" }
+gdsconv = { version = "0.2.2", registry = "substrate" }
+gds = { version = "0.4.2", registry = "substrate" }
+geometry = { version = "0.7.2", registry = "substrate" }
+geometry_macros = { version = "0.1.2", registry = "substrate" }
+derive-where = "1"
+serde_json = "1"
+
+# Block generators: one binary per block, source next to the block it lays out.
+# Add one [[bin]] per new analog/<block>/layout/<block>.rs.
+[[bin]]
+name = "cmos_switch"
+path = "../../cmos_switch/layout/cmos_switch.rs"
+
+[[bin]]
+name = "strongarm"
+path = "../../strongarm/layout/strongarm.rs"

@@ -1,0 +1,3274 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2026  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.62 (git sha1 v0.62, g++ 15.2.0 -fPIC -O3)
+
+-- Executing script file `synth.ys' --
+
+1. Executing Verilog-2005 frontend: src/nibble_combine.v
+Parsing Verilog input from `src/nibble_combine.v' to AST representation.
+Generating RTLIL representation for module `\nibble_combine'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: src/slice_combine.v
+Parsing Verilog input from `src/slice_combine.v' to AST representation.
+Generating RTLIL representation for module `\slice_combine'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: src/bacc_accum.v
+Parsing Verilog input from `src/bacc_accum.v' to AST representation.
+Generating RTLIL representation for module `\bacc_accum'.
+Successfully finished Verilog frontend.
+
+4. Executing Verilog-2005 frontend: src/abft_check.v
+Parsing Verilog input from `src/abft_check.v' to AST representation.
+Generating RTLIL representation for module `\abft_check'.
+Successfully finished Verilog frontend.
+
+5. Executing Verilog-2005 frontend: src/requant.v
+Parsing Verilog input from `src/requant.v' to AST representation.
+Generating RTLIL representation for module `\requant'.
+Successfully finished Verilog frontend.
+
+6. Executing Verilog-2005 frontend: src/sar_ctrl.v
+Parsing Verilog input from `src/sar_ctrl.v' to AST representation.
+Generating RTLIL representation for module `\sar_ctrl'.
+Successfully finished Verilog frontend.
+
+7. Executing Verilog-2005 frontend: src/event_ctrl.v
+Parsing Verilog input from `src/event_ctrl.v' to AST representation.
+Generating RTLIL representation for module `\event_ctrl'.
+Successfully finished Verilog frontend.
+
+8. Executing Verilog-2005 frontend: src/sign_exit.v
+Parsing Verilog input from `src/sign_exit.v' to AST representation.
+Generating RTLIL representation for module `\sign_exit'.
+Successfully finished Verilog frontend.
+
+9. Executing Verilog-2005 frontend: src/tile_fsm.v
+Parsing Verilog input from `src/tile_fsm.v' to AST representation.
+Generating RTLIL representation for module `\tile_fsm'.
+Successfully finished Verilog frontend.
+
+10. Executing Verilog-2005 frontend: src/rail_top.v
+Parsing Verilog input from `src/rail_top.v' to AST representation.
+Generating RTLIL representation for module `\rail_top'.
+Successfully finished Verilog frontend.
+
+11. Executing SYNTH pass.
+
+11.1. Executing HIERARCHY pass (managing design hierarchy).
+
+11.1.1. Analyzing design hierarchy..
+Top module:  \rail_top
+Used module:     \tile_fsm
+Used module:         \sign_exit
+Used module:         \sar_ctrl
+Used module:         \event_ctrl
+Used module:     \requant
+Used module:     \abft_check
+Used module:     \bacc_accum
+Used module:     \slice_combine
+Used module:     \nibble_combine
+Parameter \W = 20
+
+11.1.2. Executing AST frontend in derive mode using pre-parsed AST for module `\abft_check'.
+Parameter \W = 20
+Generating RTLIL representation for module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Parameter \W = 20
+
+11.1.3. Executing AST frontend in derive mode using pre-parsed AST for module `\bacc_accum'.
+Parameter \W = 20
+Generating RTLIL representation for module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+
+11.1.4. Analyzing design hierarchy..
+Top module:  \rail_top
+Used module:     \tile_fsm
+Used module:         \sign_exit
+Used module:         \sar_ctrl
+Used module:         \event_ctrl
+Used module:     \requant
+Used module:     $paramod\abft_check\W=s32'00000000000000000000000000010100
+Used module:     $paramod\bacc_accum\W=s32'00000000000000000000000000010100
+Used module:     \slice_combine
+Used module:     \nibble_combine
+
+11.1.5. Analyzing design hierarchy..
+Top module:  \rail_top
+Used module:     \tile_fsm
+Used module:         \sign_exit
+Used module:         \sar_ctrl
+Used module:         \event_ctrl
+Used module:     \requant
+Used module:     $paramod\abft_check\W=s32'00000000000000000000000000010100
+Used module:     $paramod\bacc_accum\W=s32'00000000000000000000000000010100
+Used module:     \slice_combine
+Used module:     \nibble_combine
+Removing unused module `\abft_check'.
+Removing unused module `\bacc_accum'.
+Removed 2 unused modules.
+
+11.2. Executing PROC pass (convert processes to netlists).
+
+11.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+11.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed 1 dead cases from process $proc$src/tile_fsm.v:113$98 in module tile_fsm.
+Marked 3 switch rules as full_case in process $proc$src/tile_fsm.v:113$98 in module tile_fsm.
+Marked 1 switch rules as full_case in process $proc$src/tile_fsm.v:54$82 in module tile_fsm.
+Marked 5 switch rules as full_case in process $proc$src/event_ctrl.v:45$73 in module event_ctrl.
+Marked 1 switch rules as full_case in process $proc$src/event_ctrl.v:28$70 in module event_ctrl.
+Marked 3 switch rules as full_case in process $proc$src/sar_ctrl.v:47$60 in module sar_ctrl.
+Marked 1 switch rules as full_case in process $proc$src/sar_ctrl.v:30$58 in module sar_ctrl.
+Marked 2 switch rules as full_case in process $proc$src/bacc_accum.v:28$131 in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Removed a total of 1 dead cases.
+
+11.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 14 redundant assignments.
+Promoted 2 assignments to connections.
+
+11.2.4. Executing PROC_INIT pass (extract init attributes).
+
+11.2.5. Executing PROC_ARST pass (detect async resets in processes).
+Found async reset \rst_n in `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+Found async reset \rst_n in `\tile_fsm.$proc$src/tile_fsm.v:54$82'.
+Found async reset \rst_n in `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+Found async reset \rst_n in `\event_ctrl.$proc$src/event_ctrl.v:28$70'.
+Found async reset \rst_n in `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+Found async reset \rst_n in `\sar_ctrl.$proc$src/sar_ctrl.v:30$58'.
+Found async reset \rst_n in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.$proc$src/bacc_accum.v:28$131'.
+
+11.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~23 debug messages>
+
+11.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+     1/9: $0\sar_start[0:0]
+     2/9: $0\ev_start[0:0]
+     3/9: $0\sign_seen[0:0]
+     4/9: $0\sign_r[0:0]
+     5/9: $0\relu_r[0:0]
+     6/9: $0\integ_req[0:0]
+     7/9: $0\col_valid[0:0]
+     8/9: $0\col_code[7:0]
+     9/9: $0\state[2:0]
+Creating decoders for process `\tile_fsm.$proc$src/tile_fsm.v:54$82'.
+     1/4: $0\sign_s[0:0]
+     2/4: $0\sign_m[0:0]
+     3/4: $0\iack_s[0:0]
+     4/4: $0\iack_m[0:0]
+Creating decoders for process `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+     1/6: $0\ending[0:0]
+     2/6: $0\cb_ack[0:0]
+     3/6: $0\count_gray[3:0]
+     4/6: $0\count[3:0]
+     5/6: $0\state[1:0]
+     6/6: $0\done[0:0]
+Creating decoders for process `\event_ctrl.$proc$src/event_ctrl.v:28$70'.
+     1/4: $0\cross_s[0:0]
+     2/4: $0\cross_m[0:0]
+     3/4: $0\req_s[0:0]
+     4/4: $0\req_m[0:0]
+Creating decoders for process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+     1/7: $0\bit_i[1:0]
+     2/7: $0\state[2:0]
+     3/7: $0\dac_code[3:0]
+     4/7: $0\cmp_req[0:0]
+     5/7: $0\code[3:0]
+     6/7: $0\busy[0:0]
+     7/7: $0\done[0:0]
+Creating decoders for process `\sar_ctrl.$proc$src/sar_ctrl.v:30$58'.
+     1/4: $0\res_s[0:0]
+     2/4: $0\res_m[0:0]
+     3/4: $0\ack_s[0:0]
+     4/4: $0\ack_m[0:0]
+Creating decoders for process `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.$proc$src/bacc_accum.v:28$131'.
+     1/3: $0\cnt[3:0]
+     2/3: $0\done[0:0]
+     3/3: $0\acc[19:0]
+Creating decoders for process `$paramod\abft_check\W=s32'00000000000000000000000000010100.$proc$src/abft_check.v:19$108'.
+
+11.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `$paramod\abft_check\W=s32'00000000000000000000000000010100.\i' from process `$paramod\abft_check\W=s32'00000000000000000000000000010100.$proc$src/abft_check.v:19$108'.
+No latch inferred for signal `$paramod\abft_check\W=s32'00000000000000000000000000010100.\sum' from process `$paramod\abft_check\W=s32'00000000000000000000000000010100.$proc$src/abft_check.v:19$108'.
+
+11.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\tile_fsm.\state' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$416' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\col_code' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$421' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\col_valid' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$426' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\integ_req' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$431' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\ev_start' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$436' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\sar_start' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$441' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\relu_r' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$446' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\sign_r' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$451' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\sign_seen' using process `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+  created $adff cell `$procdff$456' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\iack_m' using process `\tile_fsm.$proc$src/tile_fsm.v:54$82'.
+  created $adff cell `$procdff$461' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\iack_s' using process `\tile_fsm.$proc$src/tile_fsm.v:54$82'.
+  created $adff cell `$procdff$466' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\sign_m' using process `\tile_fsm.$proc$src/tile_fsm.v:54$82'.
+  created $adff cell `$procdff$471' with positive edge clock and positive level reset.
+Creating register for signal `\tile_fsm.\sign_s' using process `\tile_fsm.$proc$src/tile_fsm.v:54$82'.
+  created $adff cell `$procdff$476' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\done' using process `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+  created $adff cell `$procdff$481' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\state' using process `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+  created $adff cell `$procdff$486' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\count' using process `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+  created $adff cell `$procdff$491' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\count_gray' using process `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+  created $adff cell `$procdff$496' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\cb_ack' using process `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+  created $adff cell `$procdff$501' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\ending' using process `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+  created $adff cell `$procdff$506' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\req_m' using process `\event_ctrl.$proc$src/event_ctrl.v:28$70'.
+  created $adff cell `$procdff$511' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\req_s' using process `\event_ctrl.$proc$src/event_ctrl.v:28$70'.
+  created $adff cell `$procdff$516' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\cross_m' using process `\event_ctrl.$proc$src/event_ctrl.v:28$70'.
+  created $adff cell `$procdff$521' with positive edge clock and positive level reset.
+Creating register for signal `\event_ctrl.\cross_s' using process `\event_ctrl.$proc$src/event_ctrl.v:28$70'.
+  created $adff cell `$procdff$526' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\done' using process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+  created $adff cell `$procdff$531' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\busy' using process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+  created $adff cell `$procdff$536' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\code' using process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+  created $adff cell `$procdff$541' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\cmp_req' using process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+  created $adff cell `$procdff$546' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\dac_code' using process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+  created $adff cell `$procdff$551' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\state' using process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+  created $adff cell `$procdff$556' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\bit_i' using process `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+  created $adff cell `$procdff$561' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\ack_m' using process `\sar_ctrl.$proc$src/sar_ctrl.v:30$58'.
+  created $adff cell `$procdff$566' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\ack_s' using process `\sar_ctrl.$proc$src/sar_ctrl.v:30$58'.
+  created $adff cell `$procdff$571' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\res_m' using process `\sar_ctrl.$proc$src/sar_ctrl.v:30$58'.
+  created $adff cell `$procdff$576' with positive edge clock and positive level reset.
+Creating register for signal `\sar_ctrl.\res_s' using process `\sar_ctrl.$proc$src/sar_ctrl.v:30$58'.
+  created $adff cell `$procdff$581' with positive edge clock and positive level reset.
+Creating register for signal `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.\acc' using process `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.$proc$src/bacc_accum.v:28$131'.
+  created $adff cell `$procdff$586' with positive edge clock and positive level reset.
+Creating register for signal `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.\done' using process `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.$proc$src/bacc_accum.v:28$131'.
+  created $adff cell `$procdff$591' with positive edge clock and positive level reset.
+Creating register for signal `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.\cnt' using process `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.$proc$src/bacc_accum.v:28$131'.
+  created $adff cell `$procdff$596' with positive edge clock and positive level reset.
+
+11.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+11.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 8 empty switches in `\tile_fsm.$proc$src/tile_fsm.v:113$98'.
+Removing empty process `tile_fsm.$proc$src/tile_fsm.v:113$98'.
+Removing empty process `tile_fsm.$proc$src/tile_fsm.v:54$82'.
+Found and cleaned up 7 empty switches in `\event_ctrl.$proc$src/event_ctrl.v:45$73'.
+Removing empty process `event_ctrl.$proc$src/event_ctrl.v:45$73'.
+Removing empty process `event_ctrl.$proc$src/event_ctrl.v:28$70'.
+Found and cleaned up 6 empty switches in `\sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+Removing empty process `sar_ctrl.$proc$src/sar_ctrl.v:47$60'.
+Removing empty process `sar_ctrl.$proc$src/sar_ctrl.v:30$58'.
+Found and cleaned up 2 empty switches in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.$proc$src/bacc_accum.v:28$131'.
+Removing empty process `$paramod\bacc_accum\W=s32'00000000000000000000000000010100.$proc$src/bacc_accum.v:28$131'.
+Removing empty process `$paramod\abft_check\W=s32'00000000000000000000000000010100.$proc$src/abft_check.v:19$108'.
+Cleaned up 23 empty switches.
+
+11.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module rail_top.
+Optimizing module tile_fsm.
+<suppressed ~32 debug messages>
+Optimizing module sign_exit.
+Optimizing module event_ctrl.
+<suppressed ~29 debug messages>
+Optimizing module sar_ctrl.
+<suppressed ~33 debug messages>
+Optimizing module requant.
+<suppressed ~1 debug messages>
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+<suppressed ~6 debug messages>
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module slice_combine.
+Optimizing module nibble_combine.
+
+11.3. Executing OPT_EXPR pass (perform const folding).
+Optimizing module rail_top.
+Optimizing module tile_fsm.
+Optimizing module sign_exit.
+Optimizing module event_ctrl.
+Optimizing module sar_ctrl.
+Optimizing module requant.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+<suppressed ~1 debug messages>
+Optimizing module slice_combine.
+Optimizing module nibble_combine.
+
+11.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \tile_fsm..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \nibble_combine..
+Removed 47 unused cells and 210 unused wires.
+<suppressed ~57 debug messages>
+
+11.5. Executing CHECK pass (checking for obvious problems).
+Checking module $paramod\abft_check\W=s32'00000000000000000000000000010100...
+Checking module $paramod\bacc_accum\W=s32'00000000000000000000000000010100...
+Checking module event_ctrl...
+Checking module nibble_combine...
+Checking module rail_top...
+Checking module requant...
+Checking module sar_ctrl...
+Checking module sign_exit...
+Checking module slice_combine...
+Checking module tile_fsm...
+Found and reported 0 problems.
+
+11.6. Executing OPT pass (performing simple optimizations).
+
+11.6.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.6.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 20 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 19 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 18 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 54 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Computing hashes of 44 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+<suppressed ~30 debug messages>
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 5 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 12 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 59 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Computing hashes of 47 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Computing hashes of 46 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+<suppressed ~39 debug messages>
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 5 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 85 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 66 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+<suppressed ~57 debug messages>
+Removed a total of 43 cells.
+
+11.6.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+      Replacing known input bits on port A of cell $ternary$src/abft_check.v:28$128: \residual -> { 1'0 \residual [23:0] }
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~129 debug messages>
+
+11.6.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.6.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 20 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 18 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 44 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 5 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 12 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 46 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 5 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 66 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.6.6. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.6.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 0 unused cells and 43 unused wires.
+<suppressed ~4 debug messages>
+
+11.6.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.6.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+11.6.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~129 debug messages>
+
+11.6.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.6.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 20 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 18 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 44 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 5 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 12 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 46 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 5 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 66 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.6.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.6.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.6.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.6.16. Finished fast OPT passes. (There is nothing left to do.)
+
+11.7. Executing FSM pass (extract and optimize FSM).
+
+11.7.1. Executing FSM_DETECT pass (finding FSMs in design).
+Found FSM state register event_ctrl.state.
+Found FSM state register sar_ctrl.state.
+Found FSM state register tile_fsm.state.
+
+11.7.2. Executing FSM_EXTRACT pass (extracting FSM from design).
+Extracting FSM `\state' from module `\event_ctrl'.
+  found $adff cell for state register: $procdff$486
+  root of input selection tree: $0\state[1:0]
+  found reset state: 2'00 (from async reset)
+  found ctrl input: $procmux$264_CMP
+  found ctrl input: $procmux$256_CMP
+  found ctrl input: $procmux$259_CMP
+  found ctrl input: \req_s
+  found ctrl input: \ending
+  found state code: 2'01
+  found state code: 2'10
+  found ctrl input: \start
+  found ctrl output: $procmux$256_CMP
+  found ctrl output: $procmux$259_CMP
+  found ctrl output: $procmux$264_CMP
+  ctrl inputs: { \ending \req_s \start }
+  ctrl outputs: { $procmux$264_CMP $procmux$259_CMP $procmux$256_CMP $0\state[1:0] }
+  transition:       2'00 3'--0 ->       2'00 5'01000
+  transition:       2'00 3'--1 ->       2'01 5'01001
+  transition:       2'10 3'00- ->       2'01 5'10001
+  transition:       2'10 3'10- ->       2'00 5'10000
+  transition:       2'10 3'-1- ->       2'10 5'10010
+  transition:       2'01 3'-0- ->       2'01 5'00101
+  transition:       2'01 3'-1- ->       2'10 5'00110
+Extracting FSM `\state' from module `\sar_ctrl'.
+  found $adff cell for state register: $procdff$556
+  root of input selection tree: $0\state[2:0]
+  found reset state: 3'000 (from async reset)
+  found ctrl input: $procmux$330_CMP
+  found ctrl input: $procmux$344_CMP
+  found ctrl input: $procmux$345_CMP
+  found ctrl input: $procmux$333_CMP
+  found ctrl input: \ack_s
+  found ctrl input: $eq$src/sar_ctrl.v:78$68_Y
+  found state code: 3'001
+  found ctrl input: $logic_and$src/sar_ctrl.v:71$64_Y
+  found state code: 3'011
+  found state code: 3'010
+  found ctrl input: \start
+  found ctrl output: $procmux$330_CMP
+  found ctrl output: $procmux$333_CMP
+  found ctrl output: $procmux$344_CMP
+  found ctrl output: $procmux$345_CMP
+  ctrl inputs: { $eq$src/sar_ctrl.v:78$68_Y $logic_and$src/sar_ctrl.v:71$64_Y \ack_s \start }
+  ctrl outputs: { $procmux$345_CMP $procmux$344_CMP $procmux$333_CMP $procmux$330_CMP $0\state[2:0] }
+  transition:      3'000 4'---0 ->      3'000 7'0010000
+  transition:      3'000 4'---1 ->      3'001 7'0010001
+  transition:      3'010 4'-0-- ->      3'010 7'0100010
+  transition:      3'010 4'-1-- ->      3'011 7'0100011
+  transition:      3'001 4'---- ->      3'010 7'1000010
+  transition:      3'011 4'0-0- ->      3'001 7'0001001
+  transition:      3'011 4'1-0- ->      3'000 7'0001000
+  transition:      3'011 4'--1- ->      3'011 7'0001011
+Extracting FSM `\state' from module `\tile_fsm'.
+  found $adff cell for state register: $procdff$416
+  root of input selection tree: $0\state[2:0]
+  found reset state: 3'000 (from async reset)
+  found ctrl input: $procmux$208_CMP
+  found ctrl input: $procmux$209_CMP
+  found ctrl input: $procmux$228_CMP
+  found ctrl input: \coarse_en
+  found ctrl input: $eq$src/tile_fsm.v:106$89_Y
+  found ctrl input: $eq$src/tile_fsm.v:105$87_Y
+  found ctrl input: $eq$src/tile_fsm.v:105$86_Y
+  found ctrl input: \start_ready
+  found ctrl input: \col_ready
+  found state code: 3'111
+  found ctrl input: $logic_and$src/tile_fsm.v:156$104_Y
+  found state code: 3'110
+  found ctrl input: $logic_and$src/tile_fsm.v:152$102_Y
+  found state code: 3'101
+  found ctrl input: \se_exit
+  found state code: 3'100
+  found ctrl input: \iack_s
+  found state code: 3'011
+  found state code: 3'010
+  found ctrl input: \start_valid
+  found state code: 3'001
+  found ctrl output: \start_ready
+  found ctrl output: \coarse_en
+  found ctrl output: $eq$src/tile_fsm.v:105$86_Y
+  found ctrl output: $eq$src/tile_fsm.v:105$87_Y
+  found ctrl output: $eq$src/tile_fsm.v:106$89_Y
+  found ctrl output: $procmux$208_CMP
+  found ctrl output: $procmux$209_CMP
+  found ctrl output: $procmux$228_CMP
+  ctrl inputs: { $logic_and$src/tile_fsm.v:156$104_Y $logic_and$src/tile_fsm.v:152$102_Y \se_exit \iack_s \col_ready \start_valid }
+  ctrl outputs: { $procmux$228_CMP $procmux$209_CMP $procmux$208_CMP $eq$src/tile_fsm.v:106$89_Y $eq$src/tile_fsm.v:105$87_Y $eq$src/tile_fsm.v:105$86_Y \coarse_en \start_ready $0\state[2:0] }
+  transition:      3'000 6'-----0 ->      3'000 11'00000001000
+  transition:      3'000 6'-----1 ->      3'001 11'00000001001
+  transition:      3'100 6'-0---- ->      3'100 11'00000010100
+  transition:      3'100 6'-1---- ->      3'101 11'00000010101
+  transition:      3'010 6'---0-- ->      3'011 11'00001000011
+  transition:      3'010 6'---1-- ->      3'010 11'00001000010
+  transition:      3'110 6'------ ->      3'111 11'01000000111
+  transition:      3'001 6'---0-- ->      3'001 11'00000100001
+  transition:      3'001 6'---1-- ->      3'010 11'00000100010
+  transition:      3'101 6'0----- ->      3'101 11'10000000101
+  transition:      3'101 6'1----- ->      3'110 11'10000000110
+  transition:      3'011 6'--0--- ->      3'100 11'00010000100
+  transition:      3'011 6'--1--- ->      3'111 11'00010000111
+  transition:      3'111 6'----0- ->      3'111 11'00100000111
+  transition:      3'111 6'----1- ->      3'000 11'00100000000
+
+11.7.3. Executing FSM_OPT pass (simple optimizations of FSMs).
+Optimizing FSM `$fsm$\state$597' from module `\event_ctrl'.
+Optimizing FSM `$fsm$\state$602' from module `\sar_ctrl'.
+Optimizing FSM `$fsm$\state$608' from module `\tile_fsm'.
+
+11.7.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 36 unused cells and 36 unused wires.
+<suppressed ~39 debug messages>
+
+11.7.5. Executing FSM_OPT pass (simple optimizations of FSMs).
+Optimizing FSM `$fsm$\state$597' from module `\event_ctrl'.
+  Removing unused output signal $0\state[1:0] [0].
+  Removing unused output signal $0\state[1:0] [1].
+Optimizing FSM `$fsm$\state$602' from module `\sar_ctrl'.
+  Removing unused output signal $0\state[2:0] [0].
+  Removing unused output signal $0\state[2:0] [1].
+  Removing unused output signal $0\state[2:0] [2].
+Optimizing FSM `$fsm$\state$608' from module `\tile_fsm'.
+  Removing unused output signal $0\state[2:0] [0].
+  Removing unused output signal $0\state[2:0] [1].
+  Removing unused output signal $0\state[2:0] [2].
+  Removing unused output signal $procmux$228_CMP.
+
+11.7.6. Executing FSM_RECODE pass (re-assigning FSM state encoding).
+Recoding FSM `$fsm$\state$597' from module `\event_ctrl' using `auto' encoding:
+  mapping auto encoding to `one-hot` for this FSM.
+  00 -> --1
+  10 -> -1-
+  01 -> 1--
+Recoding FSM `$fsm$\state$602' from module `\sar_ctrl' using `auto' encoding:
+  mapping auto encoding to `one-hot` for this FSM.
+  000 -> ---1
+  010 -> --1-
+  001 -> -1--
+  011 -> 1---
+Recoding FSM `$fsm$\state$608' from module `\tile_fsm' using `auto' encoding:
+  mapping auto encoding to `one-hot` for this FSM.
+  000 -> -------1
+  100 -> ------1-
+  010 -> -----1--
+  110 -> ----1---
+  001 -> ---1----
+  101 -> --1-----
+  011 -> -1------
+  111 -> 1-------
+
+11.7.7. Executing FSM_INFO pass (dumping all available information on FSM cells).
+
+FSM `$fsm$\state$597' from module `event_ctrl':
+-------------------------------------
+
+  Information on FSM $fsm$\state$597 (\state):
+
+  Number of input signals:    3
+  Number of output signals:   3
+  Number of state bits:       3
+
+  Input signals:
+    0: \start
+    1: \req_s
+    2: \ending
+
+  Output signals:
+    0: $procmux$256_CMP
+    1: $procmux$259_CMP
+    2: $procmux$264_CMP
+
+  State encoding:
+    0:      3'--1  <RESET STATE>
+    1:      3'-1-
+    2:      3'1--
+
+  Transition Table (state_in, ctrl_in, state_out, ctrl_out):
+      0:     0 3'--0   ->     0 3'010
+      1:     0 3'--1   ->     2 3'010
+      2:     1 3'10-   ->     0 3'100
+      3:     1 3'-1-   ->     1 3'100
+      4:     1 3'00-   ->     2 3'100
+      5:     2 3'-1-   ->     1 3'001
+      6:     2 3'-0-   ->     2 3'001
+
+-------------------------------------
+
+FSM `$fsm$\state$602' from module `sar_ctrl':
+-------------------------------------
+
+  Information on FSM $fsm$\state$602 (\state):
+
+  Number of input signals:    4
+  Number of output signals:   4
+  Number of state bits:       4
+
+  Input signals:
+    0: \start
+    1: \ack_s
+    2: $logic_and$src/sar_ctrl.v:71$64_Y
+    3: $eq$src/sar_ctrl.v:78$68_Y
+
+  Output signals:
+    0: $procmux$330_CMP
+    1: $procmux$333_CMP
+    2: $procmux$344_CMP
+    3: $procmux$345_CMP
+
+  State encoding:
+    0:     4'---1  <RESET STATE>
+    1:     4'--1-
+    2:     4'-1--
+    3:     4'1---
+
+  Transition Table (state_in, ctrl_in, state_out, ctrl_out):
+      0:     0 4'---0   ->     0 4'0010
+      1:     0 4'---1   ->     2 4'0010
+      2:     1 4'-0--   ->     1 4'0100
+      3:     1 4'-1--   ->     3 4'0100
+      4:     2 4'----   ->     1 4'1000
+      5:     3 4'1-0-   ->     0 4'0001
+      6:     3 4'0-0-   ->     2 4'0001
+      7:     3 4'--1-   ->     3 4'0001
+
+-------------------------------------
+
+FSM `$fsm$\state$608' from module `tile_fsm':
+-------------------------------------
+
+  Information on FSM $fsm$\state$608 (\state):
+
+  Number of input signals:    6
+  Number of output signals:   7
+  Number of state bits:       8
+
+  Input signals:
+    0: \start_valid
+    1: \col_ready
+    2: \iack_s
+    3: \se_exit
+    4: $logic_and$src/tile_fsm.v:152$102_Y
+    5: $logic_and$src/tile_fsm.v:156$104_Y
+
+  Output signals:
+    0: \start_ready
+    1: \coarse_en
+    2: $eq$src/tile_fsm.v:105$86_Y
+    3: $eq$src/tile_fsm.v:105$87_Y
+    4: $eq$src/tile_fsm.v:106$89_Y
+    5: $procmux$208_CMP
+    6: $procmux$209_CMP
+
+  State encoding:
+    0: 8'-------1  <RESET STATE>
+    1: 8'------1-
+    2: 8'-----1--
+    3: 8'----1---
+    4: 8'---1----
+    5: 8'--1-----
+    6: 8'-1------
+    7: 8'1-------
+
+  Transition Table (state_in, ctrl_in, state_out, ctrl_out):
+      0:     0 6'-----0   ->     0 7'0000001
+      1:     0 6'-----1   ->     4 7'0000001
+      2:     1 6'-0----   ->     1 7'0000010
+      3:     1 6'-1----   ->     5 7'0000010
+      4:     2 6'---1--   ->     2 7'0001000
+      5:     2 6'---0--   ->     6 7'0001000
+      6:     3 6'------   ->     7 7'1000000
+      7:     4 6'---1--   ->     2 7'0000100
+      8:     4 6'---0--   ->     4 7'0000100
+      9:     5 6'1-----   ->     3 7'0000000
+     10:     5 6'0-----   ->     5 7'0000000
+     11:     6 6'--0---   ->     1 7'0010000
+     12:     6 6'--1---   ->     7 7'0010000
+     13:     7 6'----1-   ->     0 7'0100000
+     14:     7 6'----0-   ->     7 7'0100000
+
+-------------------------------------
+
+11.7.8. Executing FSM_MAP pass (mapping FSMs to basic logic).
+Mapping FSM `$fsm$\state$597' from module `\event_ctrl'.
+Mapping FSM `$fsm$\state$602' from module `\sar_ctrl'.
+Mapping FSM `$fsm$\state$608' from module `\tile_fsm'.
+
+11.8. Executing OPT pass (performing simple optimizations).
+
+11.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+<suppressed ~5 debug messages>
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+<suppressed ~6 debug messages>
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+<suppressed ~13 debug messages>
+
+11.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 20 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 18 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 49 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 5 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 12 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 52 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 5 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 76 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 75 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+<suppressed ~3 debug messages>
+Removed a total of 1 cells.
+
+11.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~108 debug messages>
+
+11.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 20 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 18 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 49 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 5 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 12 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 52 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 5 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 75 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.8.6. Executing OPT_DFF pass (perform DFF optimizations).
+Adding EN signal on $procdff$596 ($adff) from module $paramod\bacc_accum\W=s32'00000000000000000000000000010100 (D = $0\cnt[3:0], Q = \cnt).
+Adding EN signal on $procdff$591 ($adff) from module $paramod\bacc_accum\W=s32'00000000000000000000000000010100 (D = $0\done[0:0], Q = \done).
+Adding EN signal on $procdff$586 ($adff) from module $paramod\bacc_accum\W=s32'00000000000000000000000000010100 (D = $0\acc[19:0], Q = \acc).
+Adding EN signal on $procdff$506 ($adff) from module event_ctrl (D = $0\ending[0:0], Q = \ending).
+Adding EN signal on $procdff$501 ($adff) from module event_ctrl (D = $0\cb_ack[0:0], Q = \cb_ack).
+Adding EN signal on $procdff$496 ($adff) from module event_ctrl (D = $0\count_gray[3:0], Q = \count_gray).
+Adding EN signal on $procdff$491 ($adff) from module event_ctrl (D = $0\count[3:0], Q = \count).
+Adding EN signal on $procdff$481 ($adff) from module event_ctrl (D = $0\done[0:0], Q = \done).
+Adding EN signal on $procdff$561 ($adff) from module sar_ctrl (D = $0\bit_i[1:0], Q = \bit_i).
+Adding EN signal on $procdff$551 ($adff) from module sar_ctrl (D = $0\dac_code[3:0], Q = \dac_code).
+Adding EN signal on $procdff$546 ($adff) from module sar_ctrl (D = $procmux$360_Y, Q = \cmp_req).
+Adding EN signal on $procdff$541 ($adff) from module sar_ctrl (D = $0\code[3:0], Q = \code).
+Adding EN signal on $procdff$536 ($adff) from module sar_ctrl (D = $0\busy[0:0], Q = \busy).
+Adding EN signal on $procdff$531 ($adff) from module sar_ctrl (D = $0\done[0:0], Q = \done).
+Adding EN signal on $procdff$456 ($adff) from module tile_fsm (D = $0\sign_seen[0:0], Q = \sign_seen).
+Adding EN signal on $procdff$451 ($adff) from module tile_fsm (D = \sign_s, Q = \sign_r).
+Adding EN signal on $procdff$446 ($adff) from module tile_fsm (D = \relu_en, Q = \relu_r).
+Adding EN signal on $procdff$431 ($adff) from module tile_fsm (D = $0\integ_req[0:0], Q = \integ_req).
+Adding EN signal on $procdff$426 ($adff) from module tile_fsm (D = $0\col_valid[0:0], Q = \col_valid).
+Adding EN signal on $procdff$421 ($adff) from module tile_fsm (D = $0\col_code[7:0], Q = \col_code).
+
+11.8.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 5 unused cells and 39 unused wires.
+<suppressed ~8 debug messages>
+
+11.8.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+<suppressed ~3 debug messages>
+Optimizing module event_ctrl.
+<suppressed ~5 debug messages>
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+<suppressed ~5 debug messages>
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+<suppressed ~4 debug messages>
+
+11.8.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+11.8.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~101 debug messages>
+
+11.8.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.8.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 20 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 21 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 19 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+<suppressed ~6 debug messages>
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 74 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Computing hashes of 61 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Computing hashes of 60 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+<suppressed ~42 debug messages>
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 5 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 12 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 75 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Computing hashes of 65 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Computing hashes of 64 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+<suppressed ~33 debug messages>
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 5 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 88 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 84 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 83 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+<suppressed ~15 debug messages>
+Removed a total of 32 cells.
+
+11.8.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.8.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 0 unused cells and 32 unused wires.
+<suppressed ~4 debug messages>
+
+11.8.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.8.16. Rerunning OPT passes. (Maybe there is more to do..)
+
+11.8.17. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~105 debug messages>
+
+11.8.18. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.8.19. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 20 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 19 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 60 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 5 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 12 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 64 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 5 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 83 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.8.20. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.8.21. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.8.22. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.8.23. Finished fast OPT passes. (There is nothing left to do.)
+
+11.9. Executing WREDUCE pass (reducing word size of cells).
+Converting cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$110 ($add) from unsigned to signed.
+Removed top 4 bits (of 24) from port A of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$110 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$110 ($add).
+Removed top 3 bits (of 24) from port Y of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$110 ($add).
+Converting cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$111 ($add) from unsigned to signed.
+Removed top 3 bits (of 24) from port A of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$111 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$111 ($add).
+Removed top 2 bits (of 24) from port Y of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$111 ($add).
+Converting cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$112 ($add) from unsigned to signed.
+Removed top 2 bits (of 24) from port A of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$112 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$112 ($add).
+Removed top 1 bits (of 24) from port Y of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$112 ($add).
+Converting cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$113 ($add) from unsigned to signed.
+Removed top 1 bits (of 24) from port A of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$113 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$113 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$114 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$115 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$116 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$117 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$118 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$119 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$120 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$121 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$122 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$123 ($add).
+Removed top 4 bits (of 24) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$add$src/abft_check.v:22$124 ($add).
+Removed top 9 bits (of 25) from port B of cell $paramod\abft_check\W=s32'00000000000000000000000000010100.$gt$src/abft_check.v:30$129 ($gt).
+Removed top 1 bits (of 21) from port B of cell $paramod\bacc_accum\W=s32'00000000000000000000000000010100.$gt$src/bacc_accum.v:38$135 ($gt).
+Removed top 1 bits (of 21) from port B of cell $paramod\bacc_accum\W=s32'00000000000000000000000000010100.$lt$src/bacc_accum.v:39$136 ($lt).
+Removed top 3 bits (of 4) from port B of cell $paramod\bacc_accum\W=s32'00000000000000000000000000010100.$add$src/bacc_accum.v:40$139 ($add).
+Removed top 1 bits (of 2) from port B of cell event_ctrl.$auto$opt_dff.cc:235:make_patterns_logic$810 ($ne).
+Removed top 1 bits (of 2) from port B of cell event_ctrl.$auto$opt_dff.cc:235:make_patterns_logic$786 ($ne).
+Removed top 1 bits (of 2) from port B of cell event_ctrl.$auto$opt_dff.cc:235:make_patterns_logic$784 ($ne).
+Removed top 1 bits (of 2) from port B of cell event_ctrl.$auto$opt_dff.cc:235:make_patterns_logic$764 ($ne).
+Removed top 3 bits (of 4) from port B of cell event_ctrl.$add$src/event_ctrl.v:43$72 ($add).
+Removed top 1 bits (of 4) from port B of cell event_ctrl.$xor$src/event_ctrl.v:66$77 ($xor).
+Converting cell nibble_combine.$add$src/nibble_combine.v:12$1 ($add) from unsigned to signed.
+Removed top 1 bits (of 13) from port A of cell nibble_combine.$add$src/nibble_combine.v:12$1 ($add).
+Removed top 5 bits (of 13) from port B of cell nibble_combine.$add$src/nibble_combine.v:12$1 ($add).
+Removed top 1 bits (of 13) from port B of cell nibble_combine.$gt$src/nibble_combine.v:15$2 ($gt).
+Removed top 1 bits (of 13) from port B of cell nibble_combine.$lt$src/nibble_combine.v:16$3 ($lt).
+Removed top 23 bits (of 32) from port B of cell requant.$mul$src/requant.v:17$46 ($mul).
+Removed top 3 bits (of 32) from port Y of cell requant.$mul$src/requant.v:17$46 ($mul).
+Removed top 4 bits (of 5) from port B of cell requant.$sub$src/requant.v:19$48 ($sub).
+Removed top 30 bits (of 32) from port A of cell requant.$sshl$src/requant.v:19$49 ($sshl).
+Removed top 3 bits (of 32) from port A of cell requant.$add$src/requant.v:20$51 ($add).
+Removed top 24 bits (of 32) from port B of cell requant.$gt$src/requant.v:23$54 ($gt).
+Removed top 24 bits (of 32) from port B of cell requant.$lt$src/requant.v:24$55 ($lt).
+Removed top 1 bits (of 2) from port B of cell sar_ctrl.$auto$opt_dff.cc:235:make_patterns_logic$842 ($ne).
+Removed top 1 bits (of 2) from port B of cell sar_ctrl.$auto$opt_dff.cc:235:make_patterns_logic$830 ($ne).
+Removed top 3 bits (of 4) from port A of cell sar_ctrl.$shl$src/sar_ctrl.v:66$62 ($shl).
+Removed top 1 bits (of 2) from port B of cell sar_ctrl.$sub$src/sar_ctrl.v:84$69 ($sub).
+Converting cell slice_combine.$add$src/slice_combine.v:12$6 ($add) from unsigned to signed.
+Removed top 1 bits (of 15) from port A of cell slice_combine.$add$src/slice_combine.v:12$6 ($add).
+Removed top 3 bits (of 15) from port B of cell slice_combine.$add$src/slice_combine.v:12$6 ($add).
+Removed top 1 bits (of 15) from port B of cell slice_combine.$gt$src/slice_combine.v:15$7 ($gt).
+Removed top 1 bits (of 15) from port B of cell slice_combine.$lt$src/slice_combine.v:16$8 ($lt).
+Removed top 1 bits (of 2) from port B of cell tile_fsm.$auto$opt_dff.cc:235:make_patterns_logic$897 ($ne).
+Removed top 1 bits (of 2) from port B of cell tile_fsm.$auto$opt_dff.cc:235:make_patterns_logic$895 ($ne).
+Removed top 1 bits (of 2) from port B of cell tile_fsm.$auto$opt_dff.cc:235:make_patterns_logic$873 ($ne).
+Removed top 1 bits (of 2) from port B of cell tile_fsm.$auto$opt_dff.cc:235:make_patterns_logic$871 ($ne).
+Removed top 4 bits (of 8) from port B of cell tile_fsm.$add$src/tile_fsm.v:110$95 ($add).
+Removed top 1 bits (of 8) from port B of cell tile_fsm.$gt$src/tile_fsm.v:111$96 ($gt).
+Removed top 1 bits (of 8) from port A of cell tile_fsm.$not$src/tile_fsm.v:159$105 ($not).
+Removed top 7 bits (of 8) from port B of cell tile_fsm.$add$src/tile_fsm.v:159$106 ($add).
+
+11.10. Executing PEEPOPT pass (run peephole optimizers).
+
+11.11. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.12. Executing ALUMACC pass (create $alu and $macc cells).
+Extracting $alu and $macc cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100:
+  creating $macc model for $add$src/abft_check.v:22$110 ($add).
+  creating $macc model for $add$src/abft_check.v:22$111 ($add).
+  creating $macc model for $add$src/abft_check.v:22$112 ($add).
+  creating $macc model for $add$src/abft_check.v:22$113 ($add).
+  creating $macc model for $add$src/abft_check.v:22$114 ($add).
+  creating $macc model for $add$src/abft_check.v:22$115 ($add).
+  creating $macc model for $add$src/abft_check.v:22$116 ($add).
+  creating $macc model for $add$src/abft_check.v:22$117 ($add).
+  creating $macc model for $add$src/abft_check.v:22$118 ($add).
+  creating $macc model for $add$src/abft_check.v:22$119 ($add).
+  creating $macc model for $add$src/abft_check.v:22$120 ($add).
+  creating $macc model for $add$src/abft_check.v:22$121 ($add).
+  creating $macc model for $add$src/abft_check.v:22$122 ($add).
+  creating $macc model for $add$src/abft_check.v:22$123 ($add).
+  creating $macc model for $add$src/abft_check.v:22$124 ($add).
+  creating $macc model for $add$src/abft_check.v:28$127 ($add).
+  creating $macc model for $sub$src/abft_check.v:25$125 ($sub).
+  merging $macc model for $add$src/abft_check.v:22$123 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$122 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$121 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$120 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$119 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$118 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$117 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$116 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$115 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$114 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$113 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$112 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$111 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$110 into $add$src/abft_check.v:22$124.
+  merging $macc model for $add$src/abft_check.v:22$124 into $sub$src/abft_check.v:25$125.
+  creating $alu model for $macc $add$src/abft_check.v:28$127.
+  creating $macc cell for $sub$src/abft_check.v:25$125: $auto$alumacc.cc:382:replace_macc$907
+  creating $alu model for $gt$src/abft_check.v:30$129 ($gt): new $alu
+  creating $alu cell for $gt$src/abft_check.v:30$129: $auto$alumacc.cc:512:replace_alu$909
+  creating $alu cell for $add$src/abft_check.v:28$127: $auto$alumacc.cc:512:replace_alu$920
+  created 2 $alu and 1 $macc cells.
+Extracting $alu and $macc cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100:
+  creating $macc model for $add$src/bacc_accum.v:26$130 ($add).
+  creating $macc model for $add$src/bacc_accum.v:40$139 ($add).
+  creating $alu model for $macc $add$src/bacc_accum.v:40$139.
+  creating $alu model for $macc $add$src/bacc_accum.v:26$130.
+  creating $alu model for $gt$src/bacc_accum.v:38$135 ($gt): new $alu
+  creating $alu model for $lt$src/bacc_accum.v:39$136 ($lt): new $alu
+  creating $alu cell for $lt$src/bacc_accum.v:39$136: $auto$alumacc.cc:512:replace_alu$925
+  creating $alu cell for $gt$src/bacc_accum.v:38$135: $auto$alumacc.cc:512:replace_alu$932
+  creating $alu cell for $add$src/bacc_accum.v:26$130: $auto$alumacc.cc:512:replace_alu$945
+  creating $alu cell for $add$src/bacc_accum.v:40$139: $auto$alumacc.cc:512:replace_alu$948
+  created 4 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module event_ctrl:
+  creating $macc model for $add$src/event_ctrl.v:43$72 ($add).
+  creating $alu model for $macc $add$src/event_ctrl.v:43$72.
+  creating $alu cell for $add$src/event_ctrl.v:43$72: $auto$alumacc.cc:512:replace_alu$951
+  created 1 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module nibble_combine:
+  creating $macc model for $add$src/nibble_combine.v:12$1 ($add).
+  creating $alu model for $macc $add$src/nibble_combine.v:12$1.
+  creating $alu model for $gt$src/nibble_combine.v:15$2 ($gt): new $alu
+  creating $alu model for $lt$src/nibble_combine.v:16$3 ($lt): new $alu
+  creating $alu cell for $lt$src/nibble_combine.v:16$3: $auto$alumacc.cc:512:replace_alu$956
+  creating $alu cell for $gt$src/nibble_combine.v:15$2: $auto$alumacc.cc:512:replace_alu$963
+  creating $alu cell for $add$src/nibble_combine.v:12$1: $auto$alumacc.cc:512:replace_alu$976
+  created 3 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module rail_top:
+  created 0 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module requant:
+  creating $macc model for $add$src/requant.v:20$51 ($add).
+  creating $macc model for $add$src/requant.v:21$53 ($add).
+  creating $macc model for $mul$src/requant.v:17$46 ($mul).
+  creating $macc model for $sub$src/requant.v:19$48 ($sub).
+  merging $macc model for $mul$src/requant.v:17$46 into $add$src/requant.v:20$51.
+  creating $alu model for $macc $sub$src/requant.v:19$48.
+  creating $alu model for $macc $add$src/requant.v:21$53.
+  creating $macc cell for $add$src/requant.v:20$51: $auto$alumacc.cc:382:replace_macc$979
+  creating $alu model for $gt$src/requant.v:23$54 ($gt): new $alu
+  creating $alu model for $lt$src/requant.v:24$55 ($lt): new $alu
+  creating $alu cell for $lt$src/requant.v:24$55: $auto$alumacc.cc:512:replace_alu$982
+  creating $alu cell for $gt$src/requant.v:23$54: $auto$alumacc.cc:512:replace_alu$989
+  creating $alu cell for $add$src/requant.v:21$53: $auto$alumacc.cc:512:replace_alu$1002
+  creating $alu cell for $sub$src/requant.v:19$48: $auto$alumacc.cc:512:replace_alu$1005
+  created 4 $alu and 1 $macc cells.
+Extracting $alu and $macc cells in module sar_ctrl:
+  creating $macc model for $sub$src/sar_ctrl.v:84$69 ($sub).
+  creating $alu model for $macc $sub$src/sar_ctrl.v:84$69.
+  creating $alu cell for $sub$src/sar_ctrl.v:84$69: $auto$alumacc.cc:512:replace_alu$1008
+  created 1 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module sign_exit:
+  created 0 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module slice_combine:
+  creating $macc model for $add$src/slice_combine.v:12$6 ($add).
+  creating $alu model for $macc $add$src/slice_combine.v:12$6.
+  creating $alu model for $gt$src/slice_combine.v:15$7 ($gt): new $alu
+  creating $alu model for $lt$src/slice_combine.v:16$8 ($lt): new $alu
+  creating $alu cell for $lt$src/slice_combine.v:16$8: $auto$alumacc.cc:512:replace_alu$1013
+  creating $alu cell for $gt$src/slice_combine.v:15$7: $auto$alumacc.cc:512:replace_alu$1020
+  creating $alu cell for $add$src/slice_combine.v:12$6: $auto$alumacc.cc:512:replace_alu$1033
+  created 3 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module tile_fsm:
+  creating $macc model for $add$src/tile_fsm.v:110$95 ($add).
+  creating $macc model for $add$src/tile_fsm.v:159$106 ($add).
+  creating $alu model for $macc $add$src/tile_fsm.v:159$106.
+  creating $alu model for $macc $add$src/tile_fsm.v:110$95.
+  creating $alu model for $gt$src/tile_fsm.v:111$96 ($gt): new $alu
+  creating $alu cell for $gt$src/tile_fsm.v:111$96: $auto$alumacc.cc:512:replace_alu$1037
+  creating $alu cell for $add$src/tile_fsm.v:110$95: $auto$alumacc.cc:512:replace_alu$1048
+  creating $alu cell for $add$src/tile_fsm.v:159$106: $auto$alumacc.cc:512:replace_alu$1051
+  created 3 $alu and 0 $macc cells.
+
+11.13. Executing SHARE pass (SAT-based resource sharing).
+Found 2 cells in module requant that may be considered for resource sharing.
+  Analyzing resource sharing options for $sshl$src/requant.v:19$49 ($sshl):
+    Found 1 activation_patterns using ctrl signal $eq$src/requant.v:18$47_Y.
+    No candidates found.
+  Analyzing resource sharing options for $mul$src/requant.v:17$46 ($mul):
+    Found cell that is never activated: $mul$src/requant.v:17$46
+    Cell is never active. Sharing is pointless, we simply remove it.
+Removing 1 cells in module requant:
+  Removing cell $mul$src/requant.v:17$46 ($mul).
+
+11.14. Executing OPT pass (performing simple optimizations).
+
+11.14.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+<suppressed ~1 debug messages>
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+<suppressed ~1 debug messages>
+Optimizing module rail_top.
+Optimizing module requant.
+<suppressed ~1 debug messages>
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+<suppressed ~1 debug messages>
+Optimizing module tile_fsm.
+<suppressed ~1 debug messages>
+
+11.14.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 24 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 26 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 60 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 12 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 18 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 64 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 12 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 87 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.14.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~105 debug messages>
+
+11.14.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.14.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 24 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 26 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 60 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 12 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 18 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 64 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 12 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 87 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.14.6. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.14.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 20 unused cells and 30 unused wires.
+<suppressed ~27 debug messages>
+
+11.14.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.14.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+11.14.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~105 debug messages>
+
+11.14.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.14.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 9 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 25 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 60 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 11 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 17 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 64 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 11 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 86 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.14.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.14.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.14.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.14.16. Finished fast OPT passes. (There is nothing left to do.)
+
+11.15. Executing MEMORY pass.
+
+11.15.1. Executing OPT_MEM pass (optimize memories).
+Performed a total of 0 transformations.
+
+11.15.2. Executing OPT_MEM_PRIORITY pass (removing unnecessary memory write priority relations).
+Performed a total of 0 transformations.
+
+11.15.3. Executing OPT_MEM_FEEDBACK pass (finding memory read-to-write feedback paths).
+
+11.15.4. Executing MEMORY_BMUX2ROM pass (converting muxes to ROMs).
+
+11.15.5. Executing MEMORY_DFF pass (merging $dff cells to $memrd).
+
+11.15.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.15.7. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
+
+11.15.8. Executing OPT_MEM_WIDEN pass (optimize memories where all ports are wide).
+Performed a total of 0 transformations.
+
+11.15.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.15.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+11.16. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.17. Executing OPT pass (performing simple optimizations).
+
+11.17.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+<suppressed ~4 debug messages>
+Optimizing module event_ctrl.
+<suppressed ~23 debug messages>
+Optimizing module nibble_combine.
+<suppressed ~2 debug messages>
+Optimizing module rail_top.
+Optimizing module requant.
+<suppressed ~1 debug messages>
+Optimizing module sar_ctrl.
+<suppressed ~20 debug messages>
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+<suppressed ~2 debug messages>
+Optimizing module tile_fsm.
+<suppressed ~23 debug messages>
+
+11.17.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 9 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 41 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 47 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 22 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 24 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 50 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Computing hashes of 49 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 24 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 78 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 76 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 75 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+<suppressed ~9 debug messages>
+Removed a total of 4 cells.
+
+11.17.3. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.17.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 50 unused cells and 98 unused wires.
+<suppressed ~58 debug messages>
+
+11.17.5. Finished fast OPT passes.
+
+11.18. Executing MEMORY_MAP pass (converting memories to logic and flip-flops).
+
+11.19. Executing OPT pass (performing simple optimizations).
+
+11.19.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+<suppressed ~3 debug messages>
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+<suppressed ~2 debug messages>
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+<suppressed ~2 debug messages>
+
+11.19.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 9 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 22 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 46 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 11 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 17 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 48 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 11 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 73 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.19.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~41 debug messages>
+
+11.19.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+    New ctrl vector for $pmux cell $procmux$207: \state [7]
+  Optimizing cells in module \tile_fsm.
+Performed a total of 1 changes.
+
+11.19.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 9 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 22 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 46 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 11 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 17 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 48 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 11 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 73 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.19.6. Executing OPT_SHARE pass.
+
+11.19.7. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.19.8. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 0 unused cells and 3 unused wires.
+<suppressed ~3 debug messages>
+
+11.19.9. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+<suppressed ~1 debug messages>
+
+11.19.10. Rerunning OPT passes. (Maybe there is more to do..)
+
+11.19.11. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \event_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \nibble_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rail_top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \requant..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sar_ctrl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sign_exit..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \slice_combine..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \tile_fsm..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~39 debug messages>
+
+11.19.12. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+  Optimizing cells in module \event_ctrl.
+  Optimizing cells in module \nibble_combine.
+  Optimizing cells in module \rail_top.
+  Optimizing cells in module \requant.
+  Optimizing cells in module \sar_ctrl.
+  Optimizing cells in module \sign_exit.
+  Optimizing cells in module \slice_combine.
+  Optimizing cells in module \tile_fsm.
+Performed a total of 0 changes.
+
+11.19.13. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 9 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 22 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 46 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 11 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 17 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 48 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 11 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 73 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 0 cells.
+
+11.19.14. Executing OPT_SHARE pass.
+
+11.19.15. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.19.16. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+
+11.19.17. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+
+11.19.18. Finished fast OPT passes. (There is nothing left to do.)
+
+11.20. Executing TECHMAP pass (map to technology primitives).
+
+11.20.1. Executing Verilog-2005 frontend: /nix/store/mq1s3n96svwlp9h8h8d4r9rbn4wd7hkb-yosys-0.62/bin/../share/yosys/techmap.v
+Parsing Verilog input from `/nix/store/mq1s3n96svwlp9h8h8d4r9rbn4wd7hkb-yosys-0.62/bin/../share/yosys/techmap.v' to AST representation.
+Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
+Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
+Generating RTLIL representation for module `\_90_simplemap_logic_ops'.
+Generating RTLIL representation for module `\_90_simplemap_compare_ops'.
+Generating RTLIL representation for module `\_90_simplemap_various'.
+Generating RTLIL representation for module `\_90_simplemap_registers'.
+Generating RTLIL representation for module `\_90_shift_ops_shr_shl_sshl_sshr'.
+Generating RTLIL representation for module `\_90_shift_shiftx'.
+Generating RTLIL representation for module `\_90_fa'.
+Generating RTLIL representation for module `\_90_lcu_brent_kung'.
+Generating RTLIL representation for module `\_90_alu'.
+Generating RTLIL representation for module `\_90_macc'.
+Generating RTLIL representation for module `\_90_alumacc'.
+Generating RTLIL representation for module `$__div_mod_u'.
+Generating RTLIL representation for module `$__div_mod_trunc'.
+Generating RTLIL representation for module `\_90_div'.
+Generating RTLIL representation for module `\_90_mod'.
+Generating RTLIL representation for module `$__div_mod_floor'.
+Generating RTLIL representation for module `\_90_divfloor'.
+Generating RTLIL representation for module `\_90_modfloor'.
+Generating RTLIL representation for module `\_90_pow'.
+Generating RTLIL representation for module `\_90_pmux'.
+Generating RTLIL representation for module `\_90_demux'.
+Generating RTLIL representation for module `\_90_lut'.
+Generating RTLIL representation for module `$connect'.
+Generating RTLIL representation for module `$input_port'.
+Successfully finished Verilog frontend.
+
+11.20.2. Continuing TECHMAP pass.
+Using extmapper simplemap for cells of type $not.
+Using template $paramod$c3cd1564c35d873179656addd6052d7ea8b6d991\_90_alu for cells of type $alu.
+Using extmapper simplemap for cells of type $or.
+Using extmapper simplemap for cells of type $reduce_and.
+Using template $paramod$befd47b1c77b68561d11d0cb61a0fae29b79f34c\_90_alu for cells of type $alu.
+Using extmapper simplemap for cells of type $reduce_bool.
+Using extmapper simplemap for cells of type $adffe.
+Using extmapper simplemap for cells of type $ne.
+Using extmapper simplemap for cells of type $reduce_or.
+Using extmapper simplemap for cells of type $and.
+Using extmapper simplemap for cells of type $adff.
+Using extmapper simplemap for cells of type $logic_or.
+Using extmapper simplemap for cells of type $logic_not.
+Using extmapper simplemap for cells of type $logic_and.
+Using extmapper simplemap for cells of type $mux.
+Using extmapper simplemap for cells of type $pos.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000001000 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000001000 for cells of type $lcu.
+Using extmapper simplemap for cells of type $xor.
+Using template $paramod$1b49742935f4efbf7c044d3941f6b7c5a3882fdd\_90_alu for cells of type $alu.
+Using template $paramod$14ddcf74bf270a58cf3f597ccd420c7e9f09750c\_90_alu for cells of type $alu.
+Using template $paramod$c262a9eba992bd375aee69244ae82bb2c8f55fe5\_90_alu for cells of type $alu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000001101 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000001101 for cells of type $lcu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000001111 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000001111 for cells of type $lcu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000000010 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000000010 for cells of type $lcu.
+Using template $paramod$ba698a254f9a5947e85cbe7beae6b161eefc5386\_90_alu for cells of type $alu.
+Using extmapper simplemap for cells of type $eq.
+Using template $paramod$constmap:66d421c313e4e958be776b99540ac2de3b59fdbc$paramod$77562a466236eb4a6d905351a0995599b75075cb\_90_shift_ops_shr_shl_sshl_sshr for cells of type $shl.
+Using template $paramod$dc04b7d98e503a7bab16fce2df70e6e2c5ca34d6\_90_alu for cells of type $alu.
+Using template $paramod$constmap:4621fcf06a436d1e2a4080e2ed9866a7d07a6e07$paramod$e765c459d3029c22a22a27989e94858fd9ebfa9c\_90_shift_ops_shr_shl_sshl_sshr for cells of type $sshr.
+Using template $paramod$8fdcfe020be5e507ba05385ffd706e02b549d39d\_90_alu for cells of type $alu.
+Using template $paramod$5d0bb5be5579f553e9e7790fdead1e778acc7812\_90_alu for cells of type $alu.
+Using template $paramod$6694d39cad831bc5688fe7ffaed39b79bdf33392\_90_alu for cells of type $alu.
+Using extmapper maccmap for cells of type $macc_v2.
+  add \y * { 1'0 \scale } (20x9 bits, signed)
+  add \half (32 bits, signed)
+Using template $paramod$constmap:4ddeb66b5ab023b65fc6115d784bee0efe78a0f2$paramod$d5e0ef05d76112603102af5fb1484dfc73250b4a\_90_shift_ops_shr_shl_sshl_sshr for cells of type $sshl.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000100000 for cells of type $fa.
+Using template $paramod$fbc7873bff55778c0b3173955b7e4bce1d9d6834\_90_alu for cells of type $alu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000000101 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000000101 for cells of type $lcu.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000100000 for cells of type $lcu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000011001 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000011001 for cells of type $lcu.
+Using template $paramod$80a7a0c3ea93079e536e87fa49abedca7da50a36\_90_alu for cells of type $alu.
+Using template $paramod$83c0606cb8010091b91783969e65197905cd08a6\_90_alu for cells of type $alu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000001001 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000001001 for cells of type $lcu.
+Using template $paramod$32a7b7b86c07519b7537abc18e96f0331f97914d\_90_alu for cells of type $alu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000000100 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000000100 for cells of type $lcu.
+Using template $paramod$1ac98e59772068afbbb515cf03b75cdfe1670be4\_90_alu for cells of type $alu.
+Using template $paramod$f22b29e129d8d0ed5ad0d03fd8874e766bca8329\_90_alu for cells of type $alu.
+Using template $paramod\_90_fa\WIDTH=32'00000000000000000000000000010101 for cells of type $fa.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000010101 for cells of type $lcu.
+Using template $paramod$c6885379b74fbbf6906b35106e386e521d86cbb2\_90_alu for cells of type $alu.
+Using template $paramod$9efa5d455e367e7d7e4a3843e50322b81eb1c2f7\_90_alu for cells of type $alu.
+  add \y_flat [19:0] (20 bits, signed)
+  sub \y_chk (20 bits, signed)
+  add \y_flat [319:300] (20 bits, signed)
+  add \y_flat [299:280] (20 bits, signed)
+  add \y_flat [279:260] (20 bits, signed)
+  add \y_flat [259:240] (20 bits, signed)
+  add \y_flat [239:220] (20 bits, signed)
+  add \y_flat [219:200] (20 bits, signed)
+  add \y_flat [199:180] (20 bits, signed)
+  add \y_flat [179:160] (20 bits, signed)
+  add \y_flat [159:140] (20 bits, signed)
+  add \y_flat [139:120] (20 bits, signed)
+  add \y_flat [119:100] (20 bits, signed)
+  add \y_flat [99:80] (20 bits, signed)
+  add \y_flat [79:60] (20 bits, signed)
+  add \y_flat [59:40] (20 bits, signed)
+  add \y_flat [39:20] (20 bits, signed)
+  packed 1 (1) bits / 1 words into adder tree
+Using template $paramod$4868d58a04723871777326409a611fa912defcd8\_90_alu for cells of type $alu.
+No more expansions possible.
+<suppressed ~4681 debug messages>
+
+11.21. Executing OPT pass (performing simple optimizations).
+
+11.21.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+<suppressed ~536 debug messages>
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+<suppressed ~337 debug messages>
+Optimizing module event_ctrl.
+<suppressed ~56 debug messages>
+Optimizing module nibble_combine.
+<suppressed ~178 debug messages>
+Optimizing module rail_top.
+Optimizing module requant.
+<suppressed ~1136 debug messages>
+Optimizing module sar_ctrl.
+<suppressed ~34 debug messages>
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+<suppressed ~212 debug messages>
+Optimizing module tile_fsm.
+<suppressed ~162 debug messages>
+
+11.21.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2368 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2312 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2257 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2225 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2196 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2164 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2144 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2134 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2122 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2113 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2106 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2098 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2092 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2090 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2088 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2086 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 2085 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+<suppressed ~849 debug messages>
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 365 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 350 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 345 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 343 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 342 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+<suppressed ~69 debug messages>
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 103 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Computing hashes of 90 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Computing hashes of 89 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+<suppressed ~42 debug messages>
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 143 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Computing hashes of 133 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Computing hashes of 130 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Computing hashes of 129 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+<suppressed ~42 debug messages>
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 2381 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2292 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2240 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2194 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2168 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2152 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2134 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2122 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2119 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2115 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2111 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2109 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 2107 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+<suppressed ~822 debug messages>
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 93 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Computing hashes of 87 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+<suppressed ~18 debug messages>
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 187 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Computing hashes of 176 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Computing hashes of 173 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Computing hashes of 172 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+<suppressed ~45 debug messages>
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 162 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 153 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 151 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Computing hashes of 150 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+<suppressed ~36 debug messages>
+Removed a total of 641 cells.
+
+11.21.3. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.21.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 466 unused cells and 1736 unused wires.
+<suppressed ~474 debug messages>
+
+11.21.5. Finished fast OPT passes.
+
+11.22. Executing ABC pass (technology mapping using ABC).
+
+11.22.1. Extracting gate netlist of module `$paramod\abft_check\W=s32'00000000000000000000000000010100' to `<abc-temp-dir>/input.blif'..
+
+11.22.1.1. Executed ABC.
+Extracted 1993 gates and 2350 wires to a netlist network with 356 inputs and 26 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.1.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:        5
+ABC RESULTS:            ANDNOT cells:      702
+ABC RESULTS:               MUX cells:       23
+ABC RESULTS:              NAND cells:       91
+ABC RESULTS:               NOR cells:       70
+ABC RESULTS:               NOT cells:       49
+ABC RESULTS:                OR cells:      258
+ABC RESULTS:             ORNOT cells:       52
+ABC RESULTS:              XNOR cells:      201
+ABC RESULTS:               XOR cells:      512
+ABC RESULTS:        internal signals:     1968
+ABC RESULTS:           input signals:      356
+ABC RESULTS:          output signals:       26
+Removing temp directory.
+
+11.22.2. Extracting gate netlist of module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100' to `<abc-temp-dir>/input.blif'..
+
+11.22.2.1. Executed ABC.
+Extracted 256 gates and 303 wires to a netlist network with 45 inputs and 26 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.2.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:        4
+ABC RESULTS:            ANDNOT cells:      113
+ABC RESULTS:              NAND cells:       20
+ABC RESULTS:               NOR cells:       32
+ABC RESULTS:               NOT cells:       10
+ABC RESULTS:                OR cells:       22
+ABC RESULTS:             ORNOT cells:        6
+ABC RESULTS:              XNOR cells:       23
+ABC RESULTS:               XOR cells:       24
+ABC RESULTS:        internal signals:      232
+ABC RESULTS:           input signals:       45
+ABC RESULTS:          output signals:       26
+Removing temp directory.
+
+11.22.3. Extracting gate netlist of module `\event_ctrl' to `<abc-temp-dir>/input.blif'..
+
+11.22.3.1. Executed ABC.
+Extracted 70 gates and 83 wires to a netlist network with 11 inputs and 16 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.3.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:        4
+ABC RESULTS:            ANDNOT cells:       21
+ABC RESULTS:               MUX cells:        2
+ABC RESULTS:              NAND cells:        3
+ABC RESULTS:               NOR cells:        3
+ABC RESULTS:               NOT cells:        1
+ABC RESULTS:                OR cells:        6
+ABC RESULTS:             ORNOT cells:        3
+ABC RESULTS:              XNOR cells:        5
+ABC RESULTS:               XOR cells:        1
+ABC RESULTS:        internal signals:       56
+ABC RESULTS:           input signals:       11
+ABC RESULTS:          output signals:       16
+Removing temp directory.
+
+11.22.4. Extracting gate netlist of module `\nibble_combine' to `<abc-temp-dir>/input.blif'..
+
+11.22.4.1. Executed ABC.
+Extracted 100 gates and 118 wires to a netlist network with 16 inputs and 12 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.4.2. Re-integrating ABC results.
+ABC RESULTS:            ANDNOT cells:       31
+ABC RESULTS:              NAND cells:       10
+ABC RESULTS:               NOR cells:       12
+ABC RESULTS:               NOT cells:        5
+ABC RESULTS:                OR cells:       19
+ABC RESULTS:             ORNOT cells:        3
+ABC RESULTS:              XNOR cells:        6
+ABC RESULTS:               XOR cells:       10
+ABC RESULTS:        internal signals:       90
+ABC RESULTS:           input signals:       16
+ABC RESULTS:          output signals:       12
+Removing temp directory.
+
+11.22.5. Extracting gate netlist of module `\rail_top' to `<abc-temp-dir>/input.blif'..
+Don't call ABC as there is nothing to map.
+
+11.22.5.1. Executed ABC.
+Extracted 0 gates and 0 wires to a netlist network with 0 inputs and 0 outputs.
+Removing temp directory.
+
+11.22.6. Extracting gate netlist of module `\requant' to `<abc-temp-dir>/input.blif'..
+
+11.22.6.1. Executed ABC.
+Extracted 1877 gates and 1920 wires to a netlist network with 41 inputs and 8 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.6.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:      135
+ABC RESULTS:            ANDNOT cells:      573
+ABC RESULTS:               MUX cells:      155
+ABC RESULTS:              NAND cells:      101
+ABC RESULTS:               NOR cells:       51
+ABC RESULTS:               NOT cells:       32
+ABC RESULTS:                OR cells:      241
+ABC RESULTS:             ORNOT cells:       85
+ABC RESULTS:              XNOR cells:      130
+ABC RESULTS:               XOR cells:      346
+ABC RESULTS:        internal signals:     1871
+ABC RESULTS:           input signals:       41
+ABC RESULTS:          output signals:        8
+Removing temp directory.
+
+11.22.7. Extracting gate netlist of module `\sar_ctrl' to `<abc-temp-dir>/input.blif'..
+
+11.22.7.1. Executed ABC.
+Extracted 64 gates and 80 wires to a netlist network with 14 inputs and 20 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.7.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:        7
+ABC RESULTS:            ANDNOT cells:       13
+ABC RESULTS:               MUX cells:        8
+ABC RESULTS:              NAND cells:        3
+ABC RESULTS:               NOR cells:        1
+ABC RESULTS:               NOT cells:        3
+ABC RESULTS:                OR cells:       14
+ABC RESULTS:        internal signals:       46
+ABC RESULTS:           input signals:       14
+ABC RESULTS:          output signals:       20
+Removing temp directory.
+
+11.22.8. Extracting gate netlist of module `\sign_exit' to `<abc-temp-dir>/input.blif'..
+
+11.22.8.1. Executed ABC.
+Extracted 2 gates and 5 wires to a netlist network with 3 inputs and 1 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.8.2. Re-integrating ABC results.
+ABC RESULTS:            ANDNOT cells:        1
+ABC RESULTS:              NAND cells:        1
+ABC RESULTS:        internal signals:        1
+ABC RESULTS:           input signals:        3
+ABC RESULTS:          output signals:        1
+Removing temp directory.
+
+11.22.9. Extracting gate netlist of module `\slice_combine' to `<abc-temp-dir>/input.blif'..
+
+11.22.9.1. Executed ABC.
+Extracted 136 gates and 162 wires to a netlist network with 24 inputs and 14 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.9.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:        4
+ABC RESULTS:            ANDNOT cells:       42
+ABC RESULTS:              NAND cells:       12
+ABC RESULTS:               NOR cells:       18
+ABC RESULTS:               NOT cells:        5
+ABC RESULTS:                OR cells:       23
+ABC RESULTS:             ORNOT cells:        4
+ABC RESULTS:              XNOR cells:        9
+ABC RESULTS:               XOR cells:       15
+ABC RESULTS:        internal signals:      124
+ABC RESULTS:           input signals:       24
+ABC RESULTS:          output signals:       14
+Removing temp directory.
+
+11.22.10. Extracting gate netlist of module `\tile_fsm' to `<abc-temp-dir>/input.blif'..
+
+11.22.10.1. Executed ABC.
+Extracted 106 gates and 133 wires to a netlist network with 25 inputs and 26 outputs.
+Running ABC script: <abc-temp-dir>/abc.script
+ABC: UC Berkeley, ABC 1.01 (compiled Jan  1 1980 00:00:00)
+ABC: abc 01> empty
+ABC: abc 01> source <abc-temp-dir>/abc.script
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library /tmp/nix-shell-3646348-535392658/yosys-abc-bAFaDq/stdcells.genlib 
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+ABC: 
+ABC: YOSYS_ABC_DONE 
+
+11.22.10.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:       13
+ABC RESULTS:            ANDNOT cells:       24
+ABC RESULTS:               MUX cells:        7
+ABC RESULTS:              NAND cells:        2
+ABC RESULTS:               NOR cells:        7
+ABC RESULTS:               NOT cells:        4
+ABC RESULTS:                OR cells:       17
+ABC RESULTS:             ORNOT cells:        2
+ABC RESULTS:              XNOR cells:        1
+ABC RESULTS:               XOR cells:        5
+ABC RESULTS:        internal signals:       82
+ABC RESULTS:           input signals:       25
+ABC RESULTS:          output signals:       26
+Removing temp directory.
+Removing global temp directory.
+
+11.23. Executing OPT pass (performing simple optimizations).
+
+11.23.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod\abft_check\W=s32'00000000000000000000000000010100.
+Optimizing module $paramod\bacc_accum\W=s32'00000000000000000000000000010100.
+Optimizing module event_ctrl.
+Optimizing module nibble_combine.
+Optimizing module rail_top.
+Optimizing module requant.
+Optimizing module sar_ctrl.
+<suppressed ~3 debug messages>
+Optimizing module sign_exit.
+Optimizing module slice_combine.
+Optimizing module tile_fsm.
+<suppressed ~6 debug messages>
+
+11.23.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 1963 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Computing hashes of 1962 cells of `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\abft_check\W=s32'00000000000000000000000000010100'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Computing hashes of 279 cells of `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding duplicate cells in `$paramod\bacc_accum\W=s32'00000000000000000000000000010100'.
+Finding identical cells in module `\event_ctrl'.
+Computing hashes of 66 cells of `\event_ctrl'.
+Finding duplicate cells in `\event_ctrl'.
+Finding identical cells in module `\nibble_combine'.
+Computing hashes of 96 cells of `\nibble_combine'.
+Finding duplicate cells in `\nibble_combine'.
+Finding identical cells in module `\rail_top'.
+Computing hashes of 7 cells of `\rail_top'.
+Finding duplicate cells in `\rail_top'.
+Finding identical cells in module `\requant'.
+Computing hashes of 1849 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+Computing hashes of 1840 cells of `\requant'.
+Finding duplicate cells in `\requant'.
+<suppressed ~27 debug messages>
+Finding identical cells in module `\sar_ctrl'.
+Computing hashes of 70 cells of `\sar_ctrl'.
+Finding duplicate cells in `\sar_ctrl'.
+Finding identical cells in module `\sign_exit'.
+Computing hashes of 2 cells of `\sign_exit'.
+Finding duplicate cells in `\sign_exit'.
+Finding identical cells in module `\slice_combine'.
+Computing hashes of 132 cells of `\slice_combine'.
+Finding duplicate cells in `\slice_combine'.
+Finding identical cells in module `\tile_fsm'.
+Computing hashes of 112 cells of `\tile_fsm'.
+Finding duplicate cells in `\tile_fsm'.
+Removed a total of 10 cells.
+
+11.23.3. Executing OPT_DFF pass (perform DFF optimizations).
+
+11.23.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module $paramod\abft_check\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module $paramod\bacc_accum\W=s32'00000000000000000000000000010100..
+Finding unused cells or wires in module \event_ctrl..
+Finding unused cells or wires in module \nibble_combine..
+Finding unused cells or wires in module \rail_top..
+Finding unused cells or wires in module \requant..
+Finding unused cells or wires in module \sar_ctrl..
+Finding unused cells or wires in module \sign_exit..
+Finding unused cells or wires in module \slice_combine..
+Finding unused cells or wires in module \tile_fsm..
+Removed 0 unused cells and 1573 unused wires.
+<suppressed ~15 debug messages>
+
+11.23.5. Finished fast OPT passes.
+
+11.24. Executing HIERARCHY pass (managing design hierarchy).
+Attribute `top' found on module `rail_top'. Setting top module to rail_top.
+
+11.24.1. Analyzing design hierarchy..
+Top module:  \rail_top
+Used module:     $paramod\abft_check\W=s32'00000000000000000000000000010100
+Used module:     $paramod\bacc_accum\W=s32'00000000000000000000000000010100
+Used module:     \tile_fsm
+Used module:         \event_ctrl
+Used module:         \sar_ctrl
+Used module:         \sign_exit
+Used module:     \nibble_combine
+Used module:     \requant
+Used module:     \slice_combine
+
+11.24.2. Analyzing design hierarchy..
+Top module:  \rail_top
+Used module:     $paramod\abft_check\W=s32'00000000000000000000000000010100
+Used module:     $paramod\bacc_accum\W=s32'00000000000000000000000000010100
+Used module:     \tile_fsm
+Used module:         \event_ctrl
+Used module:         \sar_ctrl
+Used module:         \sign_exit
+Used module:     \nibble_combine
+Used module:     \requant
+Used module:     \slice_combine
+Removed 0 unused modules.
+
+11.25. Printing statistics.
+
+=== $paramod\abft_check\W=s32'00000000000000000000000000010100 ===
+
+        +----------Local Count, excluding submodules.
+        | 
+     1943 wires
+     2375 wire bits
+        7 public wires
+      439 public wire bits
+        5 ports
+      382 port bits
+     1962 cells
+      702   $_ANDNOT_
+        5   $_AND_
+       23   $_MUX_
+       91   $_NAND_
+       70   $_NOR_
+       49   $_NOT_
+       52   $_ORNOT_
+      257   $_OR_
+      201   $_XNOR_
+      512   $_XOR_
+
+=== $paramod\bacc_accum\W=s32'00000000000000000000000000010100 ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      241 wires
+      301 wire bits
+        9 public wires
+       47 public wire bits
+        8 ports
+       43 port bits
+      279 cells
+      113   $_ANDNOT_
+        4   $_AND_
+       25   $_DFFE_PN0P_
+       20   $_NAND_
+       32   $_NOR_
+       10   $_NOT_
+        6   $_ORNOT_
+       22   $_OR_
+       23   $_XNOR_
+       24   $_XOR_
+
+=== event_ctrl ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       59 wires
+       73 wire bits
+       15 public wires
+       23 public wire bits
+        9 ports
+       15 port bits
+       66 cells
+       21   $_ANDNOT_
+        4   $_AND_
+       10   $_DFFE_PN0P_
+        6   $_DFF_PN0_
+        1   $_DFF_PN1_
+        2   $_MUX_
+        3   $_NAND_
+        3   $_NOR_
+        1   $_NOT_
+        3   $_ORNOT_
+        6   $_OR_
+        5   $_XNOR_
+        1   $_XOR_
+
+=== nibble_combine ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       88 wires
+      125 wire bits
+        4 public wires
+       41 public wire bits
+        3 ports
+       28 port bits
+       96 cells
+       31   $_ANDNOT_
+       10   $_NAND_
+       12   $_NOR_
+        5   $_NOT_
+        3   $_ORNOT_
+       19   $_OR_
+        6   $_XNOR_
+       10   $_XOR_
+
+=== rail_top ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       41 wires
+      541 wire bits
+       41 public wires
+      541 public wire bits
+       38 ports
+      503 port bits
+        7 submodules
+        1   $paramod\abft_check\W=s32'00000000000000000000000000010100
+        1   $paramod\bacc_accum\W=s32'00000000000000000000000000010100
+        2   nibble_combine
+        1   requant
+        1   slice_combine
+        1   tile_fsm
+
+=== requant ===
+
+        +----------Local Count, excluding submodules.
+        | 
+     1838 wires
+     1913 wire bits
+        6 public wires
+       81 public wire bits
+        5 ports
+       49 port bits
+     1840 cells
+      567   $_ANDNOT_
+      135   $_AND_
+      155   $_MUX_
+      100   $_NAND_
+       49   $_NOR_
+       32   $_NOT_
+       85   $_ORNOT_
+      241   $_OR_
+      130   $_XNOR_
+      346   $_XOR_
+
+=== sar_ctrl ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       58 wires
+       75 wire bits
+       16 public wires
+       26 public wire bits
+       10 ports
+       16 port bits
+       70 cells
+       13   $_ANDNOT_
+        7   $_AND_
+       11   $_DFFE_PN0P_
+        2   $_DFFE_PN1P_
+        7   $_DFF_PN0_
+        1   $_DFF_PN1_
+        8   $_MUX_
+        3   $_NAND_
+        1   $_NOR_
+        3   $_NOT_
+       14   $_OR_
+
+=== sign_exit ===
+
+        +----------Local Count, excluding submodules.
+        | 
+        6 wires
+        6 wire bits
+        5 public wires
+        5 public wire bits
+        5 ports
+        5 port bits
+        2 cells
+        1   $_ANDNOT_
+        1   $_NAND_
+
+=== slice_combine ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      122 wires
+      171 wire bits
+        4 public wires
+       53 public wire bits
+        3 ports
+       38 port bits
+      132 cells
+       42   $_ANDNOT_
+        4   $_AND_
+       12   $_NAND_
+       18   $_NOR_
+        5   $_NOT_
+        4   $_ORNOT_
+       23   $_OR_
+        9   $_XNOR_
+       15   $_XOR_
+
+=== tile_fsm ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      111 wires
+      151 wire bits
+       37 public wires
+       70 public wire bits
+       21 ports
+       34 port bits
+      109 cells
+       24   $_ANDNOT_
+       13   $_AND_
+       13   $_DFFE_PN0P_
+       13   $_DFF_PN0_
+        1   $_DFF_PN1_
+        7   $_MUX_
+        2   $_NAND_
+        7   $_NOR_
+        4   $_NOT_
+        2   $_ORNOT_
+       17   $_OR_
+        1   $_XNOR_
+        5   $_XOR_
+        3 submodules
+        1   event_ctrl
+        1   sar_ctrl
+        1   sign_exit
+
+=== design hierarchy ===
+
+        +----------Count including submodules.
+        | 
+     4652 rail_top
+     1962 $paramod\abft_check\W=s32'00000000000000000000000000010100
+      279 $paramod\bacc_accum\W=s32'00000000000000000000000000010100
+       96 nibble_combine
+     1840 requant
+      132 slice_combine
+      109 tile_fsm
+       66   event_ctrl
+       70   sar_ctrl
+        2   sign_exit
+
+        +----------Count including submodules.
+        | 
+     4595 wires
+     5856 wire bits
+      148 public wires
+     1367 public wire bits
+      110 ports
+     1141 port bits
+        - memories
+        - memory bits
+        - processes
+     4652 cells
+     1545   $_ANDNOT_
+      172   $_AND_
+       59   $_DFFE_PN0P_
+        2   $_DFFE_PN1P_
+       26   $_DFF_PN0_
+        3   $_DFF_PN1_
+      195   $_MUX_
+      252   $_NAND_
+      204   $_NOR_
+      114   $_NOT_
+      158   $_ORNOT_
+      618   $_OR_
+      381   $_XNOR_
+      923   $_XOR_
+        7 submodules
+        1   $paramod\abft_check\W=s32'00000000000000000000000000010100
+        1   $paramod\bacc_accum\W=s32'00000000000000000000000000010100
+        2   nibble_combine
+        1   requant
+        1   slice_combine
+        1   tile_fsm
+
+11.26. Executing CHECK pass (checking for obvious problems).
+Checking module $paramod\abft_check\W=s32'00000000000000000000000000010100...
+Checking module $paramod\bacc_accum\W=s32'00000000000000000000000000010100...
+Checking module event_ctrl...
+Checking module nibble_combine...
+Checking module rail_top...
+Checking module requant...
+Checking module sar_ctrl...
+Checking module sign_exit...
+Checking module slice_combine...
+Checking module tile_fsm...
+Found and reported 0 problems.
+
+12. Executing DFFLIBMAP pass (mapping DFF cells to sequential cells from liberty file).
+ERROR: File `/home/omare/.volare/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib' not found or is a directory

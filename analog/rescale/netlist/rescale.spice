@@ -1,0 +1,9 @@
+.subckt rescale vhi vlo ihi ilo vb_tail vdd vss
+Xtail s vb_tail vss vss sky130_fd_pr__nfet_01v8 W=63.12 L=2.4 nf=6
+Xbhi dhi vhi s vss sky130_fd_pr__nfet_01v8 W=63.12 L=2.4 nf=6
+Xmdhi dhi dhi vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
+Xmohi ihi dhi vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
+Xblo dlo vlo s vss sky130_fd_pr__nfet_01v8 W=63.12 L=2.4 nf=6
+Xmdlo dlo dlo vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
+Xmolo ilo dlo vdd vdd sky130_fd_pr__pfet_01v8 W=2.16 L=9.6
+.ends rescale

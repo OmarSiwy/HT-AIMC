@@ -1,0 +1,11 @@
+{
+  "pins": [
+    { "net": "vdd",  "side": "north", "frac": 0.5 },
+    { "net": "vss",  "side": "south", "frac": 0.5 },
+    { "net": "in",   "side": "west",  "frac": 0.5 },
+    { "net": "tap1", "side": "east",  "frac": 0.2 },
+    { "net": "tap2", "side": "east",  "frac": 0.4 },
+    { "net": "tap3", "side": "east",  "frac": 0.6 },
+    { "net": "tap4", "side": "east",  "frac": 0.8 }
+  ]
+}

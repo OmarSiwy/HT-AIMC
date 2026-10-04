@@ -1,0 +1,15 @@
+.subckt wta vin0 vin1 vin2 vin3 vin4 vin5 vin6 vin7 vin_hold vref mrail rrail vb_tail vdd vss
+Xf0 vdd vin0 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xf1 vdd vin1 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xf2 vdd vin2 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xf3 vdd vin3 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xf4 vdd vin4 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xf5 vdd vin5 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xf6 vdd vin6 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xf7 vdd vin7 mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xfhold vdd vin_hold mrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xtail mrail vb_tail vss vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xhold mrail vss sky130_fd_pr__cap_mim_m3_1 W=9.83 L=9.83
+Xfrep vdd vref rrail vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+Xtrep rrail vb_tail vss vss sky130_fd_pr__nfet_01v8 W=97.58 L=1 nf=4
+.ends wta

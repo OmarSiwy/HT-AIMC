@@ -1,0 +1,24 @@
+{
+  "die": { "w": 160000, "h": 140000 },
+  "pins": [
+    { "net": "vdd",     "side": "north", "frac": 0.5 },
+    { "net": "vss",     "side": "south", "frac": 0.5 },
+    { "net": "vb_tail", "side": "south", "frac": 0.25 },
+    { "net": "vin0",    "side": "west",  "frac": 0.1 },
+    { "net": "vin1",    "side": "west",  "frac": 0.2 },
+    { "net": "vin2",    "side": "west",  "frac": 0.3 },
+    { "net": "vin3",    "side": "west",  "frac": 0.4 },
+    { "net": "vin4",    "side": "west",  "frac": 0.6 },
+    { "net": "vin5",    "side": "west",  "frac": 0.7 },
+    { "net": "vin6",    "side": "west",  "frac": 0.8 },
+    { "net": "vin7",    "side": "west",  "frac": 0.9 },
+    { "net": "iout0",   "side": "east",  "frac": 0.1 },
+    { "net": "iout1",   "side": "east",  "frac": 0.2 },
+    { "net": "iout2",   "side": "east",  "frac": 0.3 },
+    { "net": "iout3",   "side": "east",  "frac": 0.4 },
+    { "net": "iout4",   "side": "east",  "frac": 0.6 },
+    { "net": "iout5",   "side": "east",  "frac": 0.7 },
+    { "net": "iout6",   "side": "east",  "frac": 0.8 },
+    { "net": "iout7",   "side": "east",  "frac": 0.9 }
+  ]
+}

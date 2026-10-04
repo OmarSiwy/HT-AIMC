@@ -1,0 +1,43 @@
+// One 2T gain cell — behavioural golden model, ports 1:1 with netlist/gain_cell_array_cell.
+// Same CELL law as gain_cell_array.va (keep the macros identical); DUT=va builds the
+// array from 64 of these (ngspice's 18-terminal OSDI limit, see gain_cell_array.va).
+`include "disciplines.vams"
+`include "constants.vams"
+
+// one cell: wd = wdata<r>, ws = wsel<c>, rn = rd<r>, cl = col<c>, s = its store node
+`define CELL(wd, ws, rn, cl, s) \
+        I(s, vss) <+ cs * ddt(V(s, vss)); \
+        I(s, wd) <+ V(s, wd) * (gon * 0.5 * (1.0 + tanh((V(ws, vss) - vsel) / vsw)) + gleak); \
+        I(s, ws) <+ cinj * ddt(V(s, ws)); \
+        I(cl, rn) <+ is * (ekv(V(s, rn) - vt, nut) - ekv(V(s, cl) - vt, nut));
+
+module gain_cell_array_cell(wdata, wsel, rd, col, vss);
+    inout wdata, wsel, rd, col, vss;
+    electrical wdata, wsel, rd, col, vss;
+    electrical s;                                   // storage node
+
+    // defaults: sky130 tt 27 C fit to DUT=sch (tb_gain_cell levels, R_on, pedestal)
+    parameter real cs = 30e-15 from (0:inf);        // storage cap (F)
+    parameter real gon = 1.0 / 34e3 from (0:inf);   // write switch on-conductance (S)
+    parameter real gleak = 1e-12 from [0:inf);      // write switch off leakage (S)
+    parameter real vsel = 0.9 from (0:inf);         // wsel on threshold (V)
+    parameter real vsw = 0.05 from (0:inf);         // wsel switching width (V)
+    parameter real cinj = 0.28e-15 from [0:inf);    // wsel -> store overlap (F)
+    parameter real is = 0.39e-6 from (0:inf);       // read specific current (A)
+    parameter real vt = 0.63 from (0:inf);          // read threshold (V)
+    parameter real nut = 0.0413 from (0:inf);       // read n * kT/q (V)
+
+    analog function real ekv;                       // ln(1 + exp(v / 2nUt))^2
+        input v, u;
+        real v, u, x;
+        begin
+            x = v / (2.0 * u);
+            x = x > 30.0 ? x : ln(1.0 + exp(x));    // softplus, overflow-safe
+            ekv = x * x;
+        end
+    endfunction
+
+    analog begin
+        `CELL(wdata, wsel, rd, col, s)
+    end
+endmodule

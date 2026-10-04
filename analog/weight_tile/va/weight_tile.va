@@ -1,0 +1,68 @@
+// Weight tile — behavioural golden model of one crosspoint, ports 1:1 with the canonical
+// netlist/weight_tile deck (build(): one row, one column).
+//   row driver:  rowa = (xp & phi1e) | (xn & !phi1),  rowb = (xp & !phi1) | (xn & phi1e)
+//   C+ bank (wp*cu) between top tp and rowa, C- bank (wn*cu) between tn and rowb
+//   each top: ballast cb to vss, switch to vcm while phi1, switch to col0 while phi2
+//   col0: rail ballast crail to vss
+// Per chop cycle a bank moves code*cu*VDD onto col0 with the sign of W*x — the charge
+// model is physical (ddt on the caps), only the switches and logic are idealised.
+//
+// Continuous form (OpenVAF subset): tanh logic and switch conductances, an internal RC
+// per row line for the driver delay (the bottom edge lands after the vcm switch opens),
+// a Thevenin row output. A zero code drops its bank's ballast too (AnalogIOC emits no bank).
+// Not modelled: TG channel injection / clock feedthrough, junction leakage, the phi
+// buffers' delay, supply current. Multi-row columns are several instances on one col
+// node with crail on one of them (test/tile.py).
+`include "disciplines.vams"
+`include "constants.vams"
+
+module weight_tile(xin_p_r0, xin_n_r0, col0, phi1, phi1e, phi2, vcm, vdd, vss);
+    inout xin_p_r0, xin_n_r0, col0, phi1, phi1e, phi2, vcm, vdd, vss;
+    electrical xin_p_r0, xin_n_r0, col0, phi1, phi1e, phi2, vcm, vdd, vss;
+    electrical fa, fb, rowa, rowb, tp, tn;
+
+    parameter real wp = 15 from [0:15];             // C+ bank code
+    parameter real wn = 15 from [0:15];             // C- bank code
+    parameter real cu = 0.15e-15 from (0:inf);      // unit cap (F)
+    parameter real cb = 3.75e-15 from [0:inf);      // top-plate ballast (F)
+    parameter real crail = 450e-15 from [0:inf);    // column rail ballast (F)
+    parameter real ron = 5e3 from (0:inf);          // switch on resistance (ohm)
+    parameter real goff = 1e-12 from (0:inf);       // switch off conductance (S)
+    parameter real rdrv = 300 from (0:inf);         // row driver resistance (ohm)
+    parameter real td = 0.25e-9 from (0:inf);       // row driver delay (s)
+    parameter real vs = 0.05 from (0:inf);          // logic soft-threshold width (V)
+
+    real vh, p, n, c1, ce, s1, s2, a, b, rf, cf, cbp, cbn;
+
+    analog begin
+        vh = V(vdd, vss) / 2;
+        p = 0.5 * (1.0 + tanh((V(xin_p_r0, vss) - vh) / vs));
+        n = 0.5 * (1.0 + tanh((V(xin_n_r0, vss) - vh) / vs));
+        c1 = 0.5 * (1.0 + tanh((V(phi1, vss) - vh) / vs));
+        ce = 0.5 * (1.0 + tanh((V(phi1e, vss) - vh) / vs));
+        s1 = c1 / ron + goff;
+        s2 = 0.5 * (1.0 + tanh((V(phi2, vss) - vh) / vs)) / ron + goff;
+        a = p * ce + n * (1.0 - c1) - p * ce * n * (1.0 - c1);   // x | y = x + y - xy
+        b = p * (1.0 - c1) + n * ce - p * (1.0 - c1) * n * ce;
+        rf = 1e3;
+        cf = td / (rf * ln(2.0));
+        I(fa, vss) <+ (V(fa, vss) - a * V(vdd, vss)) / rf;
+        I(fa, vss) <+ cf * ddt(V(fa, vss));
+        I(fb, vss) <+ (V(fb, vss) - b * V(vdd, vss)) / rf;
+        I(fb, vss) <+ cf * ddt(V(fb, vss));
+        I(rowa, vss) <+ (V(rowa, vss) - V(vdd, vss) * 0.5 * (1.0 + tanh((V(fa, vss) - vh) / vs))) / rdrv;
+        I(rowb, vss) <+ (V(rowb, vss) - V(vdd, vss) * 0.5 * (1.0 + tanh((V(fb, vss) - vh) / vs))) / rdrv;
+
+        cbp = (wp > 0.5) ? cb : 0.0;
+        cbn = (wn > 0.5) ? cb : 0.0;
+        I(tp, rowa) <+ wp * cu * ddt(V(tp, rowa));
+        I(tp, vss) <+ cbp * ddt(V(tp, vss));
+        I(tp, vcm) <+ s1 * V(tp, vcm);
+        I(tp, col0) <+ s2 * V(tp, col0);
+        I(tn, rowb) <+ wn * cu * ddt(V(tn, rowb));
+        I(tn, vss) <+ cbn * ddt(V(tn, vss));
+        I(tn, vcm) <+ s1 * V(tn, vcm);
+        I(tn, col0) <+ s2 * V(tn, col0);
+        I(col0, vss) <+ crail * ddt(V(col0, vss));
+    end
+endmodule

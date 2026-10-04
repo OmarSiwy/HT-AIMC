@@ -1,0 +1,52 @@
+// Level-1 group combine stage (G = 2) — behavioural golden model, ports 1:1 with
+// netlist/softmax_combine.
+// Tail sink:  ib = ib0 * e^((V(vb_tail) - vb0) / (nt*vt))      (weak inversion)
+// Branches:   subthreshold EKV, I_b = Is * e^((V(vls_b) - Vt0)/(n*vt)) * e^(-Vs/vt),
+//             so KCL (sum I_b = ib) splits the tail as a softmax at beta = 1/(n*vt),
+//             f_b = e^(beta*vls_b) / sum_c e^(beta*vls_c)  (the group weights g_b), and
+//             pins the group node at
+//             Vs = vs0 + vt*ln(ib0/ib) + vt*ln((1/G) * sum_b e^((vls_b - vg0)/(n*vt)))
+//             (logsumexp of the bank V_ls; vs0 = Vs with both gates at vg0, ib = ib0).
+// vls_group:  Thevenin at Vs through the node's own 1/gm_s = vt/ib.
+// Outputs:    each branch current, delayed by a first-order pole (tau: the mirror's
+//             diode node), sourced from vdd into igrp_b with a tanh compliance knee.
+// Supply:     2*ib (branch side + mirrored outputs).
+// Not modelled: tail V_DS dependence (Vs near vss), the per-branch pole slowing as the
+// branch current falls, output Early effect, strong-inversion bending at large spread.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module softmax_combine(vls0, vls1, igrp0, igrp1, vls_group, vb_tail, vdd, vss);
+    inout vls0, vls1, igrp0, igrp1, vls_group, vb_tail, vdd, vss;
+    electrical vls0, vls1, igrp0, igrp1, vls_group, vb_tail, vdd, vss;
+    electrical x0, x1;                              // delayed branch currents (1 V = 1 uA)
+
+    parameter real ib0 = 500e-9 from (0:inf);       // tail current at vb0 (A)
+    parameter real vb0 = 0.444 from (0:inf);        // vb_tail for ib0 (V)
+    parameter real nt = 1.43 from (1:inf);          // tail slope factor
+    parameter real n = 1.52 from (1:inf);           // branch slope: beta = 1/(n*vt), sch 25.45 /V
+    parameter real vg0 = 0.72 from (0:inf);         // gate reference (score CM, V)
+    parameter real vs0 = 0.245 from (0:inf);        // group node at vg0 and ib0 (V), sch
+    parameter real tau = 100e-9 from (0:inf);       // output pole (s)
+    parameter real vknee = 0.1 from (0:inf);        // output compliance knee (V)
+
+    real vt, ib, e0, e1, f0, vs, r;
+
+    analog begin
+        vt = $vt;
+        ib = ib0 * limexp((V(vb_tail, vss) - vb0) / (nt * vt));
+        e0 = limexp((V(vls0, vss) - vg0) / (n * vt));
+        e1 = limexp((V(vls1, vss) - vg0) / (n * vt));
+        f0 = e0 / (e0 + e1);
+        vs = vs0 + vt * ln(ib0 / ib) + vt * ln((e0 + e1) / 2.0);
+        I(vls_group, vss) <+ (V(vls_group, vss) - vs) * ib / vt;
+        r = 1e3;
+        I(x0, vss) <+ (V(x0, vss) - ib * f0 * 1e6) / r;
+        I(x0, vss) <+ tau / r * ddt(V(x0, vss));
+        I(x1, vss) <+ (V(x1, vss) - ib * (1.0 - f0) * 1e6) / r;
+        I(x1, vss) <+ tau / r * ddt(V(x1, vss));
+        I(vdd, igrp0) <+ V(x0, vss) * 1e-6 * tanh(V(vdd, igrp0) / vknee);
+        I(vdd, igrp1) <+ V(x1, vss) * 1e-6 * tanh(V(vdd, igrp1) / vknee);
+        I(vdd, vss) <+ ib;
+    end
+endmodule

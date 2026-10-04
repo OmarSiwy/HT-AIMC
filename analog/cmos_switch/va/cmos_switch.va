@@ -1,0 +1,57 @@
+// CMOS transmission gate — behavioural golden model, ports 1:1 with netlist/cmos_switch.
+// On: ctrl = vdd, ctrl_b = vss. Off: the reverse.
+//
+// Conductance: two triode channels in parallel, each g = k * softplus(vov), with the
+// overdrive taken at the channel midpoint vm = (in_ + out)/2 and a linear body-effect
+// term on the threshold:
+//     vov_n = V(ctrl)     - vm - (vtn + bn * vm)            (vm from vss)
+//     vov_p = vm - V(ctrl_b) - (vtp + bp * (vdd - vm))      (from the rail side)
+// plus goff (off-state leakage floor).
+// Charge injection: each channel holds q = cg * vov on its gate, drawn half from each
+// terminal (ddt), so the pedestal on a held node is -cg_n*vov_n/2 + cg_p*vov_p/2 at
+// turn-off; gate-overlap feed-through adds cov per side.
+// Defaults: least-squares fit to the default sky130 netlist (0.58/0.42 um) at tt, 27 C —
+// R_on(v) over 0..VDD, the pedestal on 30 fF over the write range and I_off
+// (docs/architecture.md, Golden model).
+// Not captured: other W/L (refit per size), process/temperature, the edge-rate
+// dependence of the channel-charge partition (fixed 50/50), R_on nonlinearity in
+// V(in_, out), junction capacitance.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module cmos_switch(in_, out, ctrl, ctrl_b, vdd, vss);
+    inout in_, out, ctrl, ctrl_b, vdd, vss;
+    electrical in_, out, ctrl, ctrl_b, vdd, vss;
+
+    parameter real kn = 9.23e-4 from (0:inf);       // nfet triode k' W/L (A/V^2)
+    parameter real kp = 7.53e-5 from (0:inf);
+    parameter real vtn = 0.851 from [0:2];          // V at vm = 0
+    parameter real vtp = 0.0 from [0:2];            // V at vm = vdd
+    parameter real bn = 0.0 from [0:1];             // body slope dVt/dvm
+    parameter real bp = 0.825 from [0:1];
+    parameter real cgn = 0.48e-15 from [0:inf);     // channel charge per V overdrive (F)
+    parameter real cgp = 0.33e-15 from [0:inf);
+    parameter real covn = 0.23e-15 from [0:inf);    // gate-overlap cap per side (F)
+    parameter real covp = 0.10e-15 from [0:inf);
+    parameter real goff = 3.3e-12 from [0:inf);     // off-state conductance (S)
+    parameter real vs = 0.03 from (0:inf);          // softplus smoothing (V)
+
+    real vm, on_n, on_p;
+
+    analog function real softplus;
+        input x, s;
+        real x, s;
+        softplus = (x > 20 * s) ? x : s * ln(1.0 + exp(x / s));
+    endfunction
+
+    analog begin
+        vm = (V(in_, vss) + V(out, vss)) / 2;
+        on_n = softplus(V(ctrl, vss) - vm - vtn - bn * vm, vs);
+        on_p = softplus(vm - V(ctrl_b, vss) - vtp - bp * (V(vdd, vss) - vm), vs);
+        I(in_, out) <+ (kn * on_n + kp * on_p + goff) * V(in_, out);
+        I(ctrl, in_) <+ ddt(0.5 * cgn * on_n + covn * V(ctrl, in_));
+        I(ctrl, out) <+ ddt(0.5 * cgn * on_n + covn * V(ctrl, out));
+        I(in_, ctrl_b) <+ ddt(0.5 * cgp * on_p + covp * V(in_, ctrl_b));
+        I(out, ctrl_b) <+ ddt(0.5 * cgp * on_p + covp * V(out, ctrl_b));
+    end
+endmodule

@@ -1,0 +1,27 @@
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Tools
+.venv/
+.tools/
+.tmp/
+
+# AnalogIOC
+*.gguf
+scripts/compiler/out/
+scripts/compiler/out_formats/
+analog/*/output/
+analog/*/build/**/osdi/
+
+
+# Generated per machine (absolute PDK paths)
+analog/docs/pdk_models/
+**/__pycache__/
+
+# Docs site
+docs/node_modules/

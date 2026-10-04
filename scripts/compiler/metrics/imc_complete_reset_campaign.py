@@ -1,0 +1,298 @@
+"""Frozen complete-reset thermal control for exact radix9 versus original16."""
+import argparse
+from collections import Counter
+import hashlib
+import json
+from pathlib import Path
+import sys
+import time
+
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT / "scripts"))
+import numpy as np
+from compiler.metrics import imc_fixed_charge_campaign as base
+from compiler.metrics import imc_charge_guard_campaign as guard
+from compiler.metrics.imc_weight_digit_campaign import digits as original_digits
+
+
+def radix(format):
+    return 9 if format=='balanced9' else 16
+
+
+def digits(w, format):
+    if format=='signed_magnitude':return original_digits(w,format)
+    assert format=='balanced9'
+    w=np.asarray(w,dtype=np.int16)
+    high=(w+4)//9
+    return w-9*high,high,0
+
+OUT=ROOT/'build/campaign/complete_reset_precision'
+PREVIOUS=ROOT/'build/campaign/radix9_precision'
+
+
+def geometry(units,cu,bits):
+    """Generalized frozen integer-unit distributed-CDAC allocation."""
+    u=3.75*cu/4;target=2**(bits-4)
+    caps=120+cu*units.astype(float)
+    available=np.floor(caps/u+1e-12).astype(int)
+    missing=np.maximum(target-available.sum(axis=0),0)
+    remainder=caps[0]-available[0]*u
+    pad=np.where(missing>0,missing*u-remainder,0.)
+    caps[0]+=pad;available=np.floor(caps/u+1e-12).astype(int);available[0]-=1
+    fragments=np.zeros(caps.shape[1],dtype=int)
+    for bit in range(bits-5,-1,-1):
+        required=np.full(caps.shape[1],2**bit,dtype=int)
+        for g in range(len(caps)):
+            take=np.minimum(required,available[g]);available[g]-=take;required-=take
+            fragments+=take>0
+        assert not np.any(required)
+    assert np.all(pad>=0)
+    return caps,dict(connected_C_fF=float(2*caps.sum()+caps.shape[1]*(16+1/15)*u),
+                     two_sided_padding_fF=float(2*pad.sum()),coarse_switch_fragments=int(fragments.sum()),
+                     maximum_joined_fF=float(caps.sum(axis=0).max()),maximum_padding_fF=float(pad.max()))
+
+
+def scenes(q,w,dx,pooled,format):
+    all_digits=digits(w,format)[:2];banks=[[],[]]
+    groups=(q.shape[1]+255)//256
+    for first in range(0,groups,4 if pooled else 1):
+        last=min(first+(4 if pooled else 1),groups)
+        B=np.ceil(np.log2(np.max(abs(q[:,first*256:last*256].astype(float)),axis=1)+1)).astype(int)
+        scale=dx[:,first]
+        if pooled:assert np.array_equal(dx[:,first:last],np.broadcast_to(scale[:,None],dx[:,first:last].shape))
+        for bank,d in enumerate(all_digits):
+            partial=np.zeros((len(q),w.shape[1]));units=[]
+            for g in range(first,last):
+                local=d[g*256:(g+1)*256]
+                units.append(abs(local).sum(axis=0,dtype=float))
+                partial+=(q[:,g*256:(g+1)*256].astype(np.float32)@local.astype(np.float32)).astype(float)
+            banks[bank].append(dict(Q_per_Cu=.45*partial/np.exp2(B[:,None]),B=B,dx=scale,active=B>0,units=np.array(units)))
+    return banks
+
+
+def prepare(bank,cu,bits):
+    prepared=[]
+    for s in bank:
+        caps,stats=geometry(s['units'],cu,bits);C=caps.sum(axis=0)
+        factor=np.exp2(s['B'])/(cu*.45)*s['dx']
+        # Holder is initially reset; each fresh array reset plus share preserves kT/C.
+        thermal=np.broadcast_to(base.KT*1e15*C[None,:],s['Q_per_Cu'].shape).copy()
+        prepared.append(dict(Q=cu*s['Q_per_Cu'],C=C,factor=factor,thermal=thermal,
+                             active=s['active'],B=s['B'],dx=s['dx'],groups=len(caps),static=stats))
+    return prepared
+
+
+def read(prepared,cu,bits,span,read_uv=0,thermal=False,rng=None,stats=False):
+    step=3.75*cu/4/16*span;out=np.zeros_like(prepared[0]['Q'])
+    count=Counter();maximum={};boundaries=[]
+    for s in prepared:
+        Q=s['Q']
+        if thermal or read_uv:
+            var=(s['C'][None,:]*read_uv*1e-6)**2+(s['thermal'] if thermal else 0)
+            Q=Q+rng.standard_normal(Q.shape)*np.sqrt(var)
+        code=np.floor(Q/step+.5)
+        clipped=(code < -2**(bits-1)) | (code > 2**(bits-1)-1)
+        reconstructed=np.clip(code,-2**(bits-1),2**(bits-1)-1)*step*np.exp2(s['B'][:,None])/(cu*.45)*s['dx'][:,None]
+        reconstructed[~s['active']]=0;out+=reconstructed
+        if stats:
+            columns=Q.shape[1];conversions=int(s['active'].sum())*columns
+            count.update(conversions=conversions,ADC_decisions=bits*conversions,
+                         clips=int(np.count_nonzero(clipped&s['active'][:,None])),
+                         column_plane_events=int(s['B'].sum())*s['groups']*columns)
+            for key,value in s['static'].items():
+                if key.startswith('maximum_'):maximum[key]=max(maximum.get(key,0),value)
+                else:count[key]+=value
+            maximum['maximum_abs_charge_fC']=max(maximum.get('maximum_abs_charge_fC',0),float(abs(Q).max()))
+            boundaries.append(clipped&s['active'][:,None])
+    return out,dict(count,**maximum,ADC_bits=bits,Vspan_V=span,deltaQ_fC=step),boundaries
+
+
+def noise_proxy(prepared,dw,read_uv):
+    variance=np.zeros_like(prepared[0]['Q'])
+    for s in prepared:
+        contribution=(s['thermal']+(s['C'][None,:]*read_uv*1e-6)**2)*s['factor'][:,None]**2
+        contribution[~s['active']]=0;variance+=contribution
+    return float(np.mean(variance*dw[None,:]**2))
+
+
+def selfcheck():
+    qedge=np.arange(-128,128,dtype=np.int8)
+    for format in ('signed_magnitude','balanced9'):
+        lo,hi,_=digits(qedge,format)
+        assert np.array_equal(lo.astype(np.int64)+radix(format)*hi.astype(np.int64),qedge)
+    lo,hi,_=digits(qedge,'balanced9')
+    assert abs(lo).max()==4 and abs(hi).max()==14
+    rng=np.random.default_rng(93941)
+    q=rng.integers(-511,512,(11,1093),dtype=np.int16);w=rng.integers(-127,128,(1093,7),dtype=np.int16)
+    dx=np.ones((len(q),5))
+    for pooled in (False,True):
+        for format in ('signed_magnitude','balanced9'):
+            bs=scenes(q,w,dx,pooled,format)
+            ideal=sum(radix(format)**i*sum((s['Q_per_Cu']*np.exp2(s['B'][:,None])/.45 for s in bank)) for i,bank in enumerate(bs))
+            assert np.allclose(ideal,q.astype(float)@w,atol=1e-7)
+            for b,bank in enumerate(bs):
+                prepared=prepare(bank,4,guard.BITS[b]);got,_,_=read(prepared,4,guard.BITS[b],.5,20,False,np.random.default_rng(5))
+                reference,_,_,_=guard.read(bank,b,'distributed',4,.5,20,False,np.random.default_rng(5))
+                assert np.array_equal(got,reference)
+    for groups in (1,3,4):
+        units=rng.integers(0,3500,(groups,19))
+        for cu in (4,8):
+            for b,n in enumerate(guard.BITS):
+                c,_=geometry(units,cu,n);r,_=guard.geometry(units,b,'distributed',cu)
+                assert np.array_equal(c,r)
+    for r in (.2,.5,.71,.97):
+        v=0.
+        for B in range(1,15):
+            v=r*r*v+(1-r*r)
+            assert abs(v-(1-r**(2*B)))<1e-14
+        assert abs(r*r+(1-r*r)-1)<1e-15
+    for s in prepared:
+        assert np.array_equal(s['thermal'],np.broadcast_to(base.KT*1e15*s['C'][None,:],s['Q'].shape))
+    print('PASS exact sums, ragged groups, geometry/read-only parity and complete-reset thermal recurrence',flush=True)
+
+
+def freeze():
+    OUT.mkdir(parents=True,exist_ok=True)
+    arch=json.loads((guard.OUT/'protocol.json').read_text())['architectures']
+    files=[Path(__file__),Path(base.__file__),Path(guard.__file__),ROOT/'scripts/compiler/metrics/imc_weight_digit_campaign.py',ROOT/'scripts/compiler/metrics/imc_radix9_precision_campaign.py']
+    protocol=dict(status='Frozen complete-reset correction before new calibration/quality; old sharing-only results preserved',sources={str(p):base.fingerprint(p) for p in files},
+      formats=['signed_magnitude','balanced9'],architectures=arch,Cu_fF=[4,8],ADC_bits=[10,11,12,13,14],
+      Vspan_V=[.0625,.125,.25,.5,1.,1.25],policies=['min_error','economy10'],calibration_read_uv=20,
+      calibration='Old27h3 clean Q8_0 first128 tokens only; recompute complete-reset/read20 proxy with unchanged frozen noiseless ADC errors. No quality-based configuration selection.',
+      selection='Proxy=exact noiseless quantization/clipping MSE plus independent thermal/read20 output variance, weighted by dw; min_error minimizes proxy; economy10 minimizes bits then proxy within1.10*minimum. High-slice radix9/16 significance is common to all choices within that bank.',
+      proxy_limit='Selection proxy omits noise-quantization/clipping interaction. Final quality explicitly draws noise before actual finite quantization; proxy itself is not a quality claim.',
+      modes=[['quantization_only',0,False,None],['read20',20,True,60001],['read20',20,True,60002]],
+      thermal_model='Initial holder reset variance kT/C; independent fully thermalized fresh array reset and share modes preserve kT/C for all B. Pooled charge variance kT*sum(Cg); no added join mode or independent dummy-reference capacitor. Actual device phase covariance remains unqualified.',
+      physical='Integer distributed native-cap allocation; all extra matched array/holder C and coarse fragments paid; fine excess retained. No ideal stack gain, row DAC noise, mismatch, row/reference common covariance, programmable bypass parasitics or transistor validity.',
+      scheduling='One depth perMVM/slice across all columns. Record round*depth sum, per-MVM lockstepmax-depth cost and global14 fixed-depth control. No concurrency benefit from average bits.',
+      reconstruction='Original: L+(H<<4); radix9: L+(H<<3)+H. One additional post-alignment addition per MVM output for radix9, with full width/carry/energy unverified.',
+      installed_C='Digit-dependent connected C is not installed programmable C. Symmetric original support needs22 conventional binary units; balanced9 also22, canonicalbalanced16 needs30. Custom/unary alternatives require their own decoder/area/noise evidence.',
+      storage='Maximum required depth recorded; disconnected programmable capacitor reserve, exact sign/carry decoder and physical ADC control/reference storage are unpriced.',
+      evaluation='Same two exposed first512-token passages; require KL<=.01 and PPLratio<=1.01 for both seeds/passages; reserved untouched. Reserved untouched. Same exposed passages/seeds; old source/calibration/results immutable.')
+    data=(json.dumps(protocol,indent=2)+'\n').encode();path=OUT/'protocol.json'
+    if path.exists():assert path.read_bytes()==data,'Protocol changed'
+    else:path.write_bytes(data)
+    snapshot=OUT/f'source_{base.fingerprint(__file__)}.py'
+    if snapshot.exists():assert snapshot.read_bytes()==Path(__file__).read_bytes()
+    else:snapshot.write_bytes(Path(__file__).read_bytes())
+    return protocol
+
+
+def load():
+    p=freeze();_,old,net,weights,sources=base.load()
+    sources.update(p['sources']);sources[str(OUT/'protocol.json')]=base.fingerprint(OUT/'protocol.json')
+    assert all(base.fingerprint(f)==h for f,h in sources.items())
+    return p,old,net,weights,sources
+
+
+def calibrate(cu):
+    selfcheck();p,_,net,weights,sources=load();assert cu in p['Cu_fF']
+    output=OUT/f'calibration_Cu{cu}.json';assert not output.exists()
+    previous_path=PREVIOUS/f'calibration_Cu{cu}.json'
+    previous=json.loads(previous_path.read_text())
+    assert previous['complete'] and all(base.fingerprint(f)==h for f,h in previous['sources'].items())
+    sources[str(previous_path)]=base.fingerprint(previous_path)
+    old_records={(r['format'],r['architecture'],r['layer'],r['tensor'],r['bank']):r for r in previous['records']}
+    note=next((Path.home()/'Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute').glob('27h3 *.md'))
+    sources[str(note)]=base.fingerprint(note);ids=base.tokenize_greedy(note.read_text(),net.vocab)[:128]
+    activations={}
+    def capture(li,name,a,w,y):activations[li,name]=a.copy();return y
+    net.mvm=capture;net(ids);net.mvm=None;assert len(activations)==210
+    records=[];started=time.perf_counter()
+    for format in p['formats']:
+        for arch in p['architectures']:
+            for (li,name),(s,w,dw) in weights.items():
+                q,dx,_=base.quantize(activations[li,name]/s,arch['kind'],arch['A'])
+                for bank,bs in enumerate(scenes(q,w,dx,arch['pooled'],format)):
+                    target=sum(scene['Q_per_Cu']*np.exp2(scene['B'][:,None])/.45*scene['dx'][:,None] for scene in bs)
+                    grid=[]
+                    saved={(g['bits'],g['span']):g for g in old_records[format,arch['label'],li,name,bank]['grid']}
+                    for bits in p['ADC_bits']:
+                        prepared=prepare(bs,cu,bits);noise=noise_proxy(prepared,dw,p['calibration_read_uv'])
+                        for span in p['Vspan_V']:
+                            old_grid=saved[bits,span]
+                            error=old_grid['deterministic_MSE']
+                            assert noise>old_grid['noise_variance_proxy']
+                            static_C=sum(s['static']['connected_C_fF'] for s in prepared)
+                            assert abs(static_C-old_grid['connected_C_fF'])<1e-5
+                            grid.append(dict(old_grid,noise_variance_proxy=noise,total_proxy=error+noise))
+                    best=min(grid,key=lambda g:(g['total_proxy'],g['bits'],g['span']))
+                    cheap=min((g for g in grid if g['total_proxy']<=1.1*best['total_proxy']+1e-30),
+                              key=lambda g:(g['bits'],g['total_proxy'],g['span']))
+                    records.append(dict(format=format,architecture=arch['label'],layer=li,tensor=name,bank=bank,
+                                        selected={'min_error':best,'economy10':cheap},grid=grid))
+                if (li+1)%5==0 and name==base.TENSORS[-1]:print('calibration',cu,format,arch['label'],li+1,flush=True)
+    assert all(base.fingerprint(f)==h for f,h in sources.items())
+    output.write_text(json.dumps(dict(complete=True,Cu_fF=cu,protocol=p,sources=sources,records=records,
+                                     calibration_token_ids_sha256=hashlib.sha256(np.array(ids,dtype='<i4').tobytes()).hexdigest(),
+                                     runtime_s=time.perf_counter()-started),indent=2)+'\n')
+    print('PASS frozen independent representation/precision/range calibration',cu,flush=True)
+
+
+def evaluate(cu):
+    selfcheck();p,old,net,weights,sources=load();assert cu in p['Cu_fF']
+    prior=guard.OUT/'distributed_Cu8.json';assert json.loads(prior.read_text())['complete']
+    cp=OUT/f'calibration_Cu{cu}.json';cal=json.loads(cp.read_text())
+    assert cal['complete'] and all(base.fingerprint(f)==h for f,h in cal['sources'].items())
+    sources[str(cp)]=base.fingerprint(cp);sources[str(prior)]=base.fingerprint(prior)
+    choices={(r['format'],r['architecture'],r['layer'],r['tensor'],r['bank']):r['selected'] for r in cal['records']}
+    output=OUT/f'quality_Cu{cu}.json';assert not output.exists()
+    results=[];report=dict(complete=False,Cu_fF=cu,protocol=p,sources=sources,results=results,
+                          classification='Conditional complete-depth W8 with full independent reset/share thermal floor and assumed read20; physical covariance/parasitics/ADC/fullPPA unqualified')
+    for src in old['sources']:
+        note=Path(src['path']);assert base.fingerprint(note)==src['sha256']
+        ids=base.tokenize_greedy(note.read_text(),net.vocab)[:512];net.mvm=None;ev=base.Eval(net,ids)
+        for format in p['formats']:
+            for arch in p['architectures']:
+                for policy in p['policies']:
+                    for mode,read_uv,thermal,seed in p['modes']:
+                        rng=np.random.default_rng(seed);tensors=[];started=time.perf_counter()
+                        def compute(li,name,a,w,clean):
+                            scale,wq,dw=weights[li,name];q,dx,_=base.quantize(a/scale,arch['kind'],arch['A'])
+                            parts=[];counts=[]
+                            for bank,bs in enumerate(scenes(q,wq,dx,arch['pooled'],format)):
+                                setting=choices[format,arch['label'],li,name,bank][policy];n,span=setting['bits'],setting['span']
+                                got,c,flags=read(prepare(bs,cu,n),cu,n,span,read_uv,thermal,rng,stats=True)
+                                schedule=guard.stalls(flags,arch['pooled'])
+                                c.update(conditional_ADC_rounds=schedule['conditional_ADC_rounds'],
+                                         conditional_round_decisions=n*schedule['conditional_ADC_rounds'],
+                                         conditional_rounds_with_clip=schedule['conditional_rounds_with_boundary'])
+                                counts.append(c);parts.append(got)
+                            depth=max(c['ADC_bits'] for c in counts);rounds=sum(c['conditional_ADC_rounds'] for c in counts)
+                            tensors.append(dict(layer=li,tensor=name,banks=counts,max_ADC_bits=depth,
+                                output_columns=int(wq.shape[1]),
+                                per_MVM_max_depth_round_decisions=depth*rounds,global14_round_decisions=14*rounds))
+                            return ((parts[0]+radix(format)*parts[1])*dw).astype(np.float32)
+                        net.mvm=compute;quality=ev.score(net(ids));assert len(tensors)==210
+                        keys=('conversions','ADC_decisions','clips','column_plane_events','connected_C_fF','two_sided_padding_fF',
+                              'coarse_switch_fragments','conditional_ADC_rounds','conditional_round_decisions','conditional_rounds_with_clip')
+                        totals={k:sum(b[k] for t in tensors for b in t['banks']) for k in keys}
+                        totals.update(radix9_extra_postalignment_additions=(len(ids)*sum(t['output_columns'] for t in tensors) if format=='balanced9' else 0),
+                                      per_MVM_max_depth_round_decisions=sum(t['per_MVM_max_depth_round_decisions'] for t in tensors),
+                                      global14_round_decisions=sum(t['global14_round_decisions'] for t in tensors),
+                                      maximum_ADC_bits=max(t['max_ADC_bits'] for t in tensors),
+                                      maximum_joined_fF=max(b['maximum_joined_fF'] for t in tensors for b in t['banks']))
+                        histogram=Counter()
+                        for t in tensors:
+                            for b in t['banks']:histogram[b['ADC_bits']]+=b['conversions']
+                        r=dict(source=note.name,format=format,architecture=arch['label'],policy=policy,mode=mode,seed=seed,
+                               **quality,**totals,conversion_depth_histogram=dict(histogram),tensors=tensors,
+                               runtime_s=time.perf_counter()-started,joint_pass=quality['kl']<=.01 and quality['ppl_ratio']<=1.01)
+                        results.append(r);output.write_text(json.dumps(report,indent=2)+'\n')
+                        print(cu,note.stem[:8],format,arch['label'],policy,mode,seed,
+                              {k:r[k] for k in ('kl','ppl_ratio','joint_pass','ADC_decisions','clips')},flush=True)
+        net.mvm=None;assert np.array_equal(net(ids),ev.ref)
+    assert all(base.fingerprint(f)==h for f,h in sources.items())
+    report['complete']=True;output.write_text(json.dumps(report,indent=2)+'\n')
+    print('PASS frozen representation/precision evaluation',cu,'quality',sum(r['joint_pass'] for r in results),'/',len(results),flush=True)
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--freeze',action='store_true');parser.add_argument('--selfcheck',action='store_true')
+    parser.add_argument('--calibrate',action='store_true');parser.add_argument('--cu',type=int,choices=(4,8),default=4)
+    a=parser.parse_args()
+    if a.freeze:freeze()
+    elif a.selfcheck:selfcheck()
+    elif a.calibrate:calibrate(a.cu)
+    else:evaluate(a.cu)

@@ -1,0 +1,32 @@
+// 4b R-string ladder + tap mux — behavioural golden model, ports 1:1 with
+// netlist/rstring_ladder. out = vrn + code*(vrp - vrn)/15, code = b3..b0.
+//
+// Continuous form (OpenVAF subset: no @(cross), no transition()): each bit is a tanh
+// threshold at vdd/2, so the code (and the tap) moves smoothly between slots; `out` is a
+// Thevenin source of R_on of the mux TG (rout) behind an ideal tap — the per-tap decap
+// is modelled as perfect (kick droop of the real ladder is C_kick*V_kick/c_tap, 0.25 mV).
+// The string draws (vrp - vrn)/(15*rseg) from the rails. Not modelled: decoder delay,
+// TG charge injection, the slow string recovery of a tap after a disturbance.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module rstring_ladder(b0, b1, b2, b3, out, vrn, vrp, vdd, vss);
+    inout b0, b1, b2, b3, out, vrn, vrp, vdd, vss;
+    electrical b0, b1, b2, b3, out, vrn, vrp, vdd, vss;
+
+    parameter real rseg = 8e3 from (0:inf);     // segment resistance (ohm)
+    parameter real rout = 3e3 from (0:inf);     // selected mux TG R_on (ohm)
+    parameter real vs = 0.02 from (0:inf);      // bit threshold softness (V)
+
+    real vt, code;
+
+    analog begin
+        vt = V(vdd, vss) / 2;
+        code = 0.5 * (1.0 + tanh((V(b0, vss) - vt) / vs))
+             + 1.0 * (1.0 + tanh((V(b1, vss) - vt) / vs))
+             + 2.0 * (1.0 + tanh((V(b2, vss) - vt) / vs))
+             + 4.0 * (1.0 + tanh((V(b3, vss) - vt) / vs));
+        I(vrp, vrn) <+ V(vrp, vrn) / (15.0 * rseg);
+        I(out, vss) <+ (V(out, vss) - V(vrn, vss) - code * V(vrp, vrn) / 15.0) / rout;
+    end
+endmodule

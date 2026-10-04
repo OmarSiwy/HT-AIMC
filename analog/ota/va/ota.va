@@ -1,0 +1,37 @@
+// Telescopic OTA — behavioural golden model, ports 1:1 with netlist/ota.
+// Single-stage transconductor into the external load:
+//   Io = itail * tanh(gm * (V(inp,inn) - voff) / itail)   small-signal gm, slews at +-itail
+//   g_out = gm / a0 inside [vlo, vdd - vhr]; outside, g_out rises exponentially (edge
+//   width vedge) so the open-loop gain collapses the way the cascodes leave saturation
+//   cout: the OTA's own output capacitance; the supply draws itail (the tail current)
+// Bias ports are sense-only: the model is the OTA at the nominal bias() operating point
+// and does not track vb_* (no bias-error, CMRR, PSRR or non-dominant pole modelling).
+`include "disciplines.vams"
+`include "constants.vams"
+
+module ota(inp, inn, out, vb_nc, vb_pc, vb_tail, vdd, vss);
+    inout inp, inn, out, vb_nc, vb_pc, vb_tail, vdd, vss;
+    electrical inp, inn, out, vb_nc, vb_pc, vb_tail, vdd, vss;
+
+    parameter real gm = 72e-6 from (0:inf);         // input-pair transconductance (S)
+    parameter real itail = 12e-6 from (0:inf);      // tail current (A)
+    parameter real a0 = 500 from (1:inf);           // open-loop gain in range
+    parameter real voff = 0.0 from [-0.1:0.1];      // input-referred offset (V)
+    parameter real vlo = 0.5 from [0:inf);          // low edge of the linear range (V)
+    parameter real vhr = 0.45 from [0:inf);         // high edge headroom below vdd (V)
+    parameter real vedge = 0.03 from (0:inf);       // range edge sharpness (V)
+    parameter real cout = 15e-15 from [0:inf);      // output self-capacitance (F)
+
+    real io, go, vo, vhi;
+
+    analog begin
+        io = itail * tanh(gm * (V(inp, inn) - voff) / itail);
+        go = gm / a0;
+        vo = V(out, vss);
+        vhi = V(vdd, vss) - vhr;
+        I(out, vss) <+ -io + go * (vo - V(vdd, vss) / 2)
+                       + go * vedge * (limexp((vo - vhi) / vedge) - limexp((vlo - vo) / vedge));
+        I(out, vss) <+ cout * ddt(V(out, vss));
+        I(vdd, vss) <+ itail;
+    end
+endmodule

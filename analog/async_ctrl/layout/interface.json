@@ -1,0 +1,12 @@
+{
+  "pins": [
+    { "net": "vdd",       "side": "north", "frac": 0.5 },
+    { "net": "vss",       "side": "south", "frac": 0.5 },
+    { "net": "go",        "side": "west",  "frac": 0.35 },
+    { "net": "adc_done",  "side": "west",  "frac": 0.65 },
+    { "net": "xbar_rst",  "side": "east",  "frac": 0.2 },
+    { "net": "adc_go",    "side": "east",  "frac": 0.4 },
+    { "net": "latch_out", "side": "east",  "frac": 0.6 },
+    { "net": "done",      "side": "east",  "frac": 0.8 }
+  ]
+}

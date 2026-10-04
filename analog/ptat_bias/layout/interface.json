@@ -1,0 +1,8 @@
+{
+  "die": { "w": 100000, "h": 80000 },
+  "pins": [
+    { "net": "vdd",     "side": "north", "frac": 0.5 },
+    { "net": "vss",     "side": "south", "frac": 0.5 },
+    { "net": "vb_tail", "side": "east",  "frac": 0.5 }
+  ]
+}

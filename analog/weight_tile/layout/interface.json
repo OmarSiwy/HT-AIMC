@@ -1,0 +1,14 @@
+{
+  "die": { "w": 90000, "h": 70000 },
+  "pins": [
+    { "net": "vdd",      "side": "north", "frac": 0.3 },
+    { "net": "vcm",      "side": "north", "frac": 0.7 },
+    { "net": "vss",      "side": "south", "frac": 0.5 },
+    { "net": "xin_p_r0", "side": "west",  "frac": 0.15 },
+    { "net": "xin_n_r0", "side": "west",  "frac": 0.3 },
+    { "net": "phi1",     "side": "west",  "frac": 0.5 },
+    { "net": "phi1e",    "side": "west",  "frac": 0.65 },
+    { "net": "phi2",     "side": "west",  "frac": 0.8 },
+    { "net": "col0",     "side": "east",  "frac": 0.5 }
+  ]
+}

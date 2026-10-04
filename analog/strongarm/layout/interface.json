@@ -1,0 +1,12 @@
+{
+  "die": { "w": 40000, "h": 30000 },
+  "pins": [
+    { "net": "vdd",  "side": "north", "frac": 0.5 },
+    { "net": "vss",  "side": "south", "frac": 0.5 },
+    { "net": "vinp", "side": "west",  "frac": 0.35 },
+    { "net": "vinn", "side": "west",  "frac": 0.65 },
+    { "net": "outp", "side": "east",  "frac": 0.35 },
+    { "net": "outn", "side": "east",  "frac": 0.65 },
+    { "net": "clk",  "side": "south", "frac": 0.2 }
+  ]
+}

@@ -1,0 +1,39 @@
+// PTAT bias — behavioural golden model, ports 1:1 with netlist/ptat_bias.
+// vb_tail is the gate voltage of a diode-connected softmax-tail replica carrying
+// I_ptat ~ T: a Thevenin source vb(T) = vb0 + tcv*(T - tnom) behind rout (the replica
+// diode's 1/gm). A PDK tail device on vb_tail then carries the PTAT current; the model
+// holds the port voltage, the tail device's own law is left to the PDK.
+//
+// Continuous form (OpenVAF subset): the output is gated by a tanh supply-on factor and
+// settles through an internal RC (tau) after VDD comes up — stands in for the startup
+// transient. Supply current idd0 scales with T (the legs carry I_ptat multiples).
+// Defaults fitted to the transistor-level deck at tt 27/85 C (DUT=sch).
+// Not modelled: line sensitivity (vb is VDD-independent above vmin), mismatch, corners.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module ptat_bias(vb_tail, vdd, vss);
+    inout vb_tail, vdd, vss;
+    electrical vb_tail, vdd, vss;
+    electrical vi;                                  // settled (internal) vb
+
+    parameter real vb0 = 0.454 from (0:inf);        // vb_tail at tnom (V)
+    parameter real tcv = -0.93e-3;                  // dvb/dT (V/K)
+    parameter real tnom = 27.0;                     // C
+    parameter real vmin = 1.0 from (0:inf);         // supply at which the loop is up (V)
+    parameter real idd0 = 4.07e-6 from [0:inf);     // supply current at tnom (A)
+    parameter real tau = 0.3e-6 from (0:inf);       // startup settling (s)
+    parameter real rout = 60e3 from (0:inf);        // replica 1/gm (ohm)
+
+    real on, vt, rf;
+
+    analog begin
+        on = 0.5 * (1.0 + tanh((V(vdd, vss) - vmin) / 0.05));
+        vt = vb0 + tcv * ($temperature - `P_CELSIUS0 - tnom);
+        rf = 1e3;
+        I(vi, vss) <+ (V(vi, vss) - on * vt) / rf;
+        I(vi, vss) <+ tau / rf * ddt(V(vi, vss));
+        I(vb_tail, vss) <+ (V(vb_tail, vss) - V(vi, vss)) / rout;
+        I(vdd, vss) <+ on * idd0 * $temperature / (tnom + `P_CELSIUS0);
+    end
+endmodule

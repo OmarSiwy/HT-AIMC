@@ -1,0 +1,114 @@
+# AnalogIOC optimization campaign — consolidated honest scorecard
+
+Date: 2026-08-29. Baseline `ce939f6` → head (25+ commits). Every number below
+is labeled **measured** (SPICE tb in this repo), **derived** (specs.py law on
+measured params), or **projected** (projection-grade PDK sets / model-scaling,
+low confidence). The campaign's discipline was to surface and *correct* its own
+overclaims rather than ship green lies — the corrections are listed as
+prominently as the wins.
+
+## 1. Executive summary (the honest headline)
+
+- **Weight engine tok/s vs Etched Sohu: PARITY→1.20×** (N4/7B: series **0.97×**,
+  parallel super-tile **1.20×**, projected), not the 2× an early pass claimed.
+  The parallel super-tile is now SPICE-VERIFIED (gain error flat 0.44% across
+  K=1/2/4 vs series 0.44→1.13%); it lifts FFN K 7→9 (+2 free), but 2× is not
+  reachable — the random √K term caps FFN at K=9 and the gain servo is
+  Pelgrom-floored. Past 1.20× needs higher per-stage SNR, not topology.
+- **tok/J: >5× vs an INFERRED Sohu number, and PROJECTION-CONTINGENT.** The
+  measured mini SPICE chain is static-OTA-dominated (~35 tok/J at 7B, *loses*
+  to Sohu); the win requires the paper's amortized converter (~45k tok/J
+  projection). Sohu published no power number — the 35–60 tok/J band we
+  compare against is inferred, not vendor.
+- **Cascade STRUCTURE is silicon-proven** (energy/pass 0.55×/0.41×, chain
+  0.49×/0.31× at K=2/4, measured). This is the real tok/s + tok/J lever.
+- **Accuracy is model-adequate, not bit-exact.** The tile reads ±3 LSB (not
+  ±1) on real multi-bank passes; the model tolerates ±8 LSB (100% argmax) — so
+  it's fine. The strict ±1 gate was a converter-ENOB target, not a model
+  requirement.
+- **Chip 2 (analog attention engine) is functionally PROVEN end-to-end**
+  (o_t cos 0.998, KV-in-analog, no HBM) — the decode-compute-bound
+  differentiator Sohu structurally cannot match from HBM.
+
+## 2. Silicon-proven (measured SPICE)
+
+| Result | Measured | Commit |
+|---|---|---|
+| K* cascade amortization | E/pass 0.55×(K2)/0.41×(K4); chain 0.49×/0.31×; timing tracks law ±15 ns | ad8e4a3 |
+| Cascade mechanism faithful | cascade-c1 == proven lo window bit-for-bit | ec97a2f |
+| Multi-bank charge deficit root cause | real column delivers ~84% of ideal (finite-OTA on shared rail + C_RAIL) | ec97a2f |
+| Per-column measured gain | col1 −48 → exact (removes cell-pattern scatter) | bff2b15 |
+| mac+15 fine-SAR fix | tb_integrator_conv 5/5 ±1 LSB (fine_ref_trim) | 30022ce |
+| Tile accuracy model-adequate | ±3 LSB measured; model tolerant to ±8 (argmax 100%) | cd44e48/ee8e810 |
+| WTA running-max (Chip 2) | shift-invariance 0.14% (vs 14% forked); 28/28 tb | 77e1de4 |
+| Analog online-softmax monoid | associativity 1e-12; single-bank l 0–1.15% | fd61806 |
+| Combine tree (G=16 holds) | group o/l 1.80% < 2.5%; 103 mV < 120 mV window | 1e4a4a9 |
+| Long-stream rescale → fp32 | analog charge-rescale marginal/compounds (confirms spec §4) | 1e4a4a9 |
+| Chip 2 e2e attention | o_t cos 0.998; qK 0.21%; 29.6 pJ/tok, 2.17 µs/tok; model-adequate | 366e612/da4119a |
+| PTAT softmax bias | I_b +22.4% (vs +281% fixed); + compiler score-prescale → drift −13%→−1.4% | ca7643d/e9f49fd |
+| KV gain-cell feasibility | non-destructive read −4.3 µV/read; τ 27 ms → 1.7 ms refresh-free | 254fd5d |
+| Parallel super-tile | gain error K-INDEPENDENT (flat 0.44% K=1/2/4 vs series 0.44→1.13%); 1.20× Sohu; charge-bus lossy→INT8 digital sum | 84410e6 |
+
+## 3. Projected (labeled, lower confidence)
+
+- **tok/s/die 7B (per-layer K, avg K=6.54):** sky130-real ~1.0k, asap7 42.8k,
+  **N4 60.3k = 0.97× Sohu** (derived from measured amortization + PDK laws).
+- **tok/J 7B:** amortized-converter projection ~45k (>5× the inferred Sohu
+  band); the measured mini chain is ~35 (static-OTA-limited) — gap is the
+  amortization the mini's 50×-slow grid doesn't show.
+- **3D vertical (L):** capacity 11→3–6 dies at realistic L=2–4; **not an
+  energy win** (+½log₂L converter bit → falsifier fires at L=2). L=8 charge-
+  domain is projection-only (no silicon).
+- **MoE:** tok/J advantage = E/k (DeepSeek 32×, Mixtral 4×), on the existing
+  charge-domain substrate; needs per-expert gating + separate-tile mapping.
+
+## 4. Honest negatives (what does NOT work — as valuable as the wins)
+
+- **DPS-48 bilinear:** exact in integer arith (−0.02 dB) but +4.7–10.9 dB
+  under INT4 cap quantization; recovering it needs 1.5× passes → net-negative.
+  Dead-end at INT4 (may revive at fp8). `0d59d88`
+- **CSD recode:** −0.6% real (not −33%) — real INT4 weight density is already
+  0.196 ≪ ½, so signed-digit recode barely helps. `9ebd804`
+- **Adaptive-range converter:** ~0.2% whole-pass — early-termination already
+  harvested it; 83% of pass energy is OTA static (conversion *time*), which
+  range doesn't shorten. Did NOT build the circuit. `07c4c7c`
+- **2× tok/s via gain servo:** not reachable — eg→tok/s saturates at ~1.2×
+  (random √K caps FFN K at 9–10); Pelgrom uncorrelated floor (1.4–2.3%) sits
+  ~10× above the 0.15% eg the 2× would need. `a0b47d7`
+- **Levers don't multiply:** cascade-K, lattice thresholds, per-layer-K all
+  draw the *same* SNR budget; only cascade-amortization × CSD stack. `9ebd804`
+- **Count-dependent INL theory:** wrong — it's fine-SAR mid-code DNL ×
+  mixed-sign gain (no cheap digital-LUT fix). `d75a817`
+
+## 5. vs Etched Sohu — the honest comparison (SOHU_VERIFIED.md, 844587e)
+
+- Sohu **62.5k tok/s/die** = vendor 500k/8-chip, at **Llama-70B FP8
+  batch~1000** — a high-batch GEMM number, NOT batch-1 decode (where AnalogIOC's
+  analog edge lives). tok/s comparison is thus cross-regime.
+- Sohu **tok/J is UNPUBLISHED**; the 35–60 band is inferred. Our ">5× tok/J"
+  is our projection vs an inferred denominator.
+- Where AnalogIOC has a *structural* edge Sohu can't copy: **decode attention
+  is compute-bound** (KV in analog, no HBM) — Chip 2. Sohu pulls KV through
+  HBM and stays memory-bound in decode.
+
+## 6. Remaining work (ranked, not blocking the above)
+
+- **#22 parallel super-tile** — SPICE verification in flight; projected ~1.2×
+  tok/s (gain K-independent). Modest; optional.
+- **#27 Chip 2 system integration** — RTL fp32 island + GALS die-link +
+  long-context CAM + batch mapping. Large digital/interface effort; the
+  analog datapath is already proven.
+- **Reduce exp+A·V translinear error** for Chip 2 margin (PTAT co-scale helps);
+  not a correctness blocker (#26).
+
+## 7. The one-paragraph verdict
+
+AnalogIOC is a **defensible energy-efficient analog accelerator, not a raw-speed
+killer**. Its silicon-proven strengths are the cascade amortization, KV
+residency (decode compute-bound), and model-adequate charge-domain accuracy;
+its honest position is **tok/s parity** with a 4 nm production ASIC (projected)
+and a **tok/J advantage that is real in the laws but projection-contingent** on
+the amortized converter, compared against a Sohu energy number that isn't even
+published. The campaign's value is the *map*: every lever measured or refuted,
+every claim labeled, the wins (cascade, Chip 2, KV) separated cleanly from the
+mirages (2× tok/s, −33% CSD, DPS-48, adaptive range).

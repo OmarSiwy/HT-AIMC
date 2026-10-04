@@ -1,0 +1,3 @@
+[submodule "analog/library"]
+	path = analog/library
+	url = git@github.com:UW-ASIC/AnalogLibrary.git
