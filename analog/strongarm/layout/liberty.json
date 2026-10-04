@@ -1,0 +1,214 @@
+{
+ "cell": "strongarm",
+ "substrate": "vss",
+ "pins": [
+  {
+   "name": "vinp",
+   "role": "analog",
+   "power": "vdd",
+   "ground": "vss",
+   "direction": "input",
+   "bias": 0.9
+  },
+  {
+   "name": "vinn",
+   "role": "analog",
+   "power": "vdd",
+   "ground": "vss",
+   "direction": "input",
+   "bias": 0.9
+  },
+  {
+   "name": "outp",
+   "role": "output",
+   "power": "vdd",
+   "ground": "vss"
+  },
+  {
+   "name": "outn",
+   "role": "output",
+   "power": "vdd",
+   "ground": "vss"
+  },
+  {
+   "name": "clk",
+   "role": "clock",
+   "power": "vdd",
+   "ground": "vss"
+  },
+  {
+   "name": "vdd",
+   "role": "power"
+  },
+  {
+   "name": "vss",
+   "role": "ground"
+  }
+ ],
+ "arcs": [
+  {
+   "from": "clk",
+   "to": "outp",
+   "kind": "rising_edge",
+   "cases": [
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.9500000000000001,
+       "vinn": 0.85
+      }
+     ],
+     "output": "fall"
+    },
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.905,
+       "vinn": 0.895
+      }
+     ],
+     "output": "fall"
+    }
+   ]
+  },
+  {
+   "from": "clk",
+   "to": "outp",
+   "kind": "falling_edge",
+   "cases": [
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.9500000000000001,
+       "vinn": 0.85
+      },
+      {
+       "clk": "1"
+      }
+     ],
+     "output": "rise"
+    },
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.905,
+       "vinn": 0.895
+      },
+      {
+       "clk": "1"
+      }
+     ],
+     "output": "rise"
+    }
+   ]
+  },
+  {
+   "from": "clk",
+   "to": "outn",
+   "kind": "rising_edge",
+   "cases": [
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.85,
+       "vinn": 0.9500000000000001
+      }
+     ],
+     "output": "fall"
+    },
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.895,
+       "vinn": 0.905
+      }
+     ],
+     "output": "fall"
+    }
+   ]
+  },
+  {
+   "from": "clk",
+   "to": "outn",
+   "kind": "falling_edge",
+   "cases": [
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.85,
+       "vinn": 0.9500000000000001
+      },
+      {
+       "clk": "1"
+      }
+     ],
+     "output": "rise"
+    },
+    {
+     "vectors": [
+      {
+       "clk": "0",
+       "vinp": 0.895,
+       "vinn": 0.905
+      },
+      {
+       "clk": "1"
+      }
+     ],
+     "output": "rise"
+    }
+   ]
+  }
+ ],
+ "corners": [
+  {
+   "name": "tt_025C_1v80",
+   "temperature": 25,
+   "supplies": {
+    "vdd": 1.8,
+    "vss": 0
+   },
+   "models": [
+    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" tt"
+   ],
+   "mc_models": [
+    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" tt_mm"
+   ]
+  },
+  {
+   "name": "ss_100C_1v60",
+   "temperature": 100,
+   "supplies": {
+    "vdd": 1.6,
+    "vss": 0
+   },
+   "models": [
+    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ss"
+   ],
+   "mc_models": [
+    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ss_mm"
+   ]
+  },
+  {
+   "name": "ff_n40C_1v95",
+   "temperature": -40,
+   "supplies": {
+    "vdd": 1.95,
+    "vss": 0
+   },
+   "models": [
+    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ff"
+   ],
+   "mc_models": [
+    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ff_mm"
+   ]
+  }
+ ]
+}
