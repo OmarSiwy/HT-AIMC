@@ -43,7 +43,7 @@ The legacy deterministic column-zero accuracy criterion is RMS < 0.25 MAC and ma
 
 ## Reproducibility
 
-Generator: [tb_imc_native_pipeline.py](../../../../../analog/testbenches/tb_imc_native_pipeline.py). It uses `connected_sar.capture` to obtain the real core, the same waveform-closing helper, and the shared physical-diffusion annotation. Exactly flat PWL vertices are removed only after checking voltage-waveform equivalence. Original and modified decks, imported source snapshots, frozen input hashes, solver settings and output hashes are retained under `build/campaign/native_pipeline/`. Choose new names for reruns.
+Generator: tb_imc_native_pipeline.py. It uses `connected_sar.capture` to obtain the real core, the same waveform-closing helper, and the shared physical-diffusion annotation. Exactly flat PWL vertices are removed only after checking voltage-waveform equivalence. Original and modified decks, imported source snapshots, frozen input hashes, solver settings and output hashes are retained under `build/campaign/native_pipeline/`. Choose new names for reruns.
 
 ```sh
 /nix/store/lmam35qlyl43gaw4x19128gqhymcgkgr-python3-3.13.13-env/bin/python3 analog/testbenches/tb_imc_native_pipeline.py --name tt_serial_3_untrimmed --banks 1 --max-words 3

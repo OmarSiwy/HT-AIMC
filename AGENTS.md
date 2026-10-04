@@ -3,6 +3,11 @@
 Guide for agents working in **AnalogIOC**, an analog in-memory-compute (IMC)
 transformer accelerator on sky130. Read this before adding anything.
 
+Scope: one chip, the IMC MVM core. Transformer attention is an *application*: its
+projections run on the tiles, while the KV cache, softmax and A·V run on the digital
+rail (`docs/src/content/Project/APPLICATION_ATTENTION.md`). Don't add analog attention
+blocks.
+
 `docs/src/content/Project/CONTRACT.md` is the authoritative spec. Read it first.
 `docs/src/content/Project/STATUS.md` is the running log: append to it, never rewrite it.
 
@@ -11,6 +16,7 @@ transformer accelerator on sky130. Read this before adding anything.
 ```
 AnalogIOC/
 ├── AGENTS.md                # this file
+├── REQUIRED_TOOLING.md      # tools/features we need but don't have yet
 ├── env.sh                   # environment entry point (see "Environment")
 ├── analog/                  # one dir per analog block, see analog/README.md
 │   ├── <block>/             # netlist/ va/ test/ docs/ schematics/ layout/ build/ output/
@@ -107,6 +113,7 @@ upstream the fix and re-copy it.
 | Test weights | `scripts/models/` (gitignored, never committed) |
 | Research / design docs | `docs/src/content/Project/*.md` (plain markdown, shows up on the site automatically) |
 | Tool or env dependency | `.flows/env/Analog.nix` / `Digital.nix` |
+| Missing tool / feature request | `REQUIRED_TOOLING.md`; bugs in existing tools go in `analog/docs/TOOL_ISSUES.md` |
 
 `analog/library/` is a git submodule
 ([UW-ASIC/AnalogLibrary](https://github.com/UW-ASIC/AnalogLibrary)). Put a component

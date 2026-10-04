@@ -2,7 +2,7 @@
 
 Review begun 2026-09-09. The prototype performs **ten causal comparator-driven SAR decisions**. Its initial three-input SPICE run fails the numerical conversion gate; stronger reset plus a fixed physical reference trim subsequently passes twelve separate validation inputs at TT/27°C and SS/85°C. The ideal split-capacitor arithmetic is correct. This is a research fixture, not a production converter or evidence of a Mythic benchmark win.
 
-The read-only review covers [tb_imc_null_sar.py](../../../../analog/testbenches/tb_imc_null_sar.py), its saved transient traces, the [Mythic nulling research](IMC_MYTHIC_NULLING.md), and the user's [27h10 note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27h10 A Null-Balancing SAR Readout Pays for Precision with Matching Instead of Standing Bias.md>). No additional SPICE runs were launched by this review. Follow-up circuit changes and final results belong in [IMC_NULL_SAR.md](IMC_NULL_SAR.md).
+The read-only review covers tb_imc_null_sar.py, its saved transient traces, the [Mythic nulling research](IMC_MYTHIC_NULLING.md), and the user's [27h10 note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27h10 A Null-Balancing SAR Readout Pays for Precision with Matching Instead of Standing Bias.md>). No additional SPICE runs were launched by this review. Follow-up circuit changes and final results belong in [IMC_NULL_SAR.md](IMC_NULL_SAR.md).
 
 ## Charge arithmetic and initial conditions
 
@@ -46,9 +46,9 @@ The original TT, 27°C, three-input smoke run used 0.84-µm reset switches. It r
 
 The circuit lane's first 3.36-µm reset diagnostic returned `[6, 516, 1023]`: the large history error was reduced, but **5-LSB maximum error remains, FAIL**. A digital offset subtraction alone cannot validate the full input range: the saturated high-end code can conceal missing codes, and subtracting an offset after saturation loses information. A physical reference/offset trim or an explicitly smaller usable input range is required before claiming full-range calibrated conversion.
 
-The initial artifact is [the three-input smoke record](../../../../build/sim/imc_null_sar_n1_f3_tt_27_cb0_cu12_iw3p5_sw1p68_rw0p84_t28_e2_cf60.json); the stronger-reset diagnostic is [imc_null_sar_reset_diagnosis.json](../../../../build/sim/imc_null_sar_reset_diagnosis.json). These results are preserved as failed controls, even if later sizing succeeds.
+The initial artifact is the three-input smoke record; the stronger-reset diagnostic is imc_null_sar_reset_diagnosis.json. These results are preserved as failed controls, even if later sizing succeeds.
 
-The follow-up fixes the comparator reference at `VCM−1.900 mV` after the diagnostic, without subtracting a correction from saturated output codes. Twelve distinct validation inputs then pass at both TT/27°C and SS/85°C: maximum error 1 LSB and RMS error 0.577 LSB at each corner. The identical RMS values reflect different patterns of integer errors, not identical codes. The [trim-validation artifact](../../../../build/sim/imc_null_sar_trim_validation.json) reports 2.531 and 2.561 pJ per service, respectively, using the corrected measurement windows. This verifies the stated twelve-input deterministic control; it is not an exhaustive transition, noise, mismatch, or full-range PVT qualification. The physical precision/trim reference circuitry remains unpriced.
+The follow-up fixes the comparator reference at `VCM−1.900 mV` after the diagnostic, without subtracting a correction from saturated output codes. Twelve distinct validation inputs then pass at both TT/27°C and SS/85°C: maximum error 1 LSB and RMS error 0.577 LSB at each corner. The identical RMS values reflect different patterns of integer errors, not identical codes. The trim-validation artifact reports 2.531 and 2.561 pJ per service, respectively, using the corrected measurement windows. This verifies the stated twelve-input deterministic control; it is not an exhaustive transition, noise, mismatch, or full-range PVT qualification. The physical precision/trim reference circuitry remains unpriced.
 
 The initial twelve-input set is not wholly independent of calibration: the 512.25-code input repeats one of the three calibration voltages, under a different preceding input history. Eleven voltage levels are new. Subsequent sizing sees the entire twelve-input set, so it is a development set thereafter. The planned three-frame, eight-column test supplies 21 fresh random voltage levels on columns 1–7 and three previously seen fixed levels on column 0; reporting all 24 as fresh would also overstate independence.
 
@@ -59,9 +59,9 @@ Subsequent capacitor-proportional switches and half-width latch PMOS reduce ener
 | 20-ns decision, 0.5-ns clock edge, 2-ns resolution | 1-LSB max, 2.045 pJ | 3-LSB max, 2.105 pJ | No |
 | 23-ns decision, 2-ns clock edge, 2-ns resolution | 1-LSB max, 2.093 pJ | 2-LSB max, 2.096 pJ | No |
 
-The corresponding paid cycles are 265 and 295 ns. Neither TT-only speed/energy number is a passing PVT result. These failures are preserved in [imc_null_sar_sized_suite.json](../../../../build/sim/imc_null_sar_sized_suite.json) and [imc_null_sar_sized_slow_edge_suite.json](../../../../build/sim/imc_null_sar_sized_slow_edge_suite.json). The twelve inputs now serve as development tests, since sizing decisions have seen their outcomes; independent random-column inputs must remain a separate check.
+The corresponding paid cycles are 265 and 295 ns. Neither TT-only speed/energy number is a passing PVT result. These failures are preserved in imc_null_sar_sized_suite.json and imc_null_sar_sized_slow_edge_suite.json. The twelve inputs now serve as development tests, since sizing decisions have seen their outcomes; independent random-column inputs must remain a separate check.
 
-An explicit internal-drain reset experiment, guided by the user's [19u2 precharge note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Comparators/19u2 Precharge Gives the Input Pair Saturation and Erases Node Memory.md>), adds two PMOS switches from the input-pair drain nodes to VDD during comparator reset. Their supply energy and clock-gate delivery enter the existing measured ports. The three-input SS smoke pass does not survive the twelve-input development set: maximum error is 3 LSB, RMS 1.258 LSB, and delivery 2.190 pJ at 23-ns decisions. Restoring the reduced-latch design to the original 28-ns decisions and 4-ns resolution interval without internal resets also fails: maximum error 2 LSB, RMS 0.816 LSB, delivery 2.120 pJ. See [the memory controls](../../../../build/sim/imc_null_sar_memory_controls.json).
+An explicit internal-drain reset experiment, guided by the user's [19u2 precharge note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Comparators/19u2 Precharge Gives the Input Pair Saturation and Erases Node Memory.md>), adds two PMOS switches from the input-pair drain nodes to VDD during comparator reset. Their supply energy and clock-gate delivery enter the existing measured ports. The three-input SS smoke pass does not survive the twelve-input development set: maximum error is 3 LSB, RMS 1.258 LSB, and delivery 2.190 pJ at 23-ns decisions. Restoring the reduced-latch design to the original 28-ns decisions and 4-ns resolution interval without internal resets also fails: maximum error 2 LSB, RMS 0.816 LSB, delivery 2.120 pJ. See the memory controls.
 
 The added switches do accomplish their intended precharge action. Across the saved predecision states, the drain nodes reach 1.79984–1.80001 V, with maximum differential 0.140 mV. The longer-window control without these switches has drain voltages 1.1600–1.3153 V and maximum differential 105.6 mV. Receiver settling still leaves at least 1.76 ns before the latch deadline in the explicit-reset case. Therefore unresolved digital output is not the observed failure. Equalizing drain precharge is insufficient to restore conversion accuracy: the new devices also change the transient charge coupled into the held input. Varying input/trial voltages contribute to the observed drain differences; these aggregate ranges do not independently isolate previous-decision memory. The two controls also differ in clock timing, so their kickback magnitudes cannot be used to assign a quantitative isolated-device benefit. No direct-reset efficiency or accuracy improvement is accepted from these tests.
 
@@ -69,7 +69,7 @@ The next repair retains full 1.68-µm input-acquisition switches while grading o
 
 The corresponding eight-column TT check completes 24 conversions with maximum error 1 LSB, RMS 0.456 LSB, and 2.01013 pJ per service. An independent trace audit confirms all 240 actual trial DAC states and eight distinct input streams. Integrating the seven positive-delivery group traces over one contiguous window, then dividing by `3 frames × 8 columns`, reproduces 2010.12895457 fJ per service; this independently verifies phase partition and normalization. The differing input mix prevents attributing the lower energy versus the single-column cases to reference amortization.
 
-**The eight-column SS check fails: maximum error 6 LSB, RMS 1.514 LSB, delivery 2.05381 pJ. The 295-ns candidate is therefore not accepted.** An independent trace check verifies all 240 SS trial states and reproduces its contiguous-window energy exactly, so these failures do not arise from a mistaken decoded trial history or energy normalization. Column 2's second input is at code position 250.904, but the converter returns 256; column 6's first input is at 637.082, but returns 640. At the erroneous 256 trial, the predecision residue is only +70 µV and changes to −407 µV during evaluation. At the erroneous 640 trial it is already −153 µV and changes to −1.65 mV. Receiver margins exceed approximately 1.89 ns. These are wrong analog coarse branches with resolved digital outputs. The strict suite stops at this failure before reaching its physical bad-bridge control. See [imc_null_sar_wide_acquisition_suite.json](../../../../build/sim/imc_null_sar_wide_acquisition_suite.json). These random voltages are now development evidence for any subsequent sizing change.
+**The eight-column SS check fails: maximum error 6 LSB, RMS 1.514 LSB, delivery 2.05381 pJ. The 295-ns candidate is therefore not accepted.** An independent trace check verifies all 240 SS trial states and reproduces its contiguous-window energy exactly, so these failures do not arise from a mistaken decoded trial history or energy normalization. Column 2's second input is at code position 250.904, but the converter returns 256; column 6's first input is at 637.082, but returns 640. At the erroneous 256 trial, the predecision residue is only +70 µV and changes to −407 µV during evaluation. At the erroneous 640 trial it is already −153 µV and changes to −1.65 mV. Receiver margins exceed approximately 1.89 ns. These are wrong analog coarse branches with resolved digital outputs. The strict suite stops at this failure before reaching its physical bad-bridge control. See imc_null_sar_wide_acquisition_suite.json. These random voltages are now development evidence for any subsequent sizing change.
 
 One concrete sizing hypothesis remains: a capacitor driven at its bottom while the common top floats presents approximately `Ci(1−Ci/Ctotal)` to the switch. Sizing reference switches proportional to Ci alone therefore does not equalize their settling times. With a nominal 768-fF coarse bank, the second and third coarse branches have approximately 1.5 and 1.75 times the MSB branch's RC under the existing rule. The fine node has a different effective total capacitance, and transistor/wire loading also changes these ratios. This is an analytical explanation to test, not a demonstrated repair or permission to claim the failed point's speed/energy as accepted.
 
@@ -108,7 +108,7 @@ The exact official `ngspice-43` Git tag was obtained for this read-only audit: c
 | 2.25 | 35 → 35 | 35 → 35 |
 | 3.36 or 3.50 | 26 → 26 | 26 → 26 |
 
-The benchmark lane subsequently ran a compiled-model audit on all twelve distinct MOS geometries in the frozen TT fixture. It confirms **seven model-bin changes**, exactly as predicted above for those geometries, while W/L, `nf=1`, multiplier and junction geometry remain identical. The 0.735/1.26-µm additions and SS entries in the table remain source predictions rather than compiled checks. Expanded model records fall from 1,728 to 12, demonstrating that early pruning works. The full-PDK twelve-device DC audit takes 3.990 s in native mode and 3.903 s with HSA; this small probe does not measure full-SAR acceleration. Its expected model-equivalence gate fails, and the lane stops before a full-SAR HSA timing claim. See [the compiled-bin audit](../../../../build/research/imc_null_hsa_bin_audit.json). An independent review of its device records confirms all seven differences and the identical geometry fields.
+The benchmark lane subsequently ran a compiled-model audit on all twelve distinct MOS geometries in the frozen TT fixture. It confirms **seven model-bin changes**, exactly as predicted above for those geometries, while W/L, `nf=1`, multiplier and junction geometry remain identical. The 0.735/1.26-µm additions and SS entries in the table remain source predictions rather than compiled checks. Expanded model records fall from 1,728 to 12, demonstrating that early pruning works. The full-PDK twelve-device DC audit takes 3.990 s in native mode and 3.903 s with HSA; this small probe does not measure full-SAR acceleration. Its expected model-equivalence gate fails, and the lane stops before a full-SAR HSA timing claim. See the compiled-bin audit. An independent review of its device records confirms all seven differences and the identical geometry fields.
 
 All fixture MOS devices default to `nf=1`, so HSA's use of W/nf for binning does not itself change their dimensions. Other HSA branches affect multiplier propagation, power expressions, early scale handling and DC-sweep convergence. The selected MOS models have no power operators; the closed fixture has no explicit multipliers or behavioral sources and runs a transient. No additional active semantic conflict was identified. HSA remains the officially recommended SKY130 mode, but adopting it changes the selected device models here and requires circuit revalidation. It cannot be recorded as a performance improvement that preserves the existing models. [Ngspice SKY130 guidance](https://ngspice.sourceforge.io/applic.html).
 
@@ -130,7 +130,7 @@ switches and −1.9-mV trim. The twelve-input TT/SS development checks pass at
 2176.88/2170.78 fJ per service; the development eight-column checks pass at
 2025.16/2059.68 fJ. The physical 30% bridge-error control fails as intended,
 returning 27/512 for targets 31/511, with intact causal feedback. These completed
-gates are in [the RC suite](../../../../build/sim/imc_null_sar_rc_suite.json).
+gates are in the RC suite.
 
 The separately frozen seed-9952 eight-column set passes at TT but **fails at SS**:
 the third measured frame, column 7, returns 807 for input code position 809.307.
@@ -146,8 +146,8 @@ integrates the seven delivery traces over one contiguous interval covering
 exactly three measured frames. Division by 24 column services reproduces
 2059.6842597 and 2060.8349742 fJ respectively. Thus the fresh failure is not a
 digital decode or phase-energy-normalization error.
-[Independent trace results](../../../../build/research/imc_null_rc_independent_trace_audit.json),
-[fresh SS result](../../../../build/sim/imc_null_sar_rc_fresh_ss.json).
+Independent trace results,
+fresh SS result.
 
 ## Physical VCM-start branch: read-only topology audit
 
@@ -228,7 +228,7 @@ falls from 568.1 s to 94.5 s for this matched input/control. The original
 comparison JSON placed these whole-run iteration counts inside a `warmup`
 object; the corrected artifact names them at top level. This is one functional
 speed observation, not universal runtime scaling or full converter acceptance.
-[Comparison artifact](../../../../build/sim/imc_null_sar_startup_equivalence.json).
+Comparison artifact.
 
 The first 24-code TT8 VCM suite result passes ±1 LSB at 1350.54 fJ/service.
 The subsequent SS8 development case fails by up to five LSB at 1377.14 fJ;
@@ -256,8 +256,8 @@ fJ/service: +48.889312 fJ, or +3.53549%**. Signed net delivery changes from
 boundaries; the positive-delivery increase must not be replaced with the net
 decrease. The separate TT calibration comparison increases positive delivery
 by 2.11674%, so it is not the same-case SS comparison.
-[Original holder replay](../../../../build/sim/imc_null_sar_vcm_negative_hold_replay_ss_col5.json),
-[Wider-reference replay](../../../../build/sim/imc_null_sar_vcm_negative_hold_refs2_replay_ss_col5.json).
+Original holder replay,
+Wider-reference replay.
 
 The new commanded-rail targets use actual earlier receiver decisions, with
 correct bit activation timing and a doubled fine dummy. Independently

@@ -15,7 +15,7 @@ requantization in this pipeline, not the finite ADC.
 | W8 + A11 | .00478016 / 1.00756344 | .00473169 / .99620885 |
 | W8 + A11 + finite clean ADC | .00486290 / 1.00837435 | .00494363 / .99755070 |
 
-[Frozen decomposition and exact control audit](../../../../../build/campaign/quantization_floor/result.json).
+Frozen decomposition and exact control audit.
 These components are not additive in a nonlinear network. PPL is measured on
 actual next-token labels, whereas KL uses the reference probability
 distribution; they need not move together. For fixed logit perturbation δz,
@@ -64,7 +64,7 @@ Even a power-of-two ratio does not disappear without an actual shift/gain path.
 | Original group32 codes and scales | exactly zero extra weight error |
 
 These are unweighted matrix moments; activation sensitivity can change their
-ordering. [All-tensor audit](../../../../../build/campaign/q8_storage_audit/result.json).
+ordering. All-tensor audit.
 
 ## Paying for original group scales
 
@@ -91,7 +91,7 @@ quantization. The256-row group-scale storage in this table is also a distinct
 architecture from the current whole-output-column scale storage above.
 Counts include ragged576-row matrices, so the aggregate32-row ratio is6.4×,
 while an individual full256-row tile still needs eight subgroup reads.
-[Shape-exact count ledger](../../../../../build/campaign/q8_storage_audit/partial_sum_counts.json).
+Shape-exact count ledger.
 
 FP16 scale multiplication can be implemented through a mantissa multiply and
 exponent shift; it is not necessarily a full floating-point unit. Its precision,
@@ -132,7 +132,7 @@ The ordinary GPTQ run passed source and exact RTN-control reproduction checks. I
 | Unsmoothed RTN | .0033959 / 1.0065618 | .0031859 / .9976910 |
 | Smoothed fixed-grid GPTQ | .0049302 / 1.0090479 | .0049382 / 1.0096533 |
 
-[Compiler results and calibration](../../../../../build/campaign/w8_compiler_baselines/result.json). The unsmoothed RTN control improves the clean error somewhat but retains a substantial recompilation floor.
+Compiler results and calibration. The unsmoothed RTN control improves the clean error somewhat but retains a substantial recompilation floor.
 
 Preserving original group32 codes/scales gives much more margin:
 
@@ -141,7 +141,7 @@ Preserving original group32 codes/scales gives much more margin:
 | No smoothing | .00045808 / 1.00064384 | .00048068 / .99906889 |
 | Group-constant power-of-two smoothing | .00044274 / .99952633 | .00046777 / 1.00222358 |
 
-The power-of-two group scale is derived only from the existing frozen smoothing scales, so no new evaluation fitting occurs. Original integer weights are unchanged; a digital exponent is applied to each group result. [Frozen original-group diagnostic](../../../../../build/campaign/original_q8_groups/result.json). These are clean arithmetic results, with the6.4× conversion and scale-multiply costs still to be paid.
+The power-of-two group scale is derived only from the existing frozen smoothing scales, so no new evaluation fitting occurs. Original integer weights are unchanged; a digital exponent is applied to each group result. Frozen original-group diagnostic. These are clean arithmetic results, with the6.4× conversion and scale-multiply costs still to be paid.
 
 A new physical-budget calibration is now running at Cu4 and40µV additional read noise. It uses actual unsigned C(code), per-group120fF floors, distributed-CDAC host allocation, stationary kT/C and original FP16 scales. The model keeps resident group32 sections separate from reused32-row sites with correlated fixed errors. Phase-dependent holder matching remains an explicit unverified requirement. [Frozen model and self-checks](../../../../../scripts/compiler/metrics/imc_raw32_precision.py).
 
@@ -176,7 +176,7 @@ A separately frozen exact-readout control recompiles unsmoothed W8 per64/128 row
 | 64 | .00111822 / 1.00179665 | .00107756 / 1.00144584 | 3,317,760 |
 | 128 | .00191481 / 1.00366724 | .00187560 / 1.00288867 | 1,797,120 |
 
-[Corrected frozen result](../../../../../build/campaign/group_size_ceiling_v2/result.json) passes the independent1536-row dense-product oracle and final source audit. Both retain substantially more clean quality margin than the old whole-column compiler, with less service cost than group32. Their noise, finite ADC and physical mismatch are untested. The first implementation incorrectly applied only the first1024-row activation scale after merging a1536-row MVM; its70-row test missed that error. The rejected source/results and explanation remain in `build/campaign/group_size_ceiling/`. Those rejected values are implementation failures and are not evidence against group64/128.
+Corrected frozen result passes the independent1536-row dense-product oracle and final source audit. Both retain substantially more clean quality margin than the old whole-column compiler, with less service cost than group32. Their noise, finite ADC and physical mismatch are untested. The first implementation incorrectly applied only the first1024-row activation scale after merging a1536-row MVM; its70-row test missed that error. The rejected source/results and explanation remain in `build/campaign/group_size_ceiling/`. Those rejected values are implementation failures and are not evidence against group64/128.
 
 ### Group128 differential-readout control
 
@@ -186,7 +186,7 @@ The model counts connected actual rows only: the576-row matrices end with64 acti
 
 The existing connected-C counter includes one computational array plus its matched signal holder (2C) and fine-DAC excess. The additional reference-holder counter adds C, giving3C plus fine excess for the paired-reference interpretation. This does not duplicate the computational array. Reference reset energy, generation and switching must be paid. The physical matching, reference isolation and covariance assumptions remain unverified.
 
-The reuse2 group128 control is not the smallest arithmetic implementation. For fixed rectangular128-row physical sections shared among S=8 logical groups, shape accounting gives22,118,400 physical sites and172,800 two-bank physical group outputs; average useful reuse is4.8 because of ragged matrices. Minimal22-unit Cu4 magnitude capacitance is1.9464192µF before holder/reference/CDAC/sign/periphery, compared with1.4598144µF for group32/reuse8. Group128 still needs only1,797,120 bank reads/token versus6,635,520 for group32. This potential area/service tradeoff is **SPECULATIVE** until its distinct site correlations, programming schedule and reference/holder behavior are tested. The current reuse2 mismatch results do not qualify reuse8. [Shape-only reuse ledger](../../../../../build/campaign/group128_precision_r50/reuse_count_ledger.json) records G=32/64/128 and S=1/2/4/8/16, including unused rectangular sites and FP16 metadata. Group128 storage is8.1354167 bits per actual weight because ragged scale groups exceed the ideal8.125-bit limit.
+The reuse2 group128 control is not the smallest arithmetic implementation. For fixed rectangular128-row physical sections shared among S=8 logical groups, shape accounting gives22,118,400 physical sites and172,800 two-bank physical group outputs; average useful reuse is4.8 because of ragged matrices. Minimal22-unit Cu4 magnitude capacitance is1.9464192µF before holder/reference/CDAC/sign/periphery, compared with1.4598144µF for group32/reuse8. Group128 still needs only1,797,120 bank reads/token versus6,635,520 for group32. This potential area/service tradeoff is **SPECULATIVE** until its distinct site correlations, programming schedule and reference/holder behavior are tested. The current reuse2 mismatch results do not qualify reuse8. Shape-only reuse ledger records G=32/64/128 and S=1/2/4/8/16, including unused rectangular sites and FP16 metadata. Group128 storage is8.1354167 bits per actual weight because ragged scale groups exceed the ideal8.125-bit limit.
 
 ### Constant-total grounded-bank remedy: costed boundary
 
@@ -200,7 +200,7 @@ Grounding unselected capacitor bottom plates can keep the signal-array total con
 
 Constant total removes code-dependent phase loading in the ideal network. It does not remove fixed array/holder mismatch: each physical section still needs verified matching or a static trim/calibration loop. Grounded unused rows remain capacitive loads, including ragged groups. Transient switch parasitics, coupling and PVT may spoil ideal code independence.
 
-For group32/reuse8, installed magnitude capacitance is1.4598144µF and matched signal and reference holders each add1.5842304µF. Including a120fF computational-array floor gives a3C sum4.7526912µF before CDAC/sign/trim/periphery. Group128/reuse8 has1.9464192µF installed magnitude C and1.9878912µF each signal/reference holder, with3C sum5.9636736µF. These are capacitance ledgers, not extracted area or an energy measurement. Smaller voltage kT/C is not a quality benefit by itself: at fixed charge gain the differential output charge variance grows as2kTC+σ_read²C². [Grounded22-unit ledger](../../../../../build/campaign/grounded_22unit_count_ledger.json).
+For group32/reuse8, installed magnitude capacitance is1.4598144µF and matched signal and reference holders each add1.5842304µF. Including a120fF computational-array floor gives a3C sum4.7526912µF before CDAC/sign/trim/periphery. Group128/reuse8 has1.9464192µF installed magnitude C and1.9878912µF each signal/reference holder, with3C sum5.9636736µF. These are capacitance ledgers, not extracted area or an energy measurement. Smaller voltage kT/C is not a quality benefit by itself: at fixed charge gain the differential output charge variance grows as2kTC+σ_read²C². Grounded22-unit ledger.
 
 All current bypass physical-budget campaigns still use the TT W=.42 measurement. Later SS amplitude tests required a larger or asymmetric switch, changing off-code loading. These runs therefore do not qualify a PVT-capable bank; the actual selected-width C(code) table must replace them in a separately frozen matched control.
 
@@ -220,11 +220,11 @@ The simple grounded group32 implementation exposes its poor cost. With original 
 
 The group128 frozen calibration grid supports a lower-cost candidate without blanket depth truncation. For each MVM/bank, retain settings whose deterministic calibration MSE plus declared2kT/C+50µV variance is at most1.05× that bank's frozen minimum. Pareto-filter by ADC decisions and connected computational-plus-reference capacitance, then choose minimum decisions, minimum C and finally minimum calibration proxy. This preserves rare13/14-bit range requirements.
 
-The candidate changes412/420 bank settings. Decisions fall22.754688M→19.910016M/token (12.50%); connected-plus-reference C falls14.755925→14.613655µF (0.964%). The sum of per-bank proxies rises2.956%, with maximum individual rise4.985%. Most reads become11-bit/span.5; minimum native LSB increases4.727→18.956µV. Calibration clipping rises2112→145654 bank events, so this is an offline **SPECULATIVE** cost candidate, not a quality pass. A5% per-bank proxy bound is not a5% network KL/PPL bound. Reference generation, span-dependent switching energy and physical DAC granularity still require pricing. [Frozen-grid candidate and assertions](../../../../../build/campaign/group128_precision_r50/adc_tolerance_1p05.json). Current full-model runs retain their original choices.
+The candidate changes412/420 bank settings. Decisions fall22.754688M→19.910016M/token (12.50%); connected-plus-reference C falls14.755925→14.613655µF (0.964%). The sum of per-bank proxies rises2.956%, with maximum individual rise4.985%. Most reads become11-bit/span.5; minimum native LSB increases4.727→18.956µV. Calibration clipping rises2112→145654 bank events, so this is an offline **SPECULATIVE** cost candidate, not a quality pass. A5% per-bank proxy bound is not a5% network KL/PPL bound. Reference generation, span-dependent switching energy and physical DAC granularity still require pricing. Frozen-grid candidate and assertions. Current full-model runs retain their original choices.
 
 ### Completed group128 physical result: FAILED
 
-Both fixed-die runs completed with source audits passing. All16 primary2kT/C+50µV cases fail the KL≤.01 gate; worst KL=.0166854 and worst PPL ratio=1.0313277. This includes both passages and resident/reuse2 schedules. Mismatch-only finite-ADC diagnostics pass7/8, with reuse2/die1/passage1 failing PPL=1.0116202. Thus good ideal group128 quality does not survive this physical-noise budget. [Completed summary](../../../../../build/campaign/group128_precision_r50/summary.json).
+Both fixed-die runs completed with source audits passing. All16 primary2kT/C+50µV cases fail the KL≤.01 gate; worst KL=.0166854 and worst PPL ratio=1.0313277. This includes both passages and resident/reuse2 schedules. Mismatch-only finite-ADC diagnostics pass7/8, with reuse2/die1/passage1 failing PPL=1.0116202. Thus good ideal group128 quality does not survive this physical-noise budget. Completed summary.
 
 The next frozen bracket uses group64,2kT/C+50µV, and the actual N.50/P.70 TT bank loading. It keeps unsmoothed FP16 group scales and uses resident/reuse4 sites per256-row tile. This source change is explicit: comparing against prior group128 also changes switch loading, so it is not an isolated group-size experiment. Calibration uses only the old128 clean tokens; original raw32 and group128 artifacts remain unchanged.
 
@@ -238,7 +238,7 @@ At an88fF/site budget, the unconstrained solution CuL=.693fF is below the availa
 
 Fewer ADC decisions can cost more reference energy. For the split DAC, a conditional switched-capacitance proxy is `Csw=[2^(n−4)−1+16]·3.75fF`; actual SAR activity and driver losses are unmeasured. The unguarded5%-proxy candidate increases summed Csw·span² by1.981× for group128 and1.646× for group64 because lower depth often doubles the reference span. A separate offline candidate constrains this proxy not to increase for any bank. It saves group1282.28% decisions and13.24% reference CV² proxy, with calibration proxy+0.999%; group64 saves.911% decisions and5.98% CV² proxy, with calibration proxy+1.268%. These are conditional cost frontiers, not measured power or quality improvements. The corresponding `adc_tolerance_reference_CV2.json` and `adc_tolerance_1p05_CV2_guard.json` live in each group campaign directory.
 
-Including the120fF floor and50µV read term reduces the attractive unequal-Cu thermal-only gains. A one-dimensional convex search at fixed installed capacitance and minimum Cu=2.77fF selects low2.77/high4.574fF at88fF/site and low2.77/high10.441fF at176fF/site. Total modeled thermal-plus-read variance improves8.41%/10.79% atG32,6.07%/7.04% atG64, and3.94%/4.15% atG128. [Conditional numerical sizing ledger](../../../../../build/campaign/grounded_unequal_cu_ledger.json). Matching, CDAC, actual capacitance geometry and whole-model quality are not included.
+Including the120fF floor and50µV read term reduces the attractive unequal-Cu thermal-only gains. A one-dimensional convex search at fixed installed capacitance and minimum Cu=2.77fF selects low2.77/high4.574fF at88fF/site and low2.77/high10.441fF at176fF/site. Total modeled thermal-plus-read variance improves8.41%/10.79% atG32,6.07%/7.04% atG64, and3.94%/4.15% atG128. Conditional numerical sizing ledger. Matching, CDAC, actual capacitance geometry and whole-model quality are not included.
 
 Early group64 differential results do not yet establish a robust point: first-passage resident seed61001 passes both dies, but seed61002/die1 fails PPL=1.017326 although KL=.008812 passes. The second die passes that same seed. Complete paired controls continue; a single seed's pass is not an architecture qualification.
 
@@ -246,11 +246,11 @@ The actual N.50/P.70 three-bit TT coupon now provides bypass C0=9.980125fF/C7=30
 
 Shared readout also changes noise covariance. Current50µV draws are independent per group conversion. If a shared converter instead has a perfectly common residual voltage offset or low-frequency component e across phases, group reconstruction gives variance `σe²(Σg γg Cg)²`, compared with `σe²Σg(γg Cg)²` for independent draws. The FP16 scales and charge-recovery multipliers γg are positive, so coherent accumulation can be severe. A real time-shared implementation must specify residual offset calibration, chopping or measured covariance; the independent-noise model is not automatically a model of a reused FIA.
 
-A fixed-radix mismatch must be judged by absolute product error as well as relative LSB/MSB distortion. Enumerating all1024 input codes in the ideal recurrence `S(r,q)=Σj bj r^(10−j)`, with fixed fractional pole error±.0498%, gives worst fullscale error≈.0991%. One noiseless fullscale scalar gain calibration reduces residual worst-code error to.02466%FS; at three times that pole error, residual is.07397%FS. This does not make the transfer perfectly binary, but suggests a grounded constant-total array may tolerate small fixed matching error with a paid per-section gain calibration. By contrast, r=.56967 from code-dependent loading still leaves7.2746%FS after scalar correction. [Exact finite-code bound](../../../../../build/campaign/radix_scalar_gain_bound.json). Finite calibration noise, reference accuracy, FP16 gain storage, numerator mismatch and transistor nonlinearity are excluded; no physical pass follows from this bound.
+A fixed-radix mismatch must be judged by absolute product error as well as relative LSB/MSB distortion. Enumerating all1024 input codes in the ideal recurrence `S(r,q)=Σj bj r^(10−j)`, with fixed fractional pole error±.0498%, gives worst fullscale error≈.0991%. One noiseless fullscale scalar gain calibration reduces residual worst-code error to.02466%FS; at three times that pole error, residual is.07397%FS. This does not make the transfer perfectly binary, but suggests a grounded constant-total array may tolerate small fixed matching error with a paid per-section gain calibration. By contrast, r=.56967 from code-dependent loading still leaves7.2746%FS after scalar correction. Exact finite-code bound. Finite calibration noise, reference accuracy, FP16 gain storage, numerator mismatch and transistor nonlinearity are excluded; no physical pass follows from this bound.
 
 ### Completed group64 physical result: no robust winner
 
-The selected-width group64 runs completed with both source audits passing. All16 physical cases pass KL≤.01, but only12/16 meet the joint PPL gate. Die1 resident passes1/4 and reuse4 passes3/4; die2 passes4/4 for each. Worst PPL ratio is1.01732595 for resident and1.01177894 for reuse4. Mismatch-only8/8 pass. [Completed conditional result](../../../../../build/campaign/group64_precision_r50/summary.json). These results improve the group128 noise failure without establishing a robust physical point.
+The selected-width group64 runs completed with both source audits passing. All16 physical cases pass KL≤.01, but only12/16 meet the joint PPL gate. Die1 resident passes1/4 and reuse4 passes3/4; die2 passes4/4 for each. Worst PPL ratio is1.01732595 for resident and1.01177894 for reuse4. Mismatch-only8/8 pass. Completed conditional result. These results improve the group128 noise failure without establishing a robust physical point.
 
 The authorized grounded group32 optimistic control now calibrates original Q8_0 weights with constant low28/high60fF per row,2kT/C and50µV additional read RMS. It validates those constants against actual unsigned AC records, preserves the old raw32 fixed numerator-error draws, and pays signal/reference holders and CDAC padding. It intentionally omits the unresolved signed topology, measured covariance and fixed-radix mismatch, so it is an optimistic quality test of the increased-capacitance cost rather than a complete hardware model.
 

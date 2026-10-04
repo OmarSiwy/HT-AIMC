@@ -22,7 +22,7 @@ Structure: 16 rows x 17 columns (16 data + checksum). Crosspoint = 2 4-bit
 banks (C+/C-). Column rails → integrator virtual grounds. Common-centroid
 within banks.
 
-## 2. gain_cell_array (8x8, two instances: K + V)
+## 2. gain_cell_array (8x8)
 
 | Device/group | Type | W/L or value | Count | Constraint |
 |---|---|---|---|---|
@@ -85,18 +85,7 @@ NAND2 logic (outa = (inp&phi1e)|(inn&!phi1); outb mirror) + 2-stage buffers
 (mid 0.84/1.68, final 4.0/8.0 N/P) for ~100 fF row load. outa/outb slew
 matching = equal charge fraction both signs.
 
-## 8. translinear_softmax
-
-| Device/group | Type | W/L | Count | Constraint |
-|---|---|---|---|---|
-| Tail | NFET | 47.4/1.0 | 1 | gm/ID=25 subthreshold, vb 0.44 V |
-| Branches | NFET | 47.4/1.0 | 8 | Identical to tail, all pair-matched |
-| Mirror diode | PFET diode | 5.0/1.0 | 8 | Low diode-node cap |
-| Mirror out | PFET | 5.0/1.0 | 8 | Matched parasitics per branch |
-
-Score window ≤ ~120 mV about 0.6–0.85 V CM.
-
-## 9. lora_sidecar
+## 8. lora_sidecar
 
 A(16) + B(16) gain cells (same 2T cell as gain_cell_array), A.x integrator
 (telescopic OTA + 1 pF C_int + reset TG), ramp PFET 0.875/0.5 (~2 uA) +
@@ -104,7 +93,7 @@ enable PFET 2.52/0.15 + 100 GΩ bleed, comparator OTA + 3-inverter chain
 (stage-1 skewed N 1.26/0.15) + NAND, B-driver N 100/0.15 pull-down + P
 10/0.15 restore, 2x write_dac. colb drains tie to tile integrators.
 
-## 10. async_ctrl
+## 9. async_ctrl
 
 Reset chain 10 stages + settle chain 20 stages (inverter pairs 0.42/0.84 +
 220 fF loads), Muller C-element (P-series 1.0/0.15, N-series 0.5/0.15,
@@ -125,5 +114,5 @@ keepers), tq_chain 4 taps x 2 inverters + 550 fF loads (~10 ns/tap).
 ## Gate lengths needed (drives Tech trait scope)
 
 150 (switches, latches, logic), 300 (OTA in/ncasc), 500 (OTA p-side/tail,
-gain cells, ramp), 1000 (softmax). Upstream sky130 ATOLL MOS tile only ships
+gain cells, ramp). Upstream sky130 ATOLL MOS tile only ships
 L150 — custom long-L tile required (first work item in analog/layout).

@@ -33,7 +33,7 @@ After an ordinary six-bit search, the coarse trial lies below the input by less 
 3. Repeat with signed two-unit and one-unit packets.
 4. The final sign selects the trial code or the preceding code.
 
-All **1,024 interior input codes** passed an ideal charge-arithmetic enumeration with an input at one quarter LSB inside each code. The identity error was zero at the tested numerical precision. The diagnostic record is [imc_hybrid_null_sar_ideal.json](../../../../build/research/imc_hybrid_null_sar_ideal.json). This checks a ten-comparison search, with at most fifteen unit-packet activations in the fine phase; it contains no device, timing, energy or noise model.
+All **1,024 interior input codes** passed an ideal charge-arithmetic enumeration with an input at one quarter LSB inside each code. The identity error was zero at the tested numerical precision. The diagnostic record is imc_hybrid_null_sar_ideal.json. This checks a ten-comparison search, with at most fifteen unit-packet activations in the fine phase; it contains no device, timing, energy or noise model.
 
 **Both packet signs are necessary.** CAP-RAM's down-only cell cannot implement this single-ended sequence. Use complementary source/sink cells, or explicitly add and price a second held node with differential steering. A golden-precomputed packet sequence is not a closed converter. Likewise, connecting a precharged capacitor to a floating node performs charge sharing, not an ideal additive packet; the transfer device and its finite output impedance must appear in the netlist.
 
@@ -106,7 +106,7 @@ and [23v2 reference-load note](</home/omare/Documents/Projects/OmarSiwy.github.i
 The midpoint becomes a DAC rail, so sharing its precision source must include
 both static accuracy and the larger load after the first decision.
 
-The new [reference-load screen](../../../../analog/testbenches/tb_imc_reference_load.py)
+The new reference-load screen
 enumerates all **1,023 precomparison prefix states** in about 0.06 s. It retains
 the physical 756-fF coarse bank, 192-fF fine bank, 12.8-fF bridge and merged
 24-fF midpoint dummy. Its 60-fF input filter is treated as settled. With
@@ -144,7 +144,7 @@ change the trade. Local switch resistance, the filter's 8-kΩ dynamic response,
 MOS/parasitic loading, reference noise and reset distribution are omitted.
 The result rejects treating a low-impedance passive divider as free; the next
 reference implementation needs its own transient, noise and all-port energy
-check. Artifact: [imc_reference_load.json](../../../../build/research/imc_reference_load.json).
+check. Artifact: imc_reference_load.json.
 
 ## Next finite-reference experiment for the VCM-start circuit
 
@@ -366,7 +366,7 @@ these deterministic matching controls establishes temporal-noise performance.
 ## Reset-noise cost of the matched floating holder
 
 The scalar negative-holder experiment adds a real sampled thermal state.
-[`tb_imc_holder_noise.py`](../../../../analog/testbenches/tb_imc_holder_noise.py)
+`tb_imc_holder_noise.py`
 checks a restricted passive model: CH to ground resets through a thermal
 switch; a thermal R connects CH to the comparator-side CF. After an
 explicitly assumed equilibrium reset opens, total charge is conserved.
@@ -391,7 +391,7 @@ The check verifies equilibrium through the continuous Lyapunov identity and
 then integrates physical branch-current Langevin noise in 16,384 independent
 trajectories. The 16-ns variance agrees within 0.734%, the conserved-mode
 variance within 1.162%, and maximum charge drift is 1.04e-30 C. Runtime is
-about 0.5 seconds. Euler stepping at tau/64 introduces a small fast-mode bias (about 0.79% in its stationary variance); the 5% stochastic gate is a sanity check, not subpercent numerical validation. [Results and reset-only sizing sweep](../../../../build/research/imc_holder_noise.json).
+about 0.5 seconds. Euler stepping at tau/64 introduces a small fast-mode bias (about 0.79% in its stationary variance); the 5% stochastic gate is a sanity check, not subpercent numerical validation. Results and reset-only sizing sweep.
 
 This identifies a real cost of holding the negative input: deterministic
 kickback matching does not provide noise cancellation. Larger matched
@@ -521,6 +521,6 @@ the two comparator modes under the same actual loading and noise model.
 
 Reproduce with `python3 scripts/compiler/metrics/imc_redundant_sar.py` (stdlib only).
 The cached Nix Python used here completes the full check in **8.43 s** and
-prints PASS; [generated results](../../../../build/research/imc_redundant_sar.json)
+prints PASS; generated results
 preserve every continuous coarse interval, all fine charge paths and the
 deliberate failing controls. No current circuit or SPICE result was changed.

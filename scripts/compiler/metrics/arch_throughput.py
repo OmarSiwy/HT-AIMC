@@ -453,8 +453,6 @@ def build():
       f"| {specs.SNR_T_ATTN_DB:.1f} dB | **ASSUMPTION** |")
     A(f"| measured tile budget (#24 ERROR_IMPACT) | 8 | "
       f"{csnr_db_for_lsb(8):.1f} dB | **measured** (argmax 100%, cos 0.9948) |")
-    A(f"| measured o_t budget (#26 OT_IMPACT) | 18.8 | "
-      f"{csnr_db_for_lsb(18.8):.1f} dB | **measured** (argmax 100%, cos 0.9935) |")
     A("")
     A(f"**The target in force is {specs.SNR_T_ATTN_DB - csnr_db_for_lsb(8):.1f} dB "
       "stricter than the repo's own measured tile budget.** That is ~"
@@ -592,7 +590,7 @@ def build():
     A(f"| **CAM / top-k attention (27l9)** | attacks the KV-cache matmuls, "
       "which are **activations, not weights** — they are not in the "
       f"{P_7B:.0g} weight count that sets `passes_per_token` at all. It is a "
-      "Chip-2 latency lever, worth 0x on the Chip-1 weight-engine scoreboard. "
+      "attention latency lever, worth 0x on the weight-engine scoreboard. "
       "| **0x here** |")
     A("| **Output-stationary / different loop order** | batch-1 GEMV has no "
       "operand reuse to reorder; every weight is touched once. | **1.000x** |")

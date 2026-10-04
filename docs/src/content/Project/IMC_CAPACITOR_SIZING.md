@@ -13,7 +13,7 @@ These are conditional design choices. They do not establish an optimum for arbit
 
 ## 1. Fixed physical errors versus capacitor area
 
-The user's [27i1 capacitor-ratio note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27i1 Charge-Domain Compute Wins on Linearity Because a Capacitor Ratio Is a Lithographic Quantity.md>) and the existing [tb_csnr](../../../../analog/testbenches/tb_csnr.py) motivate an area-dependent mismatch study. This experiment uses their *hypothesis*:
+The user's [27i1 capacitor-ratio note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27i1 Charge-Domain Compute Wins on Linearity Because a Capacitor Ratio Is a Lithographic Quantity.md>) and the existing tb_csnr motivate an area-dependent mismatch study. This experiment uses their *hypothesis*:
 
 `sigma_unit = (Ac/100) * sqrt(2/Cu_fF)`.
 

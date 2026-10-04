@@ -34,8 +34,8 @@ For signed8, expected fixed-error energy remaining on the two passages is:
 | 8 | .3183 | .3328 | 2.3003% | 10.39104MB |
 | 16 | .2929 | .3090 | 4.6007% | 20.16000MB |
 
-[Full per-MVM results](../../../../../build/campaign/mismatch_subspace_screen/result.json)
-and [summary](../../../../../build/campaign/mismatch_subspace_screen/summary.json) retain
+Full per-MVM results
+and summary retain
 both representations. Rank1 captures most of this oracle benefit. Aggregate
 energy weighting is not task sensitivity; it does not predict KL or PPL by
 itself. Storage and MAC counts exclude the tied output head, just as the current
@@ -51,8 +51,8 @@ exposed512-token passages. Inference does not access per-weight true errors or
 fit coefficients from evaluation activations. The old calibration averages are
 noiseless and factors float32; these are explicit optimistic limits.
 
-The [die1 protocol](../../../../../build/campaign/mismatch_rank1_quality/die1/protocol.json)
-and [die2 protocol](../../../../../build/campaign/mismatch_rank1_quality/die2/protocol.json)
+The die1 protocol
+and die2 protocol
 were frozen before full-depth results. The hook self-check verifies correction
 before downstream operations, clean-reference identity and restoration of the
 original callback. Calibration verifies that rank1 regression does not increase
@@ -90,7 +90,7 @@ The signed8 A11 separate candidate was frozen with the same rank1 factors, fixed
 | 2 | 10 | 4/4 | 0.0086233 | 1.0087732 |
 | 2 | 20 | 3/4 | 0.0092355 | 1.0108021 |
 
-**FAILED as a two-die robust quality candidate:** reducing read noise to zero does not remove the die1 PPL failure. This rules out assuming that a better comparator alone will rescue this modeled core. It does not prove a fundamental impossibility or silicon yield. Die2 passes all four cases at0 and10µV but only three at20µV. The matching20µV cases reproduce parent rank1 cases exactly wherever those parent cases have completed; all eight matching cases now reproduce the completed parent campaign exactly. [Frozen protocol and detailed results](../../../../../build/campaign/rank1_read_budget/die1/quality_Cu4.json), [summary](../../../../../build/campaign/rank1_read_budget/summary.json).
+**FAILED as a two-die robust quality candidate:** reducing read noise to zero does not remove the die1 PPL failure. This rules out assuming that a better comparator alone will rescue this modeled core. It does not prove a fundamental impossibility or silicon yield. Die2 passes all four cases at0 and10µV but only three at20µV. The matching20µV cases reproduce parent rank1 cases exactly wherever those parent cases have completed; all eight matching cases now reproduce the completed parent campaign exactly. Frozen protocol and detailed results, summary.
 
 ## Completed full-depth rank1 correction campaign
 
@@ -111,4 +111,4 @@ Both36-case campaigns completed and all source fingerprints pass. Each row inclu
 | 2 | signed8 | common_A11_separate | 5/6 | 0.0092355 | 1.0108021 |
 | 2 | signed8 | common_A10_pooled | 2/6 | 0.0140302 | 1.0194156 |
 
-[Complete summary](../../../../../build/campaign/mismatch_rank1_quality/summary.json). [Exact eight-case read20 reproduction audit](../../../../../build/campaign/rank1_read_budget/parent_pair_audit.json). A low-dimensional correction can reduce a linear error norm yet fail PPL because layer sensitivity, nonlinear propagation and calibration-distribution shift remain. The current tests do not isolate their relative contributions. Increasing correction rank, retraining, enlarging capacitors or changing arithmetic sharing would require a separately frozen experiment and paid hardware costs; none is credited here.
+Complete summary. Exact eight-case read20 reproduction audit. A low-dimensional correction can reduce a linear error norm yet fail PPL because layer sensitivity, nonlinear propagation and calibration-distribution shift remain. The current tests do not isolate their relative contributions. Increasing correction rank, retraining, enlarging capacitors or changing arithmetic sharing would require a separately frozen experiment and paid hardware costs; none is credited here.

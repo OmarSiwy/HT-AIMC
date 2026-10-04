@@ -2,7 +2,7 @@
 
 This document is the AnalogIOC design method written down. A compiler cannot schedule a single instruction until it understands the workload completely: which values are constants, which bytes get read twice, which buffers die young, which loops parallelize, which do not. That analysis already exists for LLM inference. If we extract it and take it seriously, the hardware design falls out of it. The compiler dictates what the machine should be, not the other way around.
 
-The payoff sits at the end: the analysis forces a two-chip machine with no HBM in the attention path. Chip 1 is a main accelerator built around analog in-memory compute. Chip 2 is an in-memory attention engine that lives where the KV cache lives. Everything before Part IV is the evidence for that split.
+The payoff sits at the end: the analysis maps onto a single chip, AnalogIOC, built around analog in-memory compute for the token-independent work, with attention's token-dependent work on its digital rail. Everything before Part IV is the evidence for that split.
 
 The document has four parts:
 
@@ -192,7 +192,7 @@ with $o_t = o^{(\text{last})}/\ell^{(\text{last})}$. Each rescaling factor is $e
 
 $$(m_1,\ell_1,o_1)\circ(m_2,\ell_2,o_2) = \big(m,\ \ell_1 e^{m_1-m} + \ell_2 e^{m_2-m},\ o_1 e^{m_1-m} + o_2 e^{m_2-m}\big),\quad m=\max(m_1,m_2)$$
 
-Associativity means partial results can be combined in any grouping. That single algebraic property licenses both tree-parallel reduction and near-memory offload (B3). It is the mathematical permission slip for Chip 2.
+Associativity means partial results can be combined in any grouping. That single algebraic property licenses both tree-parallel reduction and near-memory offload (B3). It is the mathematical permission slip for near-memory attention.
 
 ## 7. Operation inventory for attention
 
@@ -272,7 +272,7 @@ Total transcendental ROM: on the order of a kilobyte. Negligible against 144 GB 
 
 ### AnalogIOC note: these tables are analog candidates
 
-A seed table plus a low-order polynomial correction is a small, fixed, read-only function of a few input bits. Nothing about it demands digital logic. These lookups can plausibly be done in analog, and that is AnalogIOC's working assumption: aside from PCIe and the chip-to-chip interconnect, essentially every block in this document is a candidate for analog implementation. The research on analog function tables specifically has not been done yet; treat this as a stated direction, not a verified result. Part IV returns to it.
+A seed table plus a low-order polynomial correction is a small, fixed, read-only function of a few input bits. Nothing about it demands digital logic. These lookups can plausibly be done in analog, and that is AnalogIOC's working assumption: aside from PCIe and the digital rail, essentially every block in this document is a candidate for analog implementation. The research on analog function tables specifically has not been done yet; treat this as a stated direction, not a verified result. Part IV returns to it.
 
 ---
 
@@ -515,7 +515,7 @@ The question this pass asks: for every value in the model, *when does it become 
 
 Concretely, S5b is: MoE routing, sparse-attention block selection, speculative-decode accept counts, continuous-batching sequence lengths. Four things. That's the entire list.
 
-> **Design consequence:** if you are building a machine, S0 through S5a can be hardwired. S5b needs the escape hatch. That is the smallest programmable surface that covers modern models, a much narrower requirement than "make the chip general-purpose." For AnalogIOC this is the license to make Chip 1 mostly fixed-function analog with a small digital control region, instead of a sea of programmable cores.
+> **Design consequence:** if you are building a machine, S0 through S5a can be hardwired. S5b needs the escape hatch. That is the smallest programmable surface that covers modern models, a much narrower requirement than "make the chip general-purpose." For AnalogIOC this is the license to make the chip mostly fixed-function analog with a small digital control region, instead of a sea of programmable cores.
 
 ### A naming suggestion
 
@@ -596,7 +596,7 @@ Decode at batch 1 has reuse factor 1 on **both** weights and KV. Everything is s
 
 ## B3. Near-memory offload legality
 
-This pass is the theoretical core of Chip 2. It answers: which operations are *allowed* to move out of the main accelerator and into the memory that holds their data?
+This pass answers: which operations are *allowed* to move out of the main accelerator and into the memory that holds their data?
 
 **The test:** an op is offloadable iff it has the **broadcast-stream-reduce** shape. One small operand broadcast in, one large resident operand streamed locally, one small result returned.
 
@@ -615,7 +615,7 @@ In words: the big operand never crosses a chip boundary, only the small ones do,
 | `o = Σ a_j v_j` | `a`: `L` | `V`: `L·d_h` | `o`: `d_h` | ≈ `d_h` |
 | **fused all three** | `q`: `d_h` | `K,V`: `2L·d_h` | `o,m,ℓ`: `d_h+2` | **≈ `L`** |
 
-Fused, you cross the boundary with `2·d_h` values instead of `2·L·d_h`. At `L = 128k` that is roughly a **128,000×** reduction in memory-interface traffic. This single table is why Chip 2 exists.
+Fused, you cross the boundary with `2·d_h` values instead of `2·L·d_h`. At `L = 128k` that is roughly a **128,000×** reduction in memory-interface traffic.
 
 ### Why the fusion is legal
 
@@ -709,42 +709,29 @@ Both are properties of the *algebra*, not the arithmetic. That is why List A is 
 
 # Part IV: what this forces for AnalogIOC
 
-Everything above was analysis. This part is the design decision it produces: a two-chip accelerator with no HBM in the attention path.
+Everything above was analysis. This part is the design decision it produces: one chip, with the token-independent work on analog IMC and the token-dependent attention work on the digital rail.
 
-## Chip 1: the main accelerator
+## The chip
 
-Chip 1 handles the position-local work: norms, QKV and output projections, RoPE, MLP, and the S5b control residue (routing, sampling, dispatch). It is built around analog in-memory compute plus other blocks for more general usage, so AnalogIOC can operate at the same general-purpose degree as Nvidia while being faster and more energy efficient.
+AnalogIOC handles the position-local work: norms, QKV and output projections, RoPE, MLP, and the S5b control residue (routing, sampling, dispatch). It is built around analog in-memory compute plus other blocks for more general usage, so AnalogIOC can operate at the same general-purpose degree as Nvidia while being faster and more energy efficient.
 
 The compiler analysis says exactly how much generality that requires, and it is less than you'd fear. B1 showed that S0 through S5a can be hardwired, because their shapes are static even when their values are not. Only the S5b residue (four things: MoE routing, sparse-block selection, speculative-decode accept counts, continuous-batching lengths) needs a programmable escape hatch. So "general-purpose degree of Nvidia" does not mean a sea of cores. It means a mostly fixed-function analog datapath with a small dynamic-dispatch region, which is a far better energy proposition.
 
-## Chip 2: the in-memory attention engine
+## Attention on the digital rail
 
-Attention means grabbing the KV cache, and normally (as in Etched's architecture) that goes through HBM. However fast HBM is, section 3 showed the problem stays memory-bound: the FLOP-to-byte ratio of decode attention is a small constant that batching cannot improve. Meanwhile the main accelerator is compute-bound, whether from digital systolic arrays or analog IMC. Feeding a compute-bound machine from a memory-bound pipe wastes one of them at all times.
-
-Chip 2's goal is to stop being memory-bound entirely: move the computation to where the KV cache lives, so the problem turns back into a compute-bound one, which we can then keep optimizing with analog IMC and mathematical techniques. B3 is the proof this is legal and profitable:
-
-- The fused `QK^T` → online-softmax → `AV` loop is the canonical broadcast-stream-reduce op. Broadcast `q` in (`d_h` values), stream `K,V` locally, return `o,m,ℓ` (`d_h+2` values). At `L = 128k` the interface traffic drops by roughly 128,000×.
-- The fusion is legal because the online-softmax monoid is associative (section 6): each bank reduces its own slice, a small tree merges partials, no global pass needed.
-- The unit needs only MAC, `max`, `exp2`, and a rescale multiply per bank, with one `reciprocal` at the end. No `rsqrt`, no `log2`; those stay on Chip 1 with the position-local ops.
-- KV cache is append-only (B2): immutable after write, no coherence protocol, free prefix sharing, and the only hazard in the structure (`write(j) → read(t>j)`) is erased in prefill by ordering writes before reads. The memory system Chip 2 needs is therefore radically simpler than a general cache hierarchy.
-- The same unit offloads MoE expert FFN at decode with no modification, because tiny-activation-in, huge-weights-streamed, tiny-result-out is the same geometry. Chip 2 is an attention engine that happens to also be an MoE decode engine.
-- The SSM scan offloads partially: local scans run in-memory, cross-chunk carries return to Chip 1.
-
-## The interconnect between them
-
-Section 5 found exactly one dependency edge crossing the token-local / token-crossing boundary: the KV append. Chip 1 sends `k'_t, v_t` across once per token; Chip 2 sends back `o_t` per query. Both are `O(d_h)`-sized messages. The chip-to-chip link carries the smallest tensors in the entire model, which is what makes a two-chip cut survivable where an arbitrary cut would drown in traffic.
+Q/K/V/O projections run on the IMC tiles. The KV cache, `QK^T` scores, online softmax and `AV` are token-dependent (section 2) and run on the digital rail. See [APPLICATION_ATTENTION.md](APPLICATION_ATTENTION.md).
 
 ## How far the analog goes
 
-Working assumption: essentially everything other than PCIe and the chip-to-chip interconnect should be analog. The op inventory backs this up. Sections 7 and 8 reduced the entire model to MACs, a small vector ALU, and four transcendentals built from seed tables plus refinement, and a seed table is a small fixed read-only function that has no inherent need to be digital. The function lookup tables themselves are analog candidates. The dedicated research on analog LUTs has not been done yet, so this is a direction we are committing to investigate, not a verified result. The digital islands that must remain are the fp32 accumulation and decision points from the precision table (norm statistics, router logits, long-axis accumulators, SSM state) plus the S5b control logic and the serial links.
+Working assumption: essentially everything other than PCIe and the attention path on the digital rail should be analog. The op inventory backs this up. Sections 7 and 8 reduced the entire model to MACs, a small vector ALU, and four transcendentals built from seed tables plus refinement, and a seed table is a small fixed read-only function that has no inherent need to be digital. The function lookup tables themselves are analog candidates. The dedicated research on analog LUTs has not been done yet, so this is a direction we are committing to investigate, not a verified result. The digital islands that must remain are the fp32 accumulation and decision points from the precision table (norm statistics, router logits, long-axis accumulators, SSM state) plus the KV cache and attention scores/softmax/`AV`, the S5b control logic and the serial links.
 
-## The remark: why there is no third chip for the weights
+## The remark: why there is no separate weights-in-memory chip
 
-The obvious next step would be a third chip doing weights-in-memory, the way Chip 2 does KV-in-memory. It was purposefully avoided, and the effect classes from B2 explain the asymmetry.
+The obvious next step would be a separate chip doing weights-in-memory. It was purposefully avoided, and the effect classes from B2 explain the asymmetry.
 
-Weights are read-only-persistent: written once at model load, read forever, never invalidated. But our analog IMC is consuming: the stored data is disturbed whenever math is done with it, and lost when power is lost. A consuming substrate cannot hold a read-only-persistent value; every read would degrade the thing that must never change. So the weights would still need HBM backing anyway, which defeats the purpose of the third chip.
+Weights are read-only-persistent: written once at model load, read forever, never invalidated. But our analog IMC is consuming: the stored data is disturbed whenever math is done with it, and lost when power is lost. A consuming substrate cannot hold a read-only-persistent value; every read would degrade the thing that must never change. So the weights would still need HBM backing anyway, which defeats the purpose of such a chip.
 
-This stays true until a non-consuming approach to analog IMC is researched, one where reads leave the weights untouched and unmodified, and the cells do not drift over long periods. Digital IMC may be the right space for that, since digital storage does not degrade on read and does not drift. Note the contrast that makes Chip 2 viable where a weight chip is not: the KV cache is written fresh every request and read a bounded number of times, so a consuming read is survivable there in a way it never is for weights that must live for the model's whole deployment.
+This stays true until a non-consuming approach to analog IMC is researched, one where reads leave the weights untouched and unmodified, and the cells do not drift over long periods. Digital IMC may be the right space for that, since digital storage does not degrade on read and does not drift.
 
 ---
 

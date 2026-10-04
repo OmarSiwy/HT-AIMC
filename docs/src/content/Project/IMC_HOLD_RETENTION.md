@@ -14,7 +14,7 @@ illustrative limit. No offset or gain was fitted.
 
 ## Fixture and frozen inputs
 
-[tb_imc_hold_retention.py](../../../../analog/testbenches/tb_imc_hold_retention.py) uses
+tb_imc_hold_retention.py uses
 one 304-fF ideal storage capacitor, a 6.72-µm NMOS/PMOS isolation TG, and a
 3.36-µm NMOS/PMOS reset TG to 0.9 V. All gate lengths are 0.15 µm. These sizes
 come from the existing 128-row retained-charge array, whose actual programmed
@@ -46,7 +46,7 @@ fixture energy measurements, not a complete repeated macro service cost.
 | SS85, assumed 0.3-µm diffusion extensions | −13.722 / −43.128 / −72.570 |
 | Same SS geometry, `gmin=1e-14` instead of `1e-12` | −43.534 / −43.913 / −44.215 |
 
-The native [TG generator](../../../../analog/schematics/library/cmos_switch.py) supplies
+The native TG generator supplies
 W/L but no AD/AS/PD/PS. The installed Sky130 subcircuits default these diffusion
 areas and perimeters to zero. The sensitivity case explicitly supplies
 `AD=AS=W×0.3 µm` and `PD=PS=2×(W+0.3 µm)`; it is an assumed rectangular

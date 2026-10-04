@@ -116,7 +116,6 @@ Three things fix it, and none of them is a throughput lever:
 | old converter-ENOB spec | 1 | 34.3 dB | tb gate; == `specs.SNR_S_DB` 34.0 dB (consistency check) |
 | `SNR_T_ATTN_DB` in force | 2.1 | 28.0 dB | **ASSUMPTION** |
 | measured tile budget (#24 ERROR_IMPACT) | 8 | 16.3 dB | **measured** (argmax 100%, cos 0.9948) |
-| measured o_t budget (#26 OT_IMPACT) | 18.8 | 8.8 dB | **measured** (argmax 100%, cos 0.9935) |
 
 **The target in force is 11.7 dB stricter than the repo's own measured tile budget.** That is ~2.0 bits of margin that has been paid for and never spent. It is **one** budget and it can be spent **one** of two ways:
 
@@ -165,7 +164,7 @@ Same idea from the outside _(literature)_: hardware-aware / noise-aware training
 | **Analog dataflow between tiles (27l3)** | it *is* `law:cascade` applied spatially: K stages without requantisation -> sigma*sqrt(K). Draws the **same** SNR budget K already draws. `OPTIMIZATION_RESULTS` §4: *'levers don't multiply: cascade-K, lattice thresholds, per-layer-K all draw the same SNR budget'*. | **not independent of K** |
 | **Unstructured activation sparsity** | a pass covers N=16 inputs and is skippable only if ALL are zero: P = p^N. At p=0.9 that is 0.185; at N=512 it is 3.7e-24. **Value collapses exponentially in N** — the wider the column, the more worthless it gets. The paper's 88.9%/2304-row claim is about ADC *range*, not pass skipping. | **~1.2x at N=16, 1.00x at N=512** _(derived)_ |
 | **Adaptive-range converter, CSD, DPS-48, larger N, higher clock, LVT, VDD gating** | already refuted in `OPTIMIZATION_RESULTS.md` | — |
-| **CAM / top-k attention (27l9)** | attacks the KV-cache matmuls, which are **activations, not weights** — they are not in the 7e+09 weight count that sets `passes_per_token` at all. It is a Chip-2 latency lever, worth 0x on the Chip-1 weight-engine scoreboard. | **0x here** |
+| **CAM / top-k attention (27l9)** | attacks the KV-cache matmuls, which are **activations, not weights** — they are not in the 7e+09 weight count that sets `passes_per_token` at all. It is a attention latency lever, worth 0x on the weight-engine scoreboard. | **0x here** |
 | **Output-stationary / different loop order** | batch-1 GEMV has no operand reuse to reorder; every weight is touched once. | **1.000x** |
 
 ## 6. Live levers on `P_eff` (passes_per_token) — and why WE get them cheap

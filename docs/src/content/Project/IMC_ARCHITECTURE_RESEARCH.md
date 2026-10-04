@@ -11,7 +11,6 @@ This architecture sub-review screened the Analog Compute note filenames and read
 | Local note | Design insight retained | What this review adds |
 |---|---|---|
 | 27l1 weight stationarity; 27l7 tiling | Fit the stored model and price wasted/peripheral area | Count actual configured weights and separate resident stage utilization from reload throughput |
-| 27l2 KV; 27l10 selective protection | KV is dynamic and position-sensitive | Correct refresh math; pending/verified ownership and bank write occupancy from the newer GoS paper |
 | 27l3 analog dataflow | Conversion boundaries trade error against service/energy | Separate passive averaging, physical accumulation and digital sums; count actual ADCs |
 | 27l5 wrapper; 27l11 near-memory digital | Digital reductions and traffic belong in the system budget | Local merge trees, per-cut traffic budgets and dependency-aware scheduling |
 | 27l6 MoE; 27l8 3D | Conditional access fits capacity-rich memory | Place co-selected experts on separate peripheral banks instead of requiring simultaneous tier summation |
@@ -23,7 +22,7 @@ One mathematical correction in 27l3 matters when applying it: `sigma_total=sigma
 
 ## Recommendation
 
-The strongest candidate is a **resident weight engine with a small digital correction path, banked resident KV, and a compiler that allocates precision and physical service capacity per tensor**. Reduce converter demand only after the actual full-model error is acceptable. Use independent sessions to fill the resident layer pipeline, and keep reductions near their producers. For a future MoE product, store different experts in separately selectable banks or tiers that share peripheral circuits; this offers a capacity route without requiring all tiers to sum charge simultaneously.
+The strongest candidate is a **resident weight engine with a small digital correction path and a compiler that allocates precision and physical service capacity per tensor**. Reduce converter demand only after the actual full-model error is acceptable. Use independent sessions to fill the resident layer pipeline, and keep reductions near their producers. For a future MoE product, store different experts in separately selectable banks or tiers that share peripheral circuits; this offers a capacity route without requiring all tiers to sum charge simultaneously.
 
 No existing result establishes an optimal chip, a compute-bound full system, or superiority to Sohu/Mythic. Unlimited area in the mini contract makes raw throughput unbounded through replication. A meaningful optimum is a Pareto frontier at fixed model quality, context, batch, latency limit, die/package area and power. The user’s compute-bound requirement is a hard admission condition for points on that frontier.
 
@@ -32,10 +31,9 @@ No existing result establishes an optimal chip, a compute-bound full system, or 
 | 0 | Replace aggregate pass arithmetic with physical mapping and a dependency/resource schedule | Prevents memory traffic, idle stages and duplicate conversion savings from masquerading as throughput | Weight and KV capacity fit; link, programming, refresh and reduction service meet the target rate |
 | 1 | Per-tensor noise allocation; NORA-style rescaling; selective digital outputs/residuals; hardware-aware adaptation | Avoids making every converter expensive because a small set of outputs is sensitive | Full-depth quality with actual quantization and held-out physical residuals |
 | 2 | Resident weight banks with converter sharing chosen from real service demand | Preserves residency while reducing peripheral area and idle power | Extracted area, programming implementation, worst-layer service time |
-| 3 | KV protected/pending/bulk ownership, coalesced writes and local refresh | Improves bank occupancy and prevents state corruption or duplicate attention during migration | Worst-temperature retention plus writes, reads and refresh scheduled together |
-| 4 | Local online-softmax reductions and GQA-aware placement | Avoids shipping the score vector or repeatedly fetching the KV cache | Full attention dependency schedule; shared K/V read-port contention included |
-| 5 | MoE banks/tiers assigned using routing conflicts, with independent gating | Makes total capacity cheap relative to active compute | All experts resident; router/load imbalance and fabric limits priced |
-| 6 | Structured sparsity only where the physical tile schedule shrinks | Can remove real work, writes or converter activations | Compiler demonstrates eliminated physical services, with quality unchanged |
+| 3 | Local online-softmax reductions and GQA-aware placement | Avoids shipping the score vector or repeatedly fetching the KV cache | Full attention dependency schedule; shared K/V read-port contention included |
+| 4 | MoE banks/tiers assigned using routing conflicts, with independent gating | Makes total capacity cheap relative to active compute | All experts resident; router/load imbalance and fabric limits priced |
+| 5 | Structured sparsity only where the physical tile schedule shrinks | Can remove real work, writes or converter activations | Compiler demonstrates eliminated physical services, with quality unchanged |
 | Research | True pre-ADC charge accumulation; stacked charge accumulation | Potentially removes conversions | Actual topology, capacitor/noise budget and transistor-level summation validation |
 
 The ordering is by present evidence and dependency, not by multiplying published speedup factors.
@@ -44,11 +42,11 @@ The ordering is by present evidence and dependency, not by multiplying published
 
 ### Three different weight engines are being discussed
 
-The paper’s `sec_arch.tex` describes a 512×256 eNVM engine, with two 2-bit slices and differential devices. The mini contract describes a 16×16 charge-domain capacitor engine. The implemented [weight_tile.py](../../../../analog/schematics/components/weight_tile/weight_tile.py) specializes capacitor participation at **netlist generation time**; its `bank()` emits only capacitors selected by the supplied weight code. Runtime programmable weight configuration storage and its write path are not implemented there.
+The paper’s `sec_arch.tex` describes a 512×256 eNVM engine, with two 2-bit slices and differential devices. The mini contract describes a 16×16 charge-domain capacitor engine. The implemented weight_tile.py specializes capacitor participation at **netlist generation time**; its `bank()` emits only capacitors selected by the supplied weight code. Runtime programmable weight configuration storage and its write path are not implemented there.
 
 These implementations cannot inherit one another’s density, programming energy, endurance, leakage or wire constraints. A production choice between configured capacitors, SRAM-backed charge-domain CIM and eNVM must include the corresponding physical storage and peripheral circuits.
 
-The statement in [KV_FEASIBILITY.md](KV_FEASIBILITY.md) that charge redistribution destroys the *weight* is incorrect for the present capacitor-code representation. It moves signal charge, while the weight is the capacitor configuration. That charge can be re-excited on the next operation. This differs from a weight encoded as an isolated analog storage-node voltage. Non-volatility is useful for boot/standby, but is not required for runtime weight stationarity if configuration survives powered operation. Conversely, generation-time constants do not demonstrate runtime reprogrammability.
+An earlier claim that charge redistribution destroys the *weight* is incorrect for the present capacitor-code representation. It moves signal charge, while the weight is the capacitor configuration. That charge can be re-excited on the next operation. This differs from a weight encoded as an isolated analog storage-node voltage. Non-volatility is useful for boot/standby, but is not required for runtime weight stationarity if configuration survives powered operation. Conversely, generation-time constants do not demonstrate runtime reprogrammability.
 
 ### Earlier quality-based speedups were falsified
 
@@ -58,7 +56,7 @@ Do not reduce every converter to 5/6 bits, or endorse K>1, based on the earlier 
 
 ### Parallel digital summation is not converter amortization
 
-[tb_supertile.py](../../../../analog/testbenches/tb_supertile.py) calls the real converter for every partial in `measure_partials()`, then adds the resulting K codes digitally. Its step 3 nevertheless equates that schedule to the one-conversion cascade law. For M output columns:
+tb_supertile.py calls the real converter for every partial in `measure_partials()`, then adds the resulting K codes digitally. Its step 3 nevertheless equates that schedule to the one-conversion cascade law. For M output columns:
 
 \[
 n_{ADC,\,digital\ sum}=KM,\qquad n_{ADC,\,true\ preADC\ sum}=M.
@@ -68,7 +66,7 @@ Parallelism can reduce elapsed time by buying K conversion paths; it does not di
 
 There is also a paper-transcription error: `paper/sec_eval.tex` line 49 writes `256/K*=64`, which implies **K*=4**. [METRICS.md](METRICS.md) line 54 instead attributes K*=64 conversion amortization to that example. The paper's reported 64 is the amortized conversion count in that equation, not the accumulation depth. Neither value validates physical conversion sharing in the mini circuit.
 
-[chip_supertile.py](../../../../analog/schematics/top/chip_supertile.py) tests passive capacitor sharing with ideal switches and capacitors. It demonstrates
+chip_supertile.py tests passive capacitor sharing with ideal switches and capacitors. It demonstrates
 
 \[
 \Delta V_{bus}=\frac{\sum_k\Delta V_k}{K+C_{bus}/C_{int}},
@@ -126,7 +124,7 @@ Speculative decoding is not the first efficiency lever for a saturated, compute-
 
 The local depth result makes a strong case for **heterogeneous precision and range allocation**, not a stronger global converter specification.
 
-1. Replay held-out physical residuals conditional on input range, weight pattern, output code, column and temperature on the full quantized model. Preserve deterministic per-device error across tokens; vary read noise per use. Include saturation and analog attention error. Use a correct tokenizer and held-out corpus/task evaluations. A single pooled Gaussian SNR cannot represent every error shape.
+1. Replay held-out physical residuals conditional on input range, weight pattern, output code, column and temperature on the full quantized model. Preserve deterministic per-device error across tokens; vary read noise per use. Include saturation. Use a correct tokenizer and held-out corpus/task evaluations. A single pooled Gaussian SNR cannot represent every error shape.
 2. Compare per-output/group ranges, static tensor rescaling, outlier-channel bypass and rotations before adding ADC bits. For `y=Wx`, `W'=WS` and `x'=S^-1 x` preserve the exact product for invertible diagonal S. The quantized/noisy products differ; optimize S with the measured noise and range constraints. Multiplying a clipped output afterward cannot recover lost information.
 3. Give only the sensitive outputs a digital or higher-precision route. If fraction f of MACs uses energy e_d and the rest e_a, `E/MAC=(1-f)e_a+f e_d+overhead`; measure f and the extra service time. Do not assume that one sensitive tensor means one easily isolated channel. A low-rank residual costs `r(n_in+n_out)` MACs versus `n_in*n_out` dense MACs, but rank r must be learned and validated.
 4. Adapt the model to the calibrated residual errors. Only after quality passes should the compiler spend remaining margin on reduced conversion time, fewer conversions or smaller capacitors.
@@ -171,61 +169,9 @@ The new [mapping experiment](IMC_MAPPING_EXPERIMENT.md) tests 224 golden conditi
 
 Two candidates deserve follow-up. With the existing per-tensor D policy and nibble conversion, saliency **interleaving** improves FFN-down converter SQNR from 44.28 to 51.13 dB at unchanged D=1 and conversion count. Clustering instead harms it. With the merged path and proposed independent row-tile D, **clustering** improves FFN-down from 16.51 to 24.31 dB at unchanged conversion count, but needs D up to 14 and increases mean coarse evaluations from 1.519 to 1.773. Thus grouping must match range granularity; neither result is a measured token or energy gain, nor a reproduction of the full SAGE method. These concrete effects show why physical grouping is a more useful experiment than applying a universal SNR multiplier.
 
-## 4. Resident KV: repair the refresh gate and use dense migration
+## 4. Reduce locally, then move activations
 
-### The existing refresh arithmetic has two independent errors
-
-[KV_FEASIBILITY.md](KV_FEASIBILITY.md) and [CHIP2_SPEC.md](CHIP2_SPEC.md) derive a roughly 1.7 ms first-LSB retention interval, then specify refresh every 13.5 ms. Under their exponential decay model, fractional full-scale error epsilon permits
-
-\[
-T_{refresh}\le-\tau\ln(1-\epsilon).
-\]
-
-Using their extrapolated room-temperature tau=27 ms and epsilon=1/16 gives **1.743 ms**. A half-LSB allocation gives **0.857 ms**. Refresh at tau/2 would allow approximately 39% decay, not 1/16 full scale. Actual 16-level DAC spacing is 1/15 of range; that convention changes these example intervals slightly, without closing the 8× mismatch. Initial write error and read disturbance also consume the voltage error allowance.
-
-The documents additionally state `524,288 cells × 7.5 fJ = 3.9 µJ`. The correct result is **3.932 nJ**. Corrected illustrative values for one K/V head, 2,048 tokens, width 128:
-
-| Quantity | One-LSB allocation | Half-LSB allocation |
-|---|---:|---:|
-| Refresh period, tau=27 ms | 1.743 ms | 0.857 ms |
-| Cell/write-select-source energy per full rewrite | 3.932 nJ | 3.932 nJ |
-| That limited-boundary refresh power | 2.26 µW | 4.59 µW |
-| 2,048 × 150 ns serial write duty | 17.6% | 35.8% |
-
-The duty assumes the same optimistic parallelism as the original documents: a complete width-128 column is written at once, K/V overlap or have separate ports, and 150 ns remains valid at target fanout. With one width-8 write group serially reused sixteen times, duty exceeds 100% at the one-LSB cadence. Bank-parallel writes can repair this at a cost in DACs, ports and distribution energy.
-
-The 7.5 fJ figure comes from ideal-source integration in [tb_gain_cell.py](../../../../analog/testbenches/tb_gain_cell.py); it excludes the deployed write DAC, shadow memory read, clock/control and transport. The separate write DAC is reported around 1.2 pJ/slot in STATUS/CHIP2_SPEC, illustrating why cell-only energy is insufficient. The tau itself was inferred from about 3.3 µs of drift at one code, not a millisecond-scale full-range, worst-temperature retention characterization. `tb_kv_residency.py`, cited as a guard in KV_FEASIBILITY, is absent from `analog/testbenches/` at this review.
-
-Thus neither the original 0.3 mW estimate nor its unqualified GO is supported. Correct the unit error and the refresh interval together, then measure the complete write boundary.
-
-### KV capacity and refresh traffic must be in the same budget
-
-For L transformer layers, H_kv KV heads, width d_h, context T and b stored bits:
-
-\[
-C_{KV}=2LH_{kv}d_hTb/8\quad\text{bytes/session}.
-\]
-
-Derived examples, ignoring metadata/protection/redundancy:
-
-| Geometry | 2,048 context, KV4 | 131,072 context, KV4 |
-|---|---:|---:|
-| L=32, H_kv=8, d_h=128 | 64 MiB/session | 4 GiB/session |
-| L=80, H_kv=8, d_h=128 | 160 MiB/session | 10 GiB/session |
-
-A 64 MiB digital shadow rewritten every 1.743 ms generates **38.5 GB/s/session** of refresh payload. At 1,000 sessions this is 38.5 TB/s, even if those sessions generate few tokens. Keeping the shadow adjacent to the gain-cell banks removes external refresh traffic, but duplicates storage and does not remove local read/write energy. An 8+120-entry protected buffer is not a full refresh shadow.
-
-Gain-cell retention should be established against the permitted *current/score error*, not just raw voltage LSB. The read I(V) is nonlinear. Use voltage/code, temperature, process, data pattern, read count and write-disturb sweeps; derive per-bank refresh deadlines. BEOL oxide-semiconductor devices are a possible future retention improvement, unavailable in sky130. The gain-cell attention exemplar is circuit/model co-design, with attention-path projections; its large GPU-relative improvements are not complete-transformer chip measurements. [Leroux et al.](https://arxiv.org/abs/2409.19315).
-
-### Apply the newer KV scheduling result
-
-Feng et al. provide a useful refinement beyond merely pinning sink/recent entries: keep a **pending** digital set after entries leave the protected window, coalesce a dense analog programming batch, then transfer ownership only when programming succeeds. Protected + pending + active-bulk entries must participate exactly once in a single global normalization. The bounded temporary buffer is fewer than the migration threshold theta entries beyond the protected set. Their study reports programming-row utilization improving from 23.1% to 91.2% and average noisy PPL 33.91→11.95 versus clean 11.06. These are evaluation results; full-system PPA is estimated, and the authors explicitly retain HBM traffic for cold long-context tiles. The utilization ratio is not a whole-chip throughput ratio. [Primary paper, July 2026](https://arxiv.org/html/2607.29076v1).
-
-For AnalogIOC, test coalesced migration against a separate local refresh queue. Pending entries cannot be discarded after an unsuccessful write. Local bank metadata should identify the authoritative copy and retention deadline. A generic sigma/noise model does not prove sink+recent is the only sensitive subset for every model or scoring function.
-
-## 5. Reduce locally, then move activations
-
-Use the exact online-softmax merge already contemplated in CHIP2_SPEC. Each bank returns `(m,l,o)`, where `m=max(s)`, `l=sum exp(s-m)` and `o=sum exp(s-m)v`. Merge two banks with `m=max(m_a,m_b)`, `alpha=exp(m_a-m)`, `beta=exp(m_b-m)`:
+Use the exact online-softmax merge. Each bank returns `(m,l,o)`, where `m=max(s)`, `l=sum exp(s-m)` and `o=sum exp(s-m)v`. Merge two banks with `m=max(m_a,m_b)`, `alpha=exp(m_a-m)`, `beta=exp(m_b-m)`:
 
 \[
 l=\alpha l_a+\beta l_b,\qquad o=\alpha o_a+\beta o_b.
@@ -233,13 +179,13 @@ l=\alpha l_a+\beta l_b,\qquad o=\alpha o_a+\beta o_b.
 
 The output is `o/l`. This preserves exact dense-attention mathematics; finite arithmetic and analog errors still need validation. It removes the need to export all T scores and intermediate attention probabilities. Keep the merge close to bank groups and make only reduced `(m,l,o)` cross die boundaries. The principle is independently established by the IO-aware exact attention literature. [FlashAttention](https://arxiv.org/abs/2205.14135).
 
-The two array-pass description in `sec_attention.tex` is only valid when the required rows, token banks, periphery and reduction capacity operate in parallel. CHIP2_SPEC’s d_h=128 target explicitly uses sixteen width-8 sub-bank passes because of the current budget. Context beyond one bank adds more banks and merging work. Do not hide attention under the *same token’s* FFN: the FFN consumes the attention output. Overlap is available across independent tokens/sessions or appropriately independent suboperations, and must be shown in the schedule.
+The two array-pass description in `sec_attention.tex` is only valid when the required rows, token banks, periphery and reduction capacity operate in parallel. Context beyond one bank adds more banks and merging work. Do not hide attention under the *same token’s* FFN: the FFN consumes the attention output. Overlap is available across independent tokens/sessions or appropriately independent suboperations, and must be shown in the schedule.
 
 GQA reduces stored KV head count relative to query heads. Honor that in placement instead of storing a full cache per query head. Shared KV is not automatically shared compute: different query heads require different products and may contend for bank read paths. Quantify the replication-versus-time-serialization trade. Changing an existing MHA model to GQA is a model adaptation with quality cost, not a transparent compiler rewrite. [GQA primary paper](https://arxiv.org/abs/2305.13245).
 
 At every fabric cut report bits/token, fanout, hops, sustained bandwidth, tail latency and pJ/bit. A multicast tree can distribute x once per branch rather than one packet per tile; local partial-sum trees can avoid shipping every partial. This is an architecture proposal, not a free-energy assumption. Require `R × bits/token < available bit/s` on each cut, including refresh and maintenance where they share the cut.
 
-## 6. MoE and 3D: exploit conditional access before simultaneous summation
+## 5. MoE and 3D: exploit conditional access before simultaneous summation
 
 The clean MoE accounting is
 
@@ -264,7 +210,7 @@ Use independent expert bias/rail domains where the stored state survives gating.
 
 [VERTICAL_3D.md](VERTICAL_3D.md) proposes a distinct, riskier route: many layers contributing to the same analog sum. Its automatic `+0.5 log2(L)` converter-bit penalty assumes fixed absolute output LSB; fixed relative output accuracy with rescaled range is a different requirement. Its resistive IR constraint also cannot simply be applied to an ideal switched-capacitor implementation. Neither observation establishes a free stacking gain: real summing capacitance, bus impedance, noise covariance, selectors and thermal gradients still decide the result. Keep separate ledgers for stacked capacity with shared converters, simultaneous charge sum, and independent active-die stacking.
 
-## 7. Sparsity and other alleged multipliers
+## 6. Sparsity and other alleged multipliers
 
 Deja Vu establishes that contextual sparsity can be predicted and exploited in particular LLM implementations. For AnalogIOC, require the predictor/placement to remove **tile services**, not merely scalar MACs from an abstract count. Column gating can save conversion energy even when other columns prevent latency reduction; row gating saves excitation but does not remove a nonempty dot-product conversion. Larger tiles make random all-zero tile skips less likely. Offline neuron permutations and grouped sparsity can improve physical alignment, with scale metadata and both FFN matrices permuted consistently. [Deja Vu primary paper](https://proceedings.mlr.press/v202/liu23am.html).
 
@@ -272,13 +218,12 @@ The ARCH_THROUGHPUT claim that gathering active weights is “free” because we
 
 Converter replication, shared-converter banking, reduced ADC precision, larger arrays, analog accumulation and stacked tiers compete for area, noise margin and service capacity. Their reported gains do not multiply. Speculative tokens, switching to a different MoE checkpoint, a shorter attention window or approximate retrieval change the workload/quality boundary unless shown otherwise.
 
-## 8. Concrete experiment order and deliverables
+## 7. Concrete experiment order and deliverables
 
 1. **Accounting falsifier:** generate one mapped-workload ledger and event trace for the current SmolLM2 case plus a declared 7B and 70B workload. Report stored/active parameters, ADC events, writes, SRAM/DRAM/link bytes, stage busy time and accepted outputs. Reject unsupported capacity and conversion-amortization points rather than extrapolating them.
-2. **Quality allocation sweep:** use full-model deployed quantization plus held-out converter/KV residual replay. Compare existing mapping, NORA-like scales, group/output scales, supported rotations, selective digital bypass and hardware-aware adaptation. Produce quality versus total energy/latency, with a proper tokenizer and multiple prompts/tasks. Do not infer quality from top-1 agreement alone.
-3. **KV closure:** measure worst-range/worst-temperature retention and complete write energy; schedule protected/pending/bulk migration, shadow refresh, reads and digital merge on real ports. Report the maximum feasible sessions/context and refresh bandwidth. This decides whether analog KV or a local digital bank is the better production option.
-4. **Physical macro comparison:** lay out a representative configured-capacitor macro, including storage/configuration, converter and row routing; compare converter sharing against parallel converters using actual area and service rates. This resolves the present contradictory area models before spending area on speed.
-5. **Resident pipeline simulation:** place the selected macros, allocate copies to bottleneck layers, include fabric and refresh queues, and sweep sessions until service-rate or latency bounds become active. Report batch-one latency and aggregate tok/s separately.
-6. **Only then** evaluate true pre-ADC accumulation, MoE bank/tier sharing and other device/process changes against the accepted baseline.
+2. **Quality allocation sweep:** use full-model deployed quantization plus held-out converter residual replay. Compare existing mapping, NORA-like scales, group/output scales, supported rotations, selective digital bypass and hardware-aware adaptation. Produce quality versus total energy/latency, with a proper tokenizer and multiple prompts/tasks. Do not infer quality from top-1 agreement alone.
+3. **Physical macro comparison:** lay out a representative configured-capacitor macro, including storage/configuration, converter and row routing; compare converter sharing against parallel converters using actual area and service rates. This resolves the present contradictory area models before spending area on speed.
+4. **Resident pipeline simulation:** place the selected macros, allocate copies to bottleneck layers, include fabric and refresh queues, and sweep sessions until service-rate or latency bounds become active. Report batch-one latency and aggregate tok/s separately.
+5. **Only then** evaluate true pre-ADC accumulation, MoE bank/tier sharing and other device/process changes against the accepted baseline.
 
 A candidate succeeds only if it improves accepted tok/s or tok/J at the same declared model quality and workload while satisfying capacity, memory service, physical implementation and timing constraints. A circuit simulation is labeled simulated; compiler work counts are derived; hypothetical node, stack and system results remain projected until validated at their stated boundary.

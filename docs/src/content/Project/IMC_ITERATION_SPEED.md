@@ -72,7 +72,7 @@ Do not globally enlarge timesteps or relax tolerances. The charge-average experi
 
 The cached ngspice 43 binary includes KLU, but the research logs confirmed Sparse 1.3 was active. The official manual describes KLU as a potentially faster alternative, with circuit-dependent results. [ngspice 43 manual, Sections 11.1.1 and 12.6](https://ngspice.sourceforge.io/docs/ngspice-43-manual.pdf).
 
-The new [solver experiment](../../../../analog/testbenches/tb_imc_solver_speed.py) runs the same 16×8 signed physical accumulator with each solver, preserving devices, tolerances, phases and analysis. One execution took **18.10 s with Sparse versus 17.46 s with KLU: 1.036×**, too small a single-run difference to claim a material improvement. Reconstructed outputs differ by at most **2.73e−6 MAC**, delivered energy by **0.00129%**, and both deterministic gates and word time agree. No global solver setting changed. The result is in `build/research/imc_solver_speed_r16_tt.json`.
+The new solver experiment runs the same 16×8 signed physical accumulator with each solver, preserving devices, tolerances, phases and analysis. One execution took **18.10 s with Sparse versus 17.46 s with KLU: 1.036×**, too small a single-run difference to claim a material improvement. Reconstructed outputs differ by at most **2.73e−6 MAC**, delivered energy by **0.00129%**, and both deterministic gates and word time agree. No global solver setting changed. The result is in `build/research/imc_solver_speed_r16_tt.json`.
 
 ```sh
 python3 analog/testbenches/tb_imc_solver_speed.py --rows 16
@@ -82,7 +82,7 @@ The existing model and waveform-I/O speedups remain the measured iteration impro
 
 ### Closed null SAR comparison, 2026-09-09
 
-The [closed SAR benchmark](../../../../analog/testbenches/tb_imc_null_solver_speed.py)
+The closed SAR benchmark
 compares explicit Sparse and KLU selection on the same eight-column TT27
 fixture. It measures one frame, including physical warmup and the closing
 reset, over 591 ns. Settings are frozen: full-width acquisition switches,
@@ -267,11 +267,11 @@ does not turn that incorrect circuit into a passing result.
 
 Source and reproduction:
 
-- [ngspice patch](../../../../analog/testbenches/ngspice43_native_bin_prune.patch), against
+- ngspice patch, against
   official `ngspice-43` commit `2af390f0b12ec460f29464d7325cf3ab5b02d98b`.
   `git apply --check` passes against the unmodified checkout.
-- [Model/fallback and failure tests](../../../../analog/testbenches/tb_imc_native_bin_prune.py).
-- [Frozen SAR benchmark](../../../../analog/testbenches/tb_imc_null_solver_speed.py).
+- Model/fallback and failure tests.
+- Frozen SAR benchmark.
 - Artifacts: `build/research/ngspice43_native_prune/{build_manifest,audit_results,failure_replay}.json`
   and `build/research/imc_null_native_prune_tt.json`.
 

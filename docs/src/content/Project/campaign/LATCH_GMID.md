@@ -42,8 +42,8 @@ their extra decision energy must be paid. Statistical noise runs for the
 3.5- and7-µm physical-diffusion fixtures are ongoing. There is no demonstrated
 complete-column optimum yet.
 
-Sources: [clocked sizing testbench](../../../../../analog/testbenches/tb_imc_latch_gmid.py),
-[native model exporter](../../../../../analog/testbenches/tb_imc_latch_model_export.py).
+Sources: clocked sizing testbench,
+native model exporter.
 Evidence is under `build/campaign/latch_gmid/`, with exact exported models,
 source hashes, time-dependent device parameters and both simulator traces.
 

@@ -7,7 +7,7 @@
 1. `docs/src/content/Project/OPTIMIZATION_RESULTS.md` — the consolidated scorecard from
    session 1 (start here; labels every result measured/derived/projected).
 2. Backing analyses: `CASCADE.md`, `SERVO_EG.md`, `SOHU_VERIFIED.md`,
-   `ERROR_IMPACT.md` / `OT_IMPACT.md`, `KV_FEASIBILITY.md`, `METRICS.md`,
+   `ERROR_IMPACT.md`, `METRICS.md`,
    `COMPOSED_RESULTS.md`, `VERTICAL_3D.md`, `MOE_MAPPING.md`.
 3. `AGENTS.md` + `CONTRACT.md` for conventions; `analog/schematics/specs.py`
    for the laws.
@@ -71,10 +71,6 @@
   #24 model-adequacy pattern — the model tolerates ±8 LSB, so don't chase ±1).
 - Default paths stay byte-identical (opt-in flags); preserve A7/A8/A11 anchors
   - `specs.py` K=1 self-check; commit per green result.
-- Chip 2 (analog attention engine) is **functionally proven** (o_t cos 0.998,
-  KV-in-analog); its digital integration (#27: RTL fp32 island, GALS die-link,
-  CAM, batch) is **deferred** — don't reopen unless asked. Session 1's partial
-  `digital/chip2_island/` RTL was deleted.
 
 ## Workflow that worked
 

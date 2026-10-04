@@ -2,7 +2,7 @@
 
 Research date: 2026-09-10. **VERIFIED within the stated Sky130 DC/AC models:** the useful design variable is the ratio of actual exponential and diode-connected logarithmic slopes, not the nominal table gm/ID alone. Raising the physical reference current changes that ratio. **STRONGLY SUPPORTED as a local mechanism:** this can reduce multiplication error without changing the operand encoding. These checks do not establish a complete IMC architecture, novelty, noise performance, mismatch yield, or an advantage over Mythic.
 
-The independent source is [tb_imc_log_gmid.py](../../../../analog/testbenches/tb_imc_log_gmid.py). The physical transient multiplication and its measured energy belong to the separate [log-charge probe](../../../../analog/testbenches/tb_imc_log_charge.py) and [sizing sweep](../../../../analog/testbenches/tb_imc_log_sizing.py). This report derives and checks device behavior; it does not substitute its idealized charge calculation for those transistor-level transients. The [independent critic](IMC_LOG_PIPELINE_CRITIC.md) reviewed the charge conservation and derivative equations below.
+The independent source is tb_imc_log_gmid.py. The physical transient multiplication and its measured energy belong to the separate log-charge probe and sizing sweep. This report derives and checks device behavior; it does not substitute its idealized charge calculation for those transistor-level transients. The [independent critic](IMC_LOG_PIPELINE_CRITIC.md) reviewed the charge conservation and derivative equations below.
 
 ## Reproduction and evidence
 
@@ -15,7 +15,7 @@ Run from the repository root with the cached Nix Python. The existing helper res
 /nix/store/qk5sl1xvg05cmqh03mn1srdggj39dg7p-python3-3.12.13-env/bin/python3 analog/testbenches/tb_imc_log_gmid.py --reference
 ```
 
-All four modes were run at TT/27°C and SS/85°C and printed `LOG GM/ID CHARACTERIZATION PASS`. The corresponding records are [default](../../../../build/sim/imc_log_gmid.json), [sized](../../../../build/sim/imc_log_gmid_sized.json), [candidate](../../../../build/sim/imc_log_gmid_candidate.json), and [reference](../../../../build/sim/imc_log_gmid_reference.json). They contain dimensions, actual bias values, deck hashes, and tool/deck locations; generated decks and raw `wrdata` files remain in `build/sim/imc_log_gmid*`. PASS means the explicit characterization checks passed, not that every proposed multiplier passed.
+All four modes were run at TT/27°C and SS/85°C and printed `LOG GM/ID CHARACTERIZATION PASS`. The corresponding records are default, sized, candidate, and reference. They contain dimensions, actual bias values, deck hashes, and tool/deck locations; generated decks and raw `wrdata` files remain in `build/sim/imc_log_gmid*`. PASS means the explicit characterization checks passed, not that every proposed multiplier passed.
 
 The default mode covers L={0.15,0.3,0.5,1}µm, W=0.42µm, nominal targets gm/ID={20,23,26,28}/V and a 1nA control. Each bias is evaluated at operand factors {2^-0.5,1,2^0.5}. The sizing tables were generated at TT, W=10µm and fixed VDS=0.9V. The fresh diode instances instead have VDS=VGS and the actual widths. SS uses the same physical currents and sizes selected at TT, not a separately retuned corner.
 
@@ -141,7 +141,7 @@ Jointly scaling log and exp widths at fixed current density increases drive and 
 
 Both original C=1pF, acquisition=1ms decks aborted at time 0.016503s, with ngspice reporting `timestep too small`, step 6.25e-20s and trouble at `vsense#branch`. This equals fifteen 1.1002ms frame intervals. The old clocks simultaneously raised sample/bottom and lowered operate over the same 1ns boundary, creating a real possible overlap between the reference and y nodes. Completed old runs share that clock concern; convergence does not prove harmless overlap.
 
-One isolated TT diagnostic moved operate OFF 38ns before the next frame and added an explicit final closing reset. It still aborted at the identical frame boundary. The diagnostic is preserved in [its JSON record](../../../../build/sim/imc_log_charge_abort_diag_nonoverlap_tt.json) and `build/sim/imc_log_charge_abort_diag_nonoverlap_tt/`; the original evidence was not changed. Therefore removing that overlap was insufficient to resolve the abort. **The abort remains numerical nonconvergence, not evidence of a physical device failure.** Its exact numerical root cause was not established. New parent probes use their separately explicit nonoverlap schedule and do not inherit a claimed pass from this failed long run.
+One isolated TT diagnostic moved operate OFF 38ns before the next frame and added an explicit final closing reset. It still aborted at the identical frame boundary. The diagnostic is preserved in its JSON record and `build/sim/imc_log_charge_abort_diag_nonoverlap_tt/`; the original evidence was not changed. Therefore removing that overlap was insufficient to resolve the abort. **The abort remains numerical nonconvergence, not evidence of a physical device failure.** Its exact numerical root cause was not established. New parent probes use their separately explicit nonoverlap schedule and do not inherit a claimed pass from this failed long run.
 
 ## What remains unverified
 

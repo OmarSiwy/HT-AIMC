@@ -1,6 +1,6 @@
 # Fresh experiment: calibrated charge averaging with one readout
 
-Date: 2026-09-07. Testbench: [tb_charge_average_research.py](../../../../analog/testbenches/tb_charge_average_research.py). Companion review: [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md).
+Date: 2026-09-07. Testbench: tb_charge_average_research.py. Companion review: [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md).
 
 **Result: the passive divider is recoverable, but conversion precision and settling have a real cost.** A fresh Sky130 transistor-switch simulation recovers the summed voltage after calibration. The fast circuit fails the chosen deterministic-error gate at several operating points; a slower acquisition/sharing schedule restores the transfer. One unchanged ADC then has substantially more input-referred error after gain recovery. This experiment supports continued circuit exploration, not a chip-level speedup or energy claim.
 
@@ -33,7 +33,7 @@ The ideal passive divider is `K + (100 + 120)/200 = K + 1.1`. For example, K=4 g
 | 8 | SS, 85 °C | 38.9888 | 112.4745 | FAIL | 0.0408 |
 | 8 | FF, −20 °C | 0.0203 | 0.0407 | PASS | — |
 
-Rounded values above are from the final sweep. Fast cases use the original 0.1-ns grid; the fully settled diagnostics use a separately checked 1-ns grid. The machine-readable output is [charge_average_research.json](../../../../build/sim/charge_average_research.json).
+Rounded values above are from the final sweep. Fast cases use the original 0.1-ns grid; the fully settled diagnostics use a separately checked 1-ns grid. The machine-readable output is charge_average_research.json.
 
 At K=4, the nominal long-settled divider is approximately **5.109**, close to the ideal 5.1; at K=8 it is approximately **9.122**, close to 9.1. The small difference includes transistor loading. The restored transfer does not prove a globally constant calibration over temperature, and the sub-0.05-mV residuals do not include thermal noise, capacitor mismatch or a real comparator.
 

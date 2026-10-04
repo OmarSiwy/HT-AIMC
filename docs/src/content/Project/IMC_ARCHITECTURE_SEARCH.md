@@ -6,7 +6,7 @@ The [self-checking search](../../../../scripts/compiler/metrics/imc_architecture
 
 ## Evidence and assumptions
 
-Read [AGENTS.md](../../../../AGENTS.md), [CONTRACT.md](CONTRACT.md), the user's 27l1/27l7 residency/tiling notes and 27h1/27h4/27h5/27h9 conversion/encoding notes, and the preceding [architecture research](IMC_ARCHITECTURE_RESEARCH.md). The script follows the implemented [weight tile](../../../../analog/schematics/components/weight_tile/weight_tile.py), [specs](../../../../analog/schematics/specs.py), [metrics](METRICS.md), and [PDK configuration](../../../../analog/schematics/library/pdks/sky130.py). It does not reuse the old fictitious division of digitally performed ADC operations by cascade depth.
+Read [AGENTS.md](../../../../AGENTS.md), [CONTRACT.md](CONTRACT.md), the user's 27l1/27l7 residency/tiling notes and 27h1/27h4/27h5/27h9 conversion/encoding notes, and the preceding [architecture research](IMC_ARCHITECTURE_RESEARCH.md). The script follows the implemented weight tile, specs, [metrics](METRICS.md), and PDK configuration. It does not reuse the old fictitious division of digitally performed ADC operations by cascade depth.
 
 Two deliberately separate tracks are evaluated:
 

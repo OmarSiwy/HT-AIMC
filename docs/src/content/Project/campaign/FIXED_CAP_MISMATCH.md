@@ -43,7 +43,7 @@ statistics. It is not the model's actual activation-weight covariance or a
 quality guarantee. The radix8 rows cover the observed symmetric−127…127 support;
 full signed−128 requires an explicit extra code/representation.
 
-The [saved numerical audit](../../../../../build/campaign/fixed_cap_mismatch/coefficient_sensitivity.json)
+The saved numerical audit
 uses512 independent columns of256 fixed random weights drawn from that histogram.
 Each physical binary capacitor gets one independent Gaussian error, reused for
 every input. Repeated identical MVMs return identical errors. The heterogeneous
@@ -85,8 +85,8 @@ bit beyond the8-bit logical weight, or encoded in a correspondingly larger
 physical state space. Independently controllable digit signs and the calibration
 read/scheduling/energy must be paid. No full-model or physical net advantage has
 been demonstrated. Evidence is saved in
-[result](../../../../../build/campaign/redundant_weight_calibration/result.json) and
-[loading budget](../../../../../build/campaign/redundant_weight_calibration/oracle_loading_budget.json).
+result and
+loading budget.
 
 For scale, a4-fF selected capacitor driven through0.45V onto2.4pF produces only
 0.75mV. Resolving0.5% of that signal requires about3.75µV standard error. Even
@@ -115,8 +115,8 @@ can remove its calibrated mean while leaving input-dependent residual error.
 The white-input coefficient audit above does not capture this opportunity.
 
 A new [runner](../../../../../scripts/compiler/metrics/imc_mismatch_offset_quality.py) and frozen
-[die1](../../../../../build/campaign/mismatch_offset_quality/die1/protocol.json)/
-[die2](../../../../../build/campaign/mismatch_offset_quality/die2/protocol.json) protocols
+die1/
+die2 protocols
 use exactly the same capacitor realizations as the uncalibrated mismatch runs.
 Calibration captures only the old128 clean tokens, runs the actual finite ADC
 model with fixed capacitor mismatch, and records the mean error against each
@@ -137,7 +137,7 @@ No quality result is presumed before the frozen campaigns complete.
 
 Both36-case die runs completed and their source hashes were rechecked. Die1 has
 11/36 individual passes and die2 has10/36; no architecture passes all six cases.
-The [summary](../../../../../build/campaign/fixed_mismatch_quality/summary.json) preserves
+The summary preserves
 both passages, mismatch-only diagnostics, and the two fixed-mismatch+thermal+
 20µV read-noise cases per passage. This is two modeled realizations, not a yield
 estimate. Every architecture also fails some physically noisy cases; the
@@ -193,4 +193,4 @@ All source hashes were rechecked. Die1 has10/36 passes and die2 has17/36. Signed
 | 2 | signed8 | common_A11_separate | 6/6 | 0.0095712 | 1.0097696 |
 | 2 | signed8 | common_A10_pooled | 2/6 | 0.0139396 | 1.0186520 |
 
-[Complete summary](../../../../../build/campaign/mismatch_offset_quality/summary.json). Two realizations do not estimate yield. The constants were frozen using the old128-token calibration input; no held-out fitting was used.
+Complete summary. Two realizations do not estimate yield. The constants were frozen using the old128-token calibration input; no held-out fitting was used.

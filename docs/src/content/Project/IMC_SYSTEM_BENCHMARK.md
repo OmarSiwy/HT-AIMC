@@ -13,9 +13,9 @@ Run from the repository root in the existing Nix Python environment:
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /nix/store/qk5sl1xvg05cmqh03mn1srdggj39dg7p-python3-3.12.13-env/bin/python3 scripts/compiler/metrics/imc_system_benchmark.py
 ```
 
-Outputs are [the report](../../../../build/research/imc_system_benchmark/results.md),
+Outputs are the report,
 `results.json` and editable `inputs.json` in `build/research/imc_system_benchmark/`.
-The same run also writes [the comparison with equal weight positions and ADC count](../../../../build/research/imc_system_benchmark/mythic_comparison.md)
+The same run also writes the comparison with equal weight positions and ADC count
 and `mythic_comparison.json`. Use that report for the Mythic hardware comparison;
 the original single-macro token scenario is a separate diagnostic.
 Supply `--config path/to/inputs.json` to change a scenario and `--out build/research/name`

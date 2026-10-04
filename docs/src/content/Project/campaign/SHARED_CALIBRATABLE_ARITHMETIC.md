@@ -86,7 +86,7 @@ redundant programming result. Sharing saves calibration parameter count but
 does not itself reduce coefficient RMS. Around 30% of codes change and active
 capacitance rises. A noiseless calibration is also retained as an optimistic
 bound. No calibration accuracy, PVT margin, yield or inference-quality pass is
-claimed. [Complete fixed-die results](../../../../../build/campaign/shared_cap_calibration/result.json).
+claimed. Complete fixed-die results.
 
 For common site gain error e_g, the output error is
 δy=Σ_g e_g Σ_{i∈g}x_iw_i. Independent site gains give
@@ -119,8 +119,8 @@ quantization error grows. For C0=3000fF and Cf=120fF, variance relative to S1 is
 
 This is a useful tradeoff, not an unconditional precision gain. ADC padding,
 range selection, input-dependent active capacitance and holder-radix errors
-must enter a full implementation. [Arithmetic and count audit](../../../../../build/campaign/shared_cap_calibration/counts_and_noise_audit.json).
-The initial count file uses nine planes, corresponding to A10; the matched A11 schedule above needs ten magnitude planes. [A11 count correction](../../../../../build/campaign/shared_cap_calibration/a11_count_audit.json).
+must enter a full implementation. Arithmetic and count audit.
+The initial count file uses nine planes, corresponding to A10; the matched A11 schedule above needs ten magnitude planes. A11 count correction.
 That audit also corrects a naming error in the first result file: its
 `conservative_matched_holder_fF_per_weight` field is an ideal 22-unit count plus
 column floors, not a conservative physical bound. The audit uses measured
@@ -174,19 +174,19 @@ Both six-case Cu8 runs completed with unchanged source fingerprints. **VERIFIED 
 | 2 | 8fF | fixed_mismatch_only | 1/2 | 0.0058114 | 1.0121398 |
 | 2 | 8fF | fixed_mismatch_read20 | 4/4 | 0.0075913 | 1.0081706 |
 
-The active connected capacitance, installed-cap cost and conversion counts are retained in the [paired summary](../../../../../build/campaign/cu8_mismatch_control/summary.json). This is a paid brute-force sizing control; its initial two-seed improvement must be considered together with the later eight-seed failures. Sharing should be compared with matched complete controls rather than a selected favorable subset. Two dies and two exposed passages are not a yield or unseen-workload qualification.
+The active connected capacitance, installed-cap cost and conversion counts are retained in the paired summary. This is a paid brute-force sizing control; its initial two-seed improvement must be considered together with the later eight-seed failures. Sharing should be compared with matched complete controls rather than a selected favorable subset. Two dies and two exposed passages are not a yield or unseen-workload qualification.
 
 ## Frozen capacitance and noise-seed extension
 
 The follow-up protocol tests Cu6 with the same two noise seeds and mismatch-only diagnostics, and Cu8 with declared seeds60001–60008 on both existing passages and fixed dies. Cu6 uses an explicit midpoint interpolation of measured Cu4/Cu8 code-dependent loading. The Cu8 endpoint differs from Cu4+4·code by less than1.01e−8fF at1kHz, supporting that interpolation for this AC fixture only. Dynamic Cu6 timing remains unverified. All ADC settings and physical standard-normal draws are held fixed. [Runner](../../../../../scripts/compiler/metrics/imc_capacitance_robustness.py).
 
-The exact weight-histogram numerator-error RMS is .26021/.20909/.17936 weight units at Cu4/6/8. Without column-floor and ADC padding, the weighted thermal-variance ratios are1/.56337/.38380; a dense-column mean-loading approximation gives read-variance ratios1/.71447/.58969. Larger Cu also amortizes switch loading, so the fixed-voltage read error is not Cu-independent in this physical loading model. [Static scaling details](../../../../../build/campaign/capacitance_robustness/static_scaling.json).
+The exact weight-histogram numerator-error RMS is .26021/.20909/.17936 weight units at Cu4/6/8. Without column-floor and ADC padding, the weighted thermal-variance ratios are1/.56337/.38380; a dense-column mean-loading approximation gives read-variance ratios1/.71447/.58969. Larger Cu also amortizes switch loading, so the fixed-voltage read error is not Cu-independent in this physical loading model. Static scaling details.
 
 Eight noise seeds improve the falsification test but cannot establish rare-failure reliability. Even zero failures in eight independent draws for one fixed die/passage permits a one-sided95% binomial upper failure probability of1−.05^(1/8)=31.2%. Outcomes across passages and fixed dies are not silently pooled into an identically distributed silicon-yield sample. The unchanged ideal quantization control already has PPL ratio1.008374 on the first passage, leaving limited margin to the1.01 gate before additional analog errors.
 
 The earlier CAP-RAM is an especially direct storage-sharing baseline: eight6T SRAM cells share one MAC circuit. Its silicon calibration fits per-slice gain/offset and then optionally a shared nonlinear correction curve. That corrects observable slice transfer behavior; it does not establish arbitrary per-weight mismatch removal. Its reported peak throughput is for4-bit inputs with binary/ternary weights, and its CIFAR-10 experiment uses quantization-aware training. Those precisions and workload adaptations must remain explicit in comparisons with this unmodified W8 transformer. [Author paper, Sections IV-A and IV-C](https://arxiv.org/pdf/2107.02388).
 
-The Cu6 midpoint runs completed with unchanged sources. Die1 passes3/4 noisy cases and die2 passes4/4; each passes1/2 mismatch-only diagnostics. Cu6 therefore fails the original two-die physical-noise gate. Active connected C is10.79496µF versus13.33161µF for Cu8, with unchanged ADC settings. [Cu6 result summary](../../../../../build/campaign/capacitance_robustness/Cu6/summary.json). The expanded Cu8 run has already produced additional-seed failures; the original two-seed Cu8 result is not a robustness qualification. Final eight-seed statistics remain pending.
+The Cu6 midpoint runs completed with unchanged sources. Die1 passes3/4 noisy cases and die2 passes4/4; each passes1/2 mismatch-only diagnostics. Cu6 therefore fails the original two-die physical-noise gate. Active connected C is10.79496µF versus13.33161µF for Cu8, with unchanged ADC settings. Cu6 result summary. The expanded Cu8 run has already produced additional-seed failures; the original two-seed Cu8 result is not a robustness qualification. Final eight-seed statistics remain pending.
 
 ## Completed Cu8 eight-seed robustness and ideal-ADC ceiling
 
@@ -199,8 +199,8 @@ The Cu6 midpoint runs completed with unchanged sources. Die1 passes3/4 noisy cas
 | 2 | Floating-Point Exception Handling.md | 4/8 | 0.0072934 | 1.0105496 | 0.0035476 | 1.0171362 |
 | 2 | Dual-Clock Asynchronous FIFO.md | 8/8 | 0.0075913 | 1.0013516 | 0.0020788 | 1.0044116 |
 
-[Complete robustness summary](../../../../../build/campaign/capacitance_robustness/Cu8/summary.json). No minimal robust Cu follows from these tested points.
+Complete robustness summary. No minimal robust Cu follows from these tested points.
 
-The exact-ADC diagnostic retains W8 and common A11 but removes all ADC rounding/clipping, mismatch, thermal/read noise and hardware loading. It gives KL.00478016/PPL1.00756344 on passage1 and KL.00473169/PPL.99620885 on passage2. Finite clean ADC values are .00486290/1.00837435 and .00494363/.99755070. Thus the clean ADC penalty is small compared with the combined weight/input quantization floor, and the critical passage retains little hardware margin even with mathematically exact readout. This diagnostic claims no implementable converter or PPA. [Frozen diagnostic](../../../../../build/campaign/ideal_adc_ceiling/result.json).
+The exact-ADC diagnostic retains W8 and common A11 but removes all ADC rounding/clipping, mismatch, thermal/read noise and hardware loading. It gives KL.00478016/PPL1.00756344 on passage1 and KL.00473169/PPL.99620885 on passage2. Finite clean ADC values are .00486290/1.00837435 and .00494363/.99755070. Thus the clean ADC penalty is small compared with the combined weight/input quantization floor, and the critical passage retains little hardware margin even with mathematically exact readout. This diagnostic claims no implementable converter or PPA. Frozen diagnostic.
 
-The paid extra-ADC-bit control also completed. The actual engine defines charge quantum by span, so +1bit alone would only increase range; this experiment uses +1bit and span/2 to halve quantum at unchanged range. All source hashes pass. **FAILED robust acceptance:** die1 and die2 still fail multiple first-passage noise seeds. [Full result and paid costs](../../../../../build/campaign/extra_adc_precision/summary.json). More ADC precision does not remove the dominant W8 recompilation floor.
+The paid extra-ADC-bit control also completed. The actual engine defines charge quantum by span, so +1bit alone would only increase range; this experiment uses +1bit and span/2 to halve quantum at unchanged range. All source hashes pass. **FAILED robust acceptance:** die1 and die2 still fail multiple first-passage noise seeds. Full result and paid costs. More ADC precision does not remove the dominant W8 recompilation floor.

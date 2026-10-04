@@ -27,7 +27,7 @@ using gm/ID to minimize product error and delay.
 Repository HEAD is `7b8d241d696d58216c3c42cb9d8a9ca25217b663`. That commit
 changes only `docs/src/content/Project/NULLSEEK.md`; its historical discussion concerns
 the OTA/PWM tile. The current optimization core is the working-tree
-`matrix_probe` in [tb_imc_sizing_research.py](../../../../analog/testbenches/tb_imc_sizing_research.py):
+`matrix_probe` in tb_imc_sizing_research.py:
 actual complementary row switches, fixed signed coefficient capacitors,
 real sharing/reset switches, and retained radix accumulation. Its output
 is `accj`, reached through the actual `outj → Xsharej → accj` connection.
@@ -48,8 +48,8 @@ words and independent corner fits; it is not fresh workload validation.
 Both whole-word gates, RMS <0.25 MAC and maximum <1 MAC, pass. There is no
 physical ADC, programmable weight memory, extracted layout or transient noise
 in that baseline. Exact commands, snapshots and hashes are in the
-[reproduction record](../../../../build/research/imc_current_core_baseline/README.md)
-and [manifest](../../../../build/research/imc_current_core_baseline/manifest.json).
+reproduction record
+and manifest.
 
 For the new logarithmic branch, define dimensionless positive operands
 `x=Ix/Iref` and `w=Iw/Iref`, initially over `[0.25,4]`, then explicitly over
@@ -146,7 +146,7 @@ inversion point can damage multiplication. The independent checker obtains
 
 The supplied notes on fixed-current-density sizing, unknown terminal voltages,
 and iterative self-loading were used. Existing
-[lookup tables](../../../../analog/schematics/sizing/lookup.py) are real TT27 SPICE
+lookup tables are real TT27 SPICE
 tables at W=10 µm and VDS=0.9 V. They propose a design coordinate; they do not
 establish the operating point of a narrow diode-connected transistor.
 
@@ -223,9 +223,9 @@ proof of an arbitrary large-step settling guarantee. Transients choose the
 actual schedule. The older 1-nA/0.42/1-µm device's measured diode gm/ID was
 24.25 at TT, despite its illustrative table-26 label.
 
-Sources: [DC/AC characterization](../../../../analog/testbenches/tb_imc_log_gmid.py),
-[candidate data](../../../../build/sim/imc_log_gmid_candidate.json),
-[reference-bias data](../../../../build/sim/imc_log_gmid_reference.json), and
+Sources: DC/AC characterization,
+candidate data,
+reference-bias data, and
 [independent critic](IMC_LOG_PIPELINE_CRITIC.md).
 
 Transmission gates are strongly driven switches; their sizing also needs
@@ -289,8 +289,8 @@ This is an ideal-source boundary, not measured regulator/clock-generator power.
 The source freezes a generator snapshot for each new run. An independent
 [result audit](../../../../scripts/compiler/metrics/imc_log_sizing_report.py) checks deck and
 snapshot hashes, product arithmetic, declared gates and energy averages.
-[All completed sizing points](../../../../build/research/imc_log_sizing/sweep.csv) and
-[the finite-population Pareto set](../../../../build/research/imc_log_sizing/summary.json)
+All completed sizing points and
+the finite-population Pareto set
 retain unsuccessful points. Noise and chip area are not fabricated Pareto axes.
 
 ## 5. Pipeline and mixed-format implications
@@ -413,7 +413,7 @@ still aborts on the full stream. Removing only collinear PWL vertices moves
 the abort to 124.5 µs; changing only timestep to 0.19 ns moves it to
 37.499 µs. This implicates numerical breakpoint scheduling, but the exact
 cause remains unresolved. No incomplete trace is extrapolated into a pass.
-The [diagnostic record](../../../../build/research/imc_log_zero_source_diagnostic/README.md)
+The diagnostic record
 preserves all five controls and transformed decks.
 
 Independent audit also finds a stable 100-ns current observation interval
@@ -439,7 +439,7 @@ TT timestep control. `--time-ns 1500` selects the gm/ID-derived geometry;
 Changing `--time-ns` instead resizes devices and is a different experiment.
 Failing single-case screens write their result and then exit nonzero.
 
-The source is [tb_imc_log_sizing.py](../../../../analog/testbenches/tb_imc_log_sizing.py),
-using [the physical multiplier generator](../../../../analog/testbenches/tb_imc_log_charge.py).
+The source is tb_imc_log_sizing.py,
+using the physical multiplier generator.
 Reports and testbenches are research additions; production circuits, flow
 templates and external notes were not changed.

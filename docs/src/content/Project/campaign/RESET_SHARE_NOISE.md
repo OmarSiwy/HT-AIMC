@@ -18,7 +18,7 @@ The 64-cycle zero-noise control passes unchanged trace gates: r = 0.49999982855,
 
 One preliminary 128-cycle noise run at 2 GHz upper cutoff and 10 ps maximum timestep completed. Normalized variances were array-before 1.03682, holder-before 0.77937, holder-after 0.79258; share residual 0.37743, with holder lag-one correlation 0.43552. These estimates remain statistically and numerically unqualified. Finite noise bandwidth can suppress the expected equilibrium variance; fresh 512-cycle seeds and paired 5 ps/2 GHz versus 5 ps/8 GHz controls are in progress. No lower-capacitance sizing claim uses this preliminary reduction.
 
-Generator: [tb_imc_reset_share_noise.py](../../../../../analog/testbenches/tb_imc_reset_share_noise.py). Evidence: `build/campaign/reset_share_noise/`. Every new configuration uses a fresh directory, source snapshot and qualified model export. Failed and interrupted earlier runs are retained.
+Generator: tb_imc_reset_share_noise.py. Evidence: `build/campaign/reset_share_noise/`. Every new configuration uses a fresh directory, source snapshot and qualified model export. Failed and interrupted earlier runs are retained.
 
 
 ## Completed finite-bandwidth controls

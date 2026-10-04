@@ -1050,9 +1050,8 @@ def write_md(X):
         "and #26 use, so the comparison to those tasks is apples to apples — "
         "but a physical converter whose residual turns out to be strongly "
         "input-correlated would sit somewhere in between.",
-        "- **Only the 7 weight-MVMs are perturbed.** The analog attention "
-        "score/`p@V` path (#26 `OT_IMPACT`) is a separate, additional error "
-        "source, not modelled here. Again: tightens, does not loosen.",
+        "- **Only the 7 weight-MVMs are perturbed.** Attention scores, "
+        "softmax and `p@V` run on the digital rail and add no analog error.",
         "- **KL <= 0.01 nats is a choice.** It is defensible (+1% perplexity, "
         "declared before the sweep) but it is a choice. The +5% and +10% rows "
         f"are given so the reader can move it; even at +10% the answer "

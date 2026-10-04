@@ -6,7 +6,7 @@ The completed balanced16 grids used sharing-only thermal variance. The radix9
 grids stopped after 34/72 Cu4 cases and 33/72 Cu8 cases; those partial files are
 preserved. Neither incomplete grid proves a two-passage survivor.
 
-A new [frozen control](../../../../../build/campaign/reset_noise_precision/protocol.json)
+A new frozen control
 uses the original/radix9 calibration choices, both Cu4 and Cu8, all three matched
 architectures, the minimum-error policy, and the same two exposed 512-token
 passages and seeds 60001/60002. Quantization-only cases remain controls. The
@@ -107,7 +107,7 @@ apples-to-apples balanced-ternary accuracy comparison.
 
 ## Physical precision targets from the frozen calibration
 
-The [hardware budget extract](../../../../../build/campaign/reset_noise_precision/frozen_hardware_budget.json)
+The hardware budget extract
 retains all 420 MVM/bank settings per architecture. Cu4 radix9 separate uses
 12 bits in 372 settings, 13 in 34, 11 in 11, and 10 in 3. Its common spans are
 0.25 V (224 settings) and 0.5 V (165), giving charge quanta 0.05859375 and
@@ -125,7 +125,7 @@ counts and resources; average ADC depth alone is not a throughput result.
 
 ## Measured unsigned programming-bank sensitivity
 
-A separate [frozen experiment](../../../../../build/campaign/programmable_loading_precision/protocol.json)
+A separate frozen experiment
 uses the measured 1-kHz code-dependent port capacitance from the full-geometry
 Cu4 bypass bank. The [runner](../../../../../scripts/compiler/metrics/imc_programmable_loading_campaign.py)
 replaces each digit's ideal active capacitance by C(code), retains the exact ideal
@@ -144,13 +144,13 @@ fast internal-mode noise can survive even when low-frequency port C is small.
 Reference, row and state-driver noise remain unpriced. A passing quality result
 would support only this bounded loading sensitivity, not a programmable IMC.
 
-The earlier [activation-radix numerical audit](../../../../../build/campaign/weight_digits/activation_radix_check.json) already verifies these ideal identities with 200,000 Gaussian trials per stage and 128 independent slice-sizing inequalities. Its fixed±511 balanced-ternary comparison requires `1.5*(2187/1024)^2 = 6.8421` times the binary single-holder capacitance at matched product noise, under full±0.45 row drive. This recovered evidence is preserved; the present derivation is a cross-check, not a new discovery.
+The earlier activation-radix numerical audit already verifies these ideal identities with 200,000 Gaussian trials per stage and 128 independent slice-sizing inequalities. Its fixed±511 balanced-ternary comparison requires `1.5*(2187/1024)^2 = 6.8421` times the binary single-holder capacitance at matched product noise, under full±0.45 row drive. This recovered evidence is preserved; the present derivation is a cross-check, not a new discovery.
 
 ## Completed corrected-reset control, 2026-09-11 12:50 UTC
 
 Both36-case Cu grids completed and all recorded source fingerprints were
 independently rechecked. The immutable
-[summary](../../../../../build/campaign/reset_noise_precision/summary.json) records result
+summary records result
 hashes. Each row below requires both passages and both noise seeds, plus both
 quantization-only controls. Noise is20µV additive read plus the corrected ideal
 kT/C reset/share variance.
@@ -182,7 +182,7 @@ must not be transferred to it.
 
 The separate36-case Cu4 programming-load control completed, with18/36 individual
 passes and all source hashes rechecked. **No architecture passes all six cases.**
-The [immutable summary](../../../../../build/campaign/programmable_loading_precision/summary.json)
+The immutable summary
 retains the result hash and complete negative evidence.
 
 | Format / architecture | Cases passing | Worst KL | Worst PPL ratio | Connected C, µF |
@@ -195,7 +195,7 @@ retains the result hash and complete negative evidence.
 | Balanced9 / A10 pooled | 2/6 | .0164348 | 1.0153487 | 7.3515 |
 
 These failures use unchanged ADC calibration choices. The new
-[programmable-digit protocol](../../../../../build/campaign/programmable_digit_precision/protocol.json)
+programmable-digit protocol
 recalibrates depth/span on the same old128-token calibration segment with the
 measured loading and corrected thermal model. It also includes ordinary signed
 radix8 and saturated-carry balanced8. For observed−127…127, ordinary radix8 has
@@ -224,4 +224,4 @@ The72-case nominal programmable-loading grid completed with45 individual passes;
 | saturated_balanced8 | common_A11_separate | 6/6 | 0.0091631 | 1.0089262 |
 | saturated_balanced8 | common_A10_pooled | 2/6 | 0.0142523 | 1.0146596 |
 
-[Complete summary](../../../../../build/campaign/programmable_digit_precision/summary.json). Ordinary signed8 improves this noise/format tradeoff, while saturated balanced8 does not uniformly dominate it. Neither is a new number system. All pooled rows fail; converter-service savings do not compensate the measured-loading noise penalty in these cases. Subsequent fixed-cap mismatch runs invalidate any claim that these nominal passes establish a robust physical core.
+Complete summary. Ordinary signed8 improves this noise/format tradeoff, while saturated balanced8 does not uniformly dominate it. Neither is a new number system. All pooled rows fail; converter-service savings do not compensate the measured-loading noise penalty in these cases. Subsequent fixed-cap mismatch runs invalidate any claim that these nominal passes establish a robust physical core.

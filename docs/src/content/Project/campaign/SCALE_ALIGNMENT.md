@@ -21,7 +21,7 @@ scale, or by explicitly aligned power-of-two scales, without losing model
 quality? If so, does combining original held charges save ADC service after
 accounting for extra input planes, alignment and required readout precision?
 
-The [protocol](../../../../../build/campaign/system_audit/scale_alignment_protocol.json)
+The protocol
 was written before any selected corpus evaluation. The two sources are the
 largest Digital Design Markdown files by byte count outside `paper/`, selected
 using filenames/sizes only: *Floating-Point Exception Handling* and *Dual-Clock
@@ -234,9 +234,9 @@ it is not a physical or reserved-data pass. A12 does not monotonically improve
 the strict observed PPL gate. Input, weight and converter perturbations can
 interact, and retaining only the best mean metric would hide this behavior.
 
-The [ideal results](../../../../../build/campaign/scale_alignment/ideal.json),
-[physical results](../../../../../build/campaign/scale_alignment/physical.json) and
-[aggregate summary](../../../../../build/campaign/scale_alignment/summary.json) retain
+The ideal results,
+physical results and
+aggregate summary retain
 each case. No reserved slice has been evaluated. An independent circuit agent
 reviewed the implemented charge invariant, extra-cycle noise recurrence and
 unequal-significance ADC budget and found no algebraic error under their stated
@@ -264,7 +264,7 @@ in force for area, service, storage, integration and complete energy claims.
 The fixed-voltage failure motivates a separately frozen hypothesis, implemented
 in [imc_fixed_charge_campaign.py](../../../../../scripts/compiler/metrics/imc_fixed_charge_campaign.py).
 It preserves the preceding experiment and all failures. Its
-[protocol](../../../../../build/campaign/fixed_charge/protocol.json) was written before
+protocol was written before
 any charge-range calibration or evaluation. Execution began only after the
 complete preceding grid finished and passed its integrity checks.
 
@@ -321,7 +321,7 @@ and ultimately extracted layout; a pre-junction fixture pass is not sufficient.
 ### Frozen range calibration and clipping falsifier
 
 Range calibration is complete and fingerprinted in
-[calibration.json](../../../../../build/campaign/fixed_charge/calibration.json). Across all
+calibration.json. Across all
 210 MVMs, maximum calibration charge is 1142.50 fC for local A9 separate,
 936.04 fC for common A10 separate, and **2015.74 fC** for common A10 pooled.
 At the largest 1-V reference span, N12 supports approximately ±480 fC. Its
@@ -362,7 +362,7 @@ about **22.3 ppm**, yet these tails dominate its final KL error. Removing the
 code limit recovers both strict development gates. The same benefit is available
 to the common A10 separate baseline, whose unbounded results also pass both
 cases. Local A9 unbounded improves KL but fails Exception PPL at 1.0107592; that
-negative result is retained in the [complete oracle output](../../../../../build/campaign/charge_range_oracle/results.json).
+negative result is retained in the complete oracle output.
 
 **VERIFIED diagnostic conclusion:** finite charge range is a major failure
 mechanism in this model. **SPECULATIVE circuit opportunity:** use idle native
@@ -373,7 +373,7 @@ control, retained analog state and actual service remain unverified. Generic
 coarse/fine conversion and charge balancing are existing principles; this result
 does not establish architectural novelty.
 
-The static [capacitance-fit audit](../../../../../build/campaign/system_audit/charge_extension_fit.json)
+The static capacitance-fit audit
 finds that a 3.84-pF N14 DAC fits **99.65%** of pooled first low-slice holders;
 distributing coarse plates over all joined original holders raises the capacity
 bound to **99.99%**. By contrast, N14 fits no first high-slice holders and only
@@ -396,7 +396,7 @@ The separately frozen [noise oracle](../../../../../scripts/compiler/metrics/imc
 keeps the exact N12 host capacitances and padding, charge quantum and independent
 stage/read-noise calculation, but removes code limits. Its seeded nonclipping
 control reproduces the original noisy implementation. All source/restoration
-checks pass. The complete [results](../../../../../build/campaign/charge_noise_oracle/results.json)
+checks pass. The complete results
 give these individual-case counts:
 
 | Unbounded-code accuracy target | Thermal only | Thermal + read20 | Thermal + read50 |
@@ -417,7 +417,7 @@ noise and correlations remain outside this model.
 
 A new [finite guard model](../../../../../scripts/compiler/metrics/imc_charge_guard_campaign.py)
 uses **14 low-slice bits and 13 high-slice bits**, with both first-host and
-distributed original-capacitor policies. Its [protocol](../../../../../build/campaign/charge_guard/protocol.json)
+distributed original-capacitor policies. Its protocol
 was frozen before calibration/evaluation. Each architecture independently
 minimizes old calibration slice MSE over the expanded reference-span grid
 `{0.0625,0.125,0.25,0.5,1,1.25} V`. Host and distributed versions use the same
@@ -465,7 +465,7 @@ constant; comparator compliance/noise must be verified over that actual range.
 Fixed interleaved local groups `{0,2}` versus `{1,3}` handle ragged matrices more
 efficiently than contiguous halves. In 576 input rows, interleaving gives
 320 versus 256 rows; contiguous grouping gives 512 versus 64. The separately
-fingerprinted [static audit](../../../../../build/campaign/system_audit/differential_fit_guarded.json)
+fingerprinted static audit
 compares both against the ordinary distributed guarded pool, including the
 latter's own ADC-fit padding:
 
@@ -499,8 +499,8 @@ and physical realizability of that smaller unit require new verification.
 
 ### Completed finite low14/high13 result at Cu4
 
-Both [first-host](../../../../../build/campaign/charge_guard/host_Cu4.json) and
-[distributed](../../../../../build/campaign/charge_guard/distributed_Cu4.json) runs
+Both first-host and
+distributed runs
 completed all42 cases with source, model, calibration and protocol integrity
 checks passing. Each has23 individual quality passes. **No candidate passes
 all read-noise cases at Cu4.** Reserved corpus portions remain untouched.
@@ -552,7 +552,7 @@ does not by itself establish a resident-chip advantage over Mythic.
 
 ### Completed finite low14/high13 result at Cu8
 
-The [Cu8 distributed grid](../../../../../build/campaign/charge_guard/distributed_Cu8.json)
+The Cu8 distributed grid
 completed all42 cases with integrity checks passing:30 individual cases pass.
 It keeps the frozen range choices and doubles the scalable native/DAC units,
 while charging actual fixed overhead and fit padding. No ideal stack gain is

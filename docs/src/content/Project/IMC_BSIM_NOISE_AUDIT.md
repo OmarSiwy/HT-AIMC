@@ -10,7 +10,7 @@ The explicit TT cards use `tnoimod=1`, `fnoimod=1`, `rdsmod=0`,
 `rbodymod=1`, `rgatemod=0`, and `igcmod=igbmod=0`. Their selected models are
 NFET bin 26, W/L=3.5/0.15 µm, and PFET bin 35, W/L=2.25/0.15 µm, both nf=1.
 The instance cards explicitly set nrs=nrd=0.
-[Extracted coefficients and geometry](../../../../build/research/imc_flat_model_tt_27.json).
+Extracted coefficients and geometry.
 
 For the normally oriented transistor, define `G=sourceConductance`,
 `D=IdovVds`, and `a=theta² G/D`. Legacy BSIM4.5 assigns the source thermal
@@ -19,17 +19,17 @@ ratio is therefore `(1+a)²` **if the internal state and theta agree**. The
 corresponding reverse-oriented branch is the drain. This is a noise-source
 coefficient; neither expression replaces the electrical conductance in the
 DC/AC matrix.
-[Legacy source, lines 160–188](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4v5/b4v5noi.c),
-[4.8 source, lines 185–215](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4/b4noi.c).
+Legacy source, lines 160–188,
+4.8 source, lines 185–215.
 
 Both native implementations force internal source/drain nodes when this noise
 mode is requested. With the explicit zero source/drain squares, they substitute
 1000 S conductances for the zero resistance. The existing noise logs contain
 the corresponding warnings. Thus zero drawn access resistance does **not**
 remove this noise-partition branch in the present test.
-[Legacy node creation](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4v5/b4v5set.c),
-[Legacy conductance handling, lines 1613–1673](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4v5/b4v5temp.c),
-[Existing TT run](../../../../build/sim/imc_bsim_revision_noise_tt_27).
+Legacy node creation,
+Legacy conductance handling, lines 1613–1673,
+Existing TT run.
 
 BSIM4.8 additionally clamps theta to 0.9 and to 0.9 beta. Neither clamp exists
 in the legacy branch. For these TT coefficients, PMOS theta is always 0.34
@@ -69,9 +69,9 @@ For TT, A is 2.943324e-27/1.195137e-27 V²/Hz for N/P and B is
 coupling through both conductances and capacitances. It does not independently
 measure the source contribution or establish that other internal quantities
 are equal. The output uses a noiseless 1 S drain load; it is not a comparator.
-[Reanalysis and source hashes](../../../../build/research/imc_bsim_noise_source_audit.json),
-[TT stationary sweep](../../../../build/research/imc_bsim_revision_noise_tt_27.json),
-[SS stationary sweep](../../../../build/research/imc_bsim_revision_noise_ss_85.json).
+Reanalysis and source hashes,
+TT stationary sweep,
+SS stationary sweep.
 
 The large GHz PMOS discrepancy is therefore not explained by a theta clamp,
 nor can its 2.43 ratio be used as a broadband correction factor. Its square
@@ -89,8 +89,8 @@ dvs_dVg at line 7377. These manual derivatives feed tnoiMod=1 even when
 automatic differentiation keeps the external DC current correct. The fourth
 term lies in the vtl>0 branch, inactive for these explicit cards. The reviewer
 is testing an isolated correction; this audit does not modify the VA source.
-[Unmodified VA source](../../../../build/research/transient_noise/src/vacask/devices/spice/bsim4v8.va),
-[Native derivative equations, lines 2119–2137](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4/b4ld.c).
+Unmodified VA source,
+Native derivative equations, lines 2119–2137.
 
 After that gate, the smallest defensible legacy experiment is a separate,
 explicitly named research model selecting the legacy tnoiMod=1 equations:

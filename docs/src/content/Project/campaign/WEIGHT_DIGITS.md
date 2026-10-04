@@ -5,7 +5,7 @@ PPA unverified.** The [bounded experiment](../../../../../scripts/compiler/metri
 audits all106,168,320 frozen projection weights, without changing their W8
 values or any calibration/quality corpus. Protocol SHA-256 is
 `b259a97d58287cee6e5fa808958fb6d7f75b4b5deef5626773904962ec171f75`;
-complete data are in [results.json](../../../../../build/campaign/weight_digits/results.json).
+complete data are in results.json.
 Independent circuit-branch review found no algebraic error in the digit,
 geometry, common-B noise or charge equations.
 
@@ -116,7 +116,7 @@ become a physically nonzero low digit in this offset representation.
 ## Matched physical fixtures
 
 New exports are under
-[physical_fixture_balanced](../../../../../build/campaign/system_audit/physical_fixture_balanced).
+physical_fixture_balanced.
 The p50/p95 labels refer to the original signed-magnitude selection. No columns
 or activation words were reselected for balanced weights. Parent hashes,
 calibration/development provenance and exact preserved fields are recorded
@@ -177,7 +177,7 @@ not silently changed to that later variant.
 ## Frozen matched representation/precision experiment
 
 The new [checker](../../../../../scripts/compiler/metrics/imc_balanced_precision_campaign.py)
-and [protocol](../../../../../build/campaign/balanced_precision/protocol.json) were frozen
+and protocol were frozen
 before independent calibration and quality evaluation. Protocol SHA256 is
 `0cc82515ab53d9fc2c9fec919ec0a170991900a32674538e92a2428712428b6c`.
 The original and canonical-balanced representations each receive the same
@@ -259,11 +259,11 @@ case. Radix9 avoids that endpoint cost. Reconstruction adds one post-alignment
 addition per complete MVM output relative to shift-only high significance16;
 its actual arithmetic width, control and energy still require implementation.
 
-The [static screen](../../../../../build/campaign/weight_digits/radix_screen.py) enumerates
+The static screen enumerates
 radices8…32, original signed magnitude, canonical balanced, and tie-toward-zero
 balanced rules. All106,168,320 actual weights and the complete signed8-bit
 integer range are checked. The compiler's observed support is−127…127.
-The [corrected result](../../../../../build/campaign/weight_digits/radix_screen.json)
+The corrected result
 has frozen source/model/protocol hashes. Native C includes the120-fF local
 overhead and both array/holder replicas, but omits ADC fit padding:
 
@@ -302,7 +302,7 @@ For the actual symmetric quantizer, balanced9 has no installed-binary-capacity
 advantage over the strongest original baseline. Activated capacitance savings
 also assume unused capacitors can be disconnected without unmodeled load/noise.
 
-The [p50/p95 physical fixtures](../../../../../build/campaign/system_audit/physical_fixture_balanced9)
+The p50/p95 physical fixtures
 preserve the original column selection, exact q/x, scales, smoothing, full dot
 products and byte-identical activation archives. P50 low capacitances are
 2300/2460/2288/2380/2404/2412/2484/2400 fF and high capacitances
@@ -319,7 +319,7 @@ The corrected balanced9 total is4.11080 µF, replacing the initial4.11239 µF
 loading value. Frozen histogram-level formulas were already wide and unchanged.
 
 The independent [quality checker](../../../../../scripts/compiler/metrics/imc_radix9_precision_campaign.py)
-and [protocol](../../../../../build/campaign/radix9_precision/protocol.json) were frozen
+and protocol were frozen
 before new calibration. Protocol SHA256 is
 `760f2d3dad25b38576a202ad1838dc770170f65168552b45b793b293d181941b`.
 It compares balanced9 with original16 at both Cu4/Cu8, all three architectures,
@@ -348,7 +348,7 @@ intervals, hence R≤2A+1. Therefore, for s=A+B,
 The minimum integer s is15. A=7,B=8,R=15 attains it exactly over−127…127.
 Physical capacitor bases [1,2,4] and [1,3,4], each with independently programmed
 coefficients−1/0/+1, cover every low digit−7…7 and high digit−8…8. The
-[exact subset check](../../../../../build/campaign/weight_digits/installed_radix15_bound.json)
+exact subset check
 verifies those ranges and the complete255-value weight coverage. These six
 capacitors total15 units before the matched holder. Full symmetric support
 through magnitude128 instead needs16 units under the same assumptions.
@@ -364,10 +364,10 @@ topology control; the active radix9 and balanced16 grids remain unchanged.
 
 ## Completed balanced16 quality grid
 
-Both [Cu4](../../../../../build/campaign/balanced_precision/quality_Cu4.json) and
-[Cu8](../../../../../build/campaign/balanced_precision/quality_Cu8.json) complete all72
+Both Cu4 and
+Cu8 complete all72
 cases with final source/model/calibration integrity checks passing. The
-[summary](../../../../../build/campaign/balanced_precision/summary.json) retains all24
+summary retains all24
 configurations and their full paid service/capacitance counters. Every entry
 below requires both passages, quantization-only and both noise seeds:6/6 is
 the gate; five successful cases do not qualify a configuration.

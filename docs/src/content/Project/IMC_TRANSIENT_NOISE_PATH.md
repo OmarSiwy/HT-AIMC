@@ -123,8 +123,8 @@ bundled models and runtime assets. The sole packaging adaptation is a local
 worktrees remain clean. NumPy/SciPy for the upstream regression required a
 separate 30.1-MiB SciPy cache fetch. No automatic approval rejection occurred.
 The research dependency expressions, scripts, hashes and logs are captured in
-[the bootstrap manifest](../../../../build/research/transient_noise/build_manifest.json)
-and [build handoff](../../../../build/research/transient_noise/FEASIBILITY.md).
+the bootstrap manifest
+and build handoff.
 [OpenVAF build features at the inspected commit](https://github.com/OpenVAF-Reloaded/OpenVAF/blob/5ed9e63afe70ac95129a78af7b3732e7d431b1e5/openvaf/openvaf-driver/Cargo.toml),
 [OSDI and build documentation](https://github.com/OpenVAF-Reloaded/OpenVAF/blob/5ed9e63afe70ac95129a78af7b3732e7d431b1e5/README.md)
 
@@ -139,11 +139,11 @@ the model's Boltzmann-constant rounding. Postsettling measured variance is
 1.00656×`kT/C` for R=1 kΩ, C=100 µF and 300.15 K. A matched `noisescale=0`
 control gives exactly zero transient voltage. These are RC infrastructure
 checks, not a transistor-noise result.
-[Upstream run](../../../../build/research/transient_noise/rc_upstream/run.json),
-[independent RC check](../../../../build/research/transient_noise/rc_upstream/independent_check.json),
-[zero-noise control](../../../../build/research/transient_noise/rc_zero/run.json).
+Upstream run,
+independent RC check,
+zero-noise control.
 
-[`tb_imc_bsim_revision.py`](../../../../analog/testbenches/tb_imc_bsim_revision.py)
+`tb_imc_bsim_revision.py`
 compares the actual W=3.5 µm NFET input-pair and W=2.25 µm PFET latch sizes,
 both L=0.15 µm and nf=1. It preserves every original wrapper bin and changes
 only a local copy's version to 4.8.2. A separate copied 4.5 wrapper must first
@@ -160,8 +160,8 @@ derivative. It does not test the VA model port, stationary noise or clocked-latc
 behavior. Native 4.8 also prints a
 TNOIMOD=1 deprecation warning; its source still implements that noise branch,
 so its spectrum must be compared rather than inferred from DC agreement.
-[TT results](../../../../build/research/imc_bsim_revision_tt_27.json),
-[SS results](../../../../build/research/imc_bsim_revision_ss_85.json).
+TT results,
+SS results.
 
 The same fixture's `--noise` branch gives each device a separate output with a
 1-S ideal controlled-source load. This supplies finite noiseless admittance;
@@ -182,12 +182,12 @@ correction, including division in 4.5 versus multiplication in 4.8. The
 explicit PFET parameters prevent either theta clamp from activating in this
 case. Full source attribution and its limits are recorded in
 [the independent audit](IMC_BSIM_NOISE_AUDIT.md).
-[TT spectra](../../../../build/research/imc_bsim_revision_noise_tt_27.json),
-[SS spectra](../../../../build/research/imc_bsim_revision_noise_ss_85.json).
+TT spectra,
+SS spectra.
 
 ## Full model extraction and VA port gate
 
-[`tb_imc_flat_model.py`](../../../../analog/testbenches/tb_imc_flat_model.py) extracts
+`tb_imc_flat_model.py` extracts
 the fully evaluated model cards with ngspice's `listing r`, which avoids the
 fixed-buffer truncation affecting ordinary expanded listings. Compiled model
 audits establish leaf bins 26 and 35; the runnable MOS invocation itself still
@@ -198,10 +198,10 @@ PFET diffusion terms. Native flat replay matches all 14 measured current,
 derivative, charge and capacitance vectors exactly at all 438 biases/device,
 at both TT and SS. Simulator defaults remain implicit.
 [ngspice 43 listing implementation](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/frontend/inp.c),
-[TT extraction/replay](../../../../build/research/imc_flat_model_tt_27.json),
-[SS extraction/replay](../../../../build/research/imc_flat_model_ss_85.json).
+TT extraction/replay,
+SS extraction/replay.
 
-[`tb_imc_vacask_bsim.py`](../../../../analog/testbenches/tb_imc_vacask_bsim.py) ports
+`tb_imc_vacask_bsim.py` ports
 those fixed leaves to the full `sp_bsim4v8` model. It retains all explicit
 coefficients except native dispatch parameter `level=54`, retains the bin
 bounds and instance parameters, explicitly quotes version `4.8.2`, and sets
@@ -217,10 +217,10 @@ noise is as low as 0.08144× NFET and 0.22377× PFET native 4.8.2 PSD. Four
 manual derivative expressions omit gate chain-rule terms that remain in the
 native source. Automatic differentiation preserves the current equations,
 while the incorrect manual values feed `tnoimod=1` noise.
-[Unmodified DC failure](../../../../build/research/imc_vacask_bsim_tt_27.json),
-[unmodified noise failure](../../../../build/research/imc_vacask_bsim_noise_tt_27.json).
+Unmodified DC failure,
+unmodified noise failure.
 
-The isolated [four-line patch](../../../../analog/testbenches/vacask_bsim4v8_derivative.patch)
+The isolated four-line patch
 restores `tmp1=Gds+Gm*dVgsteff_dVd`, `tmp2=Gmb+Gm*dVgsteff_dVb`, `tmp3=Gm`,
 and the missing `Gm*T11` term in the velocity derivative. It follows native
 ngspice43 `b4ld.c` lines 2119–2137; two agents independently checked the
@@ -228,7 +228,7 @@ expressions. The last term is inactive for the selected cards' vtl=0.
 The original source checkout and installed model are unchanged. A separate
 OSDI compiled in 4.62 s and is selected only by `--derivative-fix`.
 [Native derivative equations](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/spicelib/devices/bsim4/b4ld.c),
-[patch provenance](../../../../build/research/transient_noise/bsim_derivative_fix/provenance.json).
+patch provenance.
 
 After this repair, stationary PSD agrees with native 4.8.2 within
 **1.06×10⁻⁸ relative at TT** and **3.46×10⁻⁹ at SS**, over the same nine biases
@@ -244,12 +244,12 @@ biases/device**, with maximum difference divided by field peak below
 no coefficients or comparison tolerances changed. The original unmatched
 failures remain recorded. This qualifies only the fixed-device 4.8.2 port;
 it does not validate native 4.5 noise, other geometries, or a clocked comparator.
-[Corrected TT DC](../../../../build/research/imc_vacask_bsim_fix_tt_27.json),
-[corrected SS DC](../../../../build/research/imc_vacask_bsim_fix_ss_85.json),
-[corrected TT noise](../../../../build/research/imc_vacask_bsim_fix_noise_tt_27.json),
-[corrected SS noise](../../../../build/research/imc_vacask_bsim_fix_noise_ss_85.json).
-[Matched TT DC/charge gate](../../../../build/research/imc_vacask_bsim_fix_tt_27_native_noise_topology.json),
-[matched SS DC/charge gate](../../../../build/research/imc_vacask_bsim_fix_ss_85_native_noise_topology.json).
+Corrected TT DC,
+corrected SS DC,
+corrected TT noise,
+corrected SS noise.
+Matched TT DC/charge gate,
+matched SS DC/charge gate.
 
 An opt-in 21-bias extension adds six forward cases at normalized body bias
 −0.4/−0.6 V and six reverse-drain cases at body bias −0.6 V. Its reverse
@@ -260,21 +260,21 @@ case: at normalized VGS=0.1 V, VDS=−0.2 V, VBS=−0.6 V and 1 GHz, TT NFET
 output PSD changes from 5.2754×10⁻²⁹ to 7.1049×10⁻²³ V²/Hz. These are
 spectra at the fixture's 1-S load, not comparator noise, and demonstrate why
 a scalar correction between model revisions is inappropriate.
-[Absolute PSD audit](../../../../build/research/imc_bsim_extended_noise_ratio_audit.json).
+Absolute PSD audit.
 
 A second, explicitly named **hybrid variant** retains corrected 4.8.2
 DC/charge equations and restores the native 4.5 `tnoimod=1` thermal equations:
 remove both theta clamps and divide, rather than multiply, the applicable
 source/drain noise conductance correction. It does not change fitted model
-coefficients. Its [small separate patch](../../../../analog/testbenches/vacask_bsim4v8_legacy_tnoi1.patch)
-and [separate OSDI provenance](../../../../build/research/transient_noise/bsim_legacy_tnoi1/provenance.json)
+coefficients. Its small separate patch
+and separate OSDI provenance
 preserve the unmodified and corrected 4.8 controls. Compilation took 4.53 s.
 The hybrid's stationary spectra match native 4.5 at all 21 biases and 91
 frequencies/device within **1.306 ppm TT** and **1.037 ppm SS**, with the same
 comparison gates. This qualifies the sampled stationary-noise behavior of
 these two geometries; it is not a full BSIM4.5 port or a measured silicon model.
-[Hybrid TT gate](../../../../build/research/imc_vacask_bsim_fix_legacy_tnoi1_noise_extended_tt_27.json),
-[hybrid SS gate](../../../../build/research/imc_vacask_bsim_fix_legacy_tnoi1_noise_extended_ss_85.json).
+Hybrid TT gate,
+hybrid SS gate.
 
 The exact nine-MOS StrongARM uses five distinct geometries: input NFET 3.5 µm,
 tail NFET 0.42 µm, regeneration NFET 1 µm, regeneration PFET 2.25 µm and reset
@@ -283,8 +283,8 @@ PFET 1 µm, all L=0.15 µm. Full-card extraction preserves their selected bins
 matches the original wrapper's 14 fields exactly at 438 biases per geometry,
 at TT 27°C and SS 85°C. The separate native 4.8 revision gate fails the four
 capacitance fields above; it is preserved as a failure.
-[Five-geometry TT export](../../../../build/research/imc_latch_model_export_tt_27.json),
-[SS export](../../../../build/research/imc_latch_model_export_ss_85.json).
+Five-geometry TT export,
+SS export.
 
 The native getters have the same meanings. The capmod=2 T0<0 branch changes
 `dT0_dVb*(1-T5)` in 4.5 to `dT0_dVb*(T4-T5)` in 4.8 when computing
@@ -299,8 +299,8 @@ the sampled points. It does not waive the failed migration gate or establish
 clocked waveform equivalence.
 [Native 4.5 equations](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/spicelib/devices/bsim4v5/b4v5ld.c),
 [native 4.8 equations](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/spicelib/devices/bsim4/b4ld.c),
-[TT numerical derivative audit](../../../../build/research/imc_latch_body_derivative_tt_27.json),
-[SS audit](../../../../build/research/imc_latch_body_derivative_ss_85.json).
+TT numerical derivative audit,
+SS audit.
 
 The additional five-geometry VA port gate compares the hybrid against native
 4.8 with matched noise-job topology at the same 438 biases per geometry. All
@@ -308,12 +308,12 @@ The additional five-geometry VA port gate compares the hybrid against native
 9.88×10⁻¹⁵. A reset-PMOS rail-crossing probe at normalized VGS=0.741±1 µV
 and VDS=−1 µV/−1 nV/0/+1 nV/+1 µV/+1 mV also agrees. These port gates
 remain distinct from the failed native 4.5-to-4.8 body-Jacobian screen.
-[Five-geometry port fixture](../../../../analog/testbenches/tb_imc_latch_static_port.py),
-[rail-crossing port gate](../../../../build/research/imc_latch_static_port_tt_27_rail_crossing.json).
+Five-geometry port fixture,
+rail-crossing port gate.
 
 ## One-comparator clocked qualification
 
-[`tb_imc_latch_noise.py`](../../../../analog/testbenches/tb_imc_latch_noise.py) uses the
+`tb_imc_latch_noise.py` uses the
 exact exported nine-MOS topology, ideal input sources at common mode 0.9 V,
 ±2 mV differential input, and 10 fF output loads. Two physical clock/reset
 cycles run; the second full 20 ns cycle is compared and charged all positive
@@ -335,15 +335,15 @@ error 2.736→1.257→0.281 mV. Relative tolerances 10⁻⁴ and 10⁻³ also ap
 gate and is excluded. The accepted deterministic settings are native 1 ps and
 VA 2 ps, reltol=10⁻⁵; physical acceptance limits remain 5 mV maximum/1 mV RMS,
 100 ps decision time, and 0.5% energy difference.
-[Convergence study and retained strict failure](../../../../build/research/imc_latch_solver_convergence_tt.json).
+Convergence study and retained strict failure.
 
 Both input polarities pass deterministic reset, decision, waveform and energy
 gates at TT 27°C and SS 85°C. Worst waveform differences are 0.281/0.327 mV,
 RMS 26.74/47.79 µV, with identical decision time on a 1 ps grid and maximum
 energy differences 0.00328%/0.00159%. This is a bounded clocked migration check,
 not a comparator offset or input-noise characterization.
-[TT clocked results](../../../../build/research/imc_latch_noise_tt_27.json),
-[SS clocked results](../../../../build/research/imc_latch_noise_ss_85.json).
+TT clocked results,
+SS clocked results.
 
 **Default intrinsic-noise settings fail.** The zero-amplitude noise
 control passes, but seed 0 with the original unit noise scale fails before the
@@ -358,7 +358,7 @@ variants. Adding exact ZOH grid breakpoints does not fix the comparator: LTE is
 tested before breakpoint history reset. This isolates part of the limitation
 to the simulator's treatment of stochastic discontinuities and algebraic
 source currents, independent of MOS physics.
-[Stiff RC diagnostic](../../../../build/research/imc_stiff_rc_noise_probe.json).
+Stiff RC diagnostic.
 
 A separately named exploratory branch uses SDE mode and the documented
 `tran_noiselte=30` stochastic error-estimator floor, with **unit physical noise
@@ -369,8 +369,8 @@ seed 0 repeats exactly, and seed 1 produces a distinct trajectory. Both tested
 seeds resolve the fixed +2 mV input correctly. Each noisy run takes about one
 second. The different-seed output separation during regeneration is 43.9 mV
 at TT; that is an output waveform difference, **not input-referred noise**.
-[TT exploratory controls](../../../../build/research/imc_latch_noise_tt_27_sde_lte30.json),
-[SS exploratory controls](../../../../build/research/imc_latch_noise_ss_85_sde_lte30.json).
+TT exploratory controls,
+SS exploratory controls.
 
 This closes only the executable noise/replay sanity check. Stochastic-floor,
 timestep and frequency-parameter convergence, adequate sampling, input source
@@ -463,7 +463,7 @@ equations, initialized at zero and allowed to settle, verifies the result.
 Across 8,192 independent trajectories, the largest variance discrepancy over
 seven boxcar widths was 3.63%; charge conservation also passed. Reproduce with
 the cached NumPy Python and
-[`analog/testbenches/tb_imc_filter_noise.py`](../../../../analog/testbenches/tb_imc_filter_noise.py):
+`analog/testbenches/tb_imc_filter_noise.py`:
 
 ```sh
 python3 analog/testbenches/tb_imc_filter_noise.py

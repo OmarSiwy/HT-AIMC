@@ -11,10 +11,10 @@ StrongARM in this standalone fixture.
 This is not a complete ADC or MAC connection, and no novelty is claimed. The
 root's [connected charge-core experiment](CONNECTED_CHARGE_CORE.md) must test
 the mechanism against the actual CDAC's frequency-dependent input impedance.
-The source is [tb_imc_dynamic_preamp.py](../../../../../analog/testbenches/tb_imc_dynamic_preamp.py).
+The source is tb_imc_dynamic_preamp.py.
 Results, decks, logs, traces, and available generator snapshots are indexed by
-the [artifact manifest](../../../../../build/research/imc_dynamic_preamp_campaign/manifest.json)
-and [numerical summary](../../../../../build/research/imc_dynamic_preamp_campaign/summary.json).
+the artifact manifest
+and numerical summary.
 
 ## Fixture and accounting
 

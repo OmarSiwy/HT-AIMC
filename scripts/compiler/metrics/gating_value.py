@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.join(_ROOT, "analog", "docs"))
 sys.path.insert(0, os.path.join(_ROOT, "scripts"))
 
 import specs                                             # noqa: E402
-from sizing import lookup                                # noqa: E402
+import gmid as lookup                                    # noqa: E402
 from pdk_specs import Sky130                   # noqa: E402
 from pdk_specs import Asap7Proj            # noqa: E402
 from pdk_specs import TsmcN4Proj         # noqa: E402

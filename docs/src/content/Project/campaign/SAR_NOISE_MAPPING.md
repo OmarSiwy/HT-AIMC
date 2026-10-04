@@ -7,10 +7,10 @@ earlier full-model charge/noise studies use the first kind. Root's approximately
 445-µV comparator estimate is a conditional physical input decision-noise
 estimate and cannot automatically replace that parameter.
 
-The [protocol](../../../../../build/campaign/sar_noise_mapping/protocol.json) has SHA-256
+The protocol has SHA-256
 `f36bae65308049fdc3ad7408650a9fe21a70c739549fe5bb8cbf2f075bd33191`.
 Its source snapshot, exact probability controls and all 90 scored cases are
-in [results.json](../../../../../build/campaign/sar_noise_mapping/results.json).
+in results.json.
 No model corpus, calibration, or active guard experiment was changed.
 
 ## First-principles model and checks
@@ -114,9 +114,9 @@ The examples above remain frozen arithmetic examples. Later matched full-diffusi
 64-seed-per-input component screens give a default estimate455.260 µV
 (95% interval387.51–538.79), versus328.851 µV (279.91–392.05) with4-fF
 internal-node capacitors and315.815 µV (268.82–376.51) with16-fF capacitors.
-See the [default](../../../../../build/campaign/decision_noise/tt_iw3p5_geom_n64/result.json),
-[4-fF](../../../../../build/campaign/decision_noise/tt_iw3p5_geom_ci4_n64/result.json), and
-[16-fF](../../../../../build/campaign/decision_noise/tt_iw3p5_geom_ci16_n64/result.json)
+See the default,
+4-fF, and
+16-fF
 component artifacts. The earlier≈366-µV estimate used fewer trials and is
 not an established superior default. Internal capacitance also changes energy,
 loading and regeneration; the older crossed-stack gain cannot automatically

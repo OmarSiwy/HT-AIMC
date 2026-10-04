@@ -1,4 +1,4 @@
-(function(){const n=document.createElement("link").relList;if(n&&n.supports&&n.supports("modulepreload"))return;for(const i of document.querySelectorAll('link[rel="modulepreload"]'))a(i);new MutationObserver(i=>{for(const r of i)if(r.type==="childList")for(const s of r.addedNodes)s.tagName==="LINK"&&s.rel==="modulepreload"&&a(s)}).observe(document,{childList:!0,subtree:!0});function t(i){const r={};return i.integrity&&(r.integrity=i.integrity),i.referrerPolicy&&(r.referrerPolicy=i.referrerPolicy),i.crossOrigin==="use-credentials"?r.credentials="include":i.crossOrigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function a(i){if(i.ep)return;i.ep=!0;const r=t(i);fetch(i.href,r)}})();function id(e){return e&&e.__esModule&&Object.prototype.hasOwnProperty.call(e,"default")?e.default:e}var Go={exports:{}},ei={},Ko={exports:{}},E={};/**
+(function(){const n=document.createElement("link").relList;if(n&&n.supports&&n.supports("modulepreload"))return;for(const i of document.querySelectorAll('link[rel="modulepreload"]'))a(i);new MutationObserver(i=>{for(const r of i)if(r.type==="childList")for(const s of r.addedNodes)s.tagName==="LINK"&&s.rel==="modulepreload"&&a(s)}).observe(document,{childList:!0,subtree:!0});function t(i){const r={};return i.integrity&&(r.integrity=i.integrity),i.referrerPolicy&&(r.referrerPolicy=i.referrerPolicy),i.crossOrigin==="use-credentials"?r.credentials="include":i.crossOrigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function a(i){if(i.ep)return;i.ep=!0;const r=t(i);fetch(i.href,r)}})();function id(e){return e&&e.__esModule&&Object.prototype.hasOwnProperty.call(e,"default")?e.default:e}var Uo={exports:{}},ei={},Ko={exports:{}},E={};/**
  * @license React
  * react.production.min.js
  *
@@ -6,7 +6,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */var Jt=Symbol.for("react.element"),rd=Symbol.for("react.portal"),sd=Symbol.for("react.fragment"),od=Symbol.for("react.strict_mode"),cd=Symbol.for("react.profiler"),ld=Symbol.for("react.provider"),dd=Symbol.for("react.context"),ud=Symbol.for("react.forward_ref"),hd=Symbol.for("react.suspense"),pd=Symbol.for("react.memo"),md=Symbol.for("react.lazy"),Vs=Symbol.iterator;function gd(e){return e===null||typeof e!="object"?null:(e=Vs&&e[Vs]||e["@@iterator"],typeof e=="function"?e:null)}var Ho={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},Jo=Object.assign,Qo={};function rt(e,n,t){this.props=e,this.context=n,this.refs=Qo,this.updater=t||Ho}rt.prototype.isReactComponent={};rt.prototype.setState=function(e,n){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,n,"setState")};rt.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function Yo(){}Yo.prototype=rt.prototype;function Lr(e,n,t){this.props=e,this.context=n,this.refs=Qo,this.updater=t||Ho}var Or=Lr.prototype=new Yo;Or.constructor=Lr;Jo(Or,rt.prototype);Or.isPureReactComponent=!0;var Ps=Array.isArray,$o=Object.prototype.hasOwnProperty,zr={current:null},Xo={key:!0,ref:!0,__self:!0,__source:!0};function Zo(e,n,t){var a,i={},r=null,s=null;if(n!=null)for(a in n.ref!==void 0&&(s=n.ref),n.key!==void 0&&(r=""+n.key),n)$o.call(n,a)&&!Xo.hasOwnProperty(a)&&(i[a]=n[a]);var o=arguments.length-2;if(o===1)i.children=t;else if(1<o){for(var c=Array(o),d=0;d<o;d++)c[d]=arguments[d+2];i.children=c}if(e&&e.defaultProps)for(a in o=e.defaultProps,o)i[a]===void 0&&(i[a]=o[a]);return{$$typeof:Jt,type:e,key:r,ref:s,props:i,_owner:zr.current}}function fd(e,n){return{$$typeof:Jt,type:e.type,key:n,ref:e.ref,props:e.props,_owner:e._owner}}function Br(e){return typeof e=="object"&&e!==null&&e.$$typeof===Jt}function yd(e){var n={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return n[t]})}var Fs=/\/+/g;function bi(e,n){return typeof e=="object"&&e!==null&&e.key!=null?yd(""+e.key):n.toString(36)}function va(e,n,t,a,i){var r=typeof e;(r==="undefined"||r==="boolean")&&(e=null);var s=!1;if(e===null)s=!0;else switch(r){case"string":case"number":s=!0;break;case"object":switch(e.$$typeof){case Jt:case rd:s=!0}}if(s)return s=e,i=i(s),e=a===""?"."+bi(s,0):a,Ps(i)?(t="",e!=null&&(t=e.replace(Fs,"$&/")+"/"),va(i,n,t,"",function(d){return d})):i!=null&&(Br(i)&&(i=fd(i,t+(!i.key||s&&s.key===i.key?"":(""+i.key).replace(Fs,"$&/")+"/")+e)),n.push(i)),1;if(s=0,a=a===""?".":a+":",Ps(e))for(var o=0;o<e.length;o++){r=e[o];var c=a+bi(r,o);s+=va(r,n,t,c,i)}else if(c=gd(e),typeof c=="function")for(e=c.call(e),o=0;!(r=e.next()).done;)r=r.value,c=a+bi(r,o++),s+=va(r,n,t,c,i);else if(r==="object")throw n=String(e),Error("Objects are not valid as a React child (found: "+(n==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":n)+"). If you meant to render a collection of children, use an array instead.");return s}function na(e,n,t){if(e==null)return e;var a=[],i=0;return va(e,a,"","",function(r){return n.call(t,r,i++)}),a}function vd(e){if(e._status===-1){var n=e._result;n=n(),n.then(function(t){(e._status===0||e._status===-1)&&(e._status=1,e._result=t)},function(t){(e._status===0||e._status===-1)&&(e._status=2,e._result=t)}),e._status===-1&&(e._status=0,e._result=n)}if(e._status===1)return e._result.default;throw e._result}var oe={current:null},ba={transition:null},bd={ReactCurrentDispatcher:oe,ReactCurrentBatchConfig:ba,ReactCurrentOwner:zr};function ec(){throw Error("act(...) is not supported in production builds of React.")}E.Children={map:na,forEach:function(e,n,t){na(e,function(){n.apply(this,arguments)},t)},count:function(e){var n=0;return na(e,function(){n++}),n},toArray:function(e){return na(e,function(n){return n})||[]},only:function(e){if(!Br(e))throw Error("React.Children.only expected to receive a single React element child.");return e}};E.Component=rt;E.Fragment=sd;E.Profiler=cd;E.PureComponent=Lr;E.StrictMode=od;E.Suspense=hd;E.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=bd;E.act=ec;E.cloneElement=function(e,n,t){if(e==null)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+e+".");var a=Jo({},e.props),i=e.key,r=e.ref,s=e._owner;if(n!=null){if(n.ref!==void 0&&(r=n.ref,s=zr.current),n.key!==void 0&&(i=""+n.key),e.type&&e.type.defaultProps)var o=e.type.defaultProps;for(c in n)$o.call(n,c)&&!Xo.hasOwnProperty(c)&&(a[c]=n[c]===void 0&&o!==void 0?o[c]:n[c])}var c=arguments.length-2;if(c===1)a.children=t;else if(1<c){o=Array(c);for(var d=0;d<c;d++)o[d]=arguments[d+2];a.children=o}return{$$typeof:Jt,type:e.type,key:i,ref:r,props:a,_owner:s}};E.createContext=function(e){return e={$$typeof:dd,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null},e.Provider={$$typeof:ld,_context:e},e.Consumer=e};E.createElement=Zo;E.createFactory=function(e){var n=Zo.bind(null,e);return n.type=e,n};E.createRef=function(){return{current:null}};E.forwardRef=function(e){return{$$typeof:ud,render:e}};E.isValidElement=Br;E.lazy=function(e){return{$$typeof:md,_payload:{_status:-1,_result:e},_init:vd}};E.memo=function(e,n){return{$$typeof:pd,type:e,compare:n===void 0?null:n}};E.startTransition=function(e){var n=ba.transition;ba.transition={};try{e()}finally{ba.transition=n}};E.unstable_act=ec;E.useCallback=function(e,n){return oe.current.useCallback(e,n)};E.useContext=function(e){return oe.current.useContext(e)};E.useDebugValue=function(){};E.useDeferredValue=function(e){return oe.current.useDeferredValue(e)};E.useEffect=function(e,n){return oe.current.useEffect(e,n)};E.useId=function(){return oe.current.useId()};E.useImperativeHandle=function(e,n,t){return oe.current.useImperativeHandle(e,n,t)};E.useInsertionEffect=function(e,n){return oe.current.useInsertionEffect(e,n)};E.useLayoutEffect=function(e,n){return oe.current.useLayoutEffect(e,n)};E.useMemo=function(e,n){return oe.current.useMemo(e,n)};E.useReducer=function(e,n,t){return oe.current.useReducer(e,n,t)};E.useRef=function(e){return oe.current.useRef(e)};E.useState=function(e){return oe.current.useState(e)};E.useSyncExternalStore=function(e,n,t){return oe.current.useSyncExternalStore(e,n,t)};E.useTransition=function(){return oe.current.useTransition()};E.version="18.3.1";Ko.exports=E;var en=Ko.exports;const wd=id(en);/**
+ */var Jt=Symbol.for("react.element"),rd=Symbol.for("react.portal"),sd=Symbol.for("react.fragment"),od=Symbol.for("react.strict_mode"),cd=Symbol.for("react.profiler"),ld=Symbol.for("react.provider"),dd=Symbol.for("react.context"),ud=Symbol.for("react.forward_ref"),hd=Symbol.for("react.suspense"),pd=Symbol.for("react.memo"),md=Symbol.for("react.lazy"),Fs=Symbol.iterator;function gd(e){return e===null||typeof e!="object"?null:(e=Fs&&e[Fs]||e["@@iterator"],typeof e=="function"?e:null)}var Ho={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},Jo=Object.assign,Qo={};function rt(e,n,t){this.props=e,this.context=n,this.refs=Qo,this.updater=t||Ho}rt.prototype.isReactComponent={};rt.prototype.setState=function(e,n){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,n,"setState")};rt.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function Yo(){}Yo.prototype=rt.prototype;function Or(e,n,t){this.props=e,this.context=n,this.refs=Qo,this.updater=t||Ho}var Lr=Or.prototype=new Yo;Lr.constructor=Or;Jo(Lr,rt.prototype);Lr.isPureReactComponent=!0;var Ps=Array.isArray,$o=Object.prototype.hasOwnProperty,zr={current:null},Xo={key:!0,ref:!0,__self:!0,__source:!0};function Zo(e,n,t){var a,i={},r=null,s=null;if(n!=null)for(a in n.ref!==void 0&&(s=n.ref),n.key!==void 0&&(r=""+n.key),n)$o.call(n,a)&&!Xo.hasOwnProperty(a)&&(i[a]=n[a]);var o=arguments.length-2;if(o===1)i.children=t;else if(1<o){for(var c=Array(o),d=0;d<o;d++)c[d]=arguments[d+2];i.children=c}if(e&&e.defaultProps)for(a in o=e.defaultProps,o)i[a]===void 0&&(i[a]=o[a]);return{$$typeof:Jt,type:e,key:r,ref:s,props:i,_owner:zr.current}}function fd(e,n){return{$$typeof:Jt,type:e.type,key:n,ref:e.ref,props:e.props,_owner:e._owner}}function Br(e){return typeof e=="object"&&e!==null&&e.$$typeof===Jt}function vd(e){var n={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return n[t]})}var qs=/\/+/g;function bi(e,n){return typeof e=="object"&&e!==null&&e.key!=null?vd(""+e.key):n.toString(36)}function ya(e,n,t,a,i){var r=typeof e;(r==="undefined"||r==="boolean")&&(e=null);var s=!1;if(e===null)s=!0;else switch(r){case"string":case"number":s=!0;break;case"object":switch(e.$$typeof){case Jt:case rd:s=!0}}if(s)return s=e,i=i(s),e=a===""?"."+bi(s,0):a,Ps(i)?(t="",e!=null&&(t=e.replace(qs,"$&/")+"/"),ya(i,n,t,"",function(d){return d})):i!=null&&(Br(i)&&(i=fd(i,t+(!i.key||s&&s.key===i.key?"":(""+i.key).replace(qs,"$&/")+"/")+e)),n.push(i)),1;if(s=0,a=a===""?".":a+":",Ps(e))for(var o=0;o<e.length;o++){r=e[o];var c=a+bi(r,o);s+=ya(r,n,t,c,i)}else if(c=gd(e),typeof c=="function")for(e=c.call(e),o=0;!(r=e.next()).done;)r=r.value,c=a+bi(r,o++),s+=ya(r,n,t,c,i);else if(r==="object")throw n=String(e),Error("Objects are not valid as a React child (found: "+(n==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":n)+"). If you meant to render a collection of children, use an array instead.");return s}function na(e,n,t){if(e==null)return e;var a=[],i=0;return ya(e,a,"","",function(r){return n.call(t,r,i++)}),a}function yd(e){if(e._status===-1){var n=e._result;n=n(),n.then(function(t){(e._status===0||e._status===-1)&&(e._status=1,e._result=t)},function(t){(e._status===0||e._status===-1)&&(e._status=2,e._result=t)}),e._status===-1&&(e._status=0,e._result=n)}if(e._status===1)return e._result.default;throw e._result}var oe={current:null},ba={transition:null},bd={ReactCurrentDispatcher:oe,ReactCurrentBatchConfig:ba,ReactCurrentOwner:zr};function ec(){throw Error("act(...) is not supported in production builds of React.")}E.Children={map:na,forEach:function(e,n,t){na(e,function(){n.apply(this,arguments)},t)},count:function(e){var n=0;return na(e,function(){n++}),n},toArray:function(e){return na(e,function(n){return n})||[]},only:function(e){if(!Br(e))throw Error("React.Children.only expected to receive a single React element child.");return e}};E.Component=rt;E.Fragment=sd;E.Profiler=cd;E.PureComponent=Or;E.StrictMode=od;E.Suspense=hd;E.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=bd;E.act=ec;E.cloneElement=function(e,n,t){if(e==null)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+e+".");var a=Jo({},e.props),i=e.key,r=e.ref,s=e._owner;if(n!=null){if(n.ref!==void 0&&(r=n.ref,s=zr.current),n.key!==void 0&&(i=""+n.key),e.type&&e.type.defaultProps)var o=e.type.defaultProps;for(c in n)$o.call(n,c)&&!Xo.hasOwnProperty(c)&&(a[c]=n[c]===void 0&&o!==void 0?o[c]:n[c])}var c=arguments.length-2;if(c===1)a.children=t;else if(1<c){o=Array(c);for(var d=0;d<c;d++)o[d]=arguments[d+2];a.children=o}return{$$typeof:Jt,type:e.type,key:i,ref:r,props:a,_owner:s}};E.createContext=function(e){return e={$$typeof:dd,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null},e.Provider={$$typeof:ld,_context:e},e.Consumer=e};E.createElement=Zo;E.createFactory=function(e){var n=Zo.bind(null,e);return n.type=e,n};E.createRef=function(){return{current:null}};E.forwardRef=function(e){return{$$typeof:ud,render:e}};E.isValidElement=Br;E.lazy=function(e){return{$$typeof:md,_payload:{_status:-1,_result:e},_init:yd}};E.memo=function(e,n){return{$$typeof:pd,type:e,compare:n===void 0?null:n}};E.startTransition=function(e){var n=ba.transition;ba.transition={};try{e()}finally{ba.transition=n}};E.unstable_act=ec;E.useCallback=function(e,n){return oe.current.useCallback(e,n)};E.useContext=function(e){return oe.current.useContext(e)};E.useDebugValue=function(){};E.useDeferredValue=function(e){return oe.current.useDeferredValue(e)};E.useEffect=function(e,n){return oe.current.useEffect(e,n)};E.useId=function(){return oe.current.useId()};E.useImperativeHandle=function(e,n,t){return oe.current.useImperativeHandle(e,n,t)};E.useInsertionEffect=function(e,n){return oe.current.useInsertionEffect(e,n)};E.useLayoutEffect=function(e,n){return oe.current.useLayoutEffect(e,n)};E.useMemo=function(e,n){return oe.current.useMemo(e,n)};E.useReducer=function(e,n,t){return oe.current.useReducer(e,n,t)};E.useRef=function(e){return oe.current.useRef(e)};E.useState=function(e){return oe.current.useState(e)};E.useSyncExternalStore=function(e,n,t){return oe.current.useSyncExternalStore(e,n,t)};E.useTransition=function(){return oe.current.useTransition()};E.version="18.3.1";Ko.exports=E;var en=Ko.exports;const wd=id(en);/**
  * @license React
  * react-jsx-runtime.production.min.js
  *
@@ -14,7 +14,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */var Td=en,_d=Symbol.for("react.element"),Cd=Symbol.for("react.fragment"),Ad=Object.prototype.hasOwnProperty,Sd=Td.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,xd={key:!0,ref:!0,__self:!0,__source:!0};function nc(e,n,t){var a,i={},r=null,s=null;t!==void 0&&(r=""+t),n.key!==void 0&&(r=""+n.key),n.ref!==void 0&&(s=n.ref);for(a in n)Ad.call(n,a)&&!xd.hasOwnProperty(a)&&(i[a]=n[a]);if(e&&e.defaultProps)for(a in n=e.defaultProps,n)i[a]===void 0&&(i[a]=n[a]);return{$$typeof:_d,type:e,key:r,ref:s,props:i,_owner:Sd.current}}ei.Fragment=Cd;ei.jsx=nc;ei.jsxs=nc;Go.exports=ei;var I=Go.exports,Gi={},tc={exports:{}},ve={},ac={exports:{}},ic={};/**
+ */var Td=en,Cd=Symbol.for("react.element"),Ad=Symbol.for("react.fragment"),_d=Object.prototype.hasOwnProperty,Sd=Td.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,xd={key:!0,ref:!0,__self:!0,__source:!0};function nc(e,n,t){var a,i={},r=null,s=null;t!==void 0&&(r=""+t),n.key!==void 0&&(r=""+n.key),n.ref!==void 0&&(s=n.ref);for(a in n)_d.call(n,a)&&!xd.hasOwnProperty(a)&&(i[a]=n[a]);if(e&&e.defaultProps)for(a in n=e.defaultProps,n)i[a]===void 0&&(i[a]=n[a]);return{$$typeof:Cd,type:e,key:r,ref:s,props:i,_owner:Sd.current}}ei.Fragment=Ad;ei.jsx=nc;ei.jsxs=nc;Uo.exports=ei;var I=Uo.exports,Ui={},tc={exports:{}},ye={},ac={exports:{}},ic={};/**
  * @license React
  * scheduler.production.min.js
  *
@@ -22,7 +22,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */(function(e){function n(C,k){var M=C.length;C.push(k);e:for(;0<M;){var U=M-1>>>1,Q=C[U];if(0<i(Q,k))C[U]=k,C[M]=Q,M=U;else break e}}function t(C){return C.length===0?null:C[0]}function a(C){if(C.length===0)return null;var k=C[0],M=C.pop();if(M!==k){C[0]=M;e:for(var U=0,Q=C.length,Zt=Q>>>1;U<Zt;){var yn=2*(U+1)-1,vi=C[yn],vn=yn+1,ea=C[vn];if(0>i(vi,M))vn<Q&&0>i(ea,vi)?(C[U]=ea,C[vn]=M,U=vn):(C[U]=vi,C[yn]=M,U=yn);else if(vn<Q&&0>i(ea,M))C[U]=ea,C[vn]=M,U=vn;else break e}}return k}function i(C,k){var M=C.sortIndex-k.sortIndex;return M!==0?M:C.id-k.id}if(typeof performance=="object"&&typeof performance.now=="function"){var r=performance;e.unstable_now=function(){return r.now()}}else{var s=Date,o=s.now();e.unstable_now=function(){return s.now()-o}}var c=[],d=[],g=1,m=null,p=3,f=!1,b=!1,w=!1,N=typeof setTimeout=="function"?setTimeout:null,u=typeof clearTimeout=="function"?clearTimeout:null,l=typeof setImmediate<"u"?setImmediate:null;typeof navigator<"u"&&navigator.scheduling!==void 0&&navigator.scheduling.isInputPending!==void 0&&navigator.scheduling.isInputPending.bind(navigator.scheduling);function h(C){for(var k=t(d);k!==null;){if(k.callback===null)a(d);else if(k.startTime<=C)a(d),k.sortIndex=k.expirationTime,n(c,k);else break;k=t(d)}}function y(C){if(w=!1,h(C),!b)if(t(c)!==null)b=!0,fi(_);else{var k=t(d);k!==null&&yi(y,k.startTime-C)}}function _(C,k){b=!1,w&&(w=!1,u(x),x=-1),f=!0;var M=p;try{for(h(k),m=t(c);m!==null&&(!(m.expirationTime>k)||C&&!xe());){var U=m.callback;if(typeof U=="function"){m.callback=null,p=m.priorityLevel;var Q=U(m.expirationTime<=k);k=e.unstable_now(),typeof Q=="function"?m.callback=Q:m===t(c)&&a(c),h(k)}else a(c);m=t(c)}if(m!==null)var Zt=!0;else{var yn=t(d);yn!==null&&yi(y,yn.startTime-k),Zt=!1}return Zt}finally{m=null,p=M,f=!1}}var S=!1,A=null,x=-1,O=5,R=-1;function xe(){return!(e.unstable_now()-R<O)}function ct(){if(A!==null){var C=e.unstable_now();R=C;var k=!0;try{k=A(!0,C)}finally{k?lt():(S=!1,A=null)}}else S=!1}var lt;if(typeof l=="function")lt=function(){l(ct)};else if(typeof MessageChannel<"u"){var Ds=new MessageChannel,ad=Ds.port2;Ds.port1.onmessage=ct,lt=function(){ad.postMessage(null)}}else lt=function(){N(ct,0)};function fi(C){A=C,S||(S=!0,lt())}function yi(C,k){x=N(function(){C(e.unstable_now())},k)}e.unstable_IdlePriority=5,e.unstable_ImmediatePriority=1,e.unstable_LowPriority=4,e.unstable_NormalPriority=3,e.unstable_Profiling=null,e.unstable_UserBlockingPriority=2,e.unstable_cancelCallback=function(C){C.callback=null},e.unstable_continueExecution=function(){b||f||(b=!0,fi(_))},e.unstable_forceFrameRate=function(C){0>C||125<C?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):O=0<C?Math.floor(1e3/C):5},e.unstable_getCurrentPriorityLevel=function(){return p},e.unstable_getFirstCallbackNode=function(){return t(c)},e.unstable_next=function(C){switch(p){case 1:case 2:case 3:var k=3;break;default:k=p}var M=p;p=k;try{return C()}finally{p=M}},e.unstable_pauseExecution=function(){},e.unstable_requestPaint=function(){},e.unstable_runWithPriority=function(C,k){switch(C){case 1:case 2:case 3:case 4:case 5:break;default:C=3}var M=p;p=C;try{return k()}finally{p=M}},e.unstable_scheduleCallback=function(C,k,M){var U=e.unstable_now();switch(typeof M=="object"&&M!==null?(M=M.delay,M=typeof M=="number"&&0<M?U+M:U):M=U,C){case 1:var Q=-1;break;case 2:Q=250;break;case 5:Q=1073741823;break;case 4:Q=1e4;break;default:Q=5e3}return Q=M+Q,C={id:g++,callback:k,priorityLevel:C,startTime:M,expirationTime:Q,sortIndex:-1},M>U?(C.sortIndex=M,n(d,C),t(c)===null&&C===t(d)&&(w?(u(x),x=-1):w=!0,yi(y,M-U))):(C.sortIndex=Q,n(c,C),b||f||(b=!0,fi(_))),C},e.unstable_shouldYield=xe,e.unstable_wrapCallback=function(C){var k=p;return function(){var M=p;p=k;try{return C.apply(this,arguments)}finally{p=M}}}})(ic);ac.exports=ic;var kd=ac.exports;/**
+ */(function(e){function n(A,k){var M=A.length;A.push(k);e:for(;0<M;){var G=M-1>>>1,Q=A[G];if(0<i(Q,k))A[G]=k,A[M]=Q,M=G;else break e}}function t(A){return A.length===0?null:A[0]}function a(A){if(A.length===0)return null;var k=A[0],M=A.pop();if(M!==k){A[0]=M;e:for(var G=0,Q=A.length,Zt=Q>>>1;G<Zt;){var vn=2*(G+1)-1,yi=A[vn],yn=vn+1,ea=A[yn];if(0>i(yi,M))yn<Q&&0>i(ea,yi)?(A[G]=ea,A[yn]=M,G=yn):(A[G]=yi,A[vn]=M,G=vn);else if(yn<Q&&0>i(ea,M))A[G]=ea,A[yn]=M,G=yn;else break e}}return k}function i(A,k){var M=A.sortIndex-k.sortIndex;return M!==0?M:A.id-k.id}if(typeof performance=="object"&&typeof performance.now=="function"){var r=performance;e.unstable_now=function(){return r.now()}}else{var s=Date,o=s.now();e.unstable_now=function(){return s.now()-o}}var c=[],d=[],g=1,m=null,p=3,f=!1,b=!1,w=!1,D=typeof setTimeout=="function"?setTimeout:null,u=typeof clearTimeout=="function"?clearTimeout:null,l=typeof setImmediate<"u"?setImmediate:null;typeof navigator<"u"&&navigator.scheduling!==void 0&&navigator.scheduling.isInputPending!==void 0&&navigator.scheduling.isInputPending.bind(navigator.scheduling);function h(A){for(var k=t(d);k!==null;){if(k.callback===null)a(d);else if(k.startTime<=A)a(d),k.sortIndex=k.expirationTime,n(c,k);else break;k=t(d)}}function v(A){if(w=!1,h(A),!b)if(t(c)!==null)b=!0,fi(C);else{var k=t(d);k!==null&&vi(v,k.startTime-A)}}function C(A,k){b=!1,w&&(w=!1,u(x),x=-1),f=!0;var M=p;try{for(h(k),m=t(c);m!==null&&(!(m.expirationTime>k)||A&&!xe());){var G=m.callback;if(typeof G=="function"){m.callback=null,p=m.priorityLevel;var Q=G(m.expirationTime<=k);k=e.unstable_now(),typeof Q=="function"?m.callback=Q:m===t(c)&&a(c),h(k)}else a(c);m=t(c)}if(m!==null)var Zt=!0;else{var vn=t(d);vn!==null&&vi(v,vn.startTime-k),Zt=!1}return Zt}finally{m=null,p=M,f=!1}}var S=!1,_=null,x=-1,L=5,R=-1;function xe(){return!(e.unstable_now()-R<L)}function ct(){if(_!==null){var A=e.unstable_now();R=A;var k=!0;try{k=_(!0,A)}finally{k?lt():(S=!1,_=null)}}else S=!1}var lt;if(typeof l=="function")lt=function(){l(ct)};else if(typeof MessageChannel<"u"){var Ns=new MessageChannel,ad=Ns.port2;Ns.port1.onmessage=ct,lt=function(){ad.postMessage(null)}}else lt=function(){D(ct,0)};function fi(A){_=A,S||(S=!0,lt())}function vi(A,k){x=D(function(){A(e.unstable_now())},k)}e.unstable_IdlePriority=5,e.unstable_ImmediatePriority=1,e.unstable_LowPriority=4,e.unstable_NormalPriority=3,e.unstable_Profiling=null,e.unstable_UserBlockingPriority=2,e.unstable_cancelCallback=function(A){A.callback=null},e.unstable_continueExecution=function(){b||f||(b=!0,fi(C))},e.unstable_forceFrameRate=function(A){0>A||125<A?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):L=0<A?Math.floor(1e3/A):5},e.unstable_getCurrentPriorityLevel=function(){return p},e.unstable_getFirstCallbackNode=function(){return t(c)},e.unstable_next=function(A){switch(p){case 1:case 2:case 3:var k=3;break;default:k=p}var M=p;p=k;try{return A()}finally{p=M}},e.unstable_pauseExecution=function(){},e.unstable_requestPaint=function(){},e.unstable_runWithPriority=function(A,k){switch(A){case 1:case 2:case 3:case 4:case 5:break;default:A=3}var M=p;p=A;try{return k()}finally{p=M}},e.unstable_scheduleCallback=function(A,k,M){var G=e.unstable_now();switch(typeof M=="object"&&M!==null?(M=M.delay,M=typeof M=="number"&&0<M?G+M:G):M=G,A){case 1:var Q=-1;break;case 2:Q=250;break;case 5:Q=1073741823;break;case 4:Q=1e4;break;default:Q=5e3}return Q=M+Q,A={id:g++,callback:k,priorityLevel:A,startTime:M,expirationTime:Q,sortIndex:-1},M>G?(A.sortIndex=M,n(d,A),t(c)===null&&A===t(d)&&(w?(u(x),x=-1):w=!0,vi(v,M-G))):(A.sortIndex=Q,n(c,A),b||f||(b=!0,fi(C))),A},e.unstable_shouldYield=xe,e.unstable_wrapCallback=function(A){var k=p;return function(){var M=p;p=k;try{return A.apply(this,arguments)}finally{p=M}}}})(ic);ac.exports=ic;var kd=ac.exports;/**
  * @license React
  * react-dom.production.min.js
  *
@@ -30,16 +30,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */var Id=en,ye=kd;function v(e){for(var n="https://reactjs.org/docs/error-decoder.html?invariant="+e,t=1;t<arguments.length;t++)n+="&args[]="+encodeURIComponent(arguments[t]);return"Minified React error #"+e+"; visit "+n+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}var rc=new Set,Rt={};function Rn(e,n){Xn(e,n),Xn(e+"Capture",n)}function Xn(e,n){for(Rt[e]=n,e=0;e<n.length;e++)rc.add(n[e])}var Ue=!(typeof window>"u"||typeof window.document>"u"||typeof window.document.createElement>"u"),Ki=Object.prototype.hasOwnProperty,Md=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,qs={},Ls={};function Ed(e){return Ki.call(Ls,e)?!0:Ki.call(qs,e)?!1:Md.test(e)?Ls[e]=!0:(qs[e]=!0,!1)}function Rd(e,n,t,a){if(t!==null&&t.type===0)return!1;switch(typeof n){case"function":case"symbol":return!0;case"boolean":return a?!1:t!==null?!t.acceptsBooleans:(e=e.toLowerCase().slice(0,5),e!=="data-"&&e!=="aria-");default:return!1}}function Nd(e,n,t,a){if(n===null||typeof n>"u"||Rd(e,n,t,a))return!0;if(a)return!1;if(t!==null)switch(t.type){case 3:return!n;case 4:return n===!1;case 5:return isNaN(n);case 6:return isNaN(n)||1>n}return!1}function ce(e,n,t,a,i,r,s){this.acceptsBooleans=n===2||n===3||n===4,this.attributeName=a,this.attributeNamespace=i,this.mustUseProperty=t,this.propertyName=e,this.type=n,this.sanitizeURL=r,this.removeEmptyString=s}var ee={};"children dangerouslySetInnerHTML defaultValue defaultChecked innerHTML suppressContentEditableWarning suppressHydrationWarning style".split(" ").forEach(function(e){ee[e]=new ce(e,0,!1,e,null,!1,!1)});[["acceptCharset","accept-charset"],["className","class"],["htmlFor","for"],["httpEquiv","http-equiv"]].forEach(function(e){var n=e[0];ee[n]=new ce(n,1,!1,e[1],null,!1,!1)});["contentEditable","draggable","spellCheck","value"].forEach(function(e){ee[e]=new ce(e,2,!1,e.toLowerCase(),null,!1,!1)});["autoReverse","externalResourcesRequired","focusable","preserveAlpha"].forEach(function(e){ee[e]=new ce(e,2,!1,e,null,!1,!1)});"allowFullScreen async autoFocus autoPlay controls default defer disabled disablePictureInPicture disableRemotePlayback formNoValidate hidden loop noModule noValidate open playsInline readOnly required reversed scoped seamless itemScope".split(" ").forEach(function(e){ee[e]=new ce(e,3,!1,e.toLowerCase(),null,!1,!1)});["checked","multiple","muted","selected"].forEach(function(e){ee[e]=new ce(e,3,!0,e,null,!1,!1)});["capture","download"].forEach(function(e){ee[e]=new ce(e,4,!1,e,null,!1,!1)});["cols","rows","size","span"].forEach(function(e){ee[e]=new ce(e,6,!1,e,null,!1,!1)});["rowSpan","start"].forEach(function(e){ee[e]=new ce(e,5,!1,e.toLowerCase(),null,!1,!1)});var jr=/[\-:]([a-z])/g;function Wr(e){return e[1].toUpperCase()}"accent-height alignment-baseline arabic-form baseline-shift cap-height clip-path clip-rule color-interpolation color-interpolation-filters color-profile color-rendering dominant-baseline enable-background fill-opacity fill-rule flood-color flood-opacity font-family font-size font-size-adjust font-stretch font-style font-variant font-weight glyph-name glyph-orientation-horizontal glyph-orientation-vertical horiz-adv-x horiz-origin-x image-rendering letter-spacing lighting-color marker-end marker-mid marker-start overline-position overline-thickness paint-order panose-1 pointer-events rendering-intent shape-rendering stop-color stop-opacity strikethrough-position strikethrough-thickness stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity stroke-width text-anchor text-decoration text-rendering underline-position underline-thickness unicode-bidi unicode-range units-per-em v-alphabetic v-hanging v-ideographic v-mathematical vector-effect vert-adv-y vert-origin-x vert-origin-y word-spacing writing-mode xmlns:xlink x-height".split(" ").forEach(function(e){var n=e.replace(jr,Wr);ee[n]=new ce(n,1,!1,e,null,!1,!1)});"xlink:actuate xlink:arcrole xlink:role xlink:show xlink:title xlink:type".split(" ").forEach(function(e){var n=e.replace(jr,Wr);ee[n]=new ce(n,1,!1,e,"http://www.w3.org/1999/xlink",!1,!1)});["xml:base","xml:lang","xml:space"].forEach(function(e){var n=e.replace(jr,Wr);ee[n]=new ce(n,1,!1,e,"http://www.w3.org/XML/1998/namespace",!1,!1)});["tabIndex","crossOrigin"].forEach(function(e){ee[e]=new ce(e,1,!1,e.toLowerCase(),null,!1,!1)});ee.xlinkHref=new ce("xlinkHref",1,!1,"xlink:href","http://www.w3.org/1999/xlink",!0,!1);["src","href","action","formAction"].forEach(function(e){ee[e]=new ce(e,1,!1,e.toLowerCase(),null,!0,!0)});function Ur(e,n,t,a){var i=ee.hasOwnProperty(n)?ee[n]:null;(i!==null?i.type!==0:a||!(2<n.length)||n[0]!=="o"&&n[0]!=="O"||n[1]!=="n"&&n[1]!=="N")&&(Nd(n,t,i,a)&&(t=null),a||i===null?Ed(n)&&(t===null?e.removeAttribute(n):e.setAttribute(n,""+t)):i.mustUseProperty?e[i.propertyName]=t===null?i.type===3?!1:"":t:(n=i.attributeName,a=i.attributeNamespace,t===null?e.removeAttribute(n):(i=i.type,t=i===3||i===4&&t===!0?"":""+t,a?e.setAttributeNS(a,n,t):e.setAttribute(n,t))))}var Je=Id.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,ta=Symbol.for("react.element"),Vn=Symbol.for("react.portal"),Pn=Symbol.for("react.fragment"),Gr=Symbol.for("react.strict_mode"),Hi=Symbol.for("react.profiler"),sc=Symbol.for("react.provider"),oc=Symbol.for("react.context"),Kr=Symbol.for("react.forward_ref"),Ji=Symbol.for("react.suspense"),Qi=Symbol.for("react.suspense_list"),Hr=Symbol.for("react.memo"),Ye=Symbol.for("react.lazy"),cc=Symbol.for("react.offscreen"),Os=Symbol.iterator;function dt(e){return e===null||typeof e!="object"?null:(e=Os&&e[Os]||e["@@iterator"],typeof e=="function"?e:null)}var j=Object.assign,wi;function vt(e){if(wi===void 0)try{throw Error()}catch(t){var n=t.stack.trim().match(/\n( *(at )?)/);wi=n&&n[1]||""}return`
-`+wi+e}var Ti=!1;function _i(e,n){if(!e||Ti)return"";Ti=!0;var t=Error.prepareStackTrace;Error.prepareStackTrace=void 0;try{if(n)if(n=function(){throw Error()},Object.defineProperty(n.prototype,"props",{set:function(){throw Error()}}),typeof Reflect=="object"&&Reflect.construct){try{Reflect.construct(n,[])}catch(d){var a=d}Reflect.construct(e,[],n)}else{try{n.call()}catch(d){a=d}e.call(n.prototype)}else{try{throw Error()}catch(d){a=d}e()}}catch(d){if(d&&a&&typeof d.stack=="string"){for(var i=d.stack.split(`
+ */var Id=en,ve=kd;function y(e){for(var n="https://reactjs.org/docs/error-decoder.html?invariant="+e,t=1;t<arguments.length;t++)n+="&args[]="+encodeURIComponent(arguments[t]);return"Minified React error #"+e+"; visit "+n+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}var rc=new Set,Rt={};function Rn(e,n){Xn(e,n),Xn(e+"Capture",n)}function Xn(e,n){for(Rt[e]=n,e=0;e<n.length;e++)rc.add(n[e])}var Ge=!(typeof window>"u"||typeof window.document>"u"||typeof window.document.createElement>"u"),Ki=Object.prototype.hasOwnProperty,Md=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,Vs={},Os={};function Ed(e){return Ki.call(Os,e)?!0:Ki.call(Vs,e)?!1:Md.test(e)?Os[e]=!0:(Vs[e]=!0,!1)}function Rd(e,n,t,a){if(t!==null&&t.type===0)return!1;switch(typeof n){case"function":case"symbol":return!0;case"boolean":return a?!1:t!==null?!t.acceptsBooleans:(e=e.toLowerCase().slice(0,5),e!=="data-"&&e!=="aria-");default:return!1}}function Dd(e,n,t,a){if(n===null||typeof n>"u"||Rd(e,n,t,a))return!0;if(a)return!1;if(t!==null)switch(t.type){case 3:return!n;case 4:return n===!1;case 5:return isNaN(n);case 6:return isNaN(n)||1>n}return!1}function ce(e,n,t,a,i,r,s){this.acceptsBooleans=n===2||n===3||n===4,this.attributeName=a,this.attributeNamespace=i,this.mustUseProperty=t,this.propertyName=e,this.type=n,this.sanitizeURL=r,this.removeEmptyString=s}var ee={};"children dangerouslySetInnerHTML defaultValue defaultChecked innerHTML suppressContentEditableWarning suppressHydrationWarning style".split(" ").forEach(function(e){ee[e]=new ce(e,0,!1,e,null,!1,!1)});[["acceptCharset","accept-charset"],["className","class"],["htmlFor","for"],["httpEquiv","http-equiv"]].forEach(function(e){var n=e[0];ee[n]=new ce(n,1,!1,e[1],null,!1,!1)});["contentEditable","draggable","spellCheck","value"].forEach(function(e){ee[e]=new ce(e,2,!1,e.toLowerCase(),null,!1,!1)});["autoReverse","externalResourcesRequired","focusable","preserveAlpha"].forEach(function(e){ee[e]=new ce(e,2,!1,e,null,!1,!1)});"allowFullScreen async autoFocus autoPlay controls default defer disabled disablePictureInPicture disableRemotePlayback formNoValidate hidden loop noModule noValidate open playsInline readOnly required reversed scoped seamless itemScope".split(" ").forEach(function(e){ee[e]=new ce(e,3,!1,e.toLowerCase(),null,!1,!1)});["checked","multiple","muted","selected"].forEach(function(e){ee[e]=new ce(e,3,!0,e,null,!1,!1)});["capture","download"].forEach(function(e){ee[e]=new ce(e,4,!1,e,null,!1,!1)});["cols","rows","size","span"].forEach(function(e){ee[e]=new ce(e,6,!1,e,null,!1,!1)});["rowSpan","start"].forEach(function(e){ee[e]=new ce(e,5,!1,e.toLowerCase(),null,!1,!1)});var jr=/[\-:]([a-z])/g;function Wr(e){return e[1].toUpperCase()}"accent-height alignment-baseline arabic-form baseline-shift cap-height clip-path clip-rule color-interpolation color-interpolation-filters color-profile color-rendering dominant-baseline enable-background fill-opacity fill-rule flood-color flood-opacity font-family font-size font-size-adjust font-stretch font-style font-variant font-weight glyph-name glyph-orientation-horizontal glyph-orientation-vertical horiz-adv-x horiz-origin-x image-rendering letter-spacing lighting-color marker-end marker-mid marker-start overline-position overline-thickness paint-order panose-1 pointer-events rendering-intent shape-rendering stop-color stop-opacity strikethrough-position strikethrough-thickness stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity stroke-width text-anchor text-decoration text-rendering underline-position underline-thickness unicode-bidi unicode-range units-per-em v-alphabetic v-hanging v-ideographic v-mathematical vector-effect vert-adv-y vert-origin-x vert-origin-y word-spacing writing-mode xmlns:xlink x-height".split(" ").forEach(function(e){var n=e.replace(jr,Wr);ee[n]=new ce(n,1,!1,e,null,!1,!1)});"xlink:actuate xlink:arcrole xlink:role xlink:show xlink:title xlink:type".split(" ").forEach(function(e){var n=e.replace(jr,Wr);ee[n]=new ce(n,1,!1,e,"http://www.w3.org/1999/xlink",!1,!1)});["xml:base","xml:lang","xml:space"].forEach(function(e){var n=e.replace(jr,Wr);ee[n]=new ce(n,1,!1,e,"http://www.w3.org/XML/1998/namespace",!1,!1)});["tabIndex","crossOrigin"].forEach(function(e){ee[e]=new ce(e,1,!1,e.toLowerCase(),null,!1,!1)});ee.xlinkHref=new ce("xlinkHref",1,!1,"xlink:href","http://www.w3.org/1999/xlink",!0,!1);["src","href","action","formAction"].forEach(function(e){ee[e]=new ce(e,1,!1,e.toLowerCase(),null,!0,!0)});function Gr(e,n,t,a){var i=ee.hasOwnProperty(n)?ee[n]:null;(i!==null?i.type!==0:a||!(2<n.length)||n[0]!=="o"&&n[0]!=="O"||n[1]!=="n"&&n[1]!=="N")&&(Dd(n,t,i,a)&&(t=null),a||i===null?Ed(n)&&(t===null?e.removeAttribute(n):e.setAttribute(n,""+t)):i.mustUseProperty?e[i.propertyName]=t===null?i.type===3?!1:"":t:(n=i.attributeName,a=i.attributeNamespace,t===null?e.removeAttribute(n):(i=i.type,t=i===3||i===4&&t===!0?"":""+t,a?e.setAttributeNS(a,n,t):e.setAttribute(n,t))))}var Je=Id.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,ta=Symbol.for("react.element"),Fn=Symbol.for("react.portal"),Pn=Symbol.for("react.fragment"),Ur=Symbol.for("react.strict_mode"),Hi=Symbol.for("react.profiler"),sc=Symbol.for("react.provider"),oc=Symbol.for("react.context"),Kr=Symbol.for("react.forward_ref"),Ji=Symbol.for("react.suspense"),Qi=Symbol.for("react.suspense_list"),Hr=Symbol.for("react.memo"),Ye=Symbol.for("react.lazy"),cc=Symbol.for("react.offscreen"),Ls=Symbol.iterator;function dt(e){return e===null||typeof e!="object"?null:(e=Ls&&e[Ls]||e["@@iterator"],typeof e=="function"?e:null)}var j=Object.assign,wi;function yt(e){if(wi===void 0)try{throw Error()}catch(t){var n=t.stack.trim().match(/\n( *(at )?)/);wi=n&&n[1]||""}return`
+`+wi+e}var Ti=!1;function Ci(e,n){if(!e||Ti)return"";Ti=!0;var t=Error.prepareStackTrace;Error.prepareStackTrace=void 0;try{if(n)if(n=function(){throw Error()},Object.defineProperty(n.prototype,"props",{set:function(){throw Error()}}),typeof Reflect=="object"&&Reflect.construct){try{Reflect.construct(n,[])}catch(d){var a=d}Reflect.construct(e,[],n)}else{try{n.call()}catch(d){a=d}e.call(n.prototype)}else{try{throw Error()}catch(d){a=d}e()}}catch(d){if(d&&a&&typeof d.stack=="string"){for(var i=d.stack.split(`
 `),r=a.stack.split(`
 `),s=i.length-1,o=r.length-1;1<=s&&0<=o&&i[s]!==r[o];)o--;for(;1<=s&&0<=o;s--,o--)if(i[s]!==r[o]){if(s!==1||o!==1)do if(s--,o--,0>o||i[s]!==r[o]){var c=`
-`+i[s].replace(" at new "," at ");return e.displayName&&c.includes("<anonymous>")&&(c=c.replace("<anonymous>",e.displayName)),c}while(1<=s&&0<=o);break}}}finally{Ti=!1,Error.prepareStackTrace=t}return(e=e?e.displayName||e.name:"")?vt(e):""}function Dd(e){switch(e.tag){case 5:return vt(e.type);case 16:return vt("Lazy");case 13:return vt("Suspense");case 19:return vt("SuspenseList");case 0:case 2:case 15:return e=_i(e.type,!1),e;case 11:return e=_i(e.type.render,!1),e;case 1:return e=_i(e.type,!0),e;default:return""}}function Yi(e){if(e==null)return null;if(typeof e=="function")return e.displayName||e.name||null;if(typeof e=="string")return e;switch(e){case Pn:return"Fragment";case Vn:return"Portal";case Hi:return"Profiler";case Gr:return"StrictMode";case Ji:return"Suspense";case Qi:return"SuspenseList"}if(typeof e=="object")switch(e.$$typeof){case oc:return(e.displayName||"Context")+".Consumer";case sc:return(e._context.displayName||"Context")+".Provider";case Kr:var n=e.render;return e=e.displayName,e||(e=n.displayName||n.name||"",e=e!==""?"ForwardRef("+e+")":"ForwardRef"),e;case Hr:return n=e.displayName||null,n!==null?n:Yi(e.type)||"Memo";case Ye:n=e._payload,e=e._init;try{return Yi(e(n))}catch{}}return null}function Vd(e){var n=e.type;switch(e.tag){case 24:return"Cache";case 9:return(n.displayName||"Context")+".Consumer";case 10:return(n._context.displayName||"Context")+".Provider";case 18:return"DehydratedFragment";case 11:return e=n.render,e=e.displayName||e.name||"",n.displayName||(e!==""?"ForwardRef("+e+")":"ForwardRef");case 7:return"Fragment";case 5:return n;case 4:return"Portal";case 3:return"Root";case 6:return"Text";case 16:return Yi(n);case 8:return n===Gr?"StrictMode":"Mode";case 22:return"Offscreen";case 12:return"Profiler";case 21:return"Scope";case 13:return"Suspense";case 19:return"SuspenseList";case 25:return"TracingMarker";case 1:case 0:case 17:case 2:case 14:case 15:if(typeof n=="function")return n.displayName||n.name||null;if(typeof n=="string")return n}return null}function hn(e){switch(typeof e){case"boolean":case"number":case"string":case"undefined":return e;case"object":return e;default:return""}}function lc(e){var n=e.type;return(e=e.nodeName)&&e.toLowerCase()==="input"&&(n==="checkbox"||n==="radio")}function Pd(e){var n=lc(e)?"checked":"value",t=Object.getOwnPropertyDescriptor(e.constructor.prototype,n),a=""+e[n];if(!e.hasOwnProperty(n)&&typeof t<"u"&&typeof t.get=="function"&&typeof t.set=="function"){var i=t.get,r=t.set;return Object.defineProperty(e,n,{configurable:!0,get:function(){return i.call(this)},set:function(s){a=""+s,r.call(this,s)}}),Object.defineProperty(e,n,{enumerable:t.enumerable}),{getValue:function(){return a},setValue:function(s){a=""+s},stopTracking:function(){e._valueTracker=null,delete e[n]}}}}function aa(e){e._valueTracker||(e._valueTracker=Pd(e))}function dc(e){if(!e)return!1;var n=e._valueTracker;if(!n)return!0;var t=n.getValue(),a="";return e&&(a=lc(e)?e.checked?"true":"false":e.value),e=a,e!==t?(n.setValue(e),!0):!1}function Ea(e){if(e=e||(typeof document<"u"?document:void 0),typeof e>"u")return null;try{return e.activeElement||e.body}catch{return e.body}}function $i(e,n){var t=n.checked;return j({},n,{defaultChecked:void 0,defaultValue:void 0,value:void 0,checked:t??e._wrapperState.initialChecked})}function zs(e,n){var t=n.defaultValue==null?"":n.defaultValue,a=n.checked!=null?n.checked:n.defaultChecked;t=hn(n.value!=null?n.value:t),e._wrapperState={initialChecked:a,initialValue:t,controlled:n.type==="checkbox"||n.type==="radio"?n.checked!=null:n.value!=null}}function uc(e,n){n=n.checked,n!=null&&Ur(e,"checked",n,!1)}function Xi(e,n){uc(e,n);var t=hn(n.value),a=n.type;if(t!=null)a==="number"?(t===0&&e.value===""||e.value!=t)&&(e.value=""+t):e.value!==""+t&&(e.value=""+t);else if(a==="submit"||a==="reset"){e.removeAttribute("value");return}n.hasOwnProperty("value")?Zi(e,n.type,t):n.hasOwnProperty("defaultValue")&&Zi(e,n.type,hn(n.defaultValue)),n.checked==null&&n.defaultChecked!=null&&(e.defaultChecked=!!n.defaultChecked)}function Bs(e,n,t){if(n.hasOwnProperty("value")||n.hasOwnProperty("defaultValue")){var a=n.type;if(!(a!=="submit"&&a!=="reset"||n.value!==void 0&&n.value!==null))return;n=""+e._wrapperState.initialValue,t||n===e.value||(e.value=n),e.defaultValue=n}t=e.name,t!==""&&(e.name=""),e.defaultChecked=!!e._wrapperState.initialChecked,t!==""&&(e.name=t)}function Zi(e,n,t){(n!=="number"||Ea(e.ownerDocument)!==e)&&(t==null?e.defaultValue=""+e._wrapperState.initialValue:e.defaultValue!==""+t&&(e.defaultValue=""+t))}var bt=Array.isArray;function Kn(e,n,t,a){if(e=e.options,n){n={};for(var i=0;i<t.length;i++)n["$"+t[i]]=!0;for(t=0;t<e.length;t++)i=n.hasOwnProperty("$"+e[t].value),e[t].selected!==i&&(e[t].selected=i),i&&a&&(e[t].defaultSelected=!0)}else{for(t=""+hn(t),n=null,i=0;i<e.length;i++){if(e[i].value===t){e[i].selected=!0,a&&(e[i].defaultSelected=!0);return}n!==null||e[i].disabled||(n=e[i])}n!==null&&(n.selected=!0)}}function er(e,n){if(n.dangerouslySetInnerHTML!=null)throw Error(v(91));return j({},n,{value:void 0,defaultValue:void 0,children:""+e._wrapperState.initialValue})}function js(e,n){var t=n.value;if(t==null){if(t=n.children,n=n.defaultValue,t!=null){if(n!=null)throw Error(v(92));if(bt(t)){if(1<t.length)throw Error(v(93));t=t[0]}n=t}n==null&&(n=""),t=n}e._wrapperState={initialValue:hn(t)}}function hc(e,n){var t=hn(n.value),a=hn(n.defaultValue);t!=null&&(t=""+t,t!==e.value&&(e.value=t),n.defaultValue==null&&e.defaultValue!==t&&(e.defaultValue=t)),a!=null&&(e.defaultValue=""+a)}function Ws(e){var n=e.textContent;n===e._wrapperState.initialValue&&n!==""&&n!==null&&(e.value=n)}function pc(e){switch(e){case"svg":return"http://www.w3.org/2000/svg";case"math":return"http://www.w3.org/1998/Math/MathML";default:return"http://www.w3.org/1999/xhtml"}}function nr(e,n){return e==null||e==="http://www.w3.org/1999/xhtml"?pc(n):e==="http://www.w3.org/2000/svg"&&n==="foreignObject"?"http://www.w3.org/1999/xhtml":e}var ia,mc=function(e){return typeof MSApp<"u"&&MSApp.execUnsafeLocalFunction?function(n,t,a,i){MSApp.execUnsafeLocalFunction(function(){return e(n,t,a,i)})}:e}(function(e,n){if(e.namespaceURI!=="http://www.w3.org/2000/svg"||"innerHTML"in e)e.innerHTML=n;else{for(ia=ia||document.createElement("div"),ia.innerHTML="<svg>"+n.valueOf().toString()+"</svg>",n=ia.firstChild;e.firstChild;)e.removeChild(e.firstChild);for(;n.firstChild;)e.appendChild(n.firstChild)}});function Nt(e,n){if(n){var t=e.firstChild;if(t&&t===e.lastChild&&t.nodeType===3){t.nodeValue=n;return}}e.textContent=n}var _t={animationIterationCount:!0,aspectRatio:!0,borderImageOutset:!0,borderImageSlice:!0,borderImageWidth:!0,boxFlex:!0,boxFlexGroup:!0,boxOrdinalGroup:!0,columnCount:!0,columns:!0,flex:!0,flexGrow:!0,flexPositive:!0,flexShrink:!0,flexNegative:!0,flexOrder:!0,gridArea:!0,gridRow:!0,gridRowEnd:!0,gridRowSpan:!0,gridRowStart:!0,gridColumn:!0,gridColumnEnd:!0,gridColumnSpan:!0,gridColumnStart:!0,fontWeight:!0,lineClamp:!0,lineHeight:!0,opacity:!0,order:!0,orphans:!0,tabSize:!0,widows:!0,zIndex:!0,zoom:!0,fillOpacity:!0,floodOpacity:!0,stopOpacity:!0,strokeDasharray:!0,strokeDashoffset:!0,strokeMiterlimit:!0,strokeOpacity:!0,strokeWidth:!0},Fd=["Webkit","ms","Moz","O"];Object.keys(_t).forEach(function(e){Fd.forEach(function(n){n=n+e.charAt(0).toUpperCase()+e.substring(1),_t[n]=_t[e]})});function gc(e,n,t){return n==null||typeof n=="boolean"||n===""?"":t||typeof n!="number"||n===0||_t.hasOwnProperty(e)&&_t[e]?(""+n).trim():n+"px"}function fc(e,n){e=e.style;for(var t in n)if(n.hasOwnProperty(t)){var a=t.indexOf("--")===0,i=gc(t,n[t],a);t==="float"&&(t="cssFloat"),a?e.setProperty(t,i):e[t]=i}}var qd=j({menuitem:!0},{area:!0,base:!0,br:!0,col:!0,embed:!0,hr:!0,img:!0,input:!0,keygen:!0,link:!0,meta:!0,param:!0,source:!0,track:!0,wbr:!0});function tr(e,n){if(n){if(qd[e]&&(n.children!=null||n.dangerouslySetInnerHTML!=null))throw Error(v(137,e));if(n.dangerouslySetInnerHTML!=null){if(n.children!=null)throw Error(v(60));if(typeof n.dangerouslySetInnerHTML!="object"||!("__html"in n.dangerouslySetInnerHTML))throw Error(v(61))}if(n.style!=null&&typeof n.style!="object")throw Error(v(62))}}function ar(e,n){if(e.indexOf("-")===-1)return typeof n.is=="string";switch(e){case"annotation-xml":case"color-profile":case"font-face":case"font-face-src":case"font-face-uri":case"font-face-format":case"font-face-name":case"missing-glyph":return!1;default:return!0}}var ir=null;function Jr(e){return e=e.target||e.srcElement||window,e.correspondingUseElement&&(e=e.correspondingUseElement),e.nodeType===3?e.parentNode:e}var rr=null,Hn=null,Jn=null;function Us(e){if(e=$t(e)){if(typeof rr!="function")throw Error(v(280));var n=e.stateNode;n&&(n=ri(n),rr(e.stateNode,e.type,n))}}function yc(e){Hn?Jn?Jn.push(e):Jn=[e]:Hn=e}function vc(){if(Hn){var e=Hn,n=Jn;if(Jn=Hn=null,Us(e),n)for(e=0;e<n.length;e++)Us(n[e])}}function bc(e,n){return e(n)}function wc(){}var Ci=!1;function Tc(e,n,t){if(Ci)return e(n,t);Ci=!0;try{return bc(e,n,t)}finally{Ci=!1,(Hn!==null||Jn!==null)&&(wc(),vc())}}function Dt(e,n){var t=e.stateNode;if(t===null)return null;var a=ri(t);if(a===null)return null;t=a[n];e:switch(n){case"onClick":case"onClickCapture":case"onDoubleClick":case"onDoubleClickCapture":case"onMouseDown":case"onMouseDownCapture":case"onMouseMove":case"onMouseMoveCapture":case"onMouseUp":case"onMouseUpCapture":case"onMouseEnter":(a=!a.disabled)||(e=e.type,a=!(e==="button"||e==="input"||e==="select"||e==="textarea")),e=!a;break e;default:e=!1}if(e)return null;if(t&&typeof t!="function")throw Error(v(231,n,typeof t));return t}var sr=!1;if(Ue)try{var ut={};Object.defineProperty(ut,"passive",{get:function(){sr=!0}}),window.addEventListener("test",ut,ut),window.removeEventListener("test",ut,ut)}catch{sr=!1}function Ld(e,n,t,a,i,r,s,o,c){var d=Array.prototype.slice.call(arguments,3);try{n.apply(t,d)}catch(g){this.onError(g)}}var Ct=!1,Ra=null,Na=!1,or=null,Od={onError:function(e){Ct=!0,Ra=e}};function zd(e,n,t,a,i,r,s,o,c){Ct=!1,Ra=null,Ld.apply(Od,arguments)}function Bd(e,n,t,a,i,r,s,o,c){if(zd.apply(this,arguments),Ct){if(Ct){var d=Ra;Ct=!1,Ra=null}else throw Error(v(198));Na||(Na=!0,or=d)}}function Nn(e){var n=e,t=e;if(e.alternate)for(;n.return;)n=n.return;else{e=n;do n=e,n.flags&4098&&(t=n.return),e=n.return;while(e)}return n.tag===3?t:null}function _c(e){if(e.tag===13){var n=e.memoizedState;if(n===null&&(e=e.alternate,e!==null&&(n=e.memoizedState)),n!==null)return n.dehydrated}return null}function Gs(e){if(Nn(e)!==e)throw Error(v(188))}function jd(e){var n=e.alternate;if(!n){if(n=Nn(e),n===null)throw Error(v(188));return n!==e?null:e}for(var t=e,a=n;;){var i=t.return;if(i===null)break;var r=i.alternate;if(r===null){if(a=i.return,a!==null){t=a;continue}break}if(i.child===r.child){for(r=i.child;r;){if(r===t)return Gs(i),e;if(r===a)return Gs(i),n;r=r.sibling}throw Error(v(188))}if(t.return!==a.return)t=i,a=r;else{for(var s=!1,o=i.child;o;){if(o===t){s=!0,t=i,a=r;break}if(o===a){s=!0,a=i,t=r;break}o=o.sibling}if(!s){for(o=r.child;o;){if(o===t){s=!0,t=r,a=i;break}if(o===a){s=!0,a=r,t=i;break}o=o.sibling}if(!s)throw Error(v(189))}}if(t.alternate!==a)throw Error(v(190))}if(t.tag!==3)throw Error(v(188));return t.stateNode.current===t?e:n}function Cc(e){return e=jd(e),e!==null?Ac(e):null}function Ac(e){if(e.tag===5||e.tag===6)return e;for(e=e.child;e!==null;){var n=Ac(e);if(n!==null)return n;e=e.sibling}return null}var Sc=ye.unstable_scheduleCallback,Ks=ye.unstable_cancelCallback,Wd=ye.unstable_shouldYield,Ud=ye.unstable_requestPaint,G=ye.unstable_now,Gd=ye.unstable_getCurrentPriorityLevel,Qr=ye.unstable_ImmediatePriority,xc=ye.unstable_UserBlockingPriority,Da=ye.unstable_NormalPriority,Kd=ye.unstable_LowPriority,kc=ye.unstable_IdlePriority,ni=null,qe=null;function Hd(e){if(qe&&typeof qe.onCommitFiberRoot=="function")try{qe.onCommitFiberRoot(ni,e,void 0,(e.current.flags&128)===128)}catch{}}var Re=Math.clz32?Math.clz32:Yd,Jd=Math.log,Qd=Math.LN2;function Yd(e){return e>>>=0,e===0?32:31-(Jd(e)/Qd|0)|0}var ra=64,sa=4194304;function wt(e){switch(e&-e){case 1:return 1;case 2:return 2;case 4:return 4;case 8:return 8;case 16:return 16;case 32:return 32;case 64:case 128:case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:return e&4194240;case 4194304:case 8388608:case 16777216:case 33554432:case 67108864:return e&130023424;case 134217728:return 134217728;case 268435456:return 268435456;case 536870912:return 536870912;case 1073741824:return 1073741824;default:return e}}function Va(e,n){var t=e.pendingLanes;if(t===0)return 0;var a=0,i=e.suspendedLanes,r=e.pingedLanes,s=t&268435455;if(s!==0){var o=s&~i;o!==0?a=wt(o):(r&=s,r!==0&&(a=wt(r)))}else s=t&~i,s!==0?a=wt(s):r!==0&&(a=wt(r));if(a===0)return 0;if(n!==0&&n!==a&&!(n&i)&&(i=a&-a,r=n&-n,i>=r||i===16&&(r&4194240)!==0))return n;if(a&4&&(a|=t&16),n=e.entangledLanes,n!==0)for(e=e.entanglements,n&=a;0<n;)t=31-Re(n),i=1<<t,a|=e[t],n&=~i;return a}function $d(e,n){switch(e){case 1:case 2:case 4:return n+250;case 8:case 16:case 32:case 64:case 128:case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:return n+5e3;case 4194304:case 8388608:case 16777216:case 33554432:case 67108864:return-1;case 134217728:case 268435456:case 536870912:case 1073741824:return-1;default:return-1}}function Xd(e,n){for(var t=e.suspendedLanes,a=e.pingedLanes,i=e.expirationTimes,r=e.pendingLanes;0<r;){var s=31-Re(r),o=1<<s,c=i[s];c===-1?(!(o&t)||o&a)&&(i[s]=$d(o,n)):c<=n&&(e.expiredLanes|=o),r&=~o}}function cr(e){return e=e.pendingLanes&-1073741825,e!==0?e:e&1073741824?1073741824:0}function Ic(){var e=ra;return ra<<=1,!(ra&4194240)&&(ra=64),e}function Ai(e){for(var n=[],t=0;31>t;t++)n.push(e);return n}function Qt(e,n,t){e.pendingLanes|=n,n!==536870912&&(e.suspendedLanes=0,e.pingedLanes=0),e=e.eventTimes,n=31-Re(n),e[n]=t}function Zd(e,n){var t=e.pendingLanes&~n;e.pendingLanes=n,e.suspendedLanes=0,e.pingedLanes=0,e.expiredLanes&=n,e.mutableReadLanes&=n,e.entangledLanes&=n,n=e.entanglements;var a=e.eventTimes;for(e=e.expirationTimes;0<t;){var i=31-Re(t),r=1<<i;n[i]=0,a[i]=-1,e[i]=-1,t&=~r}}function Yr(e,n){var t=e.entangledLanes|=n;for(e=e.entanglements;t;){var a=31-Re(t),i=1<<a;i&n|e[a]&n&&(e[a]|=n),t&=~i}}var V=0;function Mc(e){return e&=-e,1<e?4<e?e&268435455?16:536870912:4:1}var Ec,$r,Rc,Nc,Dc,lr=!1,oa=[],an=null,rn=null,sn=null,Vt=new Map,Pt=new Map,Xe=[],eu="mousedown mouseup touchcancel touchend touchstart auxclick dblclick pointercancel pointerdown pointerup dragend dragstart drop compositionend compositionstart keydown keypress keyup input textInput copy cut paste click change contextmenu reset submit".split(" ");function Hs(e,n){switch(e){case"focusin":case"focusout":an=null;break;case"dragenter":case"dragleave":rn=null;break;case"mouseover":case"mouseout":sn=null;break;case"pointerover":case"pointerout":Vt.delete(n.pointerId);break;case"gotpointercapture":case"lostpointercapture":Pt.delete(n.pointerId)}}function ht(e,n,t,a,i,r){return e===null||e.nativeEvent!==r?(e={blockedOn:n,domEventName:t,eventSystemFlags:a,nativeEvent:r,targetContainers:[i]},n!==null&&(n=$t(n),n!==null&&$r(n)),e):(e.eventSystemFlags|=a,n=e.targetContainers,i!==null&&n.indexOf(i)===-1&&n.push(i),e)}function nu(e,n,t,a,i){switch(n){case"focusin":return an=ht(an,e,n,t,a,i),!0;case"dragenter":return rn=ht(rn,e,n,t,a,i),!0;case"mouseover":return sn=ht(sn,e,n,t,a,i),!0;case"pointerover":var r=i.pointerId;return Vt.set(r,ht(Vt.get(r)||null,e,n,t,a,i)),!0;case"gotpointercapture":return r=i.pointerId,Pt.set(r,ht(Pt.get(r)||null,e,n,t,a,i)),!0}return!1}function Vc(e){var n=Tn(e.target);if(n!==null){var t=Nn(n);if(t!==null){if(n=t.tag,n===13){if(n=_c(t),n!==null){e.blockedOn=n,Dc(e.priority,function(){Rc(t)});return}}else if(n===3&&t.stateNode.current.memoizedState.isDehydrated){e.blockedOn=t.tag===3?t.stateNode.containerInfo:null;return}}}e.blockedOn=null}function wa(e){if(e.blockedOn!==null)return!1;for(var n=e.targetContainers;0<n.length;){var t=dr(e.domEventName,e.eventSystemFlags,n[0],e.nativeEvent);if(t===null){t=e.nativeEvent;var a=new t.constructor(t.type,t);ir=a,t.target.dispatchEvent(a),ir=null}else return n=$t(t),n!==null&&$r(n),e.blockedOn=t,!1;n.shift()}return!0}function Js(e,n,t){wa(e)&&t.delete(n)}function tu(){lr=!1,an!==null&&wa(an)&&(an=null),rn!==null&&wa(rn)&&(rn=null),sn!==null&&wa(sn)&&(sn=null),Vt.forEach(Js),Pt.forEach(Js)}function pt(e,n){e.blockedOn===n&&(e.blockedOn=null,lr||(lr=!0,ye.unstable_scheduleCallback(ye.unstable_NormalPriority,tu)))}function Ft(e){function n(i){return pt(i,e)}if(0<oa.length){pt(oa[0],e);for(var t=1;t<oa.length;t++){var a=oa[t];a.blockedOn===e&&(a.blockedOn=null)}}for(an!==null&&pt(an,e),rn!==null&&pt(rn,e),sn!==null&&pt(sn,e),Vt.forEach(n),Pt.forEach(n),t=0;t<Xe.length;t++)a=Xe[t],a.blockedOn===e&&(a.blockedOn=null);for(;0<Xe.length&&(t=Xe[0],t.blockedOn===null);)Vc(t),t.blockedOn===null&&Xe.shift()}var Qn=Je.ReactCurrentBatchConfig,Pa=!0;function au(e,n,t,a){var i=V,r=Qn.transition;Qn.transition=null;try{V=1,Xr(e,n,t,a)}finally{V=i,Qn.transition=r}}function iu(e,n,t,a){var i=V,r=Qn.transition;Qn.transition=null;try{V=4,Xr(e,n,t,a)}finally{V=i,Qn.transition=r}}function Xr(e,n,t,a){if(Pa){var i=dr(e,n,t,a);if(i===null)Vi(e,n,a,Fa,t),Hs(e,a);else if(nu(i,e,n,t,a))a.stopPropagation();else if(Hs(e,a),n&4&&-1<eu.indexOf(e)){for(;i!==null;){var r=$t(i);if(r!==null&&Ec(r),r=dr(e,n,t,a),r===null&&Vi(e,n,a,Fa,t),r===i)break;i=r}i!==null&&a.stopPropagation()}else Vi(e,n,a,null,t)}}var Fa=null;function dr(e,n,t,a){if(Fa=null,e=Jr(a),e=Tn(e),e!==null)if(n=Nn(e),n===null)e=null;else if(t=n.tag,t===13){if(e=_c(n),e!==null)return e;e=null}else if(t===3){if(n.stateNode.current.memoizedState.isDehydrated)return n.tag===3?n.stateNode.containerInfo:null;e=null}else n!==e&&(e=null);return Fa=e,null}function Pc(e){switch(e){case"cancel":case"click":case"close":case"contextmenu":case"copy":case"cut":case"auxclick":case"dblclick":case"dragend":case"dragstart":case"drop":case"focusin":case"focusout":case"input":case"invalid":case"keydown":case"keypress":case"keyup":case"mousedown":case"mouseup":case"paste":case"pause":case"play":case"pointercancel":case"pointerdown":case"pointerup":case"ratechange":case"reset":case"resize":case"seeked":case"submit":case"touchcancel":case"touchend":case"touchstart":case"volumechange":case"change":case"selectionchange":case"textInput":case"compositionstart":case"compositionend":case"compositionupdate":case"beforeblur":case"afterblur":case"beforeinput":case"blur":case"fullscreenchange":case"focus":case"hashchange":case"popstate":case"select":case"selectstart":return 1;case"drag":case"dragenter":case"dragexit":case"dragleave":case"dragover":case"mousemove":case"mouseout":case"mouseover":case"pointermove":case"pointerout":case"pointerover":case"scroll":case"toggle":case"touchmove":case"wheel":case"mouseenter":case"mouseleave":case"pointerenter":case"pointerleave":return 4;case"message":switch(Gd()){case Qr:return 1;case xc:return 4;case Da:case Kd:return 16;case kc:return 536870912;default:return 16}default:return 16}}var nn=null,Zr=null,Ta=null;function Fc(){if(Ta)return Ta;var e,n=Zr,t=n.length,a,i="value"in nn?nn.value:nn.textContent,r=i.length;for(e=0;e<t&&n[e]===i[e];e++);var s=t-e;for(a=1;a<=s&&n[t-a]===i[r-a];a++);return Ta=i.slice(e,1<a?1-a:void 0)}function _a(e){var n=e.keyCode;return"charCode"in e?(e=e.charCode,e===0&&n===13&&(e=13)):e=n,e===10&&(e=13),32<=e||e===13?e:0}function ca(){return!0}function Qs(){return!1}function be(e){function n(t,a,i,r,s){this._reactName=t,this._targetInst=i,this.type=a,this.nativeEvent=r,this.target=s,this.currentTarget=null;for(var o in e)e.hasOwnProperty(o)&&(t=e[o],this[o]=t?t(r):r[o]);return this.isDefaultPrevented=(r.defaultPrevented!=null?r.defaultPrevented:r.returnValue===!1)?ca:Qs,this.isPropagationStopped=Qs,this}return j(n.prototype,{preventDefault:function(){this.defaultPrevented=!0;var t=this.nativeEvent;t&&(t.preventDefault?t.preventDefault():typeof t.returnValue!="unknown"&&(t.returnValue=!1),this.isDefaultPrevented=ca)},stopPropagation:function(){var t=this.nativeEvent;t&&(t.stopPropagation?t.stopPropagation():typeof t.cancelBubble!="unknown"&&(t.cancelBubble=!0),this.isPropagationStopped=ca)},persist:function(){},isPersistent:ca}),n}var st={eventPhase:0,bubbles:0,cancelable:0,timeStamp:function(e){return e.timeStamp||Date.now()},defaultPrevented:0,isTrusted:0},es=be(st),Yt=j({},st,{view:0,detail:0}),ru=be(Yt),Si,xi,mt,ti=j({},Yt,{screenX:0,screenY:0,clientX:0,clientY:0,pageX:0,pageY:0,ctrlKey:0,shiftKey:0,altKey:0,metaKey:0,getModifierState:ns,button:0,buttons:0,relatedTarget:function(e){return e.relatedTarget===void 0?e.fromElement===e.srcElement?e.toElement:e.fromElement:e.relatedTarget},movementX:function(e){return"movementX"in e?e.movementX:(e!==mt&&(mt&&e.type==="mousemove"?(Si=e.screenX-mt.screenX,xi=e.screenY-mt.screenY):xi=Si=0,mt=e),Si)},movementY:function(e){return"movementY"in e?e.movementY:xi}}),Ys=be(ti),su=j({},ti,{dataTransfer:0}),ou=be(su),cu=j({},Yt,{relatedTarget:0}),ki=be(cu),lu=j({},st,{animationName:0,elapsedTime:0,pseudoElement:0}),du=be(lu),uu=j({},st,{clipboardData:function(e){return"clipboardData"in e?e.clipboardData:window.clipboardData}}),hu=be(uu),pu=j({},st,{data:0}),$s=be(pu),mu={Esc:"Escape",Spacebar:" ",Left:"ArrowLeft",Up:"ArrowUp",Right:"ArrowRight",Down:"ArrowDown",Del:"Delete",Win:"OS",Menu:"ContextMenu",Apps:"ContextMenu",Scroll:"ScrollLock",MozPrintableKey:"Unidentified"},gu={8:"Backspace",9:"Tab",12:"Clear",13:"Enter",16:"Shift",17:"Control",18:"Alt",19:"Pause",20:"CapsLock",27:"Escape",32:" ",33:"PageUp",34:"PageDown",35:"End",36:"Home",37:"ArrowLeft",38:"ArrowUp",39:"ArrowRight",40:"ArrowDown",45:"Insert",46:"Delete",112:"F1",113:"F2",114:"F3",115:"F4",116:"F5",117:"F6",118:"F7",119:"F8",120:"F9",121:"F10",122:"F11",123:"F12",144:"NumLock",145:"ScrollLock",224:"Meta"},fu={Alt:"altKey",Control:"ctrlKey",Meta:"metaKey",Shift:"shiftKey"};function yu(e){var n=this.nativeEvent;return n.getModifierState?n.getModifierState(e):(e=fu[e])?!!n[e]:!1}function ns(){return yu}var vu=j({},Yt,{key:function(e){if(e.key){var n=mu[e.key]||e.key;if(n!=="Unidentified")return n}return e.type==="keypress"?(e=_a(e),e===13?"Enter":String.fromCharCode(e)):e.type==="keydown"||e.type==="keyup"?gu[e.keyCode]||"Unidentified":""},code:0,location:0,ctrlKey:0,shiftKey:0,altKey:0,metaKey:0,repeat:0,locale:0,getModifierState:ns,charCode:function(e){return e.type==="keypress"?_a(e):0},keyCode:function(e){return e.type==="keydown"||e.type==="keyup"?e.keyCode:0},which:function(e){return e.type==="keypress"?_a(e):e.type==="keydown"||e.type==="keyup"?e.keyCode:0}}),bu=be(vu),wu=j({},ti,{pointerId:0,width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0}),Xs=be(wu),Tu=j({},Yt,{touches:0,targetTouches:0,changedTouches:0,altKey:0,metaKey:0,ctrlKey:0,shiftKey:0,getModifierState:ns}),_u=be(Tu),Cu=j({},st,{propertyName:0,elapsedTime:0,pseudoElement:0}),Au=be(Cu),Su=j({},ti,{deltaX:function(e){return"deltaX"in e?e.deltaX:"wheelDeltaX"in e?-e.wheelDeltaX:0},deltaY:function(e){return"deltaY"in e?e.deltaY:"wheelDeltaY"in e?-e.wheelDeltaY:"wheelDelta"in e?-e.wheelDelta:0},deltaZ:0,deltaMode:0}),xu=be(Su),ku=[9,13,27,32],ts=Ue&&"CompositionEvent"in window,At=null;Ue&&"documentMode"in document&&(At=document.documentMode);var Iu=Ue&&"TextEvent"in window&&!At,qc=Ue&&(!ts||At&&8<At&&11>=At),Zs=" ",eo=!1;function Lc(e,n){switch(e){case"keyup":return ku.indexOf(n.keyCode)!==-1;case"keydown":return n.keyCode!==229;case"keypress":case"mousedown":case"focusout":return!0;default:return!1}}function Oc(e){return e=e.detail,typeof e=="object"&&"data"in e?e.data:null}var Fn=!1;function Mu(e,n){switch(e){case"compositionend":return Oc(n);case"keypress":return n.which!==32?null:(eo=!0,Zs);case"textInput":return e=n.data,e===Zs&&eo?null:e;default:return null}}function Eu(e,n){if(Fn)return e==="compositionend"||!ts&&Lc(e,n)?(e=Fc(),Ta=Zr=nn=null,Fn=!1,e):null;switch(e){case"paste":return null;case"keypress":if(!(n.ctrlKey||n.altKey||n.metaKey)||n.ctrlKey&&n.altKey){if(n.char&&1<n.char.length)return n.char;if(n.which)return String.fromCharCode(n.which)}return null;case"compositionend":return qc&&n.locale!=="ko"?null:n.data;default:return null}}var Ru={color:!0,date:!0,datetime:!0,"datetime-local":!0,email:!0,month:!0,number:!0,password:!0,range:!0,search:!0,tel:!0,text:!0,time:!0,url:!0,week:!0};function no(e){var n=e&&e.nodeName&&e.nodeName.toLowerCase();return n==="input"?!!Ru[e.type]:n==="textarea"}function zc(e,n,t,a){yc(a),n=qa(n,"onChange"),0<n.length&&(t=new es("onChange","change",null,t,a),e.push({event:t,listeners:n}))}var St=null,qt=null;function Nu(e){$c(e,0)}function ai(e){var n=On(e);if(dc(n))return e}function Du(e,n){if(e==="change")return n}var Bc=!1;if(Ue){var Ii;if(Ue){var Mi="oninput"in document;if(!Mi){var to=document.createElement("div");to.setAttribute("oninput","return;"),Mi=typeof to.oninput=="function"}Ii=Mi}else Ii=!1;Bc=Ii&&(!document.documentMode||9<document.documentMode)}function ao(){St&&(St.detachEvent("onpropertychange",jc),qt=St=null)}function jc(e){if(e.propertyName==="value"&&ai(qt)){var n=[];zc(n,qt,e,Jr(e)),Tc(Nu,n)}}function Vu(e,n,t){e==="focusin"?(ao(),St=n,qt=t,St.attachEvent("onpropertychange",jc)):e==="focusout"&&ao()}function Pu(e){if(e==="selectionchange"||e==="keyup"||e==="keydown")return ai(qt)}function Fu(e,n){if(e==="click")return ai(n)}function qu(e,n){if(e==="input"||e==="change")return ai(n)}function Lu(e,n){return e===n&&(e!==0||1/e===1/n)||e!==e&&n!==n}var De=typeof Object.is=="function"?Object.is:Lu;function Lt(e,n){if(De(e,n))return!0;if(typeof e!="object"||e===null||typeof n!="object"||n===null)return!1;var t=Object.keys(e),a=Object.keys(n);if(t.length!==a.length)return!1;for(a=0;a<t.length;a++){var i=t[a];if(!Ki.call(n,i)||!De(e[i],n[i]))return!1}return!0}function io(e){for(;e&&e.firstChild;)e=e.firstChild;return e}function ro(e,n){var t=io(e);e=0;for(var a;t;){if(t.nodeType===3){if(a=e+t.textContent.length,e<=n&&a>=n)return{node:t,offset:n-e};e=a}e:{for(;t;){if(t.nextSibling){t=t.nextSibling;break e}t=t.parentNode}t=void 0}t=io(t)}}function Wc(e,n){return e&&n?e===n?!0:e&&e.nodeType===3?!1:n&&n.nodeType===3?Wc(e,n.parentNode):"contains"in e?e.contains(n):e.compareDocumentPosition?!!(e.compareDocumentPosition(n)&16):!1:!1}function Uc(){for(var e=window,n=Ea();n instanceof e.HTMLIFrameElement;){try{var t=typeof n.contentWindow.location.href=="string"}catch{t=!1}if(t)e=n.contentWindow;else break;n=Ea(e.document)}return n}function as(e){var n=e&&e.nodeName&&e.nodeName.toLowerCase();return n&&(n==="input"&&(e.type==="text"||e.type==="search"||e.type==="tel"||e.type==="url"||e.type==="password")||n==="textarea"||e.contentEditable==="true")}function Ou(e){var n=Uc(),t=e.focusedElem,a=e.selectionRange;if(n!==t&&t&&t.ownerDocument&&Wc(t.ownerDocument.documentElement,t)){if(a!==null&&as(t)){if(n=a.start,e=a.end,e===void 0&&(e=n),"selectionStart"in t)t.selectionStart=n,t.selectionEnd=Math.min(e,t.value.length);else if(e=(n=t.ownerDocument||document)&&n.defaultView||window,e.getSelection){e=e.getSelection();var i=t.textContent.length,r=Math.min(a.start,i);a=a.end===void 0?r:Math.min(a.end,i),!e.extend&&r>a&&(i=a,a=r,r=i),i=ro(t,r);var s=ro(t,a);i&&s&&(e.rangeCount!==1||e.anchorNode!==i.node||e.anchorOffset!==i.offset||e.focusNode!==s.node||e.focusOffset!==s.offset)&&(n=n.createRange(),n.setStart(i.node,i.offset),e.removeAllRanges(),r>a?(e.addRange(n),e.extend(s.node,s.offset)):(n.setEnd(s.node,s.offset),e.addRange(n)))}}for(n=[],e=t;e=e.parentNode;)e.nodeType===1&&n.push({element:e,left:e.scrollLeft,top:e.scrollTop});for(typeof t.focus=="function"&&t.focus(),t=0;t<n.length;t++)e=n[t],e.element.scrollLeft=e.left,e.element.scrollTop=e.top}}var zu=Ue&&"documentMode"in document&&11>=document.documentMode,qn=null,ur=null,xt=null,hr=!1;function so(e,n,t){var a=t.window===t?t.document:t.nodeType===9?t:t.ownerDocument;hr||qn==null||qn!==Ea(a)||(a=qn,"selectionStart"in a&&as(a)?a={start:a.selectionStart,end:a.selectionEnd}:(a=(a.ownerDocument&&a.ownerDocument.defaultView||window).getSelection(),a={anchorNode:a.anchorNode,anchorOffset:a.anchorOffset,focusNode:a.focusNode,focusOffset:a.focusOffset}),xt&&Lt(xt,a)||(xt=a,a=qa(ur,"onSelect"),0<a.length&&(n=new es("onSelect","select",null,n,t),e.push({event:n,listeners:a}),n.target=qn)))}function la(e,n){var t={};return t[e.toLowerCase()]=n.toLowerCase(),t["Webkit"+e]="webkit"+n,t["Moz"+e]="moz"+n,t}var Ln={animationend:la("Animation","AnimationEnd"),animationiteration:la("Animation","AnimationIteration"),animationstart:la("Animation","AnimationStart"),transitionend:la("Transition","TransitionEnd")},Ei={},Gc={};Ue&&(Gc=document.createElement("div").style,"AnimationEvent"in window||(delete Ln.animationend.animation,delete Ln.animationiteration.animation,delete Ln.animationstart.animation),"TransitionEvent"in window||delete Ln.transitionend.transition);function ii(e){if(Ei[e])return Ei[e];if(!Ln[e])return e;var n=Ln[e],t;for(t in n)if(n.hasOwnProperty(t)&&t in Gc)return Ei[e]=n[t];return e}var Kc=ii("animationend"),Hc=ii("animationiteration"),Jc=ii("animationstart"),Qc=ii("transitionend"),Yc=new Map,oo="abort auxClick cancel canPlay canPlayThrough click close contextMenu copy cut drag dragEnd dragEnter dragExit dragLeave dragOver dragStart drop durationChange emptied encrypted ended error gotPointerCapture input invalid keyDown keyPress keyUp load loadedData loadedMetadata loadStart lostPointerCapture mouseDown mouseMove mouseOut mouseOver mouseUp paste pause play playing pointerCancel pointerDown pointerMove pointerOut pointerOver pointerUp progress rateChange reset resize seeked seeking stalled submit suspend timeUpdate touchCancel touchEnd touchStart volumeChange scroll toggle touchMove waiting wheel".split(" ");function mn(e,n){Yc.set(e,n),Rn(n,[e])}for(var Ri=0;Ri<oo.length;Ri++){var Ni=oo[Ri],Bu=Ni.toLowerCase(),ju=Ni[0].toUpperCase()+Ni.slice(1);mn(Bu,"on"+ju)}mn(Kc,"onAnimationEnd");mn(Hc,"onAnimationIteration");mn(Jc,"onAnimationStart");mn("dblclick","onDoubleClick");mn("focusin","onFocus");mn("focusout","onBlur");mn(Qc,"onTransitionEnd");Xn("onMouseEnter",["mouseout","mouseover"]);Xn("onMouseLeave",["mouseout","mouseover"]);Xn("onPointerEnter",["pointerout","pointerover"]);Xn("onPointerLeave",["pointerout","pointerover"]);Rn("onChange","change click focusin focusout input keydown keyup selectionchange".split(" "));Rn("onSelect","focusout contextmenu dragend focusin keydown keyup mousedown mouseup selectionchange".split(" "));Rn("onBeforeInput",["compositionend","keypress","textInput","paste"]);Rn("onCompositionEnd","compositionend focusout keydown keypress keyup mousedown".split(" "));Rn("onCompositionStart","compositionstart focusout keydown keypress keyup mousedown".split(" "));Rn("onCompositionUpdate","compositionupdate focusout keydown keypress keyup mousedown".split(" "));var Tt="abort canplay canplaythrough durationchange emptied encrypted ended error loadeddata loadedmetadata loadstart pause play playing progress ratechange resize seeked seeking stalled suspend timeupdate volumechange waiting".split(" "),Wu=new Set("cancel close invalid load scroll toggle".split(" ").concat(Tt));function co(e,n,t){var a=e.type||"unknown-event";e.currentTarget=t,Bd(a,n,void 0,e),e.currentTarget=null}function $c(e,n){n=(n&4)!==0;for(var t=0;t<e.length;t++){var a=e[t],i=a.event;a=a.listeners;e:{var r=void 0;if(n)for(var s=a.length-1;0<=s;s--){var o=a[s],c=o.instance,d=o.currentTarget;if(o=o.listener,c!==r&&i.isPropagationStopped())break e;co(i,o,d),r=c}else for(s=0;s<a.length;s++){if(o=a[s],c=o.instance,d=o.currentTarget,o=o.listener,c!==r&&i.isPropagationStopped())break e;co(i,o,d),r=c}}}if(Na)throw e=or,Na=!1,or=null,e}function F(e,n){var t=n[yr];t===void 0&&(t=n[yr]=new Set);var a=e+"__bubble";t.has(a)||(Xc(n,e,2,!1),t.add(a))}function Di(e,n,t){var a=0;n&&(a|=4),Xc(t,e,a,n)}var da="_reactListening"+Math.random().toString(36).slice(2);function Ot(e){if(!e[da]){e[da]=!0,rc.forEach(function(t){t!=="selectionchange"&&(Wu.has(t)||Di(t,!1,e),Di(t,!0,e))});var n=e.nodeType===9?e:e.ownerDocument;n===null||n[da]||(n[da]=!0,Di("selectionchange",!1,n))}}function Xc(e,n,t,a){switch(Pc(n)){case 1:var i=au;break;case 4:i=iu;break;default:i=Xr}t=i.bind(null,n,t,e),i=void 0,!sr||n!=="touchstart"&&n!=="touchmove"&&n!=="wheel"||(i=!0),a?i!==void 0?e.addEventListener(n,t,{capture:!0,passive:i}):e.addEventListener(n,t,!0):i!==void 0?e.addEventListener(n,t,{passive:i}):e.addEventListener(n,t,!1)}function Vi(e,n,t,a,i){var r=a;if(!(n&1)&&!(n&2)&&a!==null)e:for(;;){if(a===null)return;var s=a.tag;if(s===3||s===4){var o=a.stateNode.containerInfo;if(o===i||o.nodeType===8&&o.parentNode===i)break;if(s===4)for(s=a.return;s!==null;){var c=s.tag;if((c===3||c===4)&&(c=s.stateNode.containerInfo,c===i||c.nodeType===8&&c.parentNode===i))return;s=s.return}for(;o!==null;){if(s=Tn(o),s===null)return;if(c=s.tag,c===5||c===6){a=r=s;continue e}o=o.parentNode}}a=a.return}Tc(function(){var d=r,g=Jr(t),m=[];e:{var p=Yc.get(e);if(p!==void 0){var f=es,b=e;switch(e){case"keypress":if(_a(t)===0)break e;case"keydown":case"keyup":f=bu;break;case"focusin":b="focus",f=ki;break;case"focusout":b="blur",f=ki;break;case"beforeblur":case"afterblur":f=ki;break;case"click":if(t.button===2)break e;case"auxclick":case"dblclick":case"mousedown":case"mousemove":case"mouseup":case"mouseout":case"mouseover":case"contextmenu":f=Ys;break;case"drag":case"dragend":case"dragenter":case"dragexit":case"dragleave":case"dragover":case"dragstart":case"drop":f=ou;break;case"touchcancel":case"touchend":case"touchmove":case"touchstart":f=_u;break;case Kc:case Hc:case Jc:f=du;break;case Qc:f=Au;break;case"scroll":f=ru;break;case"wheel":f=xu;break;case"copy":case"cut":case"paste":f=hu;break;case"gotpointercapture":case"lostpointercapture":case"pointercancel":case"pointerdown":case"pointermove":case"pointerout":case"pointerover":case"pointerup":f=Xs}var w=(n&4)!==0,N=!w&&e==="scroll",u=w?p!==null?p+"Capture":null:p;w=[];for(var l=d,h;l!==null;){h=l;var y=h.stateNode;if(h.tag===5&&y!==null&&(h=y,u!==null&&(y=Dt(l,u),y!=null&&w.push(zt(l,y,h)))),N)break;l=l.return}0<w.length&&(p=new f(p,b,null,t,g),m.push({event:p,listeners:w}))}}if(!(n&7)){e:{if(p=e==="mouseover"||e==="pointerover",f=e==="mouseout"||e==="pointerout",p&&t!==ir&&(b=t.relatedTarget||t.fromElement)&&(Tn(b)||b[Ge]))break e;if((f||p)&&(p=g.window===g?g:(p=g.ownerDocument)?p.defaultView||p.parentWindow:window,f?(b=t.relatedTarget||t.toElement,f=d,b=b?Tn(b):null,b!==null&&(N=Nn(b),b!==N||b.tag!==5&&b.tag!==6)&&(b=null)):(f=null,b=d),f!==b)){if(w=Ys,y="onMouseLeave",u="onMouseEnter",l="mouse",(e==="pointerout"||e==="pointerover")&&(w=Xs,y="onPointerLeave",u="onPointerEnter",l="pointer"),N=f==null?p:On(f),h=b==null?p:On(b),p=new w(y,l+"leave",f,t,g),p.target=N,p.relatedTarget=h,y=null,Tn(g)===d&&(w=new w(u,l+"enter",b,t,g),w.target=h,w.relatedTarget=N,y=w),N=y,f&&b)n:{for(w=f,u=b,l=0,h=w;h;h=Dn(h))l++;for(h=0,y=u;y;y=Dn(y))h++;for(;0<l-h;)w=Dn(w),l--;for(;0<h-l;)u=Dn(u),h--;for(;l--;){if(w===u||u!==null&&w===u.alternate)break n;w=Dn(w),u=Dn(u)}w=null}else w=null;f!==null&&lo(m,p,f,w,!1),b!==null&&N!==null&&lo(m,N,b,w,!0)}}e:{if(p=d?On(d):window,f=p.nodeName&&p.nodeName.toLowerCase(),f==="select"||f==="input"&&p.type==="file")var _=Du;else if(no(p))if(Bc)_=qu;else{_=Pu;var S=Vu}else(f=p.nodeName)&&f.toLowerCase()==="input"&&(p.type==="checkbox"||p.type==="radio")&&(_=Fu);if(_&&(_=_(e,d))){zc(m,_,t,g);break e}S&&S(e,p,d),e==="focusout"&&(S=p._wrapperState)&&S.controlled&&p.type==="number"&&Zi(p,"number",p.value)}switch(S=d?On(d):window,e){case"focusin":(no(S)||S.contentEditable==="true")&&(qn=S,ur=d,xt=null);break;case"focusout":xt=ur=qn=null;break;case"mousedown":hr=!0;break;case"contextmenu":case"mouseup":case"dragend":hr=!1,so(m,t,g);break;case"selectionchange":if(zu)break;case"keydown":case"keyup":so(m,t,g)}var A;if(ts)e:{switch(e){case"compositionstart":var x="onCompositionStart";break e;case"compositionend":x="onCompositionEnd";break e;case"compositionupdate":x="onCompositionUpdate";break e}x=void 0}else Fn?Lc(e,t)&&(x="onCompositionEnd"):e==="keydown"&&t.keyCode===229&&(x="onCompositionStart");x&&(qc&&t.locale!=="ko"&&(Fn||x!=="onCompositionStart"?x==="onCompositionEnd"&&Fn&&(A=Fc()):(nn=g,Zr="value"in nn?nn.value:nn.textContent,Fn=!0)),S=qa(d,x),0<S.length&&(x=new $s(x,e,null,t,g),m.push({event:x,listeners:S}),A?x.data=A:(A=Oc(t),A!==null&&(x.data=A)))),(A=Iu?Mu(e,t):Eu(e,t))&&(d=qa(d,"onBeforeInput"),0<d.length&&(g=new $s("onBeforeInput","beforeinput",null,t,g),m.push({event:g,listeners:d}),g.data=A))}$c(m,n)})}function zt(e,n,t){return{instance:e,listener:n,currentTarget:t}}function qa(e,n){for(var t=n+"Capture",a=[];e!==null;){var i=e,r=i.stateNode;i.tag===5&&r!==null&&(i=r,r=Dt(e,t),r!=null&&a.unshift(zt(e,r,i)),r=Dt(e,n),r!=null&&a.push(zt(e,r,i))),e=e.return}return a}function Dn(e){if(e===null)return null;do e=e.return;while(e&&e.tag!==5);return e||null}function lo(e,n,t,a,i){for(var r=n._reactName,s=[];t!==null&&t!==a;){var o=t,c=o.alternate,d=o.stateNode;if(c!==null&&c===a)break;o.tag===5&&d!==null&&(o=d,i?(c=Dt(t,r),c!=null&&s.unshift(zt(t,c,o))):i||(c=Dt(t,r),c!=null&&s.push(zt(t,c,o)))),t=t.return}s.length!==0&&e.push({event:n,listeners:s})}var Uu=/\r\n?/g,Gu=/\u0000|\uFFFD/g;function uo(e){return(typeof e=="string"?e:""+e).replace(Uu,`
-`).replace(Gu,"")}function ua(e,n,t){if(n=uo(n),uo(e)!==n&&t)throw Error(v(425))}function La(){}var pr=null,mr=null;function gr(e,n){return e==="textarea"||e==="noscript"||typeof n.children=="string"||typeof n.children=="number"||typeof n.dangerouslySetInnerHTML=="object"&&n.dangerouslySetInnerHTML!==null&&n.dangerouslySetInnerHTML.__html!=null}var fr=typeof setTimeout=="function"?setTimeout:void 0,Ku=typeof clearTimeout=="function"?clearTimeout:void 0,ho=typeof Promise=="function"?Promise:void 0,Hu=typeof queueMicrotask=="function"?queueMicrotask:typeof ho<"u"?function(e){return ho.resolve(null).then(e).catch(Ju)}:fr;function Ju(e){setTimeout(function(){throw e})}function Pi(e,n){var t=n,a=0;do{var i=t.nextSibling;if(e.removeChild(t),i&&i.nodeType===8)if(t=i.data,t==="/$"){if(a===0){e.removeChild(i),Ft(n);return}a--}else t!=="$"&&t!=="$?"&&t!=="$!"||a++;t=i}while(t);Ft(n)}function on(e){for(;e!=null;e=e.nextSibling){var n=e.nodeType;if(n===1||n===3)break;if(n===8){if(n=e.data,n==="$"||n==="$!"||n==="$?")break;if(n==="/$")return null}}return e}function po(e){e=e.previousSibling;for(var n=0;e;){if(e.nodeType===8){var t=e.data;if(t==="$"||t==="$!"||t==="$?"){if(n===0)return e;n--}else t==="/$"&&n++}e=e.previousSibling}return null}var ot=Math.random().toString(36).slice(2),Fe="__reactFiber$"+ot,Bt="__reactProps$"+ot,Ge="__reactContainer$"+ot,yr="__reactEvents$"+ot,Qu="__reactListeners$"+ot,Yu="__reactHandles$"+ot;function Tn(e){var n=e[Fe];if(n)return n;for(var t=e.parentNode;t;){if(n=t[Ge]||t[Fe]){if(t=n.alternate,n.child!==null||t!==null&&t.child!==null)for(e=po(e);e!==null;){if(t=e[Fe])return t;e=po(e)}return n}e=t,t=e.parentNode}return null}function $t(e){return e=e[Fe]||e[Ge],!e||e.tag!==5&&e.tag!==6&&e.tag!==13&&e.tag!==3?null:e}function On(e){if(e.tag===5||e.tag===6)return e.stateNode;throw Error(v(33))}function ri(e){return e[Bt]||null}var vr=[],zn=-1;function gn(e){return{current:e}}function q(e){0>zn||(e.current=vr[zn],vr[zn]=null,zn--)}function P(e,n){zn++,vr[zn]=e.current,e.current=n}var pn={},ie=gn(pn),ue=gn(!1),xn=pn;function Zn(e,n){var t=e.type.contextTypes;if(!t)return pn;var a=e.stateNode;if(a&&a.__reactInternalMemoizedUnmaskedChildContext===n)return a.__reactInternalMemoizedMaskedChildContext;var i={},r;for(r in t)i[r]=n[r];return a&&(e=e.stateNode,e.__reactInternalMemoizedUnmaskedChildContext=n,e.__reactInternalMemoizedMaskedChildContext=i),i}function he(e){return e=e.childContextTypes,e!=null}function Oa(){q(ue),q(ie)}function mo(e,n,t){if(ie.current!==pn)throw Error(v(168));P(ie,n),P(ue,t)}function Zc(e,n,t){var a=e.stateNode;if(n=n.childContextTypes,typeof a.getChildContext!="function")return t;a=a.getChildContext();for(var i in a)if(!(i in n))throw Error(v(108,Vd(e)||"Unknown",i));return j({},t,a)}function za(e){return e=(e=e.stateNode)&&e.__reactInternalMemoizedMergedChildContext||pn,xn=ie.current,P(ie,e),P(ue,ue.current),!0}function go(e,n,t){var a=e.stateNode;if(!a)throw Error(v(169));t?(e=Zc(e,n,xn),a.__reactInternalMemoizedMergedChildContext=e,q(ue),q(ie),P(ie,e)):q(ue),P(ue,t)}var ze=null,si=!1,Fi=!1;function el(e){ze===null?ze=[e]:ze.push(e)}function $u(e){si=!0,el(e)}function fn(){if(!Fi&&ze!==null){Fi=!0;var e=0,n=V;try{var t=ze;for(V=1;e<t.length;e++){var a=t[e];do a=a(!0);while(a!==null)}ze=null,si=!1}catch(i){throw ze!==null&&(ze=ze.slice(e+1)),Sc(Qr,fn),i}finally{V=n,Fi=!1}}return null}var Bn=[],jn=0,Ba=null,ja=0,we=[],Te=0,kn=null,Be=1,je="";function bn(e,n){Bn[jn++]=ja,Bn[jn++]=Ba,Ba=e,ja=n}function nl(e,n,t){we[Te++]=Be,we[Te++]=je,we[Te++]=kn,kn=e;var a=Be;e=je;var i=32-Re(a)-1;a&=~(1<<i),t+=1;var r=32-Re(n)+i;if(30<r){var s=i-i%5;r=(a&(1<<s)-1).toString(32),a>>=s,i-=s,Be=1<<32-Re(n)+i|t<<i|a,je=r+e}else Be=1<<r|t<<i|a,je=e}function is(e){e.return!==null&&(bn(e,1),nl(e,1,0))}function rs(e){for(;e===Ba;)Ba=Bn[--jn],Bn[jn]=null,ja=Bn[--jn],Bn[jn]=null;for(;e===kn;)kn=we[--Te],we[Te]=null,je=we[--Te],we[Te]=null,Be=we[--Te],we[Te]=null}var fe=null,ge=null,L=!1,Ee=null;function tl(e,n){var t=_e(5,null,null,0);t.elementType="DELETED",t.stateNode=n,t.return=e,n=e.deletions,n===null?(e.deletions=[t],e.flags|=16):n.push(t)}function fo(e,n){switch(e.tag){case 5:var t=e.type;return n=n.nodeType!==1||t.toLowerCase()!==n.nodeName.toLowerCase()?null:n,n!==null?(e.stateNode=n,fe=e,ge=on(n.firstChild),!0):!1;case 6:return n=e.pendingProps===""||n.nodeType!==3?null:n,n!==null?(e.stateNode=n,fe=e,ge=null,!0):!1;case 13:return n=n.nodeType!==8?null:n,n!==null?(t=kn!==null?{id:Be,overflow:je}:null,e.memoizedState={dehydrated:n,treeContext:t,retryLane:1073741824},t=_e(18,null,null,0),t.stateNode=n,t.return=e,e.child=t,fe=e,ge=null,!0):!1;default:return!1}}function br(e){return(e.mode&1)!==0&&(e.flags&128)===0}function wr(e){if(L){var n=ge;if(n){var t=n;if(!fo(e,n)){if(br(e))throw Error(v(418));n=on(t.nextSibling);var a=fe;n&&fo(e,n)?tl(a,t):(e.flags=e.flags&-4097|2,L=!1,fe=e)}}else{if(br(e))throw Error(v(418));e.flags=e.flags&-4097|2,L=!1,fe=e}}}function yo(e){for(e=e.return;e!==null&&e.tag!==5&&e.tag!==3&&e.tag!==13;)e=e.return;fe=e}function ha(e){if(e!==fe)return!1;if(!L)return yo(e),L=!0,!1;var n;if((n=e.tag!==3)&&!(n=e.tag!==5)&&(n=e.type,n=n!=="head"&&n!=="body"&&!gr(e.type,e.memoizedProps)),n&&(n=ge)){if(br(e))throw al(),Error(v(418));for(;n;)tl(e,n),n=on(n.nextSibling)}if(yo(e),e.tag===13){if(e=e.memoizedState,e=e!==null?e.dehydrated:null,!e)throw Error(v(317));e:{for(e=e.nextSibling,n=0;e;){if(e.nodeType===8){var t=e.data;if(t==="/$"){if(n===0){ge=on(e.nextSibling);break e}n--}else t!=="$"&&t!=="$!"&&t!=="$?"||n++}e=e.nextSibling}ge=null}}else ge=fe?on(e.stateNode.nextSibling):null;return!0}function al(){for(var e=ge;e;)e=on(e.nextSibling)}function et(){ge=fe=null,L=!1}function ss(e){Ee===null?Ee=[e]:Ee.push(e)}var Xu=Je.ReactCurrentBatchConfig;function gt(e,n,t){if(e=t.ref,e!==null&&typeof e!="function"&&typeof e!="object"){if(t._owner){if(t=t._owner,t){if(t.tag!==1)throw Error(v(309));var a=t.stateNode}if(!a)throw Error(v(147,e));var i=a,r=""+e;return n!==null&&n.ref!==null&&typeof n.ref=="function"&&n.ref._stringRef===r?n.ref:(n=function(s){var o=i.refs;s===null?delete o[r]:o[r]=s},n._stringRef=r,n)}if(typeof e!="string")throw Error(v(284));if(!t._owner)throw Error(v(290,e))}return e}function pa(e,n){throw e=Object.prototype.toString.call(n),Error(v(31,e==="[object Object]"?"object with keys {"+Object.keys(n).join(", ")+"}":e))}function vo(e){var n=e._init;return n(e._payload)}function il(e){function n(u,l){if(e){var h=u.deletions;h===null?(u.deletions=[l],u.flags|=16):h.push(l)}}function t(u,l){if(!e)return null;for(;l!==null;)n(u,l),l=l.sibling;return null}function a(u,l){for(u=new Map;l!==null;)l.key!==null?u.set(l.key,l):u.set(l.index,l),l=l.sibling;return u}function i(u,l){return u=un(u,l),u.index=0,u.sibling=null,u}function r(u,l,h){return u.index=h,e?(h=u.alternate,h!==null?(h=h.index,h<l?(u.flags|=2,l):h):(u.flags|=2,l)):(u.flags|=1048576,l)}function s(u){return e&&u.alternate===null&&(u.flags|=2),u}function o(u,l,h,y){return l===null||l.tag!==6?(l=Wi(h,u.mode,y),l.return=u,l):(l=i(l,h),l.return=u,l)}function c(u,l,h,y){var _=h.type;return _===Pn?g(u,l,h.props.children,y,h.key):l!==null&&(l.elementType===_||typeof _=="object"&&_!==null&&_.$$typeof===Ye&&vo(_)===l.type)?(y=i(l,h.props),y.ref=gt(u,l,h),y.return=u,y):(y=Ma(h.type,h.key,h.props,null,u.mode,y),y.ref=gt(u,l,h),y.return=u,y)}function d(u,l,h,y){return l===null||l.tag!==4||l.stateNode.containerInfo!==h.containerInfo||l.stateNode.implementation!==h.implementation?(l=Ui(h,u.mode,y),l.return=u,l):(l=i(l,h.children||[]),l.return=u,l)}function g(u,l,h,y,_){return l===null||l.tag!==7?(l=Sn(h,u.mode,y,_),l.return=u,l):(l=i(l,h),l.return=u,l)}function m(u,l,h){if(typeof l=="string"&&l!==""||typeof l=="number")return l=Wi(""+l,u.mode,h),l.return=u,l;if(typeof l=="object"&&l!==null){switch(l.$$typeof){case ta:return h=Ma(l.type,l.key,l.props,null,u.mode,h),h.ref=gt(u,null,l),h.return=u,h;case Vn:return l=Ui(l,u.mode,h),l.return=u,l;case Ye:var y=l._init;return m(u,y(l._payload),h)}if(bt(l)||dt(l))return l=Sn(l,u.mode,h,null),l.return=u,l;pa(u,l)}return null}function p(u,l,h,y){var _=l!==null?l.key:null;if(typeof h=="string"&&h!==""||typeof h=="number")return _!==null?null:o(u,l,""+h,y);if(typeof h=="object"&&h!==null){switch(h.$$typeof){case ta:return h.key===_?c(u,l,h,y):null;case Vn:return h.key===_?d(u,l,h,y):null;case Ye:return _=h._init,p(u,l,_(h._payload),y)}if(bt(h)||dt(h))return _!==null?null:g(u,l,h,y,null);pa(u,h)}return null}function f(u,l,h,y,_){if(typeof y=="string"&&y!==""||typeof y=="number")return u=u.get(h)||null,o(l,u,""+y,_);if(typeof y=="object"&&y!==null){switch(y.$$typeof){case ta:return u=u.get(y.key===null?h:y.key)||null,c(l,u,y,_);case Vn:return u=u.get(y.key===null?h:y.key)||null,d(l,u,y,_);case Ye:var S=y._init;return f(u,l,h,S(y._payload),_)}if(bt(y)||dt(y))return u=u.get(h)||null,g(l,u,y,_,null);pa(l,y)}return null}function b(u,l,h,y){for(var _=null,S=null,A=l,x=l=0,O=null;A!==null&&x<h.length;x++){A.index>x?(O=A,A=null):O=A.sibling;var R=p(u,A,h[x],y);if(R===null){A===null&&(A=O);break}e&&A&&R.alternate===null&&n(u,A),l=r(R,l,x),S===null?_=R:S.sibling=R,S=R,A=O}if(x===h.length)return t(u,A),L&&bn(u,x),_;if(A===null){for(;x<h.length;x++)A=m(u,h[x],y),A!==null&&(l=r(A,l,x),S===null?_=A:S.sibling=A,S=A);return L&&bn(u,x),_}for(A=a(u,A);x<h.length;x++)O=f(A,u,x,h[x],y),O!==null&&(e&&O.alternate!==null&&A.delete(O.key===null?x:O.key),l=r(O,l,x),S===null?_=O:S.sibling=O,S=O);return e&&A.forEach(function(xe){return n(u,xe)}),L&&bn(u,x),_}function w(u,l,h,y){var _=dt(h);if(typeof _!="function")throw Error(v(150));if(h=_.call(h),h==null)throw Error(v(151));for(var S=_=null,A=l,x=l=0,O=null,R=h.next();A!==null&&!R.done;x++,R=h.next()){A.index>x?(O=A,A=null):O=A.sibling;var xe=p(u,A,R.value,y);if(xe===null){A===null&&(A=O);break}e&&A&&xe.alternate===null&&n(u,A),l=r(xe,l,x),S===null?_=xe:S.sibling=xe,S=xe,A=O}if(R.done)return t(u,A),L&&bn(u,x),_;if(A===null){for(;!R.done;x++,R=h.next())R=m(u,R.value,y),R!==null&&(l=r(R,l,x),S===null?_=R:S.sibling=R,S=R);return L&&bn(u,x),_}for(A=a(u,A);!R.done;x++,R=h.next())R=f(A,u,x,R.value,y),R!==null&&(e&&R.alternate!==null&&A.delete(R.key===null?x:R.key),l=r(R,l,x),S===null?_=R:S.sibling=R,S=R);return e&&A.forEach(function(ct){return n(u,ct)}),L&&bn(u,x),_}function N(u,l,h,y){if(typeof h=="object"&&h!==null&&h.type===Pn&&h.key===null&&(h=h.props.children),typeof h=="object"&&h!==null){switch(h.$$typeof){case ta:e:{for(var _=h.key,S=l;S!==null;){if(S.key===_){if(_=h.type,_===Pn){if(S.tag===7){t(u,S.sibling),l=i(S,h.props.children),l.return=u,u=l;break e}}else if(S.elementType===_||typeof _=="object"&&_!==null&&_.$$typeof===Ye&&vo(_)===S.type){t(u,S.sibling),l=i(S,h.props),l.ref=gt(u,S,h),l.return=u,u=l;break e}t(u,S);break}else n(u,S);S=S.sibling}h.type===Pn?(l=Sn(h.props.children,u.mode,y,h.key),l.return=u,u=l):(y=Ma(h.type,h.key,h.props,null,u.mode,y),y.ref=gt(u,l,h),y.return=u,u=y)}return s(u);case Vn:e:{for(S=h.key;l!==null;){if(l.key===S)if(l.tag===4&&l.stateNode.containerInfo===h.containerInfo&&l.stateNode.implementation===h.implementation){t(u,l.sibling),l=i(l,h.children||[]),l.return=u,u=l;break e}else{t(u,l);break}else n(u,l);l=l.sibling}l=Ui(h,u.mode,y),l.return=u,u=l}return s(u);case Ye:return S=h._init,N(u,l,S(h._payload),y)}if(bt(h))return b(u,l,h,y);if(dt(h))return w(u,l,h,y);pa(u,h)}return typeof h=="string"&&h!==""||typeof h=="number"?(h=""+h,l!==null&&l.tag===6?(t(u,l.sibling),l=i(l,h),l.return=u,u=l):(t(u,l),l=Wi(h,u.mode,y),l.return=u,u=l),s(u)):t(u,l)}return N}var nt=il(!0),rl=il(!1),Wa=gn(null),Ua=null,Wn=null,os=null;function cs(){os=Wn=Ua=null}function ls(e){var n=Wa.current;q(Wa),e._currentValue=n}function Tr(e,n,t){for(;e!==null;){var a=e.alternate;if((e.childLanes&n)!==n?(e.childLanes|=n,a!==null&&(a.childLanes|=n)):a!==null&&(a.childLanes&n)!==n&&(a.childLanes|=n),e===t)break;e=e.return}}function Yn(e,n){Ua=e,os=Wn=null,e=e.dependencies,e!==null&&e.firstContext!==null&&(e.lanes&n&&(de=!0),e.firstContext=null)}function Ae(e){var n=e._currentValue;if(os!==e)if(e={context:e,memoizedValue:n,next:null},Wn===null){if(Ua===null)throw Error(v(308));Wn=e,Ua.dependencies={lanes:0,firstContext:e}}else Wn=Wn.next=e;return n}var _n=null;function ds(e){_n===null?_n=[e]:_n.push(e)}function sl(e,n,t,a){var i=n.interleaved;return i===null?(t.next=t,ds(n)):(t.next=i.next,i.next=t),n.interleaved=t,Ke(e,a)}function Ke(e,n){e.lanes|=n;var t=e.alternate;for(t!==null&&(t.lanes|=n),t=e,e=e.return;e!==null;)e.childLanes|=n,t=e.alternate,t!==null&&(t.childLanes|=n),t=e,e=e.return;return t.tag===3?t.stateNode:null}var $e=!1;function us(e){e.updateQueue={baseState:e.memoizedState,firstBaseUpdate:null,lastBaseUpdate:null,shared:{pending:null,interleaved:null,lanes:0},effects:null}}function ol(e,n){e=e.updateQueue,n.updateQueue===e&&(n.updateQueue={baseState:e.baseState,firstBaseUpdate:e.firstBaseUpdate,lastBaseUpdate:e.lastBaseUpdate,shared:e.shared,effects:e.effects})}function We(e,n){return{eventTime:e,lane:n,tag:0,payload:null,callback:null,next:null}}function cn(e,n,t){var a=e.updateQueue;if(a===null)return null;if(a=a.shared,D&2){var i=a.pending;return i===null?n.next=n:(n.next=i.next,i.next=n),a.pending=n,Ke(e,t)}return i=a.interleaved,i===null?(n.next=n,ds(a)):(n.next=i.next,i.next=n),a.interleaved=n,Ke(e,t)}function Ca(e,n,t){if(n=n.updateQueue,n!==null&&(n=n.shared,(t&4194240)!==0)){var a=n.lanes;a&=e.pendingLanes,t|=a,n.lanes=t,Yr(e,t)}}function bo(e,n){var t=e.updateQueue,a=e.alternate;if(a!==null&&(a=a.updateQueue,t===a)){var i=null,r=null;if(t=t.firstBaseUpdate,t!==null){do{var s={eventTime:t.eventTime,lane:t.lane,tag:t.tag,payload:t.payload,callback:t.callback,next:null};r===null?i=r=s:r=r.next=s,t=t.next}while(t!==null);r===null?i=r=n:r=r.next=n}else i=r=n;t={baseState:a.baseState,firstBaseUpdate:i,lastBaseUpdate:r,shared:a.shared,effects:a.effects},e.updateQueue=t;return}e=t.lastBaseUpdate,e===null?t.firstBaseUpdate=n:e.next=n,t.lastBaseUpdate=n}function Ga(e,n,t,a){var i=e.updateQueue;$e=!1;var r=i.firstBaseUpdate,s=i.lastBaseUpdate,o=i.shared.pending;if(o!==null){i.shared.pending=null;var c=o,d=c.next;c.next=null,s===null?r=d:s.next=d,s=c;var g=e.alternate;g!==null&&(g=g.updateQueue,o=g.lastBaseUpdate,o!==s&&(o===null?g.firstBaseUpdate=d:o.next=d,g.lastBaseUpdate=c))}if(r!==null){var m=i.baseState;s=0,g=d=c=null,o=r;do{var p=o.lane,f=o.eventTime;if((a&p)===p){g!==null&&(g=g.next={eventTime:f,lane:0,tag:o.tag,payload:o.payload,callback:o.callback,next:null});e:{var b=e,w=o;switch(p=n,f=t,w.tag){case 1:if(b=w.payload,typeof b=="function"){m=b.call(f,m,p);break e}m=b;break e;case 3:b.flags=b.flags&-65537|128;case 0:if(b=w.payload,p=typeof b=="function"?b.call(f,m,p):b,p==null)break e;m=j({},m,p);break e;case 2:$e=!0}}o.callback!==null&&o.lane!==0&&(e.flags|=64,p=i.effects,p===null?i.effects=[o]:p.push(o))}else f={eventTime:f,lane:p,tag:o.tag,payload:o.payload,callback:o.callback,next:null},g===null?(d=g=f,c=m):g=g.next=f,s|=p;if(o=o.next,o===null){if(o=i.shared.pending,o===null)break;p=o,o=p.next,p.next=null,i.lastBaseUpdate=p,i.shared.pending=null}}while(!0);if(g===null&&(c=m),i.baseState=c,i.firstBaseUpdate=d,i.lastBaseUpdate=g,n=i.shared.interleaved,n!==null){i=n;do s|=i.lane,i=i.next;while(i!==n)}else r===null&&(i.shared.lanes=0);Mn|=s,e.lanes=s,e.memoizedState=m}}function wo(e,n,t){if(e=n.effects,n.effects=null,e!==null)for(n=0;n<e.length;n++){var a=e[n],i=a.callback;if(i!==null){if(a.callback=null,a=t,typeof i!="function")throw Error(v(191,i));i.call(a)}}}var Xt={},Le=gn(Xt),jt=gn(Xt),Wt=gn(Xt);function Cn(e){if(e===Xt)throw Error(v(174));return e}function hs(e,n){switch(P(Wt,n),P(jt,e),P(Le,Xt),e=n.nodeType,e){case 9:case 11:n=(n=n.documentElement)?n.namespaceURI:nr(null,"");break;default:e=e===8?n.parentNode:n,n=e.namespaceURI||null,e=e.tagName,n=nr(n,e)}q(Le),P(Le,n)}function tt(){q(Le),q(jt),q(Wt)}function cl(e){Cn(Wt.current);var n=Cn(Le.current),t=nr(n,e.type);n!==t&&(P(jt,e),P(Le,t))}function ps(e){jt.current===e&&(q(Le),q(jt))}var z=gn(0);function Ka(e){for(var n=e;n!==null;){if(n.tag===13){var t=n.memoizedState;if(t!==null&&(t=t.dehydrated,t===null||t.data==="$?"||t.data==="$!"))return n}else if(n.tag===19&&n.memoizedProps.revealOrder!==void 0){if(n.flags&128)return n}else if(n.child!==null){n.child.return=n,n=n.child;continue}if(n===e)break;for(;n.sibling===null;){if(n.return===null||n.return===e)return null;n=n.return}n.sibling.return=n.return,n=n.sibling}return null}var qi=[];function ms(){for(var e=0;e<qi.length;e++)qi[e]._workInProgressVersionPrimary=null;qi.length=0}var Aa=Je.ReactCurrentDispatcher,Li=Je.ReactCurrentBatchConfig,In=0,B=null,H=null,Y=null,Ha=!1,kt=!1,Ut=0,Zu=0;function ne(){throw Error(v(321))}function gs(e,n){if(n===null)return!1;for(var t=0;t<n.length&&t<e.length;t++)if(!De(e[t],n[t]))return!1;return!0}function fs(e,n,t,a,i,r){if(In=r,B=n,n.memoizedState=null,n.updateQueue=null,n.lanes=0,Aa.current=e===null||e.memoizedState===null?ah:ih,e=t(a,i),kt){r=0;do{if(kt=!1,Ut=0,25<=r)throw Error(v(301));r+=1,Y=H=null,n.updateQueue=null,Aa.current=rh,e=t(a,i)}while(kt)}if(Aa.current=Ja,n=H!==null&&H.next!==null,In=0,Y=H=B=null,Ha=!1,n)throw Error(v(300));return e}function ys(){var e=Ut!==0;return Ut=0,e}function Pe(){var e={memoizedState:null,baseState:null,baseQueue:null,queue:null,next:null};return Y===null?B.memoizedState=Y=e:Y=Y.next=e,Y}function Se(){if(H===null){var e=B.alternate;e=e!==null?e.memoizedState:null}else e=H.next;var n=Y===null?B.memoizedState:Y.next;if(n!==null)Y=n,H=e;else{if(e===null)throw Error(v(310));H=e,e={memoizedState:H.memoizedState,baseState:H.baseState,baseQueue:H.baseQueue,queue:H.queue,next:null},Y===null?B.memoizedState=Y=e:Y=Y.next=e}return Y}function Gt(e,n){return typeof n=="function"?n(e):n}function Oi(e){var n=Se(),t=n.queue;if(t===null)throw Error(v(311));t.lastRenderedReducer=e;var a=H,i=a.baseQueue,r=t.pending;if(r!==null){if(i!==null){var s=i.next;i.next=r.next,r.next=s}a.baseQueue=i=r,t.pending=null}if(i!==null){r=i.next,a=a.baseState;var o=s=null,c=null,d=r;do{var g=d.lane;if((In&g)===g)c!==null&&(c=c.next={lane:0,action:d.action,hasEagerState:d.hasEagerState,eagerState:d.eagerState,next:null}),a=d.hasEagerState?d.eagerState:e(a,d.action);else{var m={lane:g,action:d.action,hasEagerState:d.hasEagerState,eagerState:d.eagerState,next:null};c===null?(o=c=m,s=a):c=c.next=m,B.lanes|=g,Mn|=g}d=d.next}while(d!==null&&d!==r);c===null?s=a:c.next=o,De(a,n.memoizedState)||(de=!0),n.memoizedState=a,n.baseState=s,n.baseQueue=c,t.lastRenderedState=a}if(e=t.interleaved,e!==null){i=e;do r=i.lane,B.lanes|=r,Mn|=r,i=i.next;while(i!==e)}else i===null&&(t.lanes=0);return[n.memoizedState,t.dispatch]}function zi(e){var n=Se(),t=n.queue;if(t===null)throw Error(v(311));t.lastRenderedReducer=e;var a=t.dispatch,i=t.pending,r=n.memoizedState;if(i!==null){t.pending=null;var s=i=i.next;do r=e(r,s.action),s=s.next;while(s!==i);De(r,n.memoizedState)||(de=!0),n.memoizedState=r,n.baseQueue===null&&(n.baseState=r),t.lastRenderedState=r}return[r,a]}function ll(){}function dl(e,n){var t=B,a=Se(),i=n(),r=!De(a.memoizedState,i);if(r&&(a.memoizedState=i,de=!0),a=a.queue,vs(pl.bind(null,t,a,e),[e]),a.getSnapshot!==n||r||Y!==null&&Y.memoizedState.tag&1){if(t.flags|=2048,Kt(9,hl.bind(null,t,a,i,n),void 0,null),$===null)throw Error(v(349));In&30||ul(t,n,i)}return i}function ul(e,n,t){e.flags|=16384,e={getSnapshot:n,value:t},n=B.updateQueue,n===null?(n={lastEffect:null,stores:null},B.updateQueue=n,n.stores=[e]):(t=n.stores,t===null?n.stores=[e]:t.push(e))}function hl(e,n,t,a){n.value=t,n.getSnapshot=a,ml(n)&&gl(e)}function pl(e,n,t){return t(function(){ml(n)&&gl(e)})}function ml(e){var n=e.getSnapshot;e=e.value;try{var t=n();return!De(e,t)}catch{return!0}}function gl(e){var n=Ke(e,1);n!==null&&Ne(n,e,1,-1)}function To(e){var n=Pe();return typeof e=="function"&&(e=e()),n.memoizedState=n.baseState=e,e={pending:null,interleaved:null,lanes:0,dispatch:null,lastRenderedReducer:Gt,lastRenderedState:e},n.queue=e,e=e.dispatch=th.bind(null,B,e),[n.memoizedState,e]}function Kt(e,n,t,a){return e={tag:e,create:n,destroy:t,deps:a,next:null},n=B.updateQueue,n===null?(n={lastEffect:null,stores:null},B.updateQueue=n,n.lastEffect=e.next=e):(t=n.lastEffect,t===null?n.lastEffect=e.next=e:(a=t.next,t.next=e,e.next=a,n.lastEffect=e)),e}function fl(){return Se().memoizedState}function Sa(e,n,t,a){var i=Pe();B.flags|=e,i.memoizedState=Kt(1|n,t,void 0,a===void 0?null:a)}function oi(e,n,t,a){var i=Se();a=a===void 0?null:a;var r=void 0;if(H!==null){var s=H.memoizedState;if(r=s.destroy,a!==null&&gs(a,s.deps)){i.memoizedState=Kt(n,t,r,a);return}}B.flags|=e,i.memoizedState=Kt(1|n,t,r,a)}function _o(e,n){return Sa(8390656,8,e,n)}function vs(e,n){return oi(2048,8,e,n)}function yl(e,n){return oi(4,2,e,n)}function vl(e,n){return oi(4,4,e,n)}function bl(e,n){if(typeof n=="function")return e=e(),n(e),function(){n(null)};if(n!=null)return e=e(),n.current=e,function(){n.current=null}}function wl(e,n,t){return t=t!=null?t.concat([e]):null,oi(4,4,bl.bind(null,n,e),t)}function bs(){}function Tl(e,n){var t=Se();n=n===void 0?null:n;var a=t.memoizedState;return a!==null&&n!==null&&gs(n,a[1])?a[0]:(t.memoizedState=[e,n],e)}function _l(e,n){var t=Se();n=n===void 0?null:n;var a=t.memoizedState;return a!==null&&n!==null&&gs(n,a[1])?a[0]:(e=e(),t.memoizedState=[e,n],e)}function Cl(e,n,t){return In&21?(De(t,n)||(t=Ic(),B.lanes|=t,Mn|=t,e.baseState=!0),n):(e.baseState&&(e.baseState=!1,de=!0),e.memoizedState=t)}function eh(e,n){var t=V;V=t!==0&&4>t?t:4,e(!0);var a=Li.transition;Li.transition={};try{e(!1),n()}finally{V=t,Li.transition=a}}function Al(){return Se().memoizedState}function nh(e,n,t){var a=dn(e);if(t={lane:a,action:t,hasEagerState:!1,eagerState:null,next:null},Sl(e))xl(n,t);else if(t=sl(e,n,t,a),t!==null){var i=se();Ne(t,e,a,i),kl(t,n,a)}}function th(e,n,t){var a=dn(e),i={lane:a,action:t,hasEagerState:!1,eagerState:null,next:null};if(Sl(e))xl(n,i);else{var r=e.alternate;if(e.lanes===0&&(r===null||r.lanes===0)&&(r=n.lastRenderedReducer,r!==null))try{var s=n.lastRenderedState,o=r(s,t);if(i.hasEagerState=!0,i.eagerState=o,De(o,s)){var c=n.interleaved;c===null?(i.next=i,ds(n)):(i.next=c.next,c.next=i),n.interleaved=i;return}}catch{}finally{}t=sl(e,n,i,a),t!==null&&(i=se(),Ne(t,e,a,i),kl(t,n,a))}}function Sl(e){var n=e.alternate;return e===B||n!==null&&n===B}function xl(e,n){kt=Ha=!0;var t=e.pending;t===null?n.next=n:(n.next=t.next,t.next=n),e.pending=n}function kl(e,n,t){if(t&4194240){var a=n.lanes;a&=e.pendingLanes,t|=a,n.lanes=t,Yr(e,t)}}var Ja={readContext:Ae,useCallback:ne,useContext:ne,useEffect:ne,useImperativeHandle:ne,useInsertionEffect:ne,useLayoutEffect:ne,useMemo:ne,useReducer:ne,useRef:ne,useState:ne,useDebugValue:ne,useDeferredValue:ne,useTransition:ne,useMutableSource:ne,useSyncExternalStore:ne,useId:ne,unstable_isNewReconciler:!1},ah={readContext:Ae,useCallback:function(e,n){return Pe().memoizedState=[e,n===void 0?null:n],e},useContext:Ae,useEffect:_o,useImperativeHandle:function(e,n,t){return t=t!=null?t.concat([e]):null,Sa(4194308,4,bl.bind(null,n,e),t)},useLayoutEffect:function(e,n){return Sa(4194308,4,e,n)},useInsertionEffect:function(e,n){return Sa(4,2,e,n)},useMemo:function(e,n){var t=Pe();return n=n===void 0?null:n,e=e(),t.memoizedState=[e,n],e},useReducer:function(e,n,t){var a=Pe();return n=t!==void 0?t(n):n,a.memoizedState=a.baseState=n,e={pending:null,interleaved:null,lanes:0,dispatch:null,lastRenderedReducer:e,lastRenderedState:n},a.queue=e,e=e.dispatch=nh.bind(null,B,e),[a.memoizedState,e]},useRef:function(e){var n=Pe();return e={current:e},n.memoizedState=e},useState:To,useDebugValue:bs,useDeferredValue:function(e){return Pe().memoizedState=e},useTransition:function(){var e=To(!1),n=e[0];return e=eh.bind(null,e[1]),Pe().memoizedState=e,[n,e]},useMutableSource:function(){},useSyncExternalStore:function(e,n,t){var a=B,i=Pe();if(L){if(t===void 0)throw Error(v(407));t=t()}else{if(t=n(),$===null)throw Error(v(349));In&30||ul(a,n,t)}i.memoizedState=t;var r={value:t,getSnapshot:n};return i.queue=r,_o(pl.bind(null,a,r,e),[e]),a.flags|=2048,Kt(9,hl.bind(null,a,r,t,n),void 0,null),t},useId:function(){var e=Pe(),n=$.identifierPrefix;if(L){var t=je,a=Be;t=(a&~(1<<32-Re(a)-1)).toString(32)+t,n=":"+n+"R"+t,t=Ut++,0<t&&(n+="H"+t.toString(32)),n+=":"}else t=Zu++,n=":"+n+"r"+t.toString(32)+":";return e.memoizedState=n},unstable_isNewReconciler:!1},ih={readContext:Ae,useCallback:Tl,useContext:Ae,useEffect:vs,useImperativeHandle:wl,useInsertionEffect:yl,useLayoutEffect:vl,useMemo:_l,useReducer:Oi,useRef:fl,useState:function(){return Oi(Gt)},useDebugValue:bs,useDeferredValue:function(e){var n=Se();return Cl(n,H.memoizedState,e)},useTransition:function(){var e=Oi(Gt)[0],n=Se().memoizedState;return[e,n]},useMutableSource:ll,useSyncExternalStore:dl,useId:Al,unstable_isNewReconciler:!1},rh={readContext:Ae,useCallback:Tl,useContext:Ae,useEffect:vs,useImperativeHandle:wl,useInsertionEffect:yl,useLayoutEffect:vl,useMemo:_l,useReducer:zi,useRef:fl,useState:function(){return zi(Gt)},useDebugValue:bs,useDeferredValue:function(e){var n=Se();return H===null?n.memoizedState=e:Cl(n,H.memoizedState,e)},useTransition:function(){var e=zi(Gt)[0],n=Se().memoizedState;return[e,n]},useMutableSource:ll,useSyncExternalStore:dl,useId:Al,unstable_isNewReconciler:!1};function Ie(e,n){if(e&&e.defaultProps){n=j({},n),e=e.defaultProps;for(var t in e)n[t]===void 0&&(n[t]=e[t]);return n}return n}function _r(e,n,t,a){n=e.memoizedState,t=t(a,n),t=t==null?n:j({},n,t),e.memoizedState=t,e.lanes===0&&(e.updateQueue.baseState=t)}var ci={isMounted:function(e){return(e=e._reactInternals)?Nn(e)===e:!1},enqueueSetState:function(e,n,t){e=e._reactInternals;var a=se(),i=dn(e),r=We(a,i);r.payload=n,t!=null&&(r.callback=t),n=cn(e,r,i),n!==null&&(Ne(n,e,i,a),Ca(n,e,i))},enqueueReplaceState:function(e,n,t){e=e._reactInternals;var a=se(),i=dn(e),r=We(a,i);r.tag=1,r.payload=n,t!=null&&(r.callback=t),n=cn(e,r,i),n!==null&&(Ne(n,e,i,a),Ca(n,e,i))},enqueueForceUpdate:function(e,n){e=e._reactInternals;var t=se(),a=dn(e),i=We(t,a);i.tag=2,n!=null&&(i.callback=n),n=cn(e,i,a),n!==null&&(Ne(n,e,a,t),Ca(n,e,a))}};function Co(e,n,t,a,i,r,s){return e=e.stateNode,typeof e.shouldComponentUpdate=="function"?e.shouldComponentUpdate(a,r,s):n.prototype&&n.prototype.isPureReactComponent?!Lt(t,a)||!Lt(i,r):!0}function Il(e,n,t){var a=!1,i=pn,r=n.contextType;return typeof r=="object"&&r!==null?r=Ae(r):(i=he(n)?xn:ie.current,a=n.contextTypes,r=(a=a!=null)?Zn(e,i):pn),n=new n(t,r),e.memoizedState=n.state!==null&&n.state!==void 0?n.state:null,n.updater=ci,e.stateNode=n,n._reactInternals=e,a&&(e=e.stateNode,e.__reactInternalMemoizedUnmaskedChildContext=i,e.__reactInternalMemoizedMaskedChildContext=r),n}function Ao(e,n,t,a){e=n.state,typeof n.componentWillReceiveProps=="function"&&n.componentWillReceiveProps(t,a),typeof n.UNSAFE_componentWillReceiveProps=="function"&&n.UNSAFE_componentWillReceiveProps(t,a),n.state!==e&&ci.enqueueReplaceState(n,n.state,null)}function Cr(e,n,t,a){var i=e.stateNode;i.props=t,i.state=e.memoizedState,i.refs={},us(e);var r=n.contextType;typeof r=="object"&&r!==null?i.context=Ae(r):(r=he(n)?xn:ie.current,i.context=Zn(e,r)),i.state=e.memoizedState,r=n.getDerivedStateFromProps,typeof r=="function"&&(_r(e,n,r,t),i.state=e.memoizedState),typeof n.getDerivedStateFromProps=="function"||typeof i.getSnapshotBeforeUpdate=="function"||typeof i.UNSAFE_componentWillMount!="function"&&typeof i.componentWillMount!="function"||(n=i.state,typeof i.componentWillMount=="function"&&i.componentWillMount(),typeof i.UNSAFE_componentWillMount=="function"&&i.UNSAFE_componentWillMount(),n!==i.state&&ci.enqueueReplaceState(i,i.state,null),Ga(e,t,i,a),i.state=e.memoizedState),typeof i.componentDidMount=="function"&&(e.flags|=4194308)}function at(e,n){try{var t="",a=n;do t+=Dd(a),a=a.return;while(a);var i=t}catch(r){i=`
+`+i[s].replace(" at new "," at ");return e.displayName&&c.includes("<anonymous>")&&(c=c.replace("<anonymous>",e.displayName)),c}while(1<=s&&0<=o);break}}}finally{Ti=!1,Error.prepareStackTrace=t}return(e=e?e.displayName||e.name:"")?yt(e):""}function Nd(e){switch(e.tag){case 5:return yt(e.type);case 16:return yt("Lazy");case 13:return yt("Suspense");case 19:return yt("SuspenseList");case 0:case 2:case 15:return e=Ci(e.type,!1),e;case 11:return e=Ci(e.type.render,!1),e;case 1:return e=Ci(e.type,!0),e;default:return""}}function Yi(e){if(e==null)return null;if(typeof e=="function")return e.displayName||e.name||null;if(typeof e=="string")return e;switch(e){case Pn:return"Fragment";case Fn:return"Portal";case Hi:return"Profiler";case Ur:return"StrictMode";case Ji:return"Suspense";case Qi:return"SuspenseList"}if(typeof e=="object")switch(e.$$typeof){case oc:return(e.displayName||"Context")+".Consumer";case sc:return(e._context.displayName||"Context")+".Provider";case Kr:var n=e.render;return e=e.displayName,e||(e=n.displayName||n.name||"",e=e!==""?"ForwardRef("+e+")":"ForwardRef"),e;case Hr:return n=e.displayName||null,n!==null?n:Yi(e.type)||"Memo";case Ye:n=e._payload,e=e._init;try{return Yi(e(n))}catch{}}return null}function Fd(e){var n=e.type;switch(e.tag){case 24:return"Cache";case 9:return(n.displayName||"Context")+".Consumer";case 10:return(n._context.displayName||"Context")+".Provider";case 18:return"DehydratedFragment";case 11:return e=n.render,e=e.displayName||e.name||"",n.displayName||(e!==""?"ForwardRef("+e+")":"ForwardRef");case 7:return"Fragment";case 5:return n;case 4:return"Portal";case 3:return"Root";case 6:return"Text";case 16:return Yi(n);case 8:return n===Ur?"StrictMode":"Mode";case 22:return"Offscreen";case 12:return"Profiler";case 21:return"Scope";case 13:return"Suspense";case 19:return"SuspenseList";case 25:return"TracingMarker";case 1:case 0:case 17:case 2:case 14:case 15:if(typeof n=="function")return n.displayName||n.name||null;if(typeof n=="string")return n}return null}function hn(e){switch(typeof e){case"boolean":case"number":case"string":case"undefined":return e;case"object":return e;default:return""}}function lc(e){var n=e.type;return(e=e.nodeName)&&e.toLowerCase()==="input"&&(n==="checkbox"||n==="radio")}function Pd(e){var n=lc(e)?"checked":"value",t=Object.getOwnPropertyDescriptor(e.constructor.prototype,n),a=""+e[n];if(!e.hasOwnProperty(n)&&typeof t<"u"&&typeof t.get=="function"&&typeof t.set=="function"){var i=t.get,r=t.set;return Object.defineProperty(e,n,{configurable:!0,get:function(){return i.call(this)},set:function(s){a=""+s,r.call(this,s)}}),Object.defineProperty(e,n,{enumerable:t.enumerable}),{getValue:function(){return a},setValue:function(s){a=""+s},stopTracking:function(){e._valueTracker=null,delete e[n]}}}}function aa(e){e._valueTracker||(e._valueTracker=Pd(e))}function dc(e){if(!e)return!1;var n=e._valueTracker;if(!n)return!0;var t=n.getValue(),a="";return e&&(a=lc(e)?e.checked?"true":"false":e.value),e=a,e!==t?(n.setValue(e),!0):!1}function Ea(e){if(e=e||(typeof document<"u"?document:void 0),typeof e>"u")return null;try{return e.activeElement||e.body}catch{return e.body}}function $i(e,n){var t=n.checked;return j({},n,{defaultChecked:void 0,defaultValue:void 0,value:void 0,checked:t??e._wrapperState.initialChecked})}function zs(e,n){var t=n.defaultValue==null?"":n.defaultValue,a=n.checked!=null?n.checked:n.defaultChecked;t=hn(n.value!=null?n.value:t),e._wrapperState={initialChecked:a,initialValue:t,controlled:n.type==="checkbox"||n.type==="radio"?n.checked!=null:n.value!=null}}function uc(e,n){n=n.checked,n!=null&&Gr(e,"checked",n,!1)}function Xi(e,n){uc(e,n);var t=hn(n.value),a=n.type;if(t!=null)a==="number"?(t===0&&e.value===""||e.value!=t)&&(e.value=""+t):e.value!==""+t&&(e.value=""+t);else if(a==="submit"||a==="reset"){e.removeAttribute("value");return}n.hasOwnProperty("value")?Zi(e,n.type,t):n.hasOwnProperty("defaultValue")&&Zi(e,n.type,hn(n.defaultValue)),n.checked==null&&n.defaultChecked!=null&&(e.defaultChecked=!!n.defaultChecked)}function Bs(e,n,t){if(n.hasOwnProperty("value")||n.hasOwnProperty("defaultValue")){var a=n.type;if(!(a!=="submit"&&a!=="reset"||n.value!==void 0&&n.value!==null))return;n=""+e._wrapperState.initialValue,t||n===e.value||(e.value=n),e.defaultValue=n}t=e.name,t!==""&&(e.name=""),e.defaultChecked=!!e._wrapperState.initialChecked,t!==""&&(e.name=t)}function Zi(e,n,t){(n!=="number"||Ea(e.ownerDocument)!==e)&&(t==null?e.defaultValue=""+e._wrapperState.initialValue:e.defaultValue!==""+t&&(e.defaultValue=""+t))}var bt=Array.isArray;function Kn(e,n,t,a){if(e=e.options,n){n={};for(var i=0;i<t.length;i++)n["$"+t[i]]=!0;for(t=0;t<e.length;t++)i=n.hasOwnProperty("$"+e[t].value),e[t].selected!==i&&(e[t].selected=i),i&&a&&(e[t].defaultSelected=!0)}else{for(t=""+hn(t),n=null,i=0;i<e.length;i++){if(e[i].value===t){e[i].selected=!0,a&&(e[i].defaultSelected=!0);return}n!==null||e[i].disabled||(n=e[i])}n!==null&&(n.selected=!0)}}function er(e,n){if(n.dangerouslySetInnerHTML!=null)throw Error(y(91));return j({},n,{value:void 0,defaultValue:void 0,children:""+e._wrapperState.initialValue})}function js(e,n){var t=n.value;if(t==null){if(t=n.children,n=n.defaultValue,t!=null){if(n!=null)throw Error(y(92));if(bt(t)){if(1<t.length)throw Error(y(93));t=t[0]}n=t}n==null&&(n=""),t=n}e._wrapperState={initialValue:hn(t)}}function hc(e,n){var t=hn(n.value),a=hn(n.defaultValue);t!=null&&(t=""+t,t!==e.value&&(e.value=t),n.defaultValue==null&&e.defaultValue!==t&&(e.defaultValue=t)),a!=null&&(e.defaultValue=""+a)}function Ws(e){var n=e.textContent;n===e._wrapperState.initialValue&&n!==""&&n!==null&&(e.value=n)}function pc(e){switch(e){case"svg":return"http://www.w3.org/2000/svg";case"math":return"http://www.w3.org/1998/Math/MathML";default:return"http://www.w3.org/1999/xhtml"}}function nr(e,n){return e==null||e==="http://www.w3.org/1999/xhtml"?pc(n):e==="http://www.w3.org/2000/svg"&&n==="foreignObject"?"http://www.w3.org/1999/xhtml":e}var ia,mc=function(e){return typeof MSApp<"u"&&MSApp.execUnsafeLocalFunction?function(n,t,a,i){MSApp.execUnsafeLocalFunction(function(){return e(n,t,a,i)})}:e}(function(e,n){if(e.namespaceURI!=="http://www.w3.org/2000/svg"||"innerHTML"in e)e.innerHTML=n;else{for(ia=ia||document.createElement("div"),ia.innerHTML="<svg>"+n.valueOf().toString()+"</svg>",n=ia.firstChild;e.firstChild;)e.removeChild(e.firstChild);for(;n.firstChild;)e.appendChild(n.firstChild)}});function Dt(e,n){if(n){var t=e.firstChild;if(t&&t===e.lastChild&&t.nodeType===3){t.nodeValue=n;return}}e.textContent=n}var Ct={animationIterationCount:!0,aspectRatio:!0,borderImageOutset:!0,borderImageSlice:!0,borderImageWidth:!0,boxFlex:!0,boxFlexGroup:!0,boxOrdinalGroup:!0,columnCount:!0,columns:!0,flex:!0,flexGrow:!0,flexPositive:!0,flexShrink:!0,flexNegative:!0,flexOrder:!0,gridArea:!0,gridRow:!0,gridRowEnd:!0,gridRowSpan:!0,gridRowStart:!0,gridColumn:!0,gridColumnEnd:!0,gridColumnSpan:!0,gridColumnStart:!0,fontWeight:!0,lineClamp:!0,lineHeight:!0,opacity:!0,order:!0,orphans:!0,tabSize:!0,widows:!0,zIndex:!0,zoom:!0,fillOpacity:!0,floodOpacity:!0,stopOpacity:!0,strokeDasharray:!0,strokeDashoffset:!0,strokeMiterlimit:!0,strokeOpacity:!0,strokeWidth:!0},qd=["Webkit","ms","Moz","O"];Object.keys(Ct).forEach(function(e){qd.forEach(function(n){n=n+e.charAt(0).toUpperCase()+e.substring(1),Ct[n]=Ct[e]})});function gc(e,n,t){return n==null||typeof n=="boolean"||n===""?"":t||typeof n!="number"||n===0||Ct.hasOwnProperty(e)&&Ct[e]?(""+n).trim():n+"px"}function fc(e,n){e=e.style;for(var t in n)if(n.hasOwnProperty(t)){var a=t.indexOf("--")===0,i=gc(t,n[t],a);t==="float"&&(t="cssFloat"),a?e.setProperty(t,i):e[t]=i}}var Vd=j({menuitem:!0},{area:!0,base:!0,br:!0,col:!0,embed:!0,hr:!0,img:!0,input:!0,keygen:!0,link:!0,meta:!0,param:!0,source:!0,track:!0,wbr:!0});function tr(e,n){if(n){if(Vd[e]&&(n.children!=null||n.dangerouslySetInnerHTML!=null))throw Error(y(137,e));if(n.dangerouslySetInnerHTML!=null){if(n.children!=null)throw Error(y(60));if(typeof n.dangerouslySetInnerHTML!="object"||!("__html"in n.dangerouslySetInnerHTML))throw Error(y(61))}if(n.style!=null&&typeof n.style!="object")throw Error(y(62))}}function ar(e,n){if(e.indexOf("-")===-1)return typeof n.is=="string";switch(e){case"annotation-xml":case"color-profile":case"font-face":case"font-face-src":case"font-face-uri":case"font-face-format":case"font-face-name":case"missing-glyph":return!1;default:return!0}}var ir=null;function Jr(e){return e=e.target||e.srcElement||window,e.correspondingUseElement&&(e=e.correspondingUseElement),e.nodeType===3?e.parentNode:e}var rr=null,Hn=null,Jn=null;function Gs(e){if(e=$t(e)){if(typeof rr!="function")throw Error(y(280));var n=e.stateNode;n&&(n=ri(n),rr(e.stateNode,e.type,n))}}function vc(e){Hn?Jn?Jn.push(e):Jn=[e]:Hn=e}function yc(){if(Hn){var e=Hn,n=Jn;if(Jn=Hn=null,Gs(e),n)for(e=0;e<n.length;e++)Gs(n[e])}}function bc(e,n){return e(n)}function wc(){}var Ai=!1;function Tc(e,n,t){if(Ai)return e(n,t);Ai=!0;try{return bc(e,n,t)}finally{Ai=!1,(Hn!==null||Jn!==null)&&(wc(),yc())}}function Nt(e,n){var t=e.stateNode;if(t===null)return null;var a=ri(t);if(a===null)return null;t=a[n];e:switch(n){case"onClick":case"onClickCapture":case"onDoubleClick":case"onDoubleClickCapture":case"onMouseDown":case"onMouseDownCapture":case"onMouseMove":case"onMouseMoveCapture":case"onMouseUp":case"onMouseUpCapture":case"onMouseEnter":(a=!a.disabled)||(e=e.type,a=!(e==="button"||e==="input"||e==="select"||e==="textarea")),e=!a;break e;default:e=!1}if(e)return null;if(t&&typeof t!="function")throw Error(y(231,n,typeof t));return t}var sr=!1;if(Ge)try{var ut={};Object.defineProperty(ut,"passive",{get:function(){sr=!0}}),window.addEventListener("test",ut,ut),window.removeEventListener("test",ut,ut)}catch{sr=!1}function Od(e,n,t,a,i,r,s,o,c){var d=Array.prototype.slice.call(arguments,3);try{n.apply(t,d)}catch(g){this.onError(g)}}var At=!1,Ra=null,Da=!1,or=null,Ld={onError:function(e){At=!0,Ra=e}};function zd(e,n,t,a,i,r,s,o,c){At=!1,Ra=null,Od.apply(Ld,arguments)}function Bd(e,n,t,a,i,r,s,o,c){if(zd.apply(this,arguments),At){if(At){var d=Ra;At=!1,Ra=null}else throw Error(y(198));Da||(Da=!0,or=d)}}function Dn(e){var n=e,t=e;if(e.alternate)for(;n.return;)n=n.return;else{e=n;do n=e,n.flags&4098&&(t=n.return),e=n.return;while(e)}return n.tag===3?t:null}function Cc(e){if(e.tag===13){var n=e.memoizedState;if(n===null&&(e=e.alternate,e!==null&&(n=e.memoizedState)),n!==null)return n.dehydrated}return null}function Us(e){if(Dn(e)!==e)throw Error(y(188))}function jd(e){var n=e.alternate;if(!n){if(n=Dn(e),n===null)throw Error(y(188));return n!==e?null:e}for(var t=e,a=n;;){var i=t.return;if(i===null)break;var r=i.alternate;if(r===null){if(a=i.return,a!==null){t=a;continue}break}if(i.child===r.child){for(r=i.child;r;){if(r===t)return Us(i),e;if(r===a)return Us(i),n;r=r.sibling}throw Error(y(188))}if(t.return!==a.return)t=i,a=r;else{for(var s=!1,o=i.child;o;){if(o===t){s=!0,t=i,a=r;break}if(o===a){s=!0,a=i,t=r;break}o=o.sibling}if(!s){for(o=r.child;o;){if(o===t){s=!0,t=r,a=i;break}if(o===a){s=!0,a=r,t=i;break}o=o.sibling}if(!s)throw Error(y(189))}}if(t.alternate!==a)throw Error(y(190))}if(t.tag!==3)throw Error(y(188));return t.stateNode.current===t?e:n}function Ac(e){return e=jd(e),e!==null?_c(e):null}function _c(e){if(e.tag===5||e.tag===6)return e;for(e=e.child;e!==null;){var n=_c(e);if(n!==null)return n;e=e.sibling}return null}var Sc=ve.unstable_scheduleCallback,Ks=ve.unstable_cancelCallback,Wd=ve.unstable_shouldYield,Gd=ve.unstable_requestPaint,U=ve.unstable_now,Ud=ve.unstable_getCurrentPriorityLevel,Qr=ve.unstable_ImmediatePriority,xc=ve.unstable_UserBlockingPriority,Na=ve.unstable_NormalPriority,Kd=ve.unstable_LowPriority,kc=ve.unstable_IdlePriority,ni=null,Ve=null;function Hd(e){if(Ve&&typeof Ve.onCommitFiberRoot=="function")try{Ve.onCommitFiberRoot(ni,e,void 0,(e.current.flags&128)===128)}catch{}}var Re=Math.clz32?Math.clz32:Yd,Jd=Math.log,Qd=Math.LN2;function Yd(e){return e>>>=0,e===0?32:31-(Jd(e)/Qd|0)|0}var ra=64,sa=4194304;function wt(e){switch(e&-e){case 1:return 1;case 2:return 2;case 4:return 4;case 8:return 8;case 16:return 16;case 32:return 32;case 64:case 128:case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:return e&4194240;case 4194304:case 8388608:case 16777216:case 33554432:case 67108864:return e&130023424;case 134217728:return 134217728;case 268435456:return 268435456;case 536870912:return 536870912;case 1073741824:return 1073741824;default:return e}}function Fa(e,n){var t=e.pendingLanes;if(t===0)return 0;var a=0,i=e.suspendedLanes,r=e.pingedLanes,s=t&268435455;if(s!==0){var o=s&~i;o!==0?a=wt(o):(r&=s,r!==0&&(a=wt(r)))}else s=t&~i,s!==0?a=wt(s):r!==0&&(a=wt(r));if(a===0)return 0;if(n!==0&&n!==a&&!(n&i)&&(i=a&-a,r=n&-n,i>=r||i===16&&(r&4194240)!==0))return n;if(a&4&&(a|=t&16),n=e.entangledLanes,n!==0)for(e=e.entanglements,n&=a;0<n;)t=31-Re(n),i=1<<t,a|=e[t],n&=~i;return a}function $d(e,n){switch(e){case 1:case 2:case 4:return n+250;case 8:case 16:case 32:case 64:case 128:case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:return n+5e3;case 4194304:case 8388608:case 16777216:case 33554432:case 67108864:return-1;case 134217728:case 268435456:case 536870912:case 1073741824:return-1;default:return-1}}function Xd(e,n){for(var t=e.suspendedLanes,a=e.pingedLanes,i=e.expirationTimes,r=e.pendingLanes;0<r;){var s=31-Re(r),o=1<<s,c=i[s];c===-1?(!(o&t)||o&a)&&(i[s]=$d(o,n)):c<=n&&(e.expiredLanes|=o),r&=~o}}function cr(e){return e=e.pendingLanes&-1073741825,e!==0?e:e&1073741824?1073741824:0}function Ic(){var e=ra;return ra<<=1,!(ra&4194240)&&(ra=64),e}function _i(e){for(var n=[],t=0;31>t;t++)n.push(e);return n}function Qt(e,n,t){e.pendingLanes|=n,n!==536870912&&(e.suspendedLanes=0,e.pingedLanes=0),e=e.eventTimes,n=31-Re(n),e[n]=t}function Zd(e,n){var t=e.pendingLanes&~n;e.pendingLanes=n,e.suspendedLanes=0,e.pingedLanes=0,e.expiredLanes&=n,e.mutableReadLanes&=n,e.entangledLanes&=n,n=e.entanglements;var a=e.eventTimes;for(e=e.expirationTimes;0<t;){var i=31-Re(t),r=1<<i;n[i]=0,a[i]=-1,e[i]=-1,t&=~r}}function Yr(e,n){var t=e.entangledLanes|=n;for(e=e.entanglements;t;){var a=31-Re(t),i=1<<a;i&n|e[a]&n&&(e[a]|=n),t&=~i}}var F=0;function Mc(e){return e&=-e,1<e?4<e?e&268435455?16:536870912:4:1}var Ec,$r,Rc,Dc,Nc,lr=!1,oa=[],an=null,rn=null,sn=null,Ft=new Map,Pt=new Map,Xe=[],eu="mousedown mouseup touchcancel touchend touchstart auxclick dblclick pointercancel pointerdown pointerup dragend dragstart drop compositionend compositionstart keydown keypress keyup input textInput copy cut paste click change contextmenu reset submit".split(" ");function Hs(e,n){switch(e){case"focusin":case"focusout":an=null;break;case"dragenter":case"dragleave":rn=null;break;case"mouseover":case"mouseout":sn=null;break;case"pointerover":case"pointerout":Ft.delete(n.pointerId);break;case"gotpointercapture":case"lostpointercapture":Pt.delete(n.pointerId)}}function ht(e,n,t,a,i,r){return e===null||e.nativeEvent!==r?(e={blockedOn:n,domEventName:t,eventSystemFlags:a,nativeEvent:r,targetContainers:[i]},n!==null&&(n=$t(n),n!==null&&$r(n)),e):(e.eventSystemFlags|=a,n=e.targetContainers,i!==null&&n.indexOf(i)===-1&&n.push(i),e)}function nu(e,n,t,a,i){switch(n){case"focusin":return an=ht(an,e,n,t,a,i),!0;case"dragenter":return rn=ht(rn,e,n,t,a,i),!0;case"mouseover":return sn=ht(sn,e,n,t,a,i),!0;case"pointerover":var r=i.pointerId;return Ft.set(r,ht(Ft.get(r)||null,e,n,t,a,i)),!0;case"gotpointercapture":return r=i.pointerId,Pt.set(r,ht(Pt.get(r)||null,e,n,t,a,i)),!0}return!1}function Fc(e){var n=Tn(e.target);if(n!==null){var t=Dn(n);if(t!==null){if(n=t.tag,n===13){if(n=Cc(t),n!==null){e.blockedOn=n,Nc(e.priority,function(){Rc(t)});return}}else if(n===3&&t.stateNode.current.memoizedState.isDehydrated){e.blockedOn=t.tag===3?t.stateNode.containerInfo:null;return}}}e.blockedOn=null}function wa(e){if(e.blockedOn!==null)return!1;for(var n=e.targetContainers;0<n.length;){var t=dr(e.domEventName,e.eventSystemFlags,n[0],e.nativeEvent);if(t===null){t=e.nativeEvent;var a=new t.constructor(t.type,t);ir=a,t.target.dispatchEvent(a),ir=null}else return n=$t(t),n!==null&&$r(n),e.blockedOn=t,!1;n.shift()}return!0}function Js(e,n,t){wa(e)&&t.delete(n)}function tu(){lr=!1,an!==null&&wa(an)&&(an=null),rn!==null&&wa(rn)&&(rn=null),sn!==null&&wa(sn)&&(sn=null),Ft.forEach(Js),Pt.forEach(Js)}function pt(e,n){e.blockedOn===n&&(e.blockedOn=null,lr||(lr=!0,ve.unstable_scheduleCallback(ve.unstable_NormalPriority,tu)))}function qt(e){function n(i){return pt(i,e)}if(0<oa.length){pt(oa[0],e);for(var t=1;t<oa.length;t++){var a=oa[t];a.blockedOn===e&&(a.blockedOn=null)}}for(an!==null&&pt(an,e),rn!==null&&pt(rn,e),sn!==null&&pt(sn,e),Ft.forEach(n),Pt.forEach(n),t=0;t<Xe.length;t++)a=Xe[t],a.blockedOn===e&&(a.blockedOn=null);for(;0<Xe.length&&(t=Xe[0],t.blockedOn===null);)Fc(t),t.blockedOn===null&&Xe.shift()}var Qn=Je.ReactCurrentBatchConfig,Pa=!0;function au(e,n,t,a){var i=F,r=Qn.transition;Qn.transition=null;try{F=1,Xr(e,n,t,a)}finally{F=i,Qn.transition=r}}function iu(e,n,t,a){var i=F,r=Qn.transition;Qn.transition=null;try{F=4,Xr(e,n,t,a)}finally{F=i,Qn.transition=r}}function Xr(e,n,t,a){if(Pa){var i=dr(e,n,t,a);if(i===null)Fi(e,n,a,qa,t),Hs(e,a);else if(nu(i,e,n,t,a))a.stopPropagation();else if(Hs(e,a),n&4&&-1<eu.indexOf(e)){for(;i!==null;){var r=$t(i);if(r!==null&&Ec(r),r=dr(e,n,t,a),r===null&&Fi(e,n,a,qa,t),r===i)break;i=r}i!==null&&a.stopPropagation()}else Fi(e,n,a,null,t)}}var qa=null;function dr(e,n,t,a){if(qa=null,e=Jr(a),e=Tn(e),e!==null)if(n=Dn(e),n===null)e=null;else if(t=n.tag,t===13){if(e=Cc(n),e!==null)return e;e=null}else if(t===3){if(n.stateNode.current.memoizedState.isDehydrated)return n.tag===3?n.stateNode.containerInfo:null;e=null}else n!==e&&(e=null);return qa=e,null}function Pc(e){switch(e){case"cancel":case"click":case"close":case"contextmenu":case"copy":case"cut":case"auxclick":case"dblclick":case"dragend":case"dragstart":case"drop":case"focusin":case"focusout":case"input":case"invalid":case"keydown":case"keypress":case"keyup":case"mousedown":case"mouseup":case"paste":case"pause":case"play":case"pointercancel":case"pointerdown":case"pointerup":case"ratechange":case"reset":case"resize":case"seeked":case"submit":case"touchcancel":case"touchend":case"touchstart":case"volumechange":case"change":case"selectionchange":case"textInput":case"compositionstart":case"compositionend":case"compositionupdate":case"beforeblur":case"afterblur":case"beforeinput":case"blur":case"fullscreenchange":case"focus":case"hashchange":case"popstate":case"select":case"selectstart":return 1;case"drag":case"dragenter":case"dragexit":case"dragleave":case"dragover":case"mousemove":case"mouseout":case"mouseover":case"pointermove":case"pointerout":case"pointerover":case"scroll":case"toggle":case"touchmove":case"wheel":case"mouseenter":case"mouseleave":case"pointerenter":case"pointerleave":return 4;case"message":switch(Ud()){case Qr:return 1;case xc:return 4;case Na:case Kd:return 16;case kc:return 536870912;default:return 16}default:return 16}}var nn=null,Zr=null,Ta=null;function qc(){if(Ta)return Ta;var e,n=Zr,t=n.length,a,i="value"in nn?nn.value:nn.textContent,r=i.length;for(e=0;e<t&&n[e]===i[e];e++);var s=t-e;for(a=1;a<=s&&n[t-a]===i[r-a];a++);return Ta=i.slice(e,1<a?1-a:void 0)}function Ca(e){var n=e.keyCode;return"charCode"in e?(e=e.charCode,e===0&&n===13&&(e=13)):e=n,e===10&&(e=13),32<=e||e===13?e:0}function ca(){return!0}function Qs(){return!1}function be(e){function n(t,a,i,r,s){this._reactName=t,this._targetInst=i,this.type=a,this.nativeEvent=r,this.target=s,this.currentTarget=null;for(var o in e)e.hasOwnProperty(o)&&(t=e[o],this[o]=t?t(r):r[o]);return this.isDefaultPrevented=(r.defaultPrevented!=null?r.defaultPrevented:r.returnValue===!1)?ca:Qs,this.isPropagationStopped=Qs,this}return j(n.prototype,{preventDefault:function(){this.defaultPrevented=!0;var t=this.nativeEvent;t&&(t.preventDefault?t.preventDefault():typeof t.returnValue!="unknown"&&(t.returnValue=!1),this.isDefaultPrevented=ca)},stopPropagation:function(){var t=this.nativeEvent;t&&(t.stopPropagation?t.stopPropagation():typeof t.cancelBubble!="unknown"&&(t.cancelBubble=!0),this.isPropagationStopped=ca)},persist:function(){},isPersistent:ca}),n}var st={eventPhase:0,bubbles:0,cancelable:0,timeStamp:function(e){return e.timeStamp||Date.now()},defaultPrevented:0,isTrusted:0},es=be(st),Yt=j({},st,{view:0,detail:0}),ru=be(Yt),Si,xi,mt,ti=j({},Yt,{screenX:0,screenY:0,clientX:0,clientY:0,pageX:0,pageY:0,ctrlKey:0,shiftKey:0,altKey:0,metaKey:0,getModifierState:ns,button:0,buttons:0,relatedTarget:function(e){return e.relatedTarget===void 0?e.fromElement===e.srcElement?e.toElement:e.fromElement:e.relatedTarget},movementX:function(e){return"movementX"in e?e.movementX:(e!==mt&&(mt&&e.type==="mousemove"?(Si=e.screenX-mt.screenX,xi=e.screenY-mt.screenY):xi=Si=0,mt=e),Si)},movementY:function(e){return"movementY"in e?e.movementY:xi}}),Ys=be(ti),su=j({},ti,{dataTransfer:0}),ou=be(su),cu=j({},Yt,{relatedTarget:0}),ki=be(cu),lu=j({},st,{animationName:0,elapsedTime:0,pseudoElement:0}),du=be(lu),uu=j({},st,{clipboardData:function(e){return"clipboardData"in e?e.clipboardData:window.clipboardData}}),hu=be(uu),pu=j({},st,{data:0}),$s=be(pu),mu={Esc:"Escape",Spacebar:" ",Left:"ArrowLeft",Up:"ArrowUp",Right:"ArrowRight",Down:"ArrowDown",Del:"Delete",Win:"OS",Menu:"ContextMenu",Apps:"ContextMenu",Scroll:"ScrollLock",MozPrintableKey:"Unidentified"},gu={8:"Backspace",9:"Tab",12:"Clear",13:"Enter",16:"Shift",17:"Control",18:"Alt",19:"Pause",20:"CapsLock",27:"Escape",32:" ",33:"PageUp",34:"PageDown",35:"End",36:"Home",37:"ArrowLeft",38:"ArrowUp",39:"ArrowRight",40:"ArrowDown",45:"Insert",46:"Delete",112:"F1",113:"F2",114:"F3",115:"F4",116:"F5",117:"F6",118:"F7",119:"F8",120:"F9",121:"F10",122:"F11",123:"F12",144:"NumLock",145:"ScrollLock",224:"Meta"},fu={Alt:"altKey",Control:"ctrlKey",Meta:"metaKey",Shift:"shiftKey"};function vu(e){var n=this.nativeEvent;return n.getModifierState?n.getModifierState(e):(e=fu[e])?!!n[e]:!1}function ns(){return vu}var yu=j({},Yt,{key:function(e){if(e.key){var n=mu[e.key]||e.key;if(n!=="Unidentified")return n}return e.type==="keypress"?(e=Ca(e),e===13?"Enter":String.fromCharCode(e)):e.type==="keydown"||e.type==="keyup"?gu[e.keyCode]||"Unidentified":""},code:0,location:0,ctrlKey:0,shiftKey:0,altKey:0,metaKey:0,repeat:0,locale:0,getModifierState:ns,charCode:function(e){return e.type==="keypress"?Ca(e):0},keyCode:function(e){return e.type==="keydown"||e.type==="keyup"?e.keyCode:0},which:function(e){return e.type==="keypress"?Ca(e):e.type==="keydown"||e.type==="keyup"?e.keyCode:0}}),bu=be(yu),wu=j({},ti,{pointerId:0,width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0}),Xs=be(wu),Tu=j({},Yt,{touches:0,targetTouches:0,changedTouches:0,altKey:0,metaKey:0,ctrlKey:0,shiftKey:0,getModifierState:ns}),Cu=be(Tu),Au=j({},st,{propertyName:0,elapsedTime:0,pseudoElement:0}),_u=be(Au),Su=j({},ti,{deltaX:function(e){return"deltaX"in e?e.deltaX:"wheelDeltaX"in e?-e.wheelDeltaX:0},deltaY:function(e){return"deltaY"in e?e.deltaY:"wheelDeltaY"in e?-e.wheelDeltaY:"wheelDelta"in e?-e.wheelDelta:0},deltaZ:0,deltaMode:0}),xu=be(Su),ku=[9,13,27,32],ts=Ge&&"CompositionEvent"in window,_t=null;Ge&&"documentMode"in document&&(_t=document.documentMode);var Iu=Ge&&"TextEvent"in window&&!_t,Vc=Ge&&(!ts||_t&&8<_t&&11>=_t),Zs=" ",eo=!1;function Oc(e,n){switch(e){case"keyup":return ku.indexOf(n.keyCode)!==-1;case"keydown":return n.keyCode!==229;case"keypress":case"mousedown":case"focusout":return!0;default:return!1}}function Lc(e){return e=e.detail,typeof e=="object"&&"data"in e?e.data:null}var qn=!1;function Mu(e,n){switch(e){case"compositionend":return Lc(n);case"keypress":return n.which!==32?null:(eo=!0,Zs);case"textInput":return e=n.data,e===Zs&&eo?null:e;default:return null}}function Eu(e,n){if(qn)return e==="compositionend"||!ts&&Oc(e,n)?(e=qc(),Ta=Zr=nn=null,qn=!1,e):null;switch(e){case"paste":return null;case"keypress":if(!(n.ctrlKey||n.altKey||n.metaKey)||n.ctrlKey&&n.altKey){if(n.char&&1<n.char.length)return n.char;if(n.which)return String.fromCharCode(n.which)}return null;case"compositionend":return Vc&&n.locale!=="ko"?null:n.data;default:return null}}var Ru={color:!0,date:!0,datetime:!0,"datetime-local":!0,email:!0,month:!0,number:!0,password:!0,range:!0,search:!0,tel:!0,text:!0,time:!0,url:!0,week:!0};function no(e){var n=e&&e.nodeName&&e.nodeName.toLowerCase();return n==="input"?!!Ru[e.type]:n==="textarea"}function zc(e,n,t,a){vc(a),n=Va(n,"onChange"),0<n.length&&(t=new es("onChange","change",null,t,a),e.push({event:t,listeners:n}))}var St=null,Vt=null;function Du(e){$c(e,0)}function ai(e){var n=Ln(e);if(dc(n))return e}function Nu(e,n){if(e==="change")return n}var Bc=!1;if(Ge){var Ii;if(Ge){var Mi="oninput"in document;if(!Mi){var to=document.createElement("div");to.setAttribute("oninput","return;"),Mi=typeof to.oninput=="function"}Ii=Mi}else Ii=!1;Bc=Ii&&(!document.documentMode||9<document.documentMode)}function ao(){St&&(St.detachEvent("onpropertychange",jc),Vt=St=null)}function jc(e){if(e.propertyName==="value"&&ai(Vt)){var n=[];zc(n,Vt,e,Jr(e)),Tc(Du,n)}}function Fu(e,n,t){e==="focusin"?(ao(),St=n,Vt=t,St.attachEvent("onpropertychange",jc)):e==="focusout"&&ao()}function Pu(e){if(e==="selectionchange"||e==="keyup"||e==="keydown")return ai(Vt)}function qu(e,n){if(e==="click")return ai(n)}function Vu(e,n){if(e==="input"||e==="change")return ai(n)}function Ou(e,n){return e===n&&(e!==0||1/e===1/n)||e!==e&&n!==n}var Ne=typeof Object.is=="function"?Object.is:Ou;function Ot(e,n){if(Ne(e,n))return!0;if(typeof e!="object"||e===null||typeof n!="object"||n===null)return!1;var t=Object.keys(e),a=Object.keys(n);if(t.length!==a.length)return!1;for(a=0;a<t.length;a++){var i=t[a];if(!Ki.call(n,i)||!Ne(e[i],n[i]))return!1}return!0}function io(e){for(;e&&e.firstChild;)e=e.firstChild;return e}function ro(e,n){var t=io(e);e=0;for(var a;t;){if(t.nodeType===3){if(a=e+t.textContent.length,e<=n&&a>=n)return{node:t,offset:n-e};e=a}e:{for(;t;){if(t.nextSibling){t=t.nextSibling;break e}t=t.parentNode}t=void 0}t=io(t)}}function Wc(e,n){return e&&n?e===n?!0:e&&e.nodeType===3?!1:n&&n.nodeType===3?Wc(e,n.parentNode):"contains"in e?e.contains(n):e.compareDocumentPosition?!!(e.compareDocumentPosition(n)&16):!1:!1}function Gc(){for(var e=window,n=Ea();n instanceof e.HTMLIFrameElement;){try{var t=typeof n.contentWindow.location.href=="string"}catch{t=!1}if(t)e=n.contentWindow;else break;n=Ea(e.document)}return n}function as(e){var n=e&&e.nodeName&&e.nodeName.toLowerCase();return n&&(n==="input"&&(e.type==="text"||e.type==="search"||e.type==="tel"||e.type==="url"||e.type==="password")||n==="textarea"||e.contentEditable==="true")}function Lu(e){var n=Gc(),t=e.focusedElem,a=e.selectionRange;if(n!==t&&t&&t.ownerDocument&&Wc(t.ownerDocument.documentElement,t)){if(a!==null&&as(t)){if(n=a.start,e=a.end,e===void 0&&(e=n),"selectionStart"in t)t.selectionStart=n,t.selectionEnd=Math.min(e,t.value.length);else if(e=(n=t.ownerDocument||document)&&n.defaultView||window,e.getSelection){e=e.getSelection();var i=t.textContent.length,r=Math.min(a.start,i);a=a.end===void 0?r:Math.min(a.end,i),!e.extend&&r>a&&(i=a,a=r,r=i),i=ro(t,r);var s=ro(t,a);i&&s&&(e.rangeCount!==1||e.anchorNode!==i.node||e.anchorOffset!==i.offset||e.focusNode!==s.node||e.focusOffset!==s.offset)&&(n=n.createRange(),n.setStart(i.node,i.offset),e.removeAllRanges(),r>a?(e.addRange(n),e.extend(s.node,s.offset)):(n.setEnd(s.node,s.offset),e.addRange(n)))}}for(n=[],e=t;e=e.parentNode;)e.nodeType===1&&n.push({element:e,left:e.scrollLeft,top:e.scrollTop});for(typeof t.focus=="function"&&t.focus(),t=0;t<n.length;t++)e=n[t],e.element.scrollLeft=e.left,e.element.scrollTop=e.top}}var zu=Ge&&"documentMode"in document&&11>=document.documentMode,Vn=null,ur=null,xt=null,hr=!1;function so(e,n,t){var a=t.window===t?t.document:t.nodeType===9?t:t.ownerDocument;hr||Vn==null||Vn!==Ea(a)||(a=Vn,"selectionStart"in a&&as(a)?a={start:a.selectionStart,end:a.selectionEnd}:(a=(a.ownerDocument&&a.ownerDocument.defaultView||window).getSelection(),a={anchorNode:a.anchorNode,anchorOffset:a.anchorOffset,focusNode:a.focusNode,focusOffset:a.focusOffset}),xt&&Ot(xt,a)||(xt=a,a=Va(ur,"onSelect"),0<a.length&&(n=new es("onSelect","select",null,n,t),e.push({event:n,listeners:a}),n.target=Vn)))}function la(e,n){var t={};return t[e.toLowerCase()]=n.toLowerCase(),t["Webkit"+e]="webkit"+n,t["Moz"+e]="moz"+n,t}var On={animationend:la("Animation","AnimationEnd"),animationiteration:la("Animation","AnimationIteration"),animationstart:la("Animation","AnimationStart"),transitionend:la("Transition","TransitionEnd")},Ei={},Uc={};Ge&&(Uc=document.createElement("div").style,"AnimationEvent"in window||(delete On.animationend.animation,delete On.animationiteration.animation,delete On.animationstart.animation),"TransitionEvent"in window||delete On.transitionend.transition);function ii(e){if(Ei[e])return Ei[e];if(!On[e])return e;var n=On[e],t;for(t in n)if(n.hasOwnProperty(t)&&t in Uc)return Ei[e]=n[t];return e}var Kc=ii("animationend"),Hc=ii("animationiteration"),Jc=ii("animationstart"),Qc=ii("transitionend"),Yc=new Map,oo="abort auxClick cancel canPlay canPlayThrough click close contextMenu copy cut drag dragEnd dragEnter dragExit dragLeave dragOver dragStart drop durationChange emptied encrypted ended error gotPointerCapture input invalid keyDown keyPress keyUp load loadedData loadedMetadata loadStart lostPointerCapture mouseDown mouseMove mouseOut mouseOver mouseUp paste pause play playing pointerCancel pointerDown pointerMove pointerOut pointerOver pointerUp progress rateChange reset resize seeked seeking stalled submit suspend timeUpdate touchCancel touchEnd touchStart volumeChange scroll toggle touchMove waiting wheel".split(" ");function mn(e,n){Yc.set(e,n),Rn(n,[e])}for(var Ri=0;Ri<oo.length;Ri++){var Di=oo[Ri],Bu=Di.toLowerCase(),ju=Di[0].toUpperCase()+Di.slice(1);mn(Bu,"on"+ju)}mn(Kc,"onAnimationEnd");mn(Hc,"onAnimationIteration");mn(Jc,"onAnimationStart");mn("dblclick","onDoubleClick");mn("focusin","onFocus");mn("focusout","onBlur");mn(Qc,"onTransitionEnd");Xn("onMouseEnter",["mouseout","mouseover"]);Xn("onMouseLeave",["mouseout","mouseover"]);Xn("onPointerEnter",["pointerout","pointerover"]);Xn("onPointerLeave",["pointerout","pointerover"]);Rn("onChange","change click focusin focusout input keydown keyup selectionchange".split(" "));Rn("onSelect","focusout contextmenu dragend focusin keydown keyup mousedown mouseup selectionchange".split(" "));Rn("onBeforeInput",["compositionend","keypress","textInput","paste"]);Rn("onCompositionEnd","compositionend focusout keydown keypress keyup mousedown".split(" "));Rn("onCompositionStart","compositionstart focusout keydown keypress keyup mousedown".split(" "));Rn("onCompositionUpdate","compositionupdate focusout keydown keypress keyup mousedown".split(" "));var Tt="abort canplay canplaythrough durationchange emptied encrypted ended error loadeddata loadedmetadata loadstart pause play playing progress ratechange resize seeked seeking stalled suspend timeupdate volumechange waiting".split(" "),Wu=new Set("cancel close invalid load scroll toggle".split(" ").concat(Tt));function co(e,n,t){var a=e.type||"unknown-event";e.currentTarget=t,Bd(a,n,void 0,e),e.currentTarget=null}function $c(e,n){n=(n&4)!==0;for(var t=0;t<e.length;t++){var a=e[t],i=a.event;a=a.listeners;e:{var r=void 0;if(n)for(var s=a.length-1;0<=s;s--){var o=a[s],c=o.instance,d=o.currentTarget;if(o=o.listener,c!==r&&i.isPropagationStopped())break e;co(i,o,d),r=c}else for(s=0;s<a.length;s++){if(o=a[s],c=o.instance,d=o.currentTarget,o=o.listener,c!==r&&i.isPropagationStopped())break e;co(i,o,d),r=c}}}if(Da)throw e=or,Da=!1,or=null,e}function q(e,n){var t=n[vr];t===void 0&&(t=n[vr]=new Set);var a=e+"__bubble";t.has(a)||(Xc(n,e,2,!1),t.add(a))}function Ni(e,n,t){var a=0;n&&(a|=4),Xc(t,e,a,n)}var da="_reactListening"+Math.random().toString(36).slice(2);function Lt(e){if(!e[da]){e[da]=!0,rc.forEach(function(t){t!=="selectionchange"&&(Wu.has(t)||Ni(t,!1,e),Ni(t,!0,e))});var n=e.nodeType===9?e:e.ownerDocument;n===null||n[da]||(n[da]=!0,Ni("selectionchange",!1,n))}}function Xc(e,n,t,a){switch(Pc(n)){case 1:var i=au;break;case 4:i=iu;break;default:i=Xr}t=i.bind(null,n,t,e),i=void 0,!sr||n!=="touchstart"&&n!=="touchmove"&&n!=="wheel"||(i=!0),a?i!==void 0?e.addEventListener(n,t,{capture:!0,passive:i}):e.addEventListener(n,t,!0):i!==void 0?e.addEventListener(n,t,{passive:i}):e.addEventListener(n,t,!1)}function Fi(e,n,t,a,i){var r=a;if(!(n&1)&&!(n&2)&&a!==null)e:for(;;){if(a===null)return;var s=a.tag;if(s===3||s===4){var o=a.stateNode.containerInfo;if(o===i||o.nodeType===8&&o.parentNode===i)break;if(s===4)for(s=a.return;s!==null;){var c=s.tag;if((c===3||c===4)&&(c=s.stateNode.containerInfo,c===i||c.nodeType===8&&c.parentNode===i))return;s=s.return}for(;o!==null;){if(s=Tn(o),s===null)return;if(c=s.tag,c===5||c===6){a=r=s;continue e}o=o.parentNode}}a=a.return}Tc(function(){var d=r,g=Jr(t),m=[];e:{var p=Yc.get(e);if(p!==void 0){var f=es,b=e;switch(e){case"keypress":if(Ca(t)===0)break e;case"keydown":case"keyup":f=bu;break;case"focusin":b="focus",f=ki;break;case"focusout":b="blur",f=ki;break;case"beforeblur":case"afterblur":f=ki;break;case"click":if(t.button===2)break e;case"auxclick":case"dblclick":case"mousedown":case"mousemove":case"mouseup":case"mouseout":case"mouseover":case"contextmenu":f=Ys;break;case"drag":case"dragend":case"dragenter":case"dragexit":case"dragleave":case"dragover":case"dragstart":case"drop":f=ou;break;case"touchcancel":case"touchend":case"touchmove":case"touchstart":f=Cu;break;case Kc:case Hc:case Jc:f=du;break;case Qc:f=_u;break;case"scroll":f=ru;break;case"wheel":f=xu;break;case"copy":case"cut":case"paste":f=hu;break;case"gotpointercapture":case"lostpointercapture":case"pointercancel":case"pointerdown":case"pointermove":case"pointerout":case"pointerover":case"pointerup":f=Xs}var w=(n&4)!==0,D=!w&&e==="scroll",u=w?p!==null?p+"Capture":null:p;w=[];for(var l=d,h;l!==null;){h=l;var v=h.stateNode;if(h.tag===5&&v!==null&&(h=v,u!==null&&(v=Nt(l,u),v!=null&&w.push(zt(l,v,h)))),D)break;l=l.return}0<w.length&&(p=new f(p,b,null,t,g),m.push({event:p,listeners:w}))}}if(!(n&7)){e:{if(p=e==="mouseover"||e==="pointerover",f=e==="mouseout"||e==="pointerout",p&&t!==ir&&(b=t.relatedTarget||t.fromElement)&&(Tn(b)||b[Ue]))break e;if((f||p)&&(p=g.window===g?g:(p=g.ownerDocument)?p.defaultView||p.parentWindow:window,f?(b=t.relatedTarget||t.toElement,f=d,b=b?Tn(b):null,b!==null&&(D=Dn(b),b!==D||b.tag!==5&&b.tag!==6)&&(b=null)):(f=null,b=d),f!==b)){if(w=Ys,v="onMouseLeave",u="onMouseEnter",l="mouse",(e==="pointerout"||e==="pointerover")&&(w=Xs,v="onPointerLeave",u="onPointerEnter",l="pointer"),D=f==null?p:Ln(f),h=b==null?p:Ln(b),p=new w(v,l+"leave",f,t,g),p.target=D,p.relatedTarget=h,v=null,Tn(g)===d&&(w=new w(u,l+"enter",b,t,g),w.target=h,w.relatedTarget=D,v=w),D=v,f&&b)n:{for(w=f,u=b,l=0,h=w;h;h=Nn(h))l++;for(h=0,v=u;v;v=Nn(v))h++;for(;0<l-h;)w=Nn(w),l--;for(;0<h-l;)u=Nn(u),h--;for(;l--;){if(w===u||u!==null&&w===u.alternate)break n;w=Nn(w),u=Nn(u)}w=null}else w=null;f!==null&&lo(m,p,f,w,!1),b!==null&&D!==null&&lo(m,D,b,w,!0)}}e:{if(p=d?Ln(d):window,f=p.nodeName&&p.nodeName.toLowerCase(),f==="select"||f==="input"&&p.type==="file")var C=Nu;else if(no(p))if(Bc)C=Vu;else{C=Pu;var S=Fu}else(f=p.nodeName)&&f.toLowerCase()==="input"&&(p.type==="checkbox"||p.type==="radio")&&(C=qu);if(C&&(C=C(e,d))){zc(m,C,t,g);break e}S&&S(e,p,d),e==="focusout"&&(S=p._wrapperState)&&S.controlled&&p.type==="number"&&Zi(p,"number",p.value)}switch(S=d?Ln(d):window,e){case"focusin":(no(S)||S.contentEditable==="true")&&(Vn=S,ur=d,xt=null);break;case"focusout":xt=ur=Vn=null;break;case"mousedown":hr=!0;break;case"contextmenu":case"mouseup":case"dragend":hr=!1,so(m,t,g);break;case"selectionchange":if(zu)break;case"keydown":case"keyup":so(m,t,g)}var _;if(ts)e:{switch(e){case"compositionstart":var x="onCompositionStart";break e;case"compositionend":x="onCompositionEnd";break e;case"compositionupdate":x="onCompositionUpdate";break e}x=void 0}else qn?Oc(e,t)&&(x="onCompositionEnd"):e==="keydown"&&t.keyCode===229&&(x="onCompositionStart");x&&(Vc&&t.locale!=="ko"&&(qn||x!=="onCompositionStart"?x==="onCompositionEnd"&&qn&&(_=qc()):(nn=g,Zr="value"in nn?nn.value:nn.textContent,qn=!0)),S=Va(d,x),0<S.length&&(x=new $s(x,e,null,t,g),m.push({event:x,listeners:S}),_?x.data=_:(_=Lc(t),_!==null&&(x.data=_)))),(_=Iu?Mu(e,t):Eu(e,t))&&(d=Va(d,"onBeforeInput"),0<d.length&&(g=new $s("onBeforeInput","beforeinput",null,t,g),m.push({event:g,listeners:d}),g.data=_))}$c(m,n)})}function zt(e,n,t){return{instance:e,listener:n,currentTarget:t}}function Va(e,n){for(var t=n+"Capture",a=[];e!==null;){var i=e,r=i.stateNode;i.tag===5&&r!==null&&(i=r,r=Nt(e,t),r!=null&&a.unshift(zt(e,r,i)),r=Nt(e,n),r!=null&&a.push(zt(e,r,i))),e=e.return}return a}function Nn(e){if(e===null)return null;do e=e.return;while(e&&e.tag!==5);return e||null}function lo(e,n,t,a,i){for(var r=n._reactName,s=[];t!==null&&t!==a;){var o=t,c=o.alternate,d=o.stateNode;if(c!==null&&c===a)break;o.tag===5&&d!==null&&(o=d,i?(c=Nt(t,r),c!=null&&s.unshift(zt(t,c,o))):i||(c=Nt(t,r),c!=null&&s.push(zt(t,c,o)))),t=t.return}s.length!==0&&e.push({event:n,listeners:s})}var Gu=/\r\n?/g,Uu=/\u0000|\uFFFD/g;function uo(e){return(typeof e=="string"?e:""+e).replace(Gu,`
+`).replace(Uu,"")}function ua(e,n,t){if(n=uo(n),uo(e)!==n&&t)throw Error(y(425))}function Oa(){}var pr=null,mr=null;function gr(e,n){return e==="textarea"||e==="noscript"||typeof n.children=="string"||typeof n.children=="number"||typeof n.dangerouslySetInnerHTML=="object"&&n.dangerouslySetInnerHTML!==null&&n.dangerouslySetInnerHTML.__html!=null}var fr=typeof setTimeout=="function"?setTimeout:void 0,Ku=typeof clearTimeout=="function"?clearTimeout:void 0,ho=typeof Promise=="function"?Promise:void 0,Hu=typeof queueMicrotask=="function"?queueMicrotask:typeof ho<"u"?function(e){return ho.resolve(null).then(e).catch(Ju)}:fr;function Ju(e){setTimeout(function(){throw e})}function Pi(e,n){var t=n,a=0;do{var i=t.nextSibling;if(e.removeChild(t),i&&i.nodeType===8)if(t=i.data,t==="/$"){if(a===0){e.removeChild(i),qt(n);return}a--}else t!=="$"&&t!=="$?"&&t!=="$!"||a++;t=i}while(t);qt(n)}function on(e){for(;e!=null;e=e.nextSibling){var n=e.nodeType;if(n===1||n===3)break;if(n===8){if(n=e.data,n==="$"||n==="$!"||n==="$?")break;if(n==="/$")return null}}return e}function po(e){e=e.previousSibling;for(var n=0;e;){if(e.nodeType===8){var t=e.data;if(t==="$"||t==="$!"||t==="$?"){if(n===0)return e;n--}else t==="/$"&&n++}e=e.previousSibling}return null}var ot=Math.random().toString(36).slice(2),qe="__reactFiber$"+ot,Bt="__reactProps$"+ot,Ue="__reactContainer$"+ot,vr="__reactEvents$"+ot,Qu="__reactListeners$"+ot,Yu="__reactHandles$"+ot;function Tn(e){var n=e[qe];if(n)return n;for(var t=e.parentNode;t;){if(n=t[Ue]||t[qe]){if(t=n.alternate,n.child!==null||t!==null&&t.child!==null)for(e=po(e);e!==null;){if(t=e[qe])return t;e=po(e)}return n}e=t,t=e.parentNode}return null}function $t(e){return e=e[qe]||e[Ue],!e||e.tag!==5&&e.tag!==6&&e.tag!==13&&e.tag!==3?null:e}function Ln(e){if(e.tag===5||e.tag===6)return e.stateNode;throw Error(y(33))}function ri(e){return e[Bt]||null}var yr=[],zn=-1;function gn(e){return{current:e}}function V(e){0>zn||(e.current=yr[zn],yr[zn]=null,zn--)}function P(e,n){zn++,yr[zn]=e.current,e.current=n}var pn={},ie=gn(pn),ue=gn(!1),xn=pn;function Zn(e,n){var t=e.type.contextTypes;if(!t)return pn;var a=e.stateNode;if(a&&a.__reactInternalMemoizedUnmaskedChildContext===n)return a.__reactInternalMemoizedMaskedChildContext;var i={},r;for(r in t)i[r]=n[r];return a&&(e=e.stateNode,e.__reactInternalMemoizedUnmaskedChildContext=n,e.__reactInternalMemoizedMaskedChildContext=i),i}function he(e){return e=e.childContextTypes,e!=null}function La(){V(ue),V(ie)}function mo(e,n,t){if(ie.current!==pn)throw Error(y(168));P(ie,n),P(ue,t)}function Zc(e,n,t){var a=e.stateNode;if(n=n.childContextTypes,typeof a.getChildContext!="function")return t;a=a.getChildContext();for(var i in a)if(!(i in n))throw Error(y(108,Fd(e)||"Unknown",i));return j({},t,a)}function za(e){return e=(e=e.stateNode)&&e.__reactInternalMemoizedMergedChildContext||pn,xn=ie.current,P(ie,e),P(ue,ue.current),!0}function go(e,n,t){var a=e.stateNode;if(!a)throw Error(y(169));t?(e=Zc(e,n,xn),a.__reactInternalMemoizedMergedChildContext=e,V(ue),V(ie),P(ie,e)):V(ue),P(ue,t)}var ze=null,si=!1,qi=!1;function el(e){ze===null?ze=[e]:ze.push(e)}function $u(e){si=!0,el(e)}function fn(){if(!qi&&ze!==null){qi=!0;var e=0,n=F;try{var t=ze;for(F=1;e<t.length;e++){var a=t[e];do a=a(!0);while(a!==null)}ze=null,si=!1}catch(i){throw ze!==null&&(ze=ze.slice(e+1)),Sc(Qr,fn),i}finally{F=n,qi=!1}}return null}var Bn=[],jn=0,Ba=null,ja=0,we=[],Te=0,kn=null,Be=1,je="";function bn(e,n){Bn[jn++]=ja,Bn[jn++]=Ba,Ba=e,ja=n}function nl(e,n,t){we[Te++]=Be,we[Te++]=je,we[Te++]=kn,kn=e;var a=Be;e=je;var i=32-Re(a)-1;a&=~(1<<i),t+=1;var r=32-Re(n)+i;if(30<r){var s=i-i%5;r=(a&(1<<s)-1).toString(32),a>>=s,i-=s,Be=1<<32-Re(n)+i|t<<i|a,je=r+e}else Be=1<<r|t<<i|a,je=e}function is(e){e.return!==null&&(bn(e,1),nl(e,1,0))}function rs(e){for(;e===Ba;)Ba=Bn[--jn],Bn[jn]=null,ja=Bn[--jn],Bn[jn]=null;for(;e===kn;)kn=we[--Te],we[Te]=null,je=we[--Te],we[Te]=null,Be=we[--Te],we[Te]=null}var fe=null,ge=null,O=!1,Ee=null;function tl(e,n){var t=Ce(5,null,null,0);t.elementType="DELETED",t.stateNode=n,t.return=e,n=e.deletions,n===null?(e.deletions=[t],e.flags|=16):n.push(t)}function fo(e,n){switch(e.tag){case 5:var t=e.type;return n=n.nodeType!==1||t.toLowerCase()!==n.nodeName.toLowerCase()?null:n,n!==null?(e.stateNode=n,fe=e,ge=on(n.firstChild),!0):!1;case 6:return n=e.pendingProps===""||n.nodeType!==3?null:n,n!==null?(e.stateNode=n,fe=e,ge=null,!0):!1;case 13:return n=n.nodeType!==8?null:n,n!==null?(t=kn!==null?{id:Be,overflow:je}:null,e.memoizedState={dehydrated:n,treeContext:t,retryLane:1073741824},t=Ce(18,null,null,0),t.stateNode=n,t.return=e,e.child=t,fe=e,ge=null,!0):!1;default:return!1}}function br(e){return(e.mode&1)!==0&&(e.flags&128)===0}function wr(e){if(O){var n=ge;if(n){var t=n;if(!fo(e,n)){if(br(e))throw Error(y(418));n=on(t.nextSibling);var a=fe;n&&fo(e,n)?tl(a,t):(e.flags=e.flags&-4097|2,O=!1,fe=e)}}else{if(br(e))throw Error(y(418));e.flags=e.flags&-4097|2,O=!1,fe=e}}}function vo(e){for(e=e.return;e!==null&&e.tag!==5&&e.tag!==3&&e.tag!==13;)e=e.return;fe=e}function ha(e){if(e!==fe)return!1;if(!O)return vo(e),O=!0,!1;var n;if((n=e.tag!==3)&&!(n=e.tag!==5)&&(n=e.type,n=n!=="head"&&n!=="body"&&!gr(e.type,e.memoizedProps)),n&&(n=ge)){if(br(e))throw al(),Error(y(418));for(;n;)tl(e,n),n=on(n.nextSibling)}if(vo(e),e.tag===13){if(e=e.memoizedState,e=e!==null?e.dehydrated:null,!e)throw Error(y(317));e:{for(e=e.nextSibling,n=0;e;){if(e.nodeType===8){var t=e.data;if(t==="/$"){if(n===0){ge=on(e.nextSibling);break e}n--}else t!=="$"&&t!=="$!"&&t!=="$?"||n++}e=e.nextSibling}ge=null}}else ge=fe?on(e.stateNode.nextSibling):null;return!0}function al(){for(var e=ge;e;)e=on(e.nextSibling)}function et(){ge=fe=null,O=!1}function ss(e){Ee===null?Ee=[e]:Ee.push(e)}var Xu=Je.ReactCurrentBatchConfig;function gt(e,n,t){if(e=t.ref,e!==null&&typeof e!="function"&&typeof e!="object"){if(t._owner){if(t=t._owner,t){if(t.tag!==1)throw Error(y(309));var a=t.stateNode}if(!a)throw Error(y(147,e));var i=a,r=""+e;return n!==null&&n.ref!==null&&typeof n.ref=="function"&&n.ref._stringRef===r?n.ref:(n=function(s){var o=i.refs;s===null?delete o[r]:o[r]=s},n._stringRef=r,n)}if(typeof e!="string")throw Error(y(284));if(!t._owner)throw Error(y(290,e))}return e}function pa(e,n){throw e=Object.prototype.toString.call(n),Error(y(31,e==="[object Object]"?"object with keys {"+Object.keys(n).join(", ")+"}":e))}function yo(e){var n=e._init;return n(e._payload)}function il(e){function n(u,l){if(e){var h=u.deletions;h===null?(u.deletions=[l],u.flags|=16):h.push(l)}}function t(u,l){if(!e)return null;for(;l!==null;)n(u,l),l=l.sibling;return null}function a(u,l){for(u=new Map;l!==null;)l.key!==null?u.set(l.key,l):u.set(l.index,l),l=l.sibling;return u}function i(u,l){return u=un(u,l),u.index=0,u.sibling=null,u}function r(u,l,h){return u.index=h,e?(h=u.alternate,h!==null?(h=h.index,h<l?(u.flags|=2,l):h):(u.flags|=2,l)):(u.flags|=1048576,l)}function s(u){return e&&u.alternate===null&&(u.flags|=2),u}function o(u,l,h,v){return l===null||l.tag!==6?(l=Wi(h,u.mode,v),l.return=u,l):(l=i(l,h),l.return=u,l)}function c(u,l,h,v){var C=h.type;return C===Pn?g(u,l,h.props.children,v,h.key):l!==null&&(l.elementType===C||typeof C=="object"&&C!==null&&C.$$typeof===Ye&&yo(C)===l.type)?(v=i(l,h.props),v.ref=gt(u,l,h),v.return=u,v):(v=Ma(h.type,h.key,h.props,null,u.mode,v),v.ref=gt(u,l,h),v.return=u,v)}function d(u,l,h,v){return l===null||l.tag!==4||l.stateNode.containerInfo!==h.containerInfo||l.stateNode.implementation!==h.implementation?(l=Gi(h,u.mode,v),l.return=u,l):(l=i(l,h.children||[]),l.return=u,l)}function g(u,l,h,v,C){return l===null||l.tag!==7?(l=Sn(h,u.mode,v,C),l.return=u,l):(l=i(l,h),l.return=u,l)}function m(u,l,h){if(typeof l=="string"&&l!==""||typeof l=="number")return l=Wi(""+l,u.mode,h),l.return=u,l;if(typeof l=="object"&&l!==null){switch(l.$$typeof){case ta:return h=Ma(l.type,l.key,l.props,null,u.mode,h),h.ref=gt(u,null,l),h.return=u,h;case Fn:return l=Gi(l,u.mode,h),l.return=u,l;case Ye:var v=l._init;return m(u,v(l._payload),h)}if(bt(l)||dt(l))return l=Sn(l,u.mode,h,null),l.return=u,l;pa(u,l)}return null}function p(u,l,h,v){var C=l!==null?l.key:null;if(typeof h=="string"&&h!==""||typeof h=="number")return C!==null?null:o(u,l,""+h,v);if(typeof h=="object"&&h!==null){switch(h.$$typeof){case ta:return h.key===C?c(u,l,h,v):null;case Fn:return h.key===C?d(u,l,h,v):null;case Ye:return C=h._init,p(u,l,C(h._payload),v)}if(bt(h)||dt(h))return C!==null?null:g(u,l,h,v,null);pa(u,h)}return null}function f(u,l,h,v,C){if(typeof v=="string"&&v!==""||typeof v=="number")return u=u.get(h)||null,o(l,u,""+v,C);if(typeof v=="object"&&v!==null){switch(v.$$typeof){case ta:return u=u.get(v.key===null?h:v.key)||null,c(l,u,v,C);case Fn:return u=u.get(v.key===null?h:v.key)||null,d(l,u,v,C);case Ye:var S=v._init;return f(u,l,h,S(v._payload),C)}if(bt(v)||dt(v))return u=u.get(h)||null,g(l,u,v,C,null);pa(l,v)}return null}function b(u,l,h,v){for(var C=null,S=null,_=l,x=l=0,L=null;_!==null&&x<h.length;x++){_.index>x?(L=_,_=null):L=_.sibling;var R=p(u,_,h[x],v);if(R===null){_===null&&(_=L);break}e&&_&&R.alternate===null&&n(u,_),l=r(R,l,x),S===null?C=R:S.sibling=R,S=R,_=L}if(x===h.length)return t(u,_),O&&bn(u,x),C;if(_===null){for(;x<h.length;x++)_=m(u,h[x],v),_!==null&&(l=r(_,l,x),S===null?C=_:S.sibling=_,S=_);return O&&bn(u,x),C}for(_=a(u,_);x<h.length;x++)L=f(_,u,x,h[x],v),L!==null&&(e&&L.alternate!==null&&_.delete(L.key===null?x:L.key),l=r(L,l,x),S===null?C=L:S.sibling=L,S=L);return e&&_.forEach(function(xe){return n(u,xe)}),O&&bn(u,x),C}function w(u,l,h,v){var C=dt(h);if(typeof C!="function")throw Error(y(150));if(h=C.call(h),h==null)throw Error(y(151));for(var S=C=null,_=l,x=l=0,L=null,R=h.next();_!==null&&!R.done;x++,R=h.next()){_.index>x?(L=_,_=null):L=_.sibling;var xe=p(u,_,R.value,v);if(xe===null){_===null&&(_=L);break}e&&_&&xe.alternate===null&&n(u,_),l=r(xe,l,x),S===null?C=xe:S.sibling=xe,S=xe,_=L}if(R.done)return t(u,_),O&&bn(u,x),C;if(_===null){for(;!R.done;x++,R=h.next())R=m(u,R.value,v),R!==null&&(l=r(R,l,x),S===null?C=R:S.sibling=R,S=R);return O&&bn(u,x),C}for(_=a(u,_);!R.done;x++,R=h.next())R=f(_,u,x,R.value,v),R!==null&&(e&&R.alternate!==null&&_.delete(R.key===null?x:R.key),l=r(R,l,x),S===null?C=R:S.sibling=R,S=R);return e&&_.forEach(function(ct){return n(u,ct)}),O&&bn(u,x),C}function D(u,l,h,v){if(typeof h=="object"&&h!==null&&h.type===Pn&&h.key===null&&(h=h.props.children),typeof h=="object"&&h!==null){switch(h.$$typeof){case ta:e:{for(var C=h.key,S=l;S!==null;){if(S.key===C){if(C=h.type,C===Pn){if(S.tag===7){t(u,S.sibling),l=i(S,h.props.children),l.return=u,u=l;break e}}else if(S.elementType===C||typeof C=="object"&&C!==null&&C.$$typeof===Ye&&yo(C)===S.type){t(u,S.sibling),l=i(S,h.props),l.ref=gt(u,S,h),l.return=u,u=l;break e}t(u,S);break}else n(u,S);S=S.sibling}h.type===Pn?(l=Sn(h.props.children,u.mode,v,h.key),l.return=u,u=l):(v=Ma(h.type,h.key,h.props,null,u.mode,v),v.ref=gt(u,l,h),v.return=u,u=v)}return s(u);case Fn:e:{for(S=h.key;l!==null;){if(l.key===S)if(l.tag===4&&l.stateNode.containerInfo===h.containerInfo&&l.stateNode.implementation===h.implementation){t(u,l.sibling),l=i(l,h.children||[]),l.return=u,u=l;break e}else{t(u,l);break}else n(u,l);l=l.sibling}l=Gi(h,u.mode,v),l.return=u,u=l}return s(u);case Ye:return S=h._init,D(u,l,S(h._payload),v)}if(bt(h))return b(u,l,h,v);if(dt(h))return w(u,l,h,v);pa(u,h)}return typeof h=="string"&&h!==""||typeof h=="number"?(h=""+h,l!==null&&l.tag===6?(t(u,l.sibling),l=i(l,h),l.return=u,u=l):(t(u,l),l=Wi(h,u.mode,v),l.return=u,u=l),s(u)):t(u,l)}return D}var nt=il(!0),rl=il(!1),Wa=gn(null),Ga=null,Wn=null,os=null;function cs(){os=Wn=Ga=null}function ls(e){var n=Wa.current;V(Wa),e._currentValue=n}function Tr(e,n,t){for(;e!==null;){var a=e.alternate;if((e.childLanes&n)!==n?(e.childLanes|=n,a!==null&&(a.childLanes|=n)):a!==null&&(a.childLanes&n)!==n&&(a.childLanes|=n),e===t)break;e=e.return}}function Yn(e,n){Ga=e,os=Wn=null,e=e.dependencies,e!==null&&e.firstContext!==null&&(e.lanes&n&&(de=!0),e.firstContext=null)}function _e(e){var n=e._currentValue;if(os!==e)if(e={context:e,memoizedValue:n,next:null},Wn===null){if(Ga===null)throw Error(y(308));Wn=e,Ga.dependencies={lanes:0,firstContext:e}}else Wn=Wn.next=e;return n}var Cn=null;function ds(e){Cn===null?Cn=[e]:Cn.push(e)}function sl(e,n,t,a){var i=n.interleaved;return i===null?(t.next=t,ds(n)):(t.next=i.next,i.next=t),n.interleaved=t,Ke(e,a)}function Ke(e,n){e.lanes|=n;var t=e.alternate;for(t!==null&&(t.lanes|=n),t=e,e=e.return;e!==null;)e.childLanes|=n,t=e.alternate,t!==null&&(t.childLanes|=n),t=e,e=e.return;return t.tag===3?t.stateNode:null}var $e=!1;function us(e){e.updateQueue={baseState:e.memoizedState,firstBaseUpdate:null,lastBaseUpdate:null,shared:{pending:null,interleaved:null,lanes:0},effects:null}}function ol(e,n){e=e.updateQueue,n.updateQueue===e&&(n.updateQueue={baseState:e.baseState,firstBaseUpdate:e.firstBaseUpdate,lastBaseUpdate:e.lastBaseUpdate,shared:e.shared,effects:e.effects})}function We(e,n){return{eventTime:e,lane:n,tag:0,payload:null,callback:null,next:null}}function cn(e,n,t){var a=e.updateQueue;if(a===null)return null;if(a=a.shared,N&2){var i=a.pending;return i===null?n.next=n:(n.next=i.next,i.next=n),a.pending=n,Ke(e,t)}return i=a.interleaved,i===null?(n.next=n,ds(a)):(n.next=i.next,i.next=n),a.interleaved=n,Ke(e,t)}function Aa(e,n,t){if(n=n.updateQueue,n!==null&&(n=n.shared,(t&4194240)!==0)){var a=n.lanes;a&=e.pendingLanes,t|=a,n.lanes=t,Yr(e,t)}}function bo(e,n){var t=e.updateQueue,a=e.alternate;if(a!==null&&(a=a.updateQueue,t===a)){var i=null,r=null;if(t=t.firstBaseUpdate,t!==null){do{var s={eventTime:t.eventTime,lane:t.lane,tag:t.tag,payload:t.payload,callback:t.callback,next:null};r===null?i=r=s:r=r.next=s,t=t.next}while(t!==null);r===null?i=r=n:r=r.next=n}else i=r=n;t={baseState:a.baseState,firstBaseUpdate:i,lastBaseUpdate:r,shared:a.shared,effects:a.effects},e.updateQueue=t;return}e=t.lastBaseUpdate,e===null?t.firstBaseUpdate=n:e.next=n,t.lastBaseUpdate=n}function Ua(e,n,t,a){var i=e.updateQueue;$e=!1;var r=i.firstBaseUpdate,s=i.lastBaseUpdate,o=i.shared.pending;if(o!==null){i.shared.pending=null;var c=o,d=c.next;c.next=null,s===null?r=d:s.next=d,s=c;var g=e.alternate;g!==null&&(g=g.updateQueue,o=g.lastBaseUpdate,o!==s&&(o===null?g.firstBaseUpdate=d:o.next=d,g.lastBaseUpdate=c))}if(r!==null){var m=i.baseState;s=0,g=d=c=null,o=r;do{var p=o.lane,f=o.eventTime;if((a&p)===p){g!==null&&(g=g.next={eventTime:f,lane:0,tag:o.tag,payload:o.payload,callback:o.callback,next:null});e:{var b=e,w=o;switch(p=n,f=t,w.tag){case 1:if(b=w.payload,typeof b=="function"){m=b.call(f,m,p);break e}m=b;break e;case 3:b.flags=b.flags&-65537|128;case 0:if(b=w.payload,p=typeof b=="function"?b.call(f,m,p):b,p==null)break e;m=j({},m,p);break e;case 2:$e=!0}}o.callback!==null&&o.lane!==0&&(e.flags|=64,p=i.effects,p===null?i.effects=[o]:p.push(o))}else f={eventTime:f,lane:p,tag:o.tag,payload:o.payload,callback:o.callback,next:null},g===null?(d=g=f,c=m):g=g.next=f,s|=p;if(o=o.next,o===null){if(o=i.shared.pending,o===null)break;p=o,o=p.next,p.next=null,i.lastBaseUpdate=p,i.shared.pending=null}}while(!0);if(g===null&&(c=m),i.baseState=c,i.firstBaseUpdate=d,i.lastBaseUpdate=g,n=i.shared.interleaved,n!==null){i=n;do s|=i.lane,i=i.next;while(i!==n)}else r===null&&(i.shared.lanes=0);Mn|=s,e.lanes=s,e.memoizedState=m}}function wo(e,n,t){if(e=n.effects,n.effects=null,e!==null)for(n=0;n<e.length;n++){var a=e[n],i=a.callback;if(i!==null){if(a.callback=null,a=t,typeof i!="function")throw Error(y(191,i));i.call(a)}}}var Xt={},Oe=gn(Xt),jt=gn(Xt),Wt=gn(Xt);function An(e){if(e===Xt)throw Error(y(174));return e}function hs(e,n){switch(P(Wt,n),P(jt,e),P(Oe,Xt),e=n.nodeType,e){case 9:case 11:n=(n=n.documentElement)?n.namespaceURI:nr(null,"");break;default:e=e===8?n.parentNode:n,n=e.namespaceURI||null,e=e.tagName,n=nr(n,e)}V(Oe),P(Oe,n)}function tt(){V(Oe),V(jt),V(Wt)}function cl(e){An(Wt.current);var n=An(Oe.current),t=nr(n,e.type);n!==t&&(P(jt,e),P(Oe,t))}function ps(e){jt.current===e&&(V(Oe),V(jt))}var z=gn(0);function Ka(e){for(var n=e;n!==null;){if(n.tag===13){var t=n.memoizedState;if(t!==null&&(t=t.dehydrated,t===null||t.data==="$?"||t.data==="$!"))return n}else if(n.tag===19&&n.memoizedProps.revealOrder!==void 0){if(n.flags&128)return n}else if(n.child!==null){n.child.return=n,n=n.child;continue}if(n===e)break;for(;n.sibling===null;){if(n.return===null||n.return===e)return null;n=n.return}n.sibling.return=n.return,n=n.sibling}return null}var Vi=[];function ms(){for(var e=0;e<Vi.length;e++)Vi[e]._workInProgressVersionPrimary=null;Vi.length=0}var _a=Je.ReactCurrentDispatcher,Oi=Je.ReactCurrentBatchConfig,In=0,B=null,H=null,Y=null,Ha=!1,kt=!1,Gt=0,Zu=0;function ne(){throw Error(y(321))}function gs(e,n){if(n===null)return!1;for(var t=0;t<n.length&&t<e.length;t++)if(!Ne(e[t],n[t]))return!1;return!0}function fs(e,n,t,a,i,r){if(In=r,B=n,n.memoizedState=null,n.updateQueue=null,n.lanes=0,_a.current=e===null||e.memoizedState===null?ah:ih,e=t(a,i),kt){r=0;do{if(kt=!1,Gt=0,25<=r)throw Error(y(301));r+=1,Y=H=null,n.updateQueue=null,_a.current=rh,e=t(a,i)}while(kt)}if(_a.current=Ja,n=H!==null&&H.next!==null,In=0,Y=H=B=null,Ha=!1,n)throw Error(y(300));return e}function vs(){var e=Gt!==0;return Gt=0,e}function Pe(){var e={memoizedState:null,baseState:null,baseQueue:null,queue:null,next:null};return Y===null?B.memoizedState=Y=e:Y=Y.next=e,Y}function Se(){if(H===null){var e=B.alternate;e=e!==null?e.memoizedState:null}else e=H.next;var n=Y===null?B.memoizedState:Y.next;if(n!==null)Y=n,H=e;else{if(e===null)throw Error(y(310));H=e,e={memoizedState:H.memoizedState,baseState:H.baseState,baseQueue:H.baseQueue,queue:H.queue,next:null},Y===null?B.memoizedState=Y=e:Y=Y.next=e}return Y}function Ut(e,n){return typeof n=="function"?n(e):n}function Li(e){var n=Se(),t=n.queue;if(t===null)throw Error(y(311));t.lastRenderedReducer=e;var a=H,i=a.baseQueue,r=t.pending;if(r!==null){if(i!==null){var s=i.next;i.next=r.next,r.next=s}a.baseQueue=i=r,t.pending=null}if(i!==null){r=i.next,a=a.baseState;var o=s=null,c=null,d=r;do{var g=d.lane;if((In&g)===g)c!==null&&(c=c.next={lane:0,action:d.action,hasEagerState:d.hasEagerState,eagerState:d.eagerState,next:null}),a=d.hasEagerState?d.eagerState:e(a,d.action);else{var m={lane:g,action:d.action,hasEagerState:d.hasEagerState,eagerState:d.eagerState,next:null};c===null?(o=c=m,s=a):c=c.next=m,B.lanes|=g,Mn|=g}d=d.next}while(d!==null&&d!==r);c===null?s=a:c.next=o,Ne(a,n.memoizedState)||(de=!0),n.memoizedState=a,n.baseState=s,n.baseQueue=c,t.lastRenderedState=a}if(e=t.interleaved,e!==null){i=e;do r=i.lane,B.lanes|=r,Mn|=r,i=i.next;while(i!==e)}else i===null&&(t.lanes=0);return[n.memoizedState,t.dispatch]}function zi(e){var n=Se(),t=n.queue;if(t===null)throw Error(y(311));t.lastRenderedReducer=e;var a=t.dispatch,i=t.pending,r=n.memoizedState;if(i!==null){t.pending=null;var s=i=i.next;do r=e(r,s.action),s=s.next;while(s!==i);Ne(r,n.memoizedState)||(de=!0),n.memoizedState=r,n.baseQueue===null&&(n.baseState=r),t.lastRenderedState=r}return[r,a]}function ll(){}function dl(e,n){var t=B,a=Se(),i=n(),r=!Ne(a.memoizedState,i);if(r&&(a.memoizedState=i,de=!0),a=a.queue,ys(pl.bind(null,t,a,e),[e]),a.getSnapshot!==n||r||Y!==null&&Y.memoizedState.tag&1){if(t.flags|=2048,Kt(9,hl.bind(null,t,a,i,n),void 0,null),$===null)throw Error(y(349));In&30||ul(t,n,i)}return i}function ul(e,n,t){e.flags|=16384,e={getSnapshot:n,value:t},n=B.updateQueue,n===null?(n={lastEffect:null,stores:null},B.updateQueue=n,n.stores=[e]):(t=n.stores,t===null?n.stores=[e]:t.push(e))}function hl(e,n,t,a){n.value=t,n.getSnapshot=a,ml(n)&&gl(e)}function pl(e,n,t){return t(function(){ml(n)&&gl(e)})}function ml(e){var n=e.getSnapshot;e=e.value;try{var t=n();return!Ne(e,t)}catch{return!0}}function gl(e){var n=Ke(e,1);n!==null&&De(n,e,1,-1)}function To(e){var n=Pe();return typeof e=="function"&&(e=e()),n.memoizedState=n.baseState=e,e={pending:null,interleaved:null,lanes:0,dispatch:null,lastRenderedReducer:Ut,lastRenderedState:e},n.queue=e,e=e.dispatch=th.bind(null,B,e),[n.memoizedState,e]}function Kt(e,n,t,a){return e={tag:e,create:n,destroy:t,deps:a,next:null},n=B.updateQueue,n===null?(n={lastEffect:null,stores:null},B.updateQueue=n,n.lastEffect=e.next=e):(t=n.lastEffect,t===null?n.lastEffect=e.next=e:(a=t.next,t.next=e,e.next=a,n.lastEffect=e)),e}function fl(){return Se().memoizedState}function Sa(e,n,t,a){var i=Pe();B.flags|=e,i.memoizedState=Kt(1|n,t,void 0,a===void 0?null:a)}function oi(e,n,t,a){var i=Se();a=a===void 0?null:a;var r=void 0;if(H!==null){var s=H.memoizedState;if(r=s.destroy,a!==null&&gs(a,s.deps)){i.memoizedState=Kt(n,t,r,a);return}}B.flags|=e,i.memoizedState=Kt(1|n,t,r,a)}function Co(e,n){return Sa(8390656,8,e,n)}function ys(e,n){return oi(2048,8,e,n)}function vl(e,n){return oi(4,2,e,n)}function yl(e,n){return oi(4,4,e,n)}function bl(e,n){if(typeof n=="function")return e=e(),n(e),function(){n(null)};if(n!=null)return e=e(),n.current=e,function(){n.current=null}}function wl(e,n,t){return t=t!=null?t.concat([e]):null,oi(4,4,bl.bind(null,n,e),t)}function bs(){}function Tl(e,n){var t=Se();n=n===void 0?null:n;var a=t.memoizedState;return a!==null&&n!==null&&gs(n,a[1])?a[0]:(t.memoizedState=[e,n],e)}function Cl(e,n){var t=Se();n=n===void 0?null:n;var a=t.memoizedState;return a!==null&&n!==null&&gs(n,a[1])?a[0]:(e=e(),t.memoizedState=[e,n],e)}function Al(e,n,t){return In&21?(Ne(t,n)||(t=Ic(),B.lanes|=t,Mn|=t,e.baseState=!0),n):(e.baseState&&(e.baseState=!1,de=!0),e.memoizedState=t)}function eh(e,n){var t=F;F=t!==0&&4>t?t:4,e(!0);var a=Oi.transition;Oi.transition={};try{e(!1),n()}finally{F=t,Oi.transition=a}}function _l(){return Se().memoizedState}function nh(e,n,t){var a=dn(e);if(t={lane:a,action:t,hasEagerState:!1,eagerState:null,next:null},Sl(e))xl(n,t);else if(t=sl(e,n,t,a),t!==null){var i=se();De(t,e,a,i),kl(t,n,a)}}function th(e,n,t){var a=dn(e),i={lane:a,action:t,hasEagerState:!1,eagerState:null,next:null};if(Sl(e))xl(n,i);else{var r=e.alternate;if(e.lanes===0&&(r===null||r.lanes===0)&&(r=n.lastRenderedReducer,r!==null))try{var s=n.lastRenderedState,o=r(s,t);if(i.hasEagerState=!0,i.eagerState=o,Ne(o,s)){var c=n.interleaved;c===null?(i.next=i,ds(n)):(i.next=c.next,c.next=i),n.interleaved=i;return}}catch{}finally{}t=sl(e,n,i,a),t!==null&&(i=se(),De(t,e,a,i),kl(t,n,a))}}function Sl(e){var n=e.alternate;return e===B||n!==null&&n===B}function xl(e,n){kt=Ha=!0;var t=e.pending;t===null?n.next=n:(n.next=t.next,t.next=n),e.pending=n}function kl(e,n,t){if(t&4194240){var a=n.lanes;a&=e.pendingLanes,t|=a,n.lanes=t,Yr(e,t)}}var Ja={readContext:_e,useCallback:ne,useContext:ne,useEffect:ne,useImperativeHandle:ne,useInsertionEffect:ne,useLayoutEffect:ne,useMemo:ne,useReducer:ne,useRef:ne,useState:ne,useDebugValue:ne,useDeferredValue:ne,useTransition:ne,useMutableSource:ne,useSyncExternalStore:ne,useId:ne,unstable_isNewReconciler:!1},ah={readContext:_e,useCallback:function(e,n){return Pe().memoizedState=[e,n===void 0?null:n],e},useContext:_e,useEffect:Co,useImperativeHandle:function(e,n,t){return t=t!=null?t.concat([e]):null,Sa(4194308,4,bl.bind(null,n,e),t)},useLayoutEffect:function(e,n){return Sa(4194308,4,e,n)},useInsertionEffect:function(e,n){return Sa(4,2,e,n)},useMemo:function(e,n){var t=Pe();return n=n===void 0?null:n,e=e(),t.memoizedState=[e,n],e},useReducer:function(e,n,t){var a=Pe();return n=t!==void 0?t(n):n,a.memoizedState=a.baseState=n,e={pending:null,interleaved:null,lanes:0,dispatch:null,lastRenderedReducer:e,lastRenderedState:n},a.queue=e,e=e.dispatch=nh.bind(null,B,e),[a.memoizedState,e]},useRef:function(e){var n=Pe();return e={current:e},n.memoizedState=e},useState:To,useDebugValue:bs,useDeferredValue:function(e){return Pe().memoizedState=e},useTransition:function(){var e=To(!1),n=e[0];return e=eh.bind(null,e[1]),Pe().memoizedState=e,[n,e]},useMutableSource:function(){},useSyncExternalStore:function(e,n,t){var a=B,i=Pe();if(O){if(t===void 0)throw Error(y(407));t=t()}else{if(t=n(),$===null)throw Error(y(349));In&30||ul(a,n,t)}i.memoizedState=t;var r={value:t,getSnapshot:n};return i.queue=r,Co(pl.bind(null,a,r,e),[e]),a.flags|=2048,Kt(9,hl.bind(null,a,r,t,n),void 0,null),t},useId:function(){var e=Pe(),n=$.identifierPrefix;if(O){var t=je,a=Be;t=(a&~(1<<32-Re(a)-1)).toString(32)+t,n=":"+n+"R"+t,t=Gt++,0<t&&(n+="H"+t.toString(32)),n+=":"}else t=Zu++,n=":"+n+"r"+t.toString(32)+":";return e.memoizedState=n},unstable_isNewReconciler:!1},ih={readContext:_e,useCallback:Tl,useContext:_e,useEffect:ys,useImperativeHandle:wl,useInsertionEffect:vl,useLayoutEffect:yl,useMemo:Cl,useReducer:Li,useRef:fl,useState:function(){return Li(Ut)},useDebugValue:bs,useDeferredValue:function(e){var n=Se();return Al(n,H.memoizedState,e)},useTransition:function(){var e=Li(Ut)[0],n=Se().memoizedState;return[e,n]},useMutableSource:ll,useSyncExternalStore:dl,useId:_l,unstable_isNewReconciler:!1},rh={readContext:_e,useCallback:Tl,useContext:_e,useEffect:ys,useImperativeHandle:wl,useInsertionEffect:vl,useLayoutEffect:yl,useMemo:Cl,useReducer:zi,useRef:fl,useState:function(){return zi(Ut)},useDebugValue:bs,useDeferredValue:function(e){var n=Se();return H===null?n.memoizedState=e:Al(n,H.memoizedState,e)},useTransition:function(){var e=zi(Ut)[0],n=Se().memoizedState;return[e,n]},useMutableSource:ll,useSyncExternalStore:dl,useId:_l,unstable_isNewReconciler:!1};function Ie(e,n){if(e&&e.defaultProps){n=j({},n),e=e.defaultProps;for(var t in e)n[t]===void 0&&(n[t]=e[t]);return n}return n}function Cr(e,n,t,a){n=e.memoizedState,t=t(a,n),t=t==null?n:j({},n,t),e.memoizedState=t,e.lanes===0&&(e.updateQueue.baseState=t)}var ci={isMounted:function(e){return(e=e._reactInternals)?Dn(e)===e:!1},enqueueSetState:function(e,n,t){e=e._reactInternals;var a=se(),i=dn(e),r=We(a,i);r.payload=n,t!=null&&(r.callback=t),n=cn(e,r,i),n!==null&&(De(n,e,i,a),Aa(n,e,i))},enqueueReplaceState:function(e,n,t){e=e._reactInternals;var a=se(),i=dn(e),r=We(a,i);r.tag=1,r.payload=n,t!=null&&(r.callback=t),n=cn(e,r,i),n!==null&&(De(n,e,i,a),Aa(n,e,i))},enqueueForceUpdate:function(e,n){e=e._reactInternals;var t=se(),a=dn(e),i=We(t,a);i.tag=2,n!=null&&(i.callback=n),n=cn(e,i,a),n!==null&&(De(n,e,a,t),Aa(n,e,a))}};function Ao(e,n,t,a,i,r,s){return e=e.stateNode,typeof e.shouldComponentUpdate=="function"?e.shouldComponentUpdate(a,r,s):n.prototype&&n.prototype.isPureReactComponent?!Ot(t,a)||!Ot(i,r):!0}function Il(e,n,t){var a=!1,i=pn,r=n.contextType;return typeof r=="object"&&r!==null?r=_e(r):(i=he(n)?xn:ie.current,a=n.contextTypes,r=(a=a!=null)?Zn(e,i):pn),n=new n(t,r),e.memoizedState=n.state!==null&&n.state!==void 0?n.state:null,n.updater=ci,e.stateNode=n,n._reactInternals=e,a&&(e=e.stateNode,e.__reactInternalMemoizedUnmaskedChildContext=i,e.__reactInternalMemoizedMaskedChildContext=r),n}function _o(e,n,t,a){e=n.state,typeof n.componentWillReceiveProps=="function"&&n.componentWillReceiveProps(t,a),typeof n.UNSAFE_componentWillReceiveProps=="function"&&n.UNSAFE_componentWillReceiveProps(t,a),n.state!==e&&ci.enqueueReplaceState(n,n.state,null)}function Ar(e,n,t,a){var i=e.stateNode;i.props=t,i.state=e.memoizedState,i.refs={},us(e);var r=n.contextType;typeof r=="object"&&r!==null?i.context=_e(r):(r=he(n)?xn:ie.current,i.context=Zn(e,r)),i.state=e.memoizedState,r=n.getDerivedStateFromProps,typeof r=="function"&&(Cr(e,n,r,t),i.state=e.memoizedState),typeof n.getDerivedStateFromProps=="function"||typeof i.getSnapshotBeforeUpdate=="function"||typeof i.UNSAFE_componentWillMount!="function"&&typeof i.componentWillMount!="function"||(n=i.state,typeof i.componentWillMount=="function"&&i.componentWillMount(),typeof i.UNSAFE_componentWillMount=="function"&&i.UNSAFE_componentWillMount(),n!==i.state&&ci.enqueueReplaceState(i,i.state,null),Ua(e,t,i,a),i.state=e.memoizedState),typeof i.componentDidMount=="function"&&(e.flags|=4194308)}function at(e,n){try{var t="",a=n;do t+=Nd(a),a=a.return;while(a);var i=t}catch(r){i=`
 Error generating stack: `+r.message+`
-`+r.stack}return{value:e,source:n,stack:i,digest:null}}function Bi(e,n,t){return{value:e,source:null,stack:t??null,digest:n??null}}function Ar(e,n){try{console.error(n.value)}catch(t){setTimeout(function(){throw t})}}var sh=typeof WeakMap=="function"?WeakMap:Map;function Ml(e,n,t){t=We(-1,t),t.tag=3,t.payload={element:null};var a=n.value;return t.callback=function(){Ya||(Ya=!0,Vr=a),Ar(e,n)},t}function El(e,n,t){t=We(-1,t),t.tag=3;var a=e.type.getDerivedStateFromError;if(typeof a=="function"){var i=n.value;t.payload=function(){return a(i)},t.callback=function(){Ar(e,n)}}var r=e.stateNode;return r!==null&&typeof r.componentDidCatch=="function"&&(t.callback=function(){Ar(e,n),typeof a!="function"&&(ln===null?ln=new Set([this]):ln.add(this));var s=n.stack;this.componentDidCatch(n.value,{componentStack:s!==null?s:""})}),t}function So(e,n,t){var a=e.pingCache;if(a===null){a=e.pingCache=new sh;var i=new Set;a.set(n,i)}else i=a.get(n),i===void 0&&(i=new Set,a.set(n,i));i.has(t)||(i.add(t),e=wh.bind(null,e,n,t),n.then(e,e))}function xo(e){do{var n;if((n=e.tag===13)&&(n=e.memoizedState,n=n!==null?n.dehydrated!==null:!0),n)return e;e=e.return}while(e!==null);return null}function ko(e,n,t,a,i){return e.mode&1?(e.flags|=65536,e.lanes=i,e):(e===n?e.flags|=65536:(e.flags|=128,t.flags|=131072,t.flags&=-52805,t.tag===1&&(t.alternate===null?t.tag=17:(n=We(-1,1),n.tag=2,cn(t,n,1))),t.lanes|=1),e)}var oh=Je.ReactCurrentOwner,de=!1;function re(e,n,t,a){n.child=e===null?rl(n,null,t,a):nt(n,e.child,t,a)}function Io(e,n,t,a,i){t=t.render;var r=n.ref;return Yn(n,i),a=fs(e,n,t,a,r,i),t=ys(),e!==null&&!de?(n.updateQueue=e.updateQueue,n.flags&=-2053,e.lanes&=~i,He(e,n,i)):(L&&t&&is(n),n.flags|=1,re(e,n,a,i),n.child)}function Mo(e,n,t,a,i){if(e===null){var r=t.type;return typeof r=="function"&&!ks(r)&&r.defaultProps===void 0&&t.compare===null&&t.defaultProps===void 0?(n.tag=15,n.type=r,Rl(e,n,r,a,i)):(e=Ma(t.type,null,a,n,n.mode,i),e.ref=n.ref,e.return=n,n.child=e)}if(r=e.child,!(e.lanes&i)){var s=r.memoizedProps;if(t=t.compare,t=t!==null?t:Lt,t(s,a)&&e.ref===n.ref)return He(e,n,i)}return n.flags|=1,e=un(r,a),e.ref=n.ref,e.return=n,n.child=e}function Rl(e,n,t,a,i){if(e!==null){var r=e.memoizedProps;if(Lt(r,a)&&e.ref===n.ref)if(de=!1,n.pendingProps=a=r,(e.lanes&i)!==0)e.flags&131072&&(de=!0);else return n.lanes=e.lanes,He(e,n,i)}return Sr(e,n,t,a,i)}function Nl(e,n,t){var a=n.pendingProps,i=a.children,r=e!==null?e.memoizedState:null;if(a.mode==="hidden")if(!(n.mode&1))n.memoizedState={baseLanes:0,cachePool:null,transitions:null},P(Gn,me),me|=t;else{if(!(t&1073741824))return e=r!==null?r.baseLanes|t:t,n.lanes=n.childLanes=1073741824,n.memoizedState={baseLanes:e,cachePool:null,transitions:null},n.updateQueue=null,P(Gn,me),me|=e,null;n.memoizedState={baseLanes:0,cachePool:null,transitions:null},a=r!==null?r.baseLanes:t,P(Gn,me),me|=a}else r!==null?(a=r.baseLanes|t,n.memoizedState=null):a=t,P(Gn,me),me|=a;return re(e,n,i,t),n.child}function Dl(e,n){var t=n.ref;(e===null&&t!==null||e!==null&&e.ref!==t)&&(n.flags|=512,n.flags|=2097152)}function Sr(e,n,t,a,i){var r=he(t)?xn:ie.current;return r=Zn(n,r),Yn(n,i),t=fs(e,n,t,a,r,i),a=ys(),e!==null&&!de?(n.updateQueue=e.updateQueue,n.flags&=-2053,e.lanes&=~i,He(e,n,i)):(L&&a&&is(n),n.flags|=1,re(e,n,t,i),n.child)}function Eo(e,n,t,a,i){if(he(t)){var r=!0;za(n)}else r=!1;if(Yn(n,i),n.stateNode===null)xa(e,n),Il(n,t,a),Cr(n,t,a,i),a=!0;else if(e===null){var s=n.stateNode,o=n.memoizedProps;s.props=o;var c=s.context,d=t.contextType;typeof d=="object"&&d!==null?d=Ae(d):(d=he(t)?xn:ie.current,d=Zn(n,d));var g=t.getDerivedStateFromProps,m=typeof g=="function"||typeof s.getSnapshotBeforeUpdate=="function";m||typeof s.UNSAFE_componentWillReceiveProps!="function"&&typeof s.componentWillReceiveProps!="function"||(o!==a||c!==d)&&Ao(n,s,a,d),$e=!1;var p=n.memoizedState;s.state=p,Ga(n,a,s,i),c=n.memoizedState,o!==a||p!==c||ue.current||$e?(typeof g=="function"&&(_r(n,t,g,a),c=n.memoizedState),(o=$e||Co(n,t,o,a,p,c,d))?(m||typeof s.UNSAFE_componentWillMount!="function"&&typeof s.componentWillMount!="function"||(typeof s.componentWillMount=="function"&&s.componentWillMount(),typeof s.UNSAFE_componentWillMount=="function"&&s.UNSAFE_componentWillMount()),typeof s.componentDidMount=="function"&&(n.flags|=4194308)):(typeof s.componentDidMount=="function"&&(n.flags|=4194308),n.memoizedProps=a,n.memoizedState=c),s.props=a,s.state=c,s.context=d,a=o):(typeof s.componentDidMount=="function"&&(n.flags|=4194308),a=!1)}else{s=n.stateNode,ol(e,n),o=n.memoizedProps,d=n.type===n.elementType?o:Ie(n.type,o),s.props=d,m=n.pendingProps,p=s.context,c=t.contextType,typeof c=="object"&&c!==null?c=Ae(c):(c=he(t)?xn:ie.current,c=Zn(n,c));var f=t.getDerivedStateFromProps;(g=typeof f=="function"||typeof s.getSnapshotBeforeUpdate=="function")||typeof s.UNSAFE_componentWillReceiveProps!="function"&&typeof s.componentWillReceiveProps!="function"||(o!==m||p!==c)&&Ao(n,s,a,c),$e=!1,p=n.memoizedState,s.state=p,Ga(n,a,s,i);var b=n.memoizedState;o!==m||p!==b||ue.current||$e?(typeof f=="function"&&(_r(n,t,f,a),b=n.memoizedState),(d=$e||Co(n,t,d,a,p,b,c)||!1)?(g||typeof s.UNSAFE_componentWillUpdate!="function"&&typeof s.componentWillUpdate!="function"||(typeof s.componentWillUpdate=="function"&&s.componentWillUpdate(a,b,c),typeof s.UNSAFE_componentWillUpdate=="function"&&s.UNSAFE_componentWillUpdate(a,b,c)),typeof s.componentDidUpdate=="function"&&(n.flags|=4),typeof s.getSnapshotBeforeUpdate=="function"&&(n.flags|=1024)):(typeof s.componentDidUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=4),typeof s.getSnapshotBeforeUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=1024),n.memoizedProps=a,n.memoizedState=b),s.props=a,s.state=b,s.context=c,a=d):(typeof s.componentDidUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=4),typeof s.getSnapshotBeforeUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=1024),a=!1)}return xr(e,n,t,a,r,i)}function xr(e,n,t,a,i,r){Dl(e,n);var s=(n.flags&128)!==0;if(!a&&!s)return i&&go(n,t,!1),He(e,n,r);a=n.stateNode,oh.current=n;var o=s&&typeof t.getDerivedStateFromError!="function"?null:a.render();return n.flags|=1,e!==null&&s?(n.child=nt(n,e.child,null,r),n.child=nt(n,null,o,r)):re(e,n,o,r),n.memoizedState=a.state,i&&go(n,t,!0),n.child}function Vl(e){var n=e.stateNode;n.pendingContext?mo(e,n.pendingContext,n.pendingContext!==n.context):n.context&&mo(e,n.context,!1),hs(e,n.containerInfo)}function Ro(e,n,t,a,i){return et(),ss(i),n.flags|=256,re(e,n,t,a),n.child}var kr={dehydrated:null,treeContext:null,retryLane:0};function Ir(e){return{baseLanes:e,cachePool:null,transitions:null}}function Pl(e,n,t){var a=n.pendingProps,i=z.current,r=!1,s=(n.flags&128)!==0,o;if((o=s)||(o=e!==null&&e.memoizedState===null?!1:(i&2)!==0),o?(r=!0,n.flags&=-129):(e===null||e.memoizedState!==null)&&(i|=1),P(z,i&1),e===null)return wr(n),e=n.memoizedState,e!==null&&(e=e.dehydrated,e!==null)?(n.mode&1?e.data==="$!"?n.lanes=8:n.lanes=1073741824:n.lanes=1,null):(s=a.children,e=a.fallback,r?(a=n.mode,r=n.child,s={mode:"hidden",children:s},!(a&1)&&r!==null?(r.childLanes=0,r.pendingProps=s):r=ui(s,a,0,null),e=Sn(e,a,t,null),r.return=n,e.return=n,r.sibling=e,n.child=r,n.child.memoizedState=Ir(t),n.memoizedState=kr,e):ws(n,s));if(i=e.memoizedState,i!==null&&(o=i.dehydrated,o!==null))return ch(e,n,s,a,o,i,t);if(r){r=a.fallback,s=n.mode,i=e.child,o=i.sibling;var c={mode:"hidden",children:a.children};return!(s&1)&&n.child!==i?(a=n.child,a.childLanes=0,a.pendingProps=c,n.deletions=null):(a=un(i,c),a.subtreeFlags=i.subtreeFlags&14680064),o!==null?r=un(o,r):(r=Sn(r,s,t,null),r.flags|=2),r.return=n,a.return=n,a.sibling=r,n.child=a,a=r,r=n.child,s=e.child.memoizedState,s=s===null?Ir(t):{baseLanes:s.baseLanes|t,cachePool:null,transitions:s.transitions},r.memoizedState=s,r.childLanes=e.childLanes&~t,n.memoizedState=kr,a}return r=e.child,e=r.sibling,a=un(r,{mode:"visible",children:a.children}),!(n.mode&1)&&(a.lanes=t),a.return=n,a.sibling=null,e!==null&&(t=n.deletions,t===null?(n.deletions=[e],n.flags|=16):t.push(e)),n.child=a,n.memoizedState=null,a}function ws(e,n){return n=ui({mode:"visible",children:n},e.mode,0,null),n.return=e,e.child=n}function ma(e,n,t,a){return a!==null&&ss(a),nt(n,e.child,null,t),e=ws(n,n.pendingProps.children),e.flags|=2,n.memoizedState=null,e}function ch(e,n,t,a,i,r,s){if(t)return n.flags&256?(n.flags&=-257,a=Bi(Error(v(422))),ma(e,n,s,a)):n.memoizedState!==null?(n.child=e.child,n.flags|=128,null):(r=a.fallback,i=n.mode,a=ui({mode:"visible",children:a.children},i,0,null),r=Sn(r,i,s,null),r.flags|=2,a.return=n,r.return=n,a.sibling=r,n.child=a,n.mode&1&&nt(n,e.child,null,s),n.child.memoizedState=Ir(s),n.memoizedState=kr,r);if(!(n.mode&1))return ma(e,n,s,null);if(i.data==="$!"){if(a=i.nextSibling&&i.nextSibling.dataset,a)var o=a.dgst;return a=o,r=Error(v(419)),a=Bi(r,a,void 0),ma(e,n,s,a)}if(o=(s&e.childLanes)!==0,de||o){if(a=$,a!==null){switch(s&-s){case 4:i=2;break;case 16:i=8;break;case 64:case 128:case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:case 4194304:case 8388608:case 16777216:case 33554432:case 67108864:i=32;break;case 536870912:i=268435456;break;default:i=0}i=i&(a.suspendedLanes|s)?0:i,i!==0&&i!==r.retryLane&&(r.retryLane=i,Ke(e,i),Ne(a,e,i,-1))}return xs(),a=Bi(Error(v(421))),ma(e,n,s,a)}return i.data==="$?"?(n.flags|=128,n.child=e.child,n=Th.bind(null,e),i._reactRetry=n,null):(e=r.treeContext,ge=on(i.nextSibling),fe=n,L=!0,Ee=null,e!==null&&(we[Te++]=Be,we[Te++]=je,we[Te++]=kn,Be=e.id,je=e.overflow,kn=n),n=ws(n,a.children),n.flags|=4096,n)}function No(e,n,t){e.lanes|=n;var a=e.alternate;a!==null&&(a.lanes|=n),Tr(e.return,n,t)}function ji(e,n,t,a,i){var r=e.memoizedState;r===null?e.memoizedState={isBackwards:n,rendering:null,renderingStartTime:0,last:a,tail:t,tailMode:i}:(r.isBackwards=n,r.rendering=null,r.renderingStartTime=0,r.last=a,r.tail=t,r.tailMode=i)}function Fl(e,n,t){var a=n.pendingProps,i=a.revealOrder,r=a.tail;if(re(e,n,a.children,t),a=z.current,a&2)a=a&1|2,n.flags|=128;else{if(e!==null&&e.flags&128)e:for(e=n.child;e!==null;){if(e.tag===13)e.memoizedState!==null&&No(e,t,n);else if(e.tag===19)No(e,t,n);else if(e.child!==null){e.child.return=e,e=e.child;continue}if(e===n)break e;for(;e.sibling===null;){if(e.return===null||e.return===n)break e;e=e.return}e.sibling.return=e.return,e=e.sibling}a&=1}if(P(z,a),!(n.mode&1))n.memoizedState=null;else switch(i){case"forwards":for(t=n.child,i=null;t!==null;)e=t.alternate,e!==null&&Ka(e)===null&&(i=t),t=t.sibling;t=i,t===null?(i=n.child,n.child=null):(i=t.sibling,t.sibling=null),ji(n,!1,i,t,r);break;case"backwards":for(t=null,i=n.child,n.child=null;i!==null;){if(e=i.alternate,e!==null&&Ka(e)===null){n.child=i;break}e=i.sibling,i.sibling=t,t=i,i=e}ji(n,!0,t,null,r);break;case"together":ji(n,!1,null,null,void 0);break;default:n.memoizedState=null}return n.child}function xa(e,n){!(n.mode&1)&&e!==null&&(e.alternate=null,n.alternate=null,n.flags|=2)}function He(e,n,t){if(e!==null&&(n.dependencies=e.dependencies),Mn|=n.lanes,!(t&n.childLanes))return null;if(e!==null&&n.child!==e.child)throw Error(v(153));if(n.child!==null){for(e=n.child,t=un(e,e.pendingProps),n.child=t,t.return=n;e.sibling!==null;)e=e.sibling,t=t.sibling=un(e,e.pendingProps),t.return=n;t.sibling=null}return n.child}function lh(e,n,t){switch(n.tag){case 3:Vl(n),et();break;case 5:cl(n);break;case 1:he(n.type)&&za(n);break;case 4:hs(n,n.stateNode.containerInfo);break;case 10:var a=n.type._context,i=n.memoizedProps.value;P(Wa,a._currentValue),a._currentValue=i;break;case 13:if(a=n.memoizedState,a!==null)return a.dehydrated!==null?(P(z,z.current&1),n.flags|=128,null):t&n.child.childLanes?Pl(e,n,t):(P(z,z.current&1),e=He(e,n,t),e!==null?e.sibling:null);P(z,z.current&1);break;case 19:if(a=(t&n.childLanes)!==0,e.flags&128){if(a)return Fl(e,n,t);n.flags|=128}if(i=n.memoizedState,i!==null&&(i.rendering=null,i.tail=null,i.lastEffect=null),P(z,z.current),a)break;return null;case 22:case 23:return n.lanes=0,Nl(e,n,t)}return He(e,n,t)}var ql,Mr,Ll,Ol;ql=function(e,n){for(var t=n.child;t!==null;){if(t.tag===5||t.tag===6)e.appendChild(t.stateNode);else if(t.tag!==4&&t.child!==null){t.child.return=t,t=t.child;continue}if(t===n)break;for(;t.sibling===null;){if(t.return===null||t.return===n)return;t=t.return}t.sibling.return=t.return,t=t.sibling}};Mr=function(){};Ll=function(e,n,t,a){var i=e.memoizedProps;if(i!==a){e=n.stateNode,Cn(Le.current);var r=null;switch(t){case"input":i=$i(e,i),a=$i(e,a),r=[];break;case"select":i=j({},i,{value:void 0}),a=j({},a,{value:void 0}),r=[];break;case"textarea":i=er(e,i),a=er(e,a),r=[];break;default:typeof i.onClick!="function"&&typeof a.onClick=="function"&&(e.onclick=La)}tr(t,a);var s;t=null;for(d in i)if(!a.hasOwnProperty(d)&&i.hasOwnProperty(d)&&i[d]!=null)if(d==="style"){var o=i[d];for(s in o)o.hasOwnProperty(s)&&(t||(t={}),t[s]="")}else d!=="dangerouslySetInnerHTML"&&d!=="children"&&d!=="suppressContentEditableWarning"&&d!=="suppressHydrationWarning"&&d!=="autoFocus"&&(Rt.hasOwnProperty(d)?r||(r=[]):(r=r||[]).push(d,null));for(d in a){var c=a[d];if(o=i!=null?i[d]:void 0,a.hasOwnProperty(d)&&c!==o&&(c!=null||o!=null))if(d==="style")if(o){for(s in o)!o.hasOwnProperty(s)||c&&c.hasOwnProperty(s)||(t||(t={}),t[s]="");for(s in c)c.hasOwnProperty(s)&&o[s]!==c[s]&&(t||(t={}),t[s]=c[s])}else t||(r||(r=[]),r.push(d,t)),t=c;else d==="dangerouslySetInnerHTML"?(c=c?c.__html:void 0,o=o?o.__html:void 0,c!=null&&o!==c&&(r=r||[]).push(d,c)):d==="children"?typeof c!="string"&&typeof c!="number"||(r=r||[]).push(d,""+c):d!=="suppressContentEditableWarning"&&d!=="suppressHydrationWarning"&&(Rt.hasOwnProperty(d)?(c!=null&&d==="onScroll"&&F("scroll",e),r||o===c||(r=[])):(r=r||[]).push(d,c))}t&&(r=r||[]).push("style",t);var d=r;(n.updateQueue=d)&&(n.flags|=4)}};Ol=function(e,n,t,a){t!==a&&(n.flags|=4)};function ft(e,n){if(!L)switch(e.tailMode){case"hidden":n=e.tail;for(var t=null;n!==null;)n.alternate!==null&&(t=n),n=n.sibling;t===null?e.tail=null:t.sibling=null;break;case"collapsed":t=e.tail;for(var a=null;t!==null;)t.alternate!==null&&(a=t),t=t.sibling;a===null?n||e.tail===null?e.tail=null:e.tail.sibling=null:a.sibling=null}}function te(e){var n=e.alternate!==null&&e.alternate.child===e.child,t=0,a=0;if(n)for(var i=e.child;i!==null;)t|=i.lanes|i.childLanes,a|=i.subtreeFlags&14680064,a|=i.flags&14680064,i.return=e,i=i.sibling;else for(i=e.child;i!==null;)t|=i.lanes|i.childLanes,a|=i.subtreeFlags,a|=i.flags,i.return=e,i=i.sibling;return e.subtreeFlags|=a,e.childLanes=t,n}function dh(e,n,t){var a=n.pendingProps;switch(rs(n),n.tag){case 2:case 16:case 15:case 0:case 11:case 7:case 8:case 12:case 9:case 14:return te(n),null;case 1:return he(n.type)&&Oa(),te(n),null;case 3:return a=n.stateNode,tt(),q(ue),q(ie),ms(),a.pendingContext&&(a.context=a.pendingContext,a.pendingContext=null),(e===null||e.child===null)&&(ha(n)?n.flags|=4:e===null||e.memoizedState.isDehydrated&&!(n.flags&256)||(n.flags|=1024,Ee!==null&&(qr(Ee),Ee=null))),Mr(e,n),te(n),null;case 5:ps(n);var i=Cn(Wt.current);if(t=n.type,e!==null&&n.stateNode!=null)Ll(e,n,t,a,i),e.ref!==n.ref&&(n.flags|=512,n.flags|=2097152);else{if(!a){if(n.stateNode===null)throw Error(v(166));return te(n),null}if(e=Cn(Le.current),ha(n)){a=n.stateNode,t=n.type;var r=n.memoizedProps;switch(a[Fe]=n,a[Bt]=r,e=(n.mode&1)!==0,t){case"dialog":F("cancel",a),F("close",a);break;case"iframe":case"object":case"embed":F("load",a);break;case"video":case"audio":for(i=0;i<Tt.length;i++)F(Tt[i],a);break;case"source":F("error",a);break;case"img":case"image":case"link":F("error",a),F("load",a);break;case"details":F("toggle",a);break;case"input":zs(a,r),F("invalid",a);break;case"select":a._wrapperState={wasMultiple:!!r.multiple},F("invalid",a);break;case"textarea":js(a,r),F("invalid",a)}tr(t,r),i=null;for(var s in r)if(r.hasOwnProperty(s)){var o=r[s];s==="children"?typeof o=="string"?a.textContent!==o&&(r.suppressHydrationWarning!==!0&&ua(a.textContent,o,e),i=["children",o]):typeof o=="number"&&a.textContent!==""+o&&(r.suppressHydrationWarning!==!0&&ua(a.textContent,o,e),i=["children",""+o]):Rt.hasOwnProperty(s)&&o!=null&&s==="onScroll"&&F("scroll",a)}switch(t){case"input":aa(a),Bs(a,r,!0);break;case"textarea":aa(a),Ws(a);break;case"select":case"option":break;default:typeof r.onClick=="function"&&(a.onclick=La)}a=i,n.updateQueue=a,a!==null&&(n.flags|=4)}else{s=i.nodeType===9?i:i.ownerDocument,e==="http://www.w3.org/1999/xhtml"&&(e=pc(t)),e==="http://www.w3.org/1999/xhtml"?t==="script"?(e=s.createElement("div"),e.innerHTML="<script><\/script>",e=e.removeChild(e.firstChild)):typeof a.is=="string"?e=s.createElement(t,{is:a.is}):(e=s.createElement(t),t==="select"&&(s=e,a.multiple?s.multiple=!0:a.size&&(s.size=a.size))):e=s.createElementNS(e,t),e[Fe]=n,e[Bt]=a,ql(e,n,!1,!1),n.stateNode=e;e:{switch(s=ar(t,a),t){case"dialog":F("cancel",e),F("close",e),i=a;break;case"iframe":case"object":case"embed":F("load",e),i=a;break;case"video":case"audio":for(i=0;i<Tt.length;i++)F(Tt[i],e);i=a;break;case"source":F("error",e),i=a;break;case"img":case"image":case"link":F("error",e),F("load",e),i=a;break;case"details":F("toggle",e),i=a;break;case"input":zs(e,a),i=$i(e,a),F("invalid",e);break;case"option":i=a;break;case"select":e._wrapperState={wasMultiple:!!a.multiple},i=j({},a,{value:void 0}),F("invalid",e);break;case"textarea":js(e,a),i=er(e,a),F("invalid",e);break;default:i=a}tr(t,i),o=i;for(r in o)if(o.hasOwnProperty(r)){var c=o[r];r==="style"?fc(e,c):r==="dangerouslySetInnerHTML"?(c=c?c.__html:void 0,c!=null&&mc(e,c)):r==="children"?typeof c=="string"?(t!=="textarea"||c!=="")&&Nt(e,c):typeof c=="number"&&Nt(e,""+c):r!=="suppressContentEditableWarning"&&r!=="suppressHydrationWarning"&&r!=="autoFocus"&&(Rt.hasOwnProperty(r)?c!=null&&r==="onScroll"&&F("scroll",e):c!=null&&Ur(e,r,c,s))}switch(t){case"input":aa(e),Bs(e,a,!1);break;case"textarea":aa(e),Ws(e);break;case"option":a.value!=null&&e.setAttribute("value",""+hn(a.value));break;case"select":e.multiple=!!a.multiple,r=a.value,r!=null?Kn(e,!!a.multiple,r,!1):a.defaultValue!=null&&Kn(e,!!a.multiple,a.defaultValue,!0);break;default:typeof i.onClick=="function"&&(e.onclick=La)}switch(t){case"button":case"input":case"select":case"textarea":a=!!a.autoFocus;break e;case"img":a=!0;break e;default:a=!1}}a&&(n.flags|=4)}n.ref!==null&&(n.flags|=512,n.flags|=2097152)}return te(n),null;case 6:if(e&&n.stateNode!=null)Ol(e,n,e.memoizedProps,a);else{if(typeof a!="string"&&n.stateNode===null)throw Error(v(166));if(t=Cn(Wt.current),Cn(Le.current),ha(n)){if(a=n.stateNode,t=n.memoizedProps,a[Fe]=n,(r=a.nodeValue!==t)&&(e=fe,e!==null))switch(e.tag){case 3:ua(a.nodeValue,t,(e.mode&1)!==0);break;case 5:e.memoizedProps.suppressHydrationWarning!==!0&&ua(a.nodeValue,t,(e.mode&1)!==0)}r&&(n.flags|=4)}else a=(t.nodeType===9?t:t.ownerDocument).createTextNode(a),a[Fe]=n,n.stateNode=a}return te(n),null;case 13:if(q(z),a=n.memoizedState,e===null||e.memoizedState!==null&&e.memoizedState.dehydrated!==null){if(L&&ge!==null&&n.mode&1&&!(n.flags&128))al(),et(),n.flags|=98560,r=!1;else if(r=ha(n),a!==null&&a.dehydrated!==null){if(e===null){if(!r)throw Error(v(318));if(r=n.memoizedState,r=r!==null?r.dehydrated:null,!r)throw Error(v(317));r[Fe]=n}else et(),!(n.flags&128)&&(n.memoizedState=null),n.flags|=4;te(n),r=!1}else Ee!==null&&(qr(Ee),Ee=null),r=!0;if(!r)return n.flags&65536?n:null}return n.flags&128?(n.lanes=t,n):(a=a!==null,a!==(e!==null&&e.memoizedState!==null)&&a&&(n.child.flags|=8192,n.mode&1&&(e===null||z.current&1?J===0&&(J=3):xs())),n.updateQueue!==null&&(n.flags|=4),te(n),null);case 4:return tt(),Mr(e,n),e===null&&Ot(n.stateNode.containerInfo),te(n),null;case 10:return ls(n.type._context),te(n),null;case 17:return he(n.type)&&Oa(),te(n),null;case 19:if(q(z),r=n.memoizedState,r===null)return te(n),null;if(a=(n.flags&128)!==0,s=r.rendering,s===null)if(a)ft(r,!1);else{if(J!==0||e!==null&&e.flags&128)for(e=n.child;e!==null;){if(s=Ka(e),s!==null){for(n.flags|=128,ft(r,!1),a=s.updateQueue,a!==null&&(n.updateQueue=a,n.flags|=4),n.subtreeFlags=0,a=t,t=n.child;t!==null;)r=t,e=a,r.flags&=14680066,s=r.alternate,s===null?(r.childLanes=0,r.lanes=e,r.child=null,r.subtreeFlags=0,r.memoizedProps=null,r.memoizedState=null,r.updateQueue=null,r.dependencies=null,r.stateNode=null):(r.childLanes=s.childLanes,r.lanes=s.lanes,r.child=s.child,r.subtreeFlags=0,r.deletions=null,r.memoizedProps=s.memoizedProps,r.memoizedState=s.memoizedState,r.updateQueue=s.updateQueue,r.type=s.type,e=s.dependencies,r.dependencies=e===null?null:{lanes:e.lanes,firstContext:e.firstContext}),t=t.sibling;return P(z,z.current&1|2),n.child}e=e.sibling}r.tail!==null&&G()>it&&(n.flags|=128,a=!0,ft(r,!1),n.lanes=4194304)}else{if(!a)if(e=Ka(s),e!==null){if(n.flags|=128,a=!0,t=e.updateQueue,t!==null&&(n.updateQueue=t,n.flags|=4),ft(r,!0),r.tail===null&&r.tailMode==="hidden"&&!s.alternate&&!L)return te(n),null}else 2*G()-r.renderingStartTime>it&&t!==1073741824&&(n.flags|=128,a=!0,ft(r,!1),n.lanes=4194304);r.isBackwards?(s.sibling=n.child,n.child=s):(t=r.last,t!==null?t.sibling=s:n.child=s,r.last=s)}return r.tail!==null?(n=r.tail,r.rendering=n,r.tail=n.sibling,r.renderingStartTime=G(),n.sibling=null,t=z.current,P(z,a?t&1|2:t&1),n):(te(n),null);case 22:case 23:return Ss(),a=n.memoizedState!==null,e!==null&&e.memoizedState!==null!==a&&(n.flags|=8192),a&&n.mode&1?me&1073741824&&(te(n),n.subtreeFlags&6&&(n.flags|=8192)):te(n),null;case 24:return null;case 25:return null}throw Error(v(156,n.tag))}function uh(e,n){switch(rs(n),n.tag){case 1:return he(n.type)&&Oa(),e=n.flags,e&65536?(n.flags=e&-65537|128,n):null;case 3:return tt(),q(ue),q(ie),ms(),e=n.flags,e&65536&&!(e&128)?(n.flags=e&-65537|128,n):null;case 5:return ps(n),null;case 13:if(q(z),e=n.memoizedState,e!==null&&e.dehydrated!==null){if(n.alternate===null)throw Error(v(340));et()}return e=n.flags,e&65536?(n.flags=e&-65537|128,n):null;case 19:return q(z),null;case 4:return tt(),null;case 10:return ls(n.type._context),null;case 22:case 23:return Ss(),null;case 24:return null;default:return null}}var ga=!1,ae=!1,hh=typeof WeakSet=="function"?WeakSet:Set,T=null;function Un(e,n){var t=e.ref;if(t!==null)if(typeof t=="function")try{t(null)}catch(a){W(e,n,a)}else t.current=null}function Er(e,n,t){try{t()}catch(a){W(e,n,a)}}var Do=!1;function ph(e,n){if(pr=Pa,e=Uc(),as(e)){if("selectionStart"in e)var t={start:e.selectionStart,end:e.selectionEnd};else e:{t=(t=e.ownerDocument)&&t.defaultView||window;var a=t.getSelection&&t.getSelection();if(a&&a.rangeCount!==0){t=a.anchorNode;var i=a.anchorOffset,r=a.focusNode;a=a.focusOffset;try{t.nodeType,r.nodeType}catch{t=null;break e}var s=0,o=-1,c=-1,d=0,g=0,m=e,p=null;n:for(;;){for(var f;m!==t||i!==0&&m.nodeType!==3||(o=s+i),m!==r||a!==0&&m.nodeType!==3||(c=s+a),m.nodeType===3&&(s+=m.nodeValue.length),(f=m.firstChild)!==null;)p=m,m=f;for(;;){if(m===e)break n;if(p===t&&++d===i&&(o=s),p===r&&++g===a&&(c=s),(f=m.nextSibling)!==null)break;m=p,p=m.parentNode}m=f}t=o===-1||c===-1?null:{start:o,end:c}}else t=null}t=t||{start:0,end:0}}else t=null;for(mr={focusedElem:e,selectionRange:t},Pa=!1,T=n;T!==null;)if(n=T,e=n.child,(n.subtreeFlags&1028)!==0&&e!==null)e.return=n,T=e;else for(;T!==null;){n=T;try{var b=n.alternate;if(n.flags&1024)switch(n.tag){case 0:case 11:case 15:break;case 1:if(b!==null){var w=b.memoizedProps,N=b.memoizedState,u=n.stateNode,l=u.getSnapshotBeforeUpdate(n.elementType===n.type?w:Ie(n.type,w),N);u.__reactInternalSnapshotBeforeUpdate=l}break;case 3:var h=n.stateNode.containerInfo;h.nodeType===1?h.textContent="":h.nodeType===9&&h.documentElement&&h.removeChild(h.documentElement);break;case 5:case 6:case 4:case 17:break;default:throw Error(v(163))}}catch(y){W(n,n.return,y)}if(e=n.sibling,e!==null){e.return=n.return,T=e;break}T=n.return}return b=Do,Do=!1,b}function It(e,n,t){var a=n.updateQueue;if(a=a!==null?a.lastEffect:null,a!==null){var i=a=a.next;do{if((i.tag&e)===e){var r=i.destroy;i.destroy=void 0,r!==void 0&&Er(n,t,r)}i=i.next}while(i!==a)}}function li(e,n){if(n=n.updateQueue,n=n!==null?n.lastEffect:null,n!==null){var t=n=n.next;do{if((t.tag&e)===e){var a=t.create;t.destroy=a()}t=t.next}while(t!==n)}}function Rr(e){var n=e.ref;if(n!==null){var t=e.stateNode;switch(e.tag){case 5:e=t;break;default:e=t}typeof n=="function"?n(e):n.current=e}}function zl(e){var n=e.alternate;n!==null&&(e.alternate=null,zl(n)),e.child=null,e.deletions=null,e.sibling=null,e.tag===5&&(n=e.stateNode,n!==null&&(delete n[Fe],delete n[Bt],delete n[yr],delete n[Qu],delete n[Yu])),e.stateNode=null,e.return=null,e.dependencies=null,e.memoizedProps=null,e.memoizedState=null,e.pendingProps=null,e.stateNode=null,e.updateQueue=null}function Bl(e){return e.tag===5||e.tag===3||e.tag===4}function Vo(e){e:for(;;){for(;e.sibling===null;){if(e.return===null||Bl(e.return))return null;e=e.return}for(e.sibling.return=e.return,e=e.sibling;e.tag!==5&&e.tag!==6&&e.tag!==18;){if(e.flags&2||e.child===null||e.tag===4)continue e;e.child.return=e,e=e.child}if(!(e.flags&2))return e.stateNode}}function Nr(e,n,t){var a=e.tag;if(a===5||a===6)e=e.stateNode,n?t.nodeType===8?t.parentNode.insertBefore(e,n):t.insertBefore(e,n):(t.nodeType===8?(n=t.parentNode,n.insertBefore(e,t)):(n=t,n.appendChild(e)),t=t._reactRootContainer,t!=null||n.onclick!==null||(n.onclick=La));else if(a!==4&&(e=e.child,e!==null))for(Nr(e,n,t),e=e.sibling;e!==null;)Nr(e,n,t),e=e.sibling}function Dr(e,n,t){var a=e.tag;if(a===5||a===6)e=e.stateNode,n?t.insertBefore(e,n):t.appendChild(e);else if(a!==4&&(e=e.child,e!==null))for(Dr(e,n,t),e=e.sibling;e!==null;)Dr(e,n,t),e=e.sibling}var X=null,Me=!1;function Qe(e,n,t){for(t=t.child;t!==null;)jl(e,n,t),t=t.sibling}function jl(e,n,t){if(qe&&typeof qe.onCommitFiberUnmount=="function")try{qe.onCommitFiberUnmount(ni,t)}catch{}switch(t.tag){case 5:ae||Un(t,n);case 6:var a=X,i=Me;X=null,Qe(e,n,t),X=a,Me=i,X!==null&&(Me?(e=X,t=t.stateNode,e.nodeType===8?e.parentNode.removeChild(t):e.removeChild(t)):X.removeChild(t.stateNode));break;case 18:X!==null&&(Me?(e=X,t=t.stateNode,e.nodeType===8?Pi(e.parentNode,t):e.nodeType===1&&Pi(e,t),Ft(e)):Pi(X,t.stateNode));break;case 4:a=X,i=Me,X=t.stateNode.containerInfo,Me=!0,Qe(e,n,t),X=a,Me=i;break;case 0:case 11:case 14:case 15:if(!ae&&(a=t.updateQueue,a!==null&&(a=a.lastEffect,a!==null))){i=a=a.next;do{var r=i,s=r.destroy;r=r.tag,s!==void 0&&(r&2||r&4)&&Er(t,n,s),i=i.next}while(i!==a)}Qe(e,n,t);break;case 1:if(!ae&&(Un(t,n),a=t.stateNode,typeof a.componentWillUnmount=="function"))try{a.props=t.memoizedProps,a.state=t.memoizedState,a.componentWillUnmount()}catch(o){W(t,n,o)}Qe(e,n,t);break;case 21:Qe(e,n,t);break;case 22:t.mode&1?(ae=(a=ae)||t.memoizedState!==null,Qe(e,n,t),ae=a):Qe(e,n,t);break;default:Qe(e,n,t)}}function Po(e){var n=e.updateQueue;if(n!==null){e.updateQueue=null;var t=e.stateNode;t===null&&(t=e.stateNode=new hh),n.forEach(function(a){var i=_h.bind(null,e,a);t.has(a)||(t.add(a),a.then(i,i))})}}function ke(e,n){var t=n.deletions;if(t!==null)for(var a=0;a<t.length;a++){var i=t[a];try{var r=e,s=n,o=s;e:for(;o!==null;){switch(o.tag){case 5:X=o.stateNode,Me=!1;break e;case 3:X=o.stateNode.containerInfo,Me=!0;break e;case 4:X=o.stateNode.containerInfo,Me=!0;break e}o=o.return}if(X===null)throw Error(v(160));jl(r,s,i),X=null,Me=!1;var c=i.alternate;c!==null&&(c.return=null),i.return=null}catch(d){W(i,n,d)}}if(n.subtreeFlags&12854)for(n=n.child;n!==null;)Wl(n,e),n=n.sibling}function Wl(e,n){var t=e.alternate,a=e.flags;switch(e.tag){case 0:case 11:case 14:case 15:if(ke(n,e),Ve(e),a&4){try{It(3,e,e.return),li(3,e)}catch(w){W(e,e.return,w)}try{It(5,e,e.return)}catch(w){W(e,e.return,w)}}break;case 1:ke(n,e),Ve(e),a&512&&t!==null&&Un(t,t.return);break;case 5:if(ke(n,e),Ve(e),a&512&&t!==null&&Un(t,t.return),e.flags&32){var i=e.stateNode;try{Nt(i,"")}catch(w){W(e,e.return,w)}}if(a&4&&(i=e.stateNode,i!=null)){var r=e.memoizedProps,s=t!==null?t.memoizedProps:r,o=e.type,c=e.updateQueue;if(e.updateQueue=null,c!==null)try{o==="input"&&r.type==="radio"&&r.name!=null&&uc(i,r),ar(o,s);var d=ar(o,r);for(s=0;s<c.length;s+=2){var g=c[s],m=c[s+1];g==="style"?fc(i,m):g==="dangerouslySetInnerHTML"?mc(i,m):g==="children"?Nt(i,m):Ur(i,g,m,d)}switch(o){case"input":Xi(i,r);break;case"textarea":hc(i,r);break;case"select":var p=i._wrapperState.wasMultiple;i._wrapperState.wasMultiple=!!r.multiple;var f=r.value;f!=null?Kn(i,!!r.multiple,f,!1):p!==!!r.multiple&&(r.defaultValue!=null?Kn(i,!!r.multiple,r.defaultValue,!0):Kn(i,!!r.multiple,r.multiple?[]:"",!1))}i[Bt]=r}catch(w){W(e,e.return,w)}}break;case 6:if(ke(n,e),Ve(e),a&4){if(e.stateNode===null)throw Error(v(162));i=e.stateNode,r=e.memoizedProps;try{i.nodeValue=r}catch(w){W(e,e.return,w)}}break;case 3:if(ke(n,e),Ve(e),a&4&&t!==null&&t.memoizedState.isDehydrated)try{Ft(n.containerInfo)}catch(w){W(e,e.return,w)}break;case 4:ke(n,e),Ve(e);break;case 13:ke(n,e),Ve(e),i=e.child,i.flags&8192&&(r=i.memoizedState!==null,i.stateNode.isHidden=r,!r||i.alternate!==null&&i.alternate.memoizedState!==null||(Cs=G())),a&4&&Po(e);break;case 22:if(g=t!==null&&t.memoizedState!==null,e.mode&1?(ae=(d=ae)||g,ke(n,e),ae=d):ke(n,e),Ve(e),a&8192){if(d=e.memoizedState!==null,(e.stateNode.isHidden=d)&&!g&&e.mode&1)for(T=e,g=e.child;g!==null;){for(m=T=g;T!==null;){switch(p=T,f=p.child,p.tag){case 0:case 11:case 14:case 15:It(4,p,p.return);break;case 1:Un(p,p.return);var b=p.stateNode;if(typeof b.componentWillUnmount=="function"){a=p,t=p.return;try{n=a,b.props=n.memoizedProps,b.state=n.memoizedState,b.componentWillUnmount()}catch(w){W(a,t,w)}}break;case 5:Un(p,p.return);break;case 22:if(p.memoizedState!==null){qo(m);continue}}f!==null?(f.return=p,T=f):qo(m)}g=g.sibling}e:for(g=null,m=e;;){if(m.tag===5){if(g===null){g=m;try{i=m.stateNode,d?(r=i.style,typeof r.setProperty=="function"?r.setProperty("display","none","important"):r.display="none"):(o=m.stateNode,c=m.memoizedProps.style,s=c!=null&&c.hasOwnProperty("display")?c.display:null,o.style.display=gc("display",s))}catch(w){W(e,e.return,w)}}}else if(m.tag===6){if(g===null)try{m.stateNode.nodeValue=d?"":m.memoizedProps}catch(w){W(e,e.return,w)}}else if((m.tag!==22&&m.tag!==23||m.memoizedState===null||m===e)&&m.child!==null){m.child.return=m,m=m.child;continue}if(m===e)break e;for(;m.sibling===null;){if(m.return===null||m.return===e)break e;g===m&&(g=null),m=m.return}g===m&&(g=null),m.sibling.return=m.return,m=m.sibling}}break;case 19:ke(n,e),Ve(e),a&4&&Po(e);break;case 21:break;default:ke(n,e),Ve(e)}}function Ve(e){var n=e.flags;if(n&2){try{e:{for(var t=e.return;t!==null;){if(Bl(t)){var a=t;break e}t=t.return}throw Error(v(160))}switch(a.tag){case 5:var i=a.stateNode;a.flags&32&&(Nt(i,""),a.flags&=-33);var r=Vo(e);Dr(e,r,i);break;case 3:case 4:var s=a.stateNode.containerInfo,o=Vo(e);Nr(e,o,s);break;default:throw Error(v(161))}}catch(c){W(e,e.return,c)}e.flags&=-3}n&4096&&(e.flags&=-4097)}function mh(e,n,t){T=e,Ul(e)}function Ul(e,n,t){for(var a=(e.mode&1)!==0;T!==null;){var i=T,r=i.child;if(i.tag===22&&a){var s=i.memoizedState!==null||ga;if(!s){var o=i.alternate,c=o!==null&&o.memoizedState!==null||ae;o=ga;var d=ae;if(ga=s,(ae=c)&&!d)for(T=i;T!==null;)s=T,c=s.child,s.tag===22&&s.memoizedState!==null?Lo(i):c!==null?(c.return=s,T=c):Lo(i);for(;r!==null;)T=r,Ul(r),r=r.sibling;T=i,ga=o,ae=d}Fo(e)}else i.subtreeFlags&8772&&r!==null?(r.return=i,T=r):Fo(e)}}function Fo(e){for(;T!==null;){var n=T;if(n.flags&8772){var t=n.alternate;try{if(n.flags&8772)switch(n.tag){case 0:case 11:case 15:ae||li(5,n);break;case 1:var a=n.stateNode;if(n.flags&4&&!ae)if(t===null)a.componentDidMount();else{var i=n.elementType===n.type?t.memoizedProps:Ie(n.type,t.memoizedProps);a.componentDidUpdate(i,t.memoizedState,a.__reactInternalSnapshotBeforeUpdate)}var r=n.updateQueue;r!==null&&wo(n,r,a);break;case 3:var s=n.updateQueue;if(s!==null){if(t=null,n.child!==null)switch(n.child.tag){case 5:t=n.child.stateNode;break;case 1:t=n.child.stateNode}wo(n,s,t)}break;case 5:var o=n.stateNode;if(t===null&&n.flags&4){t=o;var c=n.memoizedProps;switch(n.type){case"button":case"input":case"select":case"textarea":c.autoFocus&&t.focus();break;case"img":c.src&&(t.src=c.src)}}break;case 6:break;case 4:break;case 12:break;case 13:if(n.memoizedState===null){var d=n.alternate;if(d!==null){var g=d.memoizedState;if(g!==null){var m=g.dehydrated;m!==null&&Ft(m)}}}break;case 19:case 17:case 21:case 22:case 23:case 25:break;default:throw Error(v(163))}ae||n.flags&512&&Rr(n)}catch(p){W(n,n.return,p)}}if(n===e){T=null;break}if(t=n.sibling,t!==null){t.return=n.return,T=t;break}T=n.return}}function qo(e){for(;T!==null;){var n=T;if(n===e){T=null;break}var t=n.sibling;if(t!==null){t.return=n.return,T=t;break}T=n.return}}function Lo(e){for(;T!==null;){var n=T;try{switch(n.tag){case 0:case 11:case 15:var t=n.return;try{li(4,n)}catch(c){W(n,t,c)}break;case 1:var a=n.stateNode;if(typeof a.componentDidMount=="function"){var i=n.return;try{a.componentDidMount()}catch(c){W(n,i,c)}}var r=n.return;try{Rr(n)}catch(c){W(n,r,c)}break;case 5:var s=n.return;try{Rr(n)}catch(c){W(n,s,c)}}}catch(c){W(n,n.return,c)}if(n===e){T=null;break}var o=n.sibling;if(o!==null){o.return=n.return,T=o;break}T=n.return}}var gh=Math.ceil,Qa=Je.ReactCurrentDispatcher,Ts=Je.ReactCurrentOwner,Ce=Je.ReactCurrentBatchConfig,D=0,$=null,K=null,Z=0,me=0,Gn=gn(0),J=0,Ht=null,Mn=0,di=0,_s=0,Mt=null,le=null,Cs=0,it=1/0,Oe=null,Ya=!1,Vr=null,ln=null,fa=!1,tn=null,$a=0,Et=0,Pr=null,ka=-1,Ia=0;function se(){return D&6?G():ka!==-1?ka:ka=G()}function dn(e){return e.mode&1?D&2&&Z!==0?Z&-Z:Xu.transition!==null?(Ia===0&&(Ia=Ic()),Ia):(e=V,e!==0||(e=window.event,e=e===void 0?16:Pc(e.type)),e):1}function Ne(e,n,t,a){if(50<Et)throw Et=0,Pr=null,Error(v(185));Qt(e,t,a),(!(D&2)||e!==$)&&(e===$&&(!(D&2)&&(di|=t),J===4&&Ze(e,Z)),pe(e,a),t===1&&D===0&&!(n.mode&1)&&(it=G()+500,si&&fn()))}function pe(e,n){var t=e.callbackNode;Xd(e,n);var a=Va(e,e===$?Z:0);if(a===0)t!==null&&Ks(t),e.callbackNode=null,e.callbackPriority=0;else if(n=a&-a,e.callbackPriority!==n){if(t!=null&&Ks(t),n===1)e.tag===0?$u(Oo.bind(null,e)):el(Oo.bind(null,e)),Hu(function(){!(D&6)&&fn()}),t=null;else{switch(Mc(a)){case 1:t=Qr;break;case 4:t=xc;break;case 16:t=Da;break;case 536870912:t=kc;break;default:t=Da}t=Xl(t,Gl.bind(null,e))}e.callbackPriority=n,e.callbackNode=t}}function Gl(e,n){if(ka=-1,Ia=0,D&6)throw Error(v(327));var t=e.callbackNode;if($n()&&e.callbackNode!==t)return null;var a=Va(e,e===$?Z:0);if(a===0)return null;if(a&30||a&e.expiredLanes||n)n=Xa(e,a);else{n=a;var i=D;D|=2;var r=Hl();($!==e||Z!==n)&&(Oe=null,it=G()+500,An(e,n));do try{vh();break}catch(o){Kl(e,o)}while(!0);cs(),Qa.current=r,D=i,K!==null?n=0:($=null,Z=0,n=J)}if(n!==0){if(n===2&&(i=cr(e),i!==0&&(a=i,n=Fr(e,i))),n===1)throw t=Ht,An(e,0),Ze(e,a),pe(e,G()),t;if(n===6)Ze(e,a);else{if(i=e.current.alternate,!(a&30)&&!fh(i)&&(n=Xa(e,a),n===2&&(r=cr(e),r!==0&&(a=r,n=Fr(e,r))),n===1))throw t=Ht,An(e,0),Ze(e,a),pe(e,G()),t;switch(e.finishedWork=i,e.finishedLanes=a,n){case 0:case 1:throw Error(v(345));case 2:wn(e,le,Oe);break;case 3:if(Ze(e,a),(a&130023424)===a&&(n=Cs+500-G(),10<n)){if(Va(e,0)!==0)break;if(i=e.suspendedLanes,(i&a)!==a){se(),e.pingedLanes|=e.suspendedLanes&i;break}e.timeoutHandle=fr(wn.bind(null,e,le,Oe),n);break}wn(e,le,Oe);break;case 4:if(Ze(e,a),(a&4194240)===a)break;for(n=e.eventTimes,i=-1;0<a;){var s=31-Re(a);r=1<<s,s=n[s],s>i&&(i=s),a&=~r}if(a=i,a=G()-a,a=(120>a?120:480>a?480:1080>a?1080:1920>a?1920:3e3>a?3e3:4320>a?4320:1960*gh(a/1960))-a,10<a){e.timeoutHandle=fr(wn.bind(null,e,le,Oe),a);break}wn(e,le,Oe);break;case 5:wn(e,le,Oe);break;default:throw Error(v(329))}}}return pe(e,G()),e.callbackNode===t?Gl.bind(null,e):null}function Fr(e,n){var t=Mt;return e.current.memoizedState.isDehydrated&&(An(e,n).flags|=256),e=Xa(e,n),e!==2&&(n=le,le=t,n!==null&&qr(n)),e}function qr(e){le===null?le=e:le.push.apply(le,e)}function fh(e){for(var n=e;;){if(n.flags&16384){var t=n.updateQueue;if(t!==null&&(t=t.stores,t!==null))for(var a=0;a<t.length;a++){var i=t[a],r=i.getSnapshot;i=i.value;try{if(!De(r(),i))return!1}catch{return!1}}}if(t=n.child,n.subtreeFlags&16384&&t!==null)t.return=n,n=t;else{if(n===e)break;for(;n.sibling===null;){if(n.return===null||n.return===e)return!0;n=n.return}n.sibling.return=n.return,n=n.sibling}}return!0}function Ze(e,n){for(n&=~_s,n&=~di,e.suspendedLanes|=n,e.pingedLanes&=~n,e=e.expirationTimes;0<n;){var t=31-Re(n),a=1<<t;e[t]=-1,n&=~a}}function Oo(e){if(D&6)throw Error(v(327));$n();var n=Va(e,0);if(!(n&1))return pe(e,G()),null;var t=Xa(e,n);if(e.tag!==0&&t===2){var a=cr(e);a!==0&&(n=a,t=Fr(e,a))}if(t===1)throw t=Ht,An(e,0),Ze(e,n),pe(e,G()),t;if(t===6)throw Error(v(345));return e.finishedWork=e.current.alternate,e.finishedLanes=n,wn(e,le,Oe),pe(e,G()),null}function As(e,n){var t=D;D|=1;try{return e(n)}finally{D=t,D===0&&(it=G()+500,si&&fn())}}function En(e){tn!==null&&tn.tag===0&&!(D&6)&&$n();var n=D;D|=1;var t=Ce.transition,a=V;try{if(Ce.transition=null,V=1,e)return e()}finally{V=a,Ce.transition=t,D=n,!(D&6)&&fn()}}function Ss(){me=Gn.current,q(Gn)}function An(e,n){e.finishedWork=null,e.finishedLanes=0;var t=e.timeoutHandle;if(t!==-1&&(e.timeoutHandle=-1,Ku(t)),K!==null)for(t=K.return;t!==null;){var a=t;switch(rs(a),a.tag){case 1:a=a.type.childContextTypes,a!=null&&Oa();break;case 3:tt(),q(ue),q(ie),ms();break;case 5:ps(a);break;case 4:tt();break;case 13:q(z);break;case 19:q(z);break;case 10:ls(a.type._context);break;case 22:case 23:Ss()}t=t.return}if($=e,K=e=un(e.current,null),Z=me=n,J=0,Ht=null,_s=di=Mn=0,le=Mt=null,_n!==null){for(n=0;n<_n.length;n++)if(t=_n[n],a=t.interleaved,a!==null){t.interleaved=null;var i=a.next,r=t.pending;if(r!==null){var s=r.next;r.next=i,a.next=s}t.pending=a}_n=null}return e}function Kl(e,n){do{var t=K;try{if(cs(),Aa.current=Ja,Ha){for(var a=B.memoizedState;a!==null;){var i=a.queue;i!==null&&(i.pending=null),a=a.next}Ha=!1}if(In=0,Y=H=B=null,kt=!1,Ut=0,Ts.current=null,t===null||t.return===null){J=1,Ht=n,K=null;break}e:{var r=e,s=t.return,o=t,c=n;if(n=Z,o.flags|=32768,c!==null&&typeof c=="object"&&typeof c.then=="function"){var d=c,g=o,m=g.tag;if(!(g.mode&1)&&(m===0||m===11||m===15)){var p=g.alternate;p?(g.updateQueue=p.updateQueue,g.memoizedState=p.memoizedState,g.lanes=p.lanes):(g.updateQueue=null,g.memoizedState=null)}var f=xo(s);if(f!==null){f.flags&=-257,ko(f,s,o,r,n),f.mode&1&&So(r,d,n),n=f,c=d;var b=n.updateQueue;if(b===null){var w=new Set;w.add(c),n.updateQueue=w}else b.add(c);break e}else{if(!(n&1)){So(r,d,n),xs();break e}c=Error(v(426))}}else if(L&&o.mode&1){var N=xo(s);if(N!==null){!(N.flags&65536)&&(N.flags|=256),ko(N,s,o,r,n),ss(at(c,o));break e}}r=c=at(c,o),J!==4&&(J=2),Mt===null?Mt=[r]:Mt.push(r),r=s;do{switch(r.tag){case 3:r.flags|=65536,n&=-n,r.lanes|=n;var u=Ml(r,c,n);bo(r,u);break e;case 1:o=c;var l=r.type,h=r.stateNode;if(!(r.flags&128)&&(typeof l.getDerivedStateFromError=="function"||h!==null&&typeof h.componentDidCatch=="function"&&(ln===null||!ln.has(h)))){r.flags|=65536,n&=-n,r.lanes|=n;var y=El(r,o,n);bo(r,y);break e}}r=r.return}while(r!==null)}Ql(t)}catch(_){n=_,K===t&&t!==null&&(K=t=t.return);continue}break}while(!0)}function Hl(){var e=Qa.current;return Qa.current=Ja,e===null?Ja:e}function xs(){(J===0||J===3||J===2)&&(J=4),$===null||!(Mn&268435455)&&!(di&268435455)||Ze($,Z)}function Xa(e,n){var t=D;D|=2;var a=Hl();($!==e||Z!==n)&&(Oe=null,An(e,n));do try{yh();break}catch(i){Kl(e,i)}while(!0);if(cs(),D=t,Qa.current=a,K!==null)throw Error(v(261));return $=null,Z=0,J}function yh(){for(;K!==null;)Jl(K)}function vh(){for(;K!==null&&!Wd();)Jl(K)}function Jl(e){var n=$l(e.alternate,e,me);e.memoizedProps=e.pendingProps,n===null?Ql(e):K=n,Ts.current=null}function Ql(e){var n=e;do{var t=n.alternate;if(e=n.return,n.flags&32768){if(t=uh(t,n),t!==null){t.flags&=32767,K=t;return}if(e!==null)e.flags|=32768,e.subtreeFlags=0,e.deletions=null;else{J=6,K=null;return}}else if(t=dh(t,n,me),t!==null){K=t;return}if(n=n.sibling,n!==null){K=n;return}K=n=e}while(n!==null);J===0&&(J=5)}function wn(e,n,t){var a=V,i=Ce.transition;try{Ce.transition=null,V=1,bh(e,n,t,a)}finally{Ce.transition=i,V=a}return null}function bh(e,n,t,a){do $n();while(tn!==null);if(D&6)throw Error(v(327));t=e.finishedWork;var i=e.finishedLanes;if(t===null)return null;if(e.finishedWork=null,e.finishedLanes=0,t===e.current)throw Error(v(177));e.callbackNode=null,e.callbackPriority=0;var r=t.lanes|t.childLanes;if(Zd(e,r),e===$&&(K=$=null,Z=0),!(t.subtreeFlags&2064)&&!(t.flags&2064)||fa||(fa=!0,Xl(Da,function(){return $n(),null})),r=(t.flags&15990)!==0,t.subtreeFlags&15990||r){r=Ce.transition,Ce.transition=null;var s=V;V=1;var o=D;D|=4,Ts.current=null,ph(e,t),Wl(t,e),Ou(mr),Pa=!!pr,mr=pr=null,e.current=t,mh(t),Ud(),D=o,V=s,Ce.transition=r}else e.current=t;if(fa&&(fa=!1,tn=e,$a=i),r=e.pendingLanes,r===0&&(ln=null),Hd(t.stateNode),pe(e,G()),n!==null)for(a=e.onRecoverableError,t=0;t<n.length;t++)i=n[t],a(i.value,{componentStack:i.stack,digest:i.digest});if(Ya)throw Ya=!1,e=Vr,Vr=null,e;return $a&1&&e.tag!==0&&$n(),r=e.pendingLanes,r&1?e===Pr?Et++:(Et=0,Pr=e):Et=0,fn(),null}function $n(){if(tn!==null){var e=Mc($a),n=Ce.transition,t=V;try{if(Ce.transition=null,V=16>e?16:e,tn===null)var a=!1;else{if(e=tn,tn=null,$a=0,D&6)throw Error(v(331));var i=D;for(D|=4,T=e.current;T!==null;){var r=T,s=r.child;if(T.flags&16){var o=r.deletions;if(o!==null){for(var c=0;c<o.length;c++){var d=o[c];for(T=d;T!==null;){var g=T;switch(g.tag){case 0:case 11:case 15:It(8,g,r)}var m=g.child;if(m!==null)m.return=g,T=m;else for(;T!==null;){g=T;var p=g.sibling,f=g.return;if(zl(g),g===d){T=null;break}if(p!==null){p.return=f,T=p;break}T=f}}}var b=r.alternate;if(b!==null){var w=b.child;if(w!==null){b.child=null;do{var N=w.sibling;w.sibling=null,w=N}while(w!==null)}}T=r}}if(r.subtreeFlags&2064&&s!==null)s.return=r,T=s;else e:for(;T!==null;){if(r=T,r.flags&2048)switch(r.tag){case 0:case 11:case 15:It(9,r,r.return)}var u=r.sibling;if(u!==null){u.return=r.return,T=u;break e}T=r.return}}var l=e.current;for(T=l;T!==null;){s=T;var h=s.child;if(s.subtreeFlags&2064&&h!==null)h.return=s,T=h;else e:for(s=l;T!==null;){if(o=T,o.flags&2048)try{switch(o.tag){case 0:case 11:case 15:li(9,o)}}catch(_){W(o,o.return,_)}if(o===s){T=null;break e}var y=o.sibling;if(y!==null){y.return=o.return,T=y;break e}T=o.return}}if(D=i,fn(),qe&&typeof qe.onPostCommitFiberRoot=="function")try{qe.onPostCommitFiberRoot(ni,e)}catch{}a=!0}return a}finally{V=t,Ce.transition=n}}return!1}function zo(e,n,t){n=at(t,n),n=Ml(e,n,1),e=cn(e,n,1),n=se(),e!==null&&(Qt(e,1,n),pe(e,n))}function W(e,n,t){if(e.tag===3)zo(e,e,t);else for(;n!==null;){if(n.tag===3){zo(n,e,t);break}else if(n.tag===1){var a=n.stateNode;if(typeof n.type.getDerivedStateFromError=="function"||typeof a.componentDidCatch=="function"&&(ln===null||!ln.has(a))){e=at(t,e),e=El(n,e,1),n=cn(n,e,1),e=se(),n!==null&&(Qt(n,1,e),pe(n,e));break}}n=n.return}}function wh(e,n,t){var a=e.pingCache;a!==null&&a.delete(n),n=se(),e.pingedLanes|=e.suspendedLanes&t,$===e&&(Z&t)===t&&(J===4||J===3&&(Z&130023424)===Z&&500>G()-Cs?An(e,0):_s|=t),pe(e,n)}function Yl(e,n){n===0&&(e.mode&1?(n=sa,sa<<=1,!(sa&130023424)&&(sa=4194304)):n=1);var t=se();e=Ke(e,n),e!==null&&(Qt(e,n,t),pe(e,t))}function Th(e){var n=e.memoizedState,t=0;n!==null&&(t=n.retryLane),Yl(e,t)}function _h(e,n){var t=0;switch(e.tag){case 13:var a=e.stateNode,i=e.memoizedState;i!==null&&(t=i.retryLane);break;case 19:a=e.stateNode;break;default:throw Error(v(314))}a!==null&&a.delete(n),Yl(e,t)}var $l;$l=function(e,n,t){if(e!==null)if(e.memoizedProps!==n.pendingProps||ue.current)de=!0;else{if(!(e.lanes&t)&&!(n.flags&128))return de=!1,lh(e,n,t);de=!!(e.flags&131072)}else de=!1,L&&n.flags&1048576&&nl(n,ja,n.index);switch(n.lanes=0,n.tag){case 2:var a=n.type;xa(e,n),e=n.pendingProps;var i=Zn(n,ie.current);Yn(n,t),i=fs(null,n,a,e,i,t);var r=ys();return n.flags|=1,typeof i=="object"&&i!==null&&typeof i.render=="function"&&i.$$typeof===void 0?(n.tag=1,n.memoizedState=null,n.updateQueue=null,he(a)?(r=!0,za(n)):r=!1,n.memoizedState=i.state!==null&&i.state!==void 0?i.state:null,us(n),i.updater=ci,n.stateNode=i,i._reactInternals=n,Cr(n,a,e,t),n=xr(null,n,a,!0,r,t)):(n.tag=0,L&&r&&is(n),re(null,n,i,t),n=n.child),n;case 16:a=n.elementType;e:{switch(xa(e,n),e=n.pendingProps,i=a._init,a=i(a._payload),n.type=a,i=n.tag=Ah(a),e=Ie(a,e),i){case 0:n=Sr(null,n,a,e,t);break e;case 1:n=Eo(null,n,a,e,t);break e;case 11:n=Io(null,n,a,e,t);break e;case 14:n=Mo(null,n,a,Ie(a.type,e),t);break e}throw Error(v(306,a,""))}return n;case 0:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),Sr(e,n,a,i,t);case 1:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),Eo(e,n,a,i,t);case 3:e:{if(Vl(n),e===null)throw Error(v(387));a=n.pendingProps,r=n.memoizedState,i=r.element,ol(e,n),Ga(n,a,null,t);var s=n.memoizedState;if(a=s.element,r.isDehydrated)if(r={element:a,isDehydrated:!1,cache:s.cache,pendingSuspenseBoundaries:s.pendingSuspenseBoundaries,transitions:s.transitions},n.updateQueue.baseState=r,n.memoizedState=r,n.flags&256){i=at(Error(v(423)),n),n=Ro(e,n,a,t,i);break e}else if(a!==i){i=at(Error(v(424)),n),n=Ro(e,n,a,t,i);break e}else for(ge=on(n.stateNode.containerInfo.firstChild),fe=n,L=!0,Ee=null,t=rl(n,null,a,t),n.child=t;t;)t.flags=t.flags&-3|4096,t=t.sibling;else{if(et(),a===i){n=He(e,n,t);break e}re(e,n,a,t)}n=n.child}return n;case 5:return cl(n),e===null&&wr(n),a=n.type,i=n.pendingProps,r=e!==null?e.memoizedProps:null,s=i.children,gr(a,i)?s=null:r!==null&&gr(a,r)&&(n.flags|=32),Dl(e,n),re(e,n,s,t),n.child;case 6:return e===null&&wr(n),null;case 13:return Pl(e,n,t);case 4:return hs(n,n.stateNode.containerInfo),a=n.pendingProps,e===null?n.child=nt(n,null,a,t):re(e,n,a,t),n.child;case 11:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),Io(e,n,a,i,t);case 7:return re(e,n,n.pendingProps,t),n.child;case 8:return re(e,n,n.pendingProps.children,t),n.child;case 12:return re(e,n,n.pendingProps.children,t),n.child;case 10:e:{if(a=n.type._context,i=n.pendingProps,r=n.memoizedProps,s=i.value,P(Wa,a._currentValue),a._currentValue=s,r!==null)if(De(r.value,s)){if(r.children===i.children&&!ue.current){n=He(e,n,t);break e}}else for(r=n.child,r!==null&&(r.return=n);r!==null;){var o=r.dependencies;if(o!==null){s=r.child;for(var c=o.firstContext;c!==null;){if(c.context===a){if(r.tag===1){c=We(-1,t&-t),c.tag=2;var d=r.updateQueue;if(d!==null){d=d.shared;var g=d.pending;g===null?c.next=c:(c.next=g.next,g.next=c),d.pending=c}}r.lanes|=t,c=r.alternate,c!==null&&(c.lanes|=t),Tr(r.return,t,n),o.lanes|=t;break}c=c.next}}else if(r.tag===10)s=r.type===n.type?null:r.child;else if(r.tag===18){if(s=r.return,s===null)throw Error(v(341));s.lanes|=t,o=s.alternate,o!==null&&(o.lanes|=t),Tr(s,t,n),s=r.sibling}else s=r.child;if(s!==null)s.return=r;else for(s=r;s!==null;){if(s===n){s=null;break}if(r=s.sibling,r!==null){r.return=s.return,s=r;break}s=s.return}r=s}re(e,n,i.children,t),n=n.child}return n;case 9:return i=n.type,a=n.pendingProps.children,Yn(n,t),i=Ae(i),a=a(i),n.flags|=1,re(e,n,a,t),n.child;case 14:return a=n.type,i=Ie(a,n.pendingProps),i=Ie(a.type,i),Mo(e,n,a,i,t);case 15:return Rl(e,n,n.type,n.pendingProps,t);case 17:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),xa(e,n),n.tag=1,he(a)?(e=!0,za(n)):e=!1,Yn(n,t),Il(n,a,i),Cr(n,a,i,t),xr(null,n,a,!0,e,t);case 19:return Fl(e,n,t);case 22:return Nl(e,n,t)}throw Error(v(156,n.tag))};function Xl(e,n){return Sc(e,n)}function Ch(e,n,t,a){this.tag=e,this.key=t,this.sibling=this.child=this.return=this.stateNode=this.type=this.elementType=null,this.index=0,this.ref=null,this.pendingProps=n,this.dependencies=this.memoizedState=this.updateQueue=this.memoizedProps=null,this.mode=a,this.subtreeFlags=this.flags=0,this.deletions=null,this.childLanes=this.lanes=0,this.alternate=null}function _e(e,n,t,a){return new Ch(e,n,t,a)}function ks(e){return e=e.prototype,!(!e||!e.isReactComponent)}function Ah(e){if(typeof e=="function")return ks(e)?1:0;if(e!=null){if(e=e.$$typeof,e===Kr)return 11;if(e===Hr)return 14}return 2}function un(e,n){var t=e.alternate;return t===null?(t=_e(e.tag,n,e.key,e.mode),t.elementType=e.elementType,t.type=e.type,t.stateNode=e.stateNode,t.alternate=e,e.alternate=t):(t.pendingProps=n,t.type=e.type,t.flags=0,t.subtreeFlags=0,t.deletions=null),t.flags=e.flags&14680064,t.childLanes=e.childLanes,t.lanes=e.lanes,t.child=e.child,t.memoizedProps=e.memoizedProps,t.memoizedState=e.memoizedState,t.updateQueue=e.updateQueue,n=e.dependencies,t.dependencies=n===null?null:{lanes:n.lanes,firstContext:n.firstContext},t.sibling=e.sibling,t.index=e.index,t.ref=e.ref,t}function Ma(e,n,t,a,i,r){var s=2;if(a=e,typeof e=="function")ks(e)&&(s=1);else if(typeof e=="string")s=5;else e:switch(e){case Pn:return Sn(t.children,i,r,n);case Gr:s=8,i|=8;break;case Hi:return e=_e(12,t,n,i|2),e.elementType=Hi,e.lanes=r,e;case Ji:return e=_e(13,t,n,i),e.elementType=Ji,e.lanes=r,e;case Qi:return e=_e(19,t,n,i),e.elementType=Qi,e.lanes=r,e;case cc:return ui(t,i,r,n);default:if(typeof e=="object"&&e!==null)switch(e.$$typeof){case sc:s=10;break e;case oc:s=9;break e;case Kr:s=11;break e;case Hr:s=14;break e;case Ye:s=16,a=null;break e}throw Error(v(130,e==null?e:typeof e,""))}return n=_e(s,t,n,i),n.elementType=e,n.type=a,n.lanes=r,n}function Sn(e,n,t,a){return e=_e(7,e,a,n),e.lanes=t,e}function ui(e,n,t,a){return e=_e(22,e,a,n),e.elementType=cc,e.lanes=t,e.stateNode={isHidden:!1},e}function Wi(e,n,t){return e=_e(6,e,null,n),e.lanes=t,e}function Ui(e,n,t){return n=_e(4,e.children!==null?e.children:[],e.key,n),n.lanes=t,n.stateNode={containerInfo:e.containerInfo,pendingChildren:null,implementation:e.implementation},n}function Sh(e,n,t,a,i){this.tag=n,this.containerInfo=e,this.finishedWork=this.pingCache=this.current=this.pendingChildren=null,this.timeoutHandle=-1,this.callbackNode=this.pendingContext=this.context=null,this.callbackPriority=0,this.eventTimes=Ai(0),this.expirationTimes=Ai(-1),this.entangledLanes=this.finishedLanes=this.mutableReadLanes=this.expiredLanes=this.pingedLanes=this.suspendedLanes=this.pendingLanes=0,this.entanglements=Ai(0),this.identifierPrefix=a,this.onRecoverableError=i,this.mutableSourceEagerHydrationData=null}function Is(e,n,t,a,i,r,s,o,c){return e=new Sh(e,n,t,o,c),n===1?(n=1,r===!0&&(n|=8)):n=0,r=_e(3,null,null,n),e.current=r,r.stateNode=e,r.memoizedState={element:a,isDehydrated:t,cache:null,transitions:null,pendingSuspenseBoundaries:null},us(r),e}function xh(e,n,t){var a=3<arguments.length&&arguments[3]!==void 0?arguments[3]:null;return{$$typeof:Vn,key:a==null?null:""+a,children:e,containerInfo:n,implementation:t}}function Zl(e){if(!e)return pn;e=e._reactInternals;e:{if(Nn(e)!==e||e.tag!==1)throw Error(v(170));var n=e;do{switch(n.tag){case 3:n=n.stateNode.context;break e;case 1:if(he(n.type)){n=n.stateNode.__reactInternalMemoizedMergedChildContext;break e}}n=n.return}while(n!==null);throw Error(v(171))}if(e.tag===1){var t=e.type;if(he(t))return Zc(e,t,n)}return n}function ed(e,n,t,a,i,r,s,o,c){return e=Is(t,a,!0,e,i,r,s,o,c),e.context=Zl(null),t=e.current,a=se(),i=dn(t),r=We(a,i),r.callback=n??null,cn(t,r,i),e.current.lanes=i,Qt(e,i,a),pe(e,a),e}function hi(e,n,t,a){var i=n.current,r=se(),s=dn(i);return t=Zl(t),n.context===null?n.context=t:n.pendingContext=t,n=We(r,s),n.payload={element:e},a=a===void 0?null:a,a!==null&&(n.callback=a),e=cn(i,n,s),e!==null&&(Ne(e,i,s,r),Ca(e,i,s)),s}function Za(e){if(e=e.current,!e.child)return null;switch(e.child.tag){case 5:return e.child.stateNode;default:return e.child.stateNode}}function Bo(e,n){if(e=e.memoizedState,e!==null&&e.dehydrated!==null){var t=e.retryLane;e.retryLane=t!==0&&t<n?t:n}}function Ms(e,n){Bo(e,n),(e=e.alternate)&&Bo(e,n)}function kh(){return null}var nd=typeof reportError=="function"?reportError:function(e){console.error(e)};function Es(e){this._internalRoot=e}pi.prototype.render=Es.prototype.render=function(e){var n=this._internalRoot;if(n===null)throw Error(v(409));hi(e,n,null,null)};pi.prototype.unmount=Es.prototype.unmount=function(){var e=this._internalRoot;if(e!==null){this._internalRoot=null;var n=e.containerInfo;En(function(){hi(null,e,null,null)}),n[Ge]=null}};function pi(e){this._internalRoot=e}pi.prototype.unstable_scheduleHydration=function(e){if(e){var n=Nc();e={blockedOn:null,target:e,priority:n};for(var t=0;t<Xe.length&&n!==0&&n<Xe[t].priority;t++);Xe.splice(t,0,e),t===0&&Vc(e)}};function Rs(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11)}function mi(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11&&(e.nodeType!==8||e.nodeValue!==" react-mount-point-unstable "))}function jo(){}function Ih(e,n,t,a,i){if(i){if(typeof a=="function"){var r=a;a=function(){var d=Za(s);r.call(d)}}var s=ed(n,a,e,0,null,!1,!1,"",jo);return e._reactRootContainer=s,e[Ge]=s.current,Ot(e.nodeType===8?e.parentNode:e),En(),s}for(;i=e.lastChild;)e.removeChild(i);if(typeof a=="function"){var o=a;a=function(){var d=Za(c);o.call(d)}}var c=Is(e,0,!1,null,null,!1,!1,"",jo);return e._reactRootContainer=c,e[Ge]=c.current,Ot(e.nodeType===8?e.parentNode:e),En(function(){hi(n,c,t,a)}),c}function gi(e,n,t,a,i){var r=t._reactRootContainer;if(r){var s=r;if(typeof i=="function"){var o=i;i=function(){var c=Za(s);o.call(c)}}hi(n,s,e,i)}else s=Ih(t,n,e,i,a);return Za(s)}Ec=function(e){switch(e.tag){case 3:var n=e.stateNode;if(n.current.memoizedState.isDehydrated){var t=wt(n.pendingLanes);t!==0&&(Yr(n,t|1),pe(n,G()),!(D&6)&&(it=G()+500,fn()))}break;case 13:En(function(){var a=Ke(e,1);if(a!==null){var i=se();Ne(a,e,1,i)}}),Ms(e,1)}};$r=function(e){if(e.tag===13){var n=Ke(e,134217728);if(n!==null){var t=se();Ne(n,e,134217728,t)}Ms(e,134217728)}};Rc=function(e){if(e.tag===13){var n=dn(e),t=Ke(e,n);if(t!==null){var a=se();Ne(t,e,n,a)}Ms(e,n)}};Nc=function(){return V};Dc=function(e,n){var t=V;try{return V=e,n()}finally{V=t}};rr=function(e,n,t){switch(n){case"input":if(Xi(e,t),n=t.name,t.type==="radio"&&n!=null){for(t=e;t.parentNode;)t=t.parentNode;for(t=t.querySelectorAll("input[name="+JSON.stringify(""+n)+'][type="radio"]'),n=0;n<t.length;n++){var a=t[n];if(a!==e&&a.form===e.form){var i=ri(a);if(!i)throw Error(v(90));dc(a),Xi(a,i)}}}break;case"textarea":hc(e,t);break;case"select":n=t.value,n!=null&&Kn(e,!!t.multiple,n,!1)}};bc=As;wc=En;var Mh={usingClientEntryPoint:!1,Events:[$t,On,ri,yc,vc,As]},yt={findFiberByHostInstance:Tn,bundleType:0,version:"18.3.1",rendererPackageName:"react-dom"},Eh={bundleType:yt.bundleType,version:yt.version,rendererPackageName:yt.rendererPackageName,rendererConfig:yt.rendererConfig,overrideHookState:null,overrideHookStateDeletePath:null,overrideHookStateRenamePath:null,overrideProps:null,overridePropsDeletePath:null,overridePropsRenamePath:null,setErrorHandler:null,setSuspenseHandler:null,scheduleUpdate:null,currentDispatcherRef:Je.ReactCurrentDispatcher,findHostInstanceByFiber:function(e){return e=Cc(e),e===null?null:e.stateNode},findFiberByHostInstance:yt.findFiberByHostInstance||kh,findHostInstancesForRefresh:null,scheduleRefresh:null,scheduleRoot:null,setRefreshHandler:null,getCurrentFiber:null,reconcilerVersion:"18.3.1-next-f1338f8080-20240426"};if(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__<"u"){var ya=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(!ya.isDisabled&&ya.supportsFiber)try{ni=ya.inject(Eh),qe=ya}catch{}}ve.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=Mh;ve.createPortal=function(e,n){var t=2<arguments.length&&arguments[2]!==void 0?arguments[2]:null;if(!Rs(n))throw Error(v(200));return xh(e,n,null,t)};ve.createRoot=function(e,n){if(!Rs(e))throw Error(v(299));var t=!1,a="",i=nd;return n!=null&&(n.unstable_strictMode===!0&&(t=!0),n.identifierPrefix!==void 0&&(a=n.identifierPrefix),n.onRecoverableError!==void 0&&(i=n.onRecoverableError)),n=Is(e,1,!1,null,null,t,!1,a,i),e[Ge]=n.current,Ot(e.nodeType===8?e.parentNode:e),new Es(n)};ve.findDOMNode=function(e){if(e==null)return null;if(e.nodeType===1)return e;var n=e._reactInternals;if(n===void 0)throw typeof e.render=="function"?Error(v(188)):(e=Object.keys(e).join(","),Error(v(268,e)));return e=Cc(n),e=e===null?null:e.stateNode,e};ve.flushSync=function(e){return En(e)};ve.hydrate=function(e,n,t){if(!mi(n))throw Error(v(200));return gi(null,e,n,!0,t)};ve.hydrateRoot=function(e,n,t){if(!Rs(e))throw Error(v(405));var a=t!=null&&t.hydratedSources||null,i=!1,r="",s=nd;if(t!=null&&(t.unstable_strictMode===!0&&(i=!0),t.identifierPrefix!==void 0&&(r=t.identifierPrefix),t.onRecoverableError!==void 0&&(s=t.onRecoverableError)),n=ed(n,null,e,1,t??null,i,!1,r,s),e[Ge]=n.current,Ot(e),a)for(e=0;e<a.length;e++)t=a[e],i=t._getVersion,i=i(t._source),n.mutableSourceEagerHydrationData==null?n.mutableSourceEagerHydrationData=[t,i]:n.mutableSourceEagerHydrationData.push(t,i);return new pi(n)};ve.render=function(e,n,t){if(!mi(n))throw Error(v(200));return gi(null,e,n,!1,t)};ve.unmountComponentAtNode=function(e){if(!mi(e))throw Error(v(40));return e._reactRootContainer?(En(function(){gi(null,null,e,!1,function(){e._reactRootContainer=null,e[Ge]=null})}),!0):!1};ve.unstable_batchedUpdates=As;ve.unstable_renderSubtreeIntoContainer=function(e,n,t,a){if(!mi(t))throw Error(v(200));if(e==null||e._reactInternals===void 0)throw Error(v(38));return gi(e,n,t,!1,a)};ve.version="18.3.1-next-f1338f8080-20240426";function td(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(td)}catch(e){console.error(e)}}td(),tc.exports=ve;var Rh=tc.exports,Wo=Rh;Gi.createRoot=Wo.createRoot,Gi.hydrateRoot=Wo.hydrateRoot;function Nh({sections:e,currentPath:n,onNavigate:t}){const[a,i]=en.useState(new Set),r=s=>{i(o=>{const c=new Set(o);return c.has(s)?c.delete(s):c.add(s),c})};return I.jsxs("aside",{className:"sidebar",children:[I.jsx("div",{className:"sidebar-header",children:I.jsx("h1",{className:"logo",children:I.jsx("span",{className:"logo-text",children:"AnalogIOC"})})}),I.jsx("nav",{className:"sidebar-nav",children:e.map(s=>I.jsxs("div",{className:"nav-section",children:[I.jsxs("button",{className:"section-header",onClick:()=>r(s.id),children:[I.jsx("span",{className:`chevron ${a.has(s.id)?"expanded":""}`,children:"›"}),I.jsx("span",{className:"section-title",children:s.title})]}),a.has(s.id)&&I.jsx("ul",{className:"page-list",children:s.pages.map(o=>I.jsx("li",{children:I.jsx("button",{className:`page-link ${n===o.path?"active":""}`,onClick:()=>t(o.path),children:o.metadata.title})},o.path))})]},s.id))})]})}function Dh(e,n){const t=n.match(/^([^:#?]+)\.md(#.*)?$/);if(!t||n.startsWith("/"))return null;const a=e.split("/").slice(0,-1);for(const i of t[1].split("/"))i===".."?a.pop():i!=="."&&a.push(i);return"/"+a.join("/")}function Vh({content:e,onNavigate:n,path:t=""}){const a=e.trim().split(`
-`),i=[];let r=!1,s=[],o=[];const c=m=>m.trim().replace(/^\||\|$/g,"").split("|").map(p=>p.trim()),d=m=>{const p=[];let f=m,b=0;const w=/(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g,N=f.match(w);if(!N)return m;let u=0;return N.forEach(l=>{const h=f.indexOf(l,u);if(h>u&&p.push(f.slice(u,h)),l.startsWith("`"))p.push(I.jsx("code",{children:l.slice(1,-1)},b++));else if(l.startsWith("**"))p.push(I.jsx("strong",{children:d(l.slice(2,-2))},b++));else if(l.startsWith("[")){const y=l.match(/\[([^\]]+)\]\(([^)]+)\)/);if(y){const[_,S,A]=y,x=Dh(t,A.replace(/^<|>$/g,""))??A;p.push(I.jsx("a",{href:x,onClick:O=>{x.startsWith("/")&&n&&(O.preventDefault(),n(x))},children:S},b++))}}u=h+l.length}),u<f.length&&p.push(f.slice(u)),p.length>0?p:m},g=m=>{if(o.length===0)return;const[p,...f]=o,b=f.filter(w=>!w.every(N=>/^:?-+:?$/.test(N)));i.push(I.jsxs("table",{children:[I.jsx("thead",{children:I.jsx("tr",{children:p.map((w,N)=>I.jsx("th",{children:d(w)},N))})}),I.jsx("tbody",{children:b.map((w,N)=>I.jsx("tr",{children:w.map((u,l)=>I.jsx("td",{children:d(u)},l))},N))})]},`table-${m}`)),o=[]};return a.forEach((m,p)=>{const f=m.trim();if(!r&&f.startsWith("|")){o.push(c(f));return}if(g(p),f.startsWith("```")){r?(r=!1,i.push(I.jsx("pre",{children:I.jsx("code",{children:s.join(`
-`)})},`code-${p}`))):(r=!0,s=[]);return}if(r){s.push(m);return}if(f.startsWith("### ")){i.push(I.jsx("h3",{children:f.slice(4)},p));return}if(f.startsWith("## ")){i.push(I.jsx("h2",{children:f.slice(3)},p));return}if(f.startsWith("# ")){i.push(I.jsx("h1",{children:f.slice(2)},p));return}if(f.startsWith("- ")){i.push(I.jsx("li",{children:d(f.slice(2))},p));return}if(f.match(/^\d+\.\s/)){i.push(I.jsx("li",{children:d(f.replace(/^\d+\.\s/,""))},p));return}if(f){i.push(I.jsx("p",{children:d(f)},p));return}i.push(I.jsx("br",{},p))}),g(a.length),I.jsx("div",{className:"markdown-content",children:i})}const Ph={title:"Cheatsheet",order:3},Fh=`
+`+r.stack}return{value:e,source:n,stack:i,digest:null}}function Bi(e,n,t){return{value:e,source:null,stack:t??null,digest:n??null}}function _r(e,n){try{console.error(n.value)}catch(t){setTimeout(function(){throw t})}}var sh=typeof WeakMap=="function"?WeakMap:Map;function Ml(e,n,t){t=We(-1,t),t.tag=3,t.payload={element:null};var a=n.value;return t.callback=function(){Ya||(Ya=!0,Fr=a),_r(e,n)},t}function El(e,n,t){t=We(-1,t),t.tag=3;var a=e.type.getDerivedStateFromError;if(typeof a=="function"){var i=n.value;t.payload=function(){return a(i)},t.callback=function(){_r(e,n)}}var r=e.stateNode;return r!==null&&typeof r.componentDidCatch=="function"&&(t.callback=function(){_r(e,n),typeof a!="function"&&(ln===null?ln=new Set([this]):ln.add(this));var s=n.stack;this.componentDidCatch(n.value,{componentStack:s!==null?s:""})}),t}function So(e,n,t){var a=e.pingCache;if(a===null){a=e.pingCache=new sh;var i=new Set;a.set(n,i)}else i=a.get(n),i===void 0&&(i=new Set,a.set(n,i));i.has(t)||(i.add(t),e=wh.bind(null,e,n,t),n.then(e,e))}function xo(e){do{var n;if((n=e.tag===13)&&(n=e.memoizedState,n=n!==null?n.dehydrated!==null:!0),n)return e;e=e.return}while(e!==null);return null}function ko(e,n,t,a,i){return e.mode&1?(e.flags|=65536,e.lanes=i,e):(e===n?e.flags|=65536:(e.flags|=128,t.flags|=131072,t.flags&=-52805,t.tag===1&&(t.alternate===null?t.tag=17:(n=We(-1,1),n.tag=2,cn(t,n,1))),t.lanes|=1),e)}var oh=Je.ReactCurrentOwner,de=!1;function re(e,n,t,a){n.child=e===null?rl(n,null,t,a):nt(n,e.child,t,a)}function Io(e,n,t,a,i){t=t.render;var r=n.ref;return Yn(n,i),a=fs(e,n,t,a,r,i),t=vs(),e!==null&&!de?(n.updateQueue=e.updateQueue,n.flags&=-2053,e.lanes&=~i,He(e,n,i)):(O&&t&&is(n),n.flags|=1,re(e,n,a,i),n.child)}function Mo(e,n,t,a,i){if(e===null){var r=t.type;return typeof r=="function"&&!ks(r)&&r.defaultProps===void 0&&t.compare===null&&t.defaultProps===void 0?(n.tag=15,n.type=r,Rl(e,n,r,a,i)):(e=Ma(t.type,null,a,n,n.mode,i),e.ref=n.ref,e.return=n,n.child=e)}if(r=e.child,!(e.lanes&i)){var s=r.memoizedProps;if(t=t.compare,t=t!==null?t:Ot,t(s,a)&&e.ref===n.ref)return He(e,n,i)}return n.flags|=1,e=un(r,a),e.ref=n.ref,e.return=n,n.child=e}function Rl(e,n,t,a,i){if(e!==null){var r=e.memoizedProps;if(Ot(r,a)&&e.ref===n.ref)if(de=!1,n.pendingProps=a=r,(e.lanes&i)!==0)e.flags&131072&&(de=!0);else return n.lanes=e.lanes,He(e,n,i)}return Sr(e,n,t,a,i)}function Dl(e,n,t){var a=n.pendingProps,i=a.children,r=e!==null?e.memoizedState:null;if(a.mode==="hidden")if(!(n.mode&1))n.memoizedState={baseLanes:0,cachePool:null,transitions:null},P(Un,me),me|=t;else{if(!(t&1073741824))return e=r!==null?r.baseLanes|t:t,n.lanes=n.childLanes=1073741824,n.memoizedState={baseLanes:e,cachePool:null,transitions:null},n.updateQueue=null,P(Un,me),me|=e,null;n.memoizedState={baseLanes:0,cachePool:null,transitions:null},a=r!==null?r.baseLanes:t,P(Un,me),me|=a}else r!==null?(a=r.baseLanes|t,n.memoizedState=null):a=t,P(Un,me),me|=a;return re(e,n,i,t),n.child}function Nl(e,n){var t=n.ref;(e===null&&t!==null||e!==null&&e.ref!==t)&&(n.flags|=512,n.flags|=2097152)}function Sr(e,n,t,a,i){var r=he(t)?xn:ie.current;return r=Zn(n,r),Yn(n,i),t=fs(e,n,t,a,r,i),a=vs(),e!==null&&!de?(n.updateQueue=e.updateQueue,n.flags&=-2053,e.lanes&=~i,He(e,n,i)):(O&&a&&is(n),n.flags|=1,re(e,n,t,i),n.child)}function Eo(e,n,t,a,i){if(he(t)){var r=!0;za(n)}else r=!1;if(Yn(n,i),n.stateNode===null)xa(e,n),Il(n,t,a),Ar(n,t,a,i),a=!0;else if(e===null){var s=n.stateNode,o=n.memoizedProps;s.props=o;var c=s.context,d=t.contextType;typeof d=="object"&&d!==null?d=_e(d):(d=he(t)?xn:ie.current,d=Zn(n,d));var g=t.getDerivedStateFromProps,m=typeof g=="function"||typeof s.getSnapshotBeforeUpdate=="function";m||typeof s.UNSAFE_componentWillReceiveProps!="function"&&typeof s.componentWillReceiveProps!="function"||(o!==a||c!==d)&&_o(n,s,a,d),$e=!1;var p=n.memoizedState;s.state=p,Ua(n,a,s,i),c=n.memoizedState,o!==a||p!==c||ue.current||$e?(typeof g=="function"&&(Cr(n,t,g,a),c=n.memoizedState),(o=$e||Ao(n,t,o,a,p,c,d))?(m||typeof s.UNSAFE_componentWillMount!="function"&&typeof s.componentWillMount!="function"||(typeof s.componentWillMount=="function"&&s.componentWillMount(),typeof s.UNSAFE_componentWillMount=="function"&&s.UNSAFE_componentWillMount()),typeof s.componentDidMount=="function"&&(n.flags|=4194308)):(typeof s.componentDidMount=="function"&&(n.flags|=4194308),n.memoizedProps=a,n.memoizedState=c),s.props=a,s.state=c,s.context=d,a=o):(typeof s.componentDidMount=="function"&&(n.flags|=4194308),a=!1)}else{s=n.stateNode,ol(e,n),o=n.memoizedProps,d=n.type===n.elementType?o:Ie(n.type,o),s.props=d,m=n.pendingProps,p=s.context,c=t.contextType,typeof c=="object"&&c!==null?c=_e(c):(c=he(t)?xn:ie.current,c=Zn(n,c));var f=t.getDerivedStateFromProps;(g=typeof f=="function"||typeof s.getSnapshotBeforeUpdate=="function")||typeof s.UNSAFE_componentWillReceiveProps!="function"&&typeof s.componentWillReceiveProps!="function"||(o!==m||p!==c)&&_o(n,s,a,c),$e=!1,p=n.memoizedState,s.state=p,Ua(n,a,s,i);var b=n.memoizedState;o!==m||p!==b||ue.current||$e?(typeof f=="function"&&(Cr(n,t,f,a),b=n.memoizedState),(d=$e||Ao(n,t,d,a,p,b,c)||!1)?(g||typeof s.UNSAFE_componentWillUpdate!="function"&&typeof s.componentWillUpdate!="function"||(typeof s.componentWillUpdate=="function"&&s.componentWillUpdate(a,b,c),typeof s.UNSAFE_componentWillUpdate=="function"&&s.UNSAFE_componentWillUpdate(a,b,c)),typeof s.componentDidUpdate=="function"&&(n.flags|=4),typeof s.getSnapshotBeforeUpdate=="function"&&(n.flags|=1024)):(typeof s.componentDidUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=4),typeof s.getSnapshotBeforeUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=1024),n.memoizedProps=a,n.memoizedState=b),s.props=a,s.state=b,s.context=c,a=d):(typeof s.componentDidUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=4),typeof s.getSnapshotBeforeUpdate!="function"||o===e.memoizedProps&&p===e.memoizedState||(n.flags|=1024),a=!1)}return xr(e,n,t,a,r,i)}function xr(e,n,t,a,i,r){Nl(e,n);var s=(n.flags&128)!==0;if(!a&&!s)return i&&go(n,t,!1),He(e,n,r);a=n.stateNode,oh.current=n;var o=s&&typeof t.getDerivedStateFromError!="function"?null:a.render();return n.flags|=1,e!==null&&s?(n.child=nt(n,e.child,null,r),n.child=nt(n,null,o,r)):re(e,n,o,r),n.memoizedState=a.state,i&&go(n,t,!0),n.child}function Fl(e){var n=e.stateNode;n.pendingContext?mo(e,n.pendingContext,n.pendingContext!==n.context):n.context&&mo(e,n.context,!1),hs(e,n.containerInfo)}function Ro(e,n,t,a,i){return et(),ss(i),n.flags|=256,re(e,n,t,a),n.child}var kr={dehydrated:null,treeContext:null,retryLane:0};function Ir(e){return{baseLanes:e,cachePool:null,transitions:null}}function Pl(e,n,t){var a=n.pendingProps,i=z.current,r=!1,s=(n.flags&128)!==0,o;if((o=s)||(o=e!==null&&e.memoizedState===null?!1:(i&2)!==0),o?(r=!0,n.flags&=-129):(e===null||e.memoizedState!==null)&&(i|=1),P(z,i&1),e===null)return wr(n),e=n.memoizedState,e!==null&&(e=e.dehydrated,e!==null)?(n.mode&1?e.data==="$!"?n.lanes=8:n.lanes=1073741824:n.lanes=1,null):(s=a.children,e=a.fallback,r?(a=n.mode,r=n.child,s={mode:"hidden",children:s},!(a&1)&&r!==null?(r.childLanes=0,r.pendingProps=s):r=ui(s,a,0,null),e=Sn(e,a,t,null),r.return=n,e.return=n,r.sibling=e,n.child=r,n.child.memoizedState=Ir(t),n.memoizedState=kr,e):ws(n,s));if(i=e.memoizedState,i!==null&&(o=i.dehydrated,o!==null))return ch(e,n,s,a,o,i,t);if(r){r=a.fallback,s=n.mode,i=e.child,o=i.sibling;var c={mode:"hidden",children:a.children};return!(s&1)&&n.child!==i?(a=n.child,a.childLanes=0,a.pendingProps=c,n.deletions=null):(a=un(i,c),a.subtreeFlags=i.subtreeFlags&14680064),o!==null?r=un(o,r):(r=Sn(r,s,t,null),r.flags|=2),r.return=n,a.return=n,a.sibling=r,n.child=a,a=r,r=n.child,s=e.child.memoizedState,s=s===null?Ir(t):{baseLanes:s.baseLanes|t,cachePool:null,transitions:s.transitions},r.memoizedState=s,r.childLanes=e.childLanes&~t,n.memoizedState=kr,a}return r=e.child,e=r.sibling,a=un(r,{mode:"visible",children:a.children}),!(n.mode&1)&&(a.lanes=t),a.return=n,a.sibling=null,e!==null&&(t=n.deletions,t===null?(n.deletions=[e],n.flags|=16):t.push(e)),n.child=a,n.memoizedState=null,a}function ws(e,n){return n=ui({mode:"visible",children:n},e.mode,0,null),n.return=e,e.child=n}function ma(e,n,t,a){return a!==null&&ss(a),nt(n,e.child,null,t),e=ws(n,n.pendingProps.children),e.flags|=2,n.memoizedState=null,e}function ch(e,n,t,a,i,r,s){if(t)return n.flags&256?(n.flags&=-257,a=Bi(Error(y(422))),ma(e,n,s,a)):n.memoizedState!==null?(n.child=e.child,n.flags|=128,null):(r=a.fallback,i=n.mode,a=ui({mode:"visible",children:a.children},i,0,null),r=Sn(r,i,s,null),r.flags|=2,a.return=n,r.return=n,a.sibling=r,n.child=a,n.mode&1&&nt(n,e.child,null,s),n.child.memoizedState=Ir(s),n.memoizedState=kr,r);if(!(n.mode&1))return ma(e,n,s,null);if(i.data==="$!"){if(a=i.nextSibling&&i.nextSibling.dataset,a)var o=a.dgst;return a=o,r=Error(y(419)),a=Bi(r,a,void 0),ma(e,n,s,a)}if(o=(s&e.childLanes)!==0,de||o){if(a=$,a!==null){switch(s&-s){case 4:i=2;break;case 16:i=8;break;case 64:case 128:case 256:case 512:case 1024:case 2048:case 4096:case 8192:case 16384:case 32768:case 65536:case 131072:case 262144:case 524288:case 1048576:case 2097152:case 4194304:case 8388608:case 16777216:case 33554432:case 67108864:i=32;break;case 536870912:i=268435456;break;default:i=0}i=i&(a.suspendedLanes|s)?0:i,i!==0&&i!==r.retryLane&&(r.retryLane=i,Ke(e,i),De(a,e,i,-1))}return xs(),a=Bi(Error(y(421))),ma(e,n,s,a)}return i.data==="$?"?(n.flags|=128,n.child=e.child,n=Th.bind(null,e),i._reactRetry=n,null):(e=r.treeContext,ge=on(i.nextSibling),fe=n,O=!0,Ee=null,e!==null&&(we[Te++]=Be,we[Te++]=je,we[Te++]=kn,Be=e.id,je=e.overflow,kn=n),n=ws(n,a.children),n.flags|=4096,n)}function Do(e,n,t){e.lanes|=n;var a=e.alternate;a!==null&&(a.lanes|=n),Tr(e.return,n,t)}function ji(e,n,t,a,i){var r=e.memoizedState;r===null?e.memoizedState={isBackwards:n,rendering:null,renderingStartTime:0,last:a,tail:t,tailMode:i}:(r.isBackwards=n,r.rendering=null,r.renderingStartTime=0,r.last=a,r.tail=t,r.tailMode=i)}function ql(e,n,t){var a=n.pendingProps,i=a.revealOrder,r=a.tail;if(re(e,n,a.children,t),a=z.current,a&2)a=a&1|2,n.flags|=128;else{if(e!==null&&e.flags&128)e:for(e=n.child;e!==null;){if(e.tag===13)e.memoizedState!==null&&Do(e,t,n);else if(e.tag===19)Do(e,t,n);else if(e.child!==null){e.child.return=e,e=e.child;continue}if(e===n)break e;for(;e.sibling===null;){if(e.return===null||e.return===n)break e;e=e.return}e.sibling.return=e.return,e=e.sibling}a&=1}if(P(z,a),!(n.mode&1))n.memoizedState=null;else switch(i){case"forwards":for(t=n.child,i=null;t!==null;)e=t.alternate,e!==null&&Ka(e)===null&&(i=t),t=t.sibling;t=i,t===null?(i=n.child,n.child=null):(i=t.sibling,t.sibling=null),ji(n,!1,i,t,r);break;case"backwards":for(t=null,i=n.child,n.child=null;i!==null;){if(e=i.alternate,e!==null&&Ka(e)===null){n.child=i;break}e=i.sibling,i.sibling=t,t=i,i=e}ji(n,!0,t,null,r);break;case"together":ji(n,!1,null,null,void 0);break;default:n.memoizedState=null}return n.child}function xa(e,n){!(n.mode&1)&&e!==null&&(e.alternate=null,n.alternate=null,n.flags|=2)}function He(e,n,t){if(e!==null&&(n.dependencies=e.dependencies),Mn|=n.lanes,!(t&n.childLanes))return null;if(e!==null&&n.child!==e.child)throw Error(y(153));if(n.child!==null){for(e=n.child,t=un(e,e.pendingProps),n.child=t,t.return=n;e.sibling!==null;)e=e.sibling,t=t.sibling=un(e,e.pendingProps),t.return=n;t.sibling=null}return n.child}function lh(e,n,t){switch(n.tag){case 3:Fl(n),et();break;case 5:cl(n);break;case 1:he(n.type)&&za(n);break;case 4:hs(n,n.stateNode.containerInfo);break;case 10:var a=n.type._context,i=n.memoizedProps.value;P(Wa,a._currentValue),a._currentValue=i;break;case 13:if(a=n.memoizedState,a!==null)return a.dehydrated!==null?(P(z,z.current&1),n.flags|=128,null):t&n.child.childLanes?Pl(e,n,t):(P(z,z.current&1),e=He(e,n,t),e!==null?e.sibling:null);P(z,z.current&1);break;case 19:if(a=(t&n.childLanes)!==0,e.flags&128){if(a)return ql(e,n,t);n.flags|=128}if(i=n.memoizedState,i!==null&&(i.rendering=null,i.tail=null,i.lastEffect=null),P(z,z.current),a)break;return null;case 22:case 23:return n.lanes=0,Dl(e,n,t)}return He(e,n,t)}var Vl,Mr,Ol,Ll;Vl=function(e,n){for(var t=n.child;t!==null;){if(t.tag===5||t.tag===6)e.appendChild(t.stateNode);else if(t.tag!==4&&t.child!==null){t.child.return=t,t=t.child;continue}if(t===n)break;for(;t.sibling===null;){if(t.return===null||t.return===n)return;t=t.return}t.sibling.return=t.return,t=t.sibling}};Mr=function(){};Ol=function(e,n,t,a){var i=e.memoizedProps;if(i!==a){e=n.stateNode,An(Oe.current);var r=null;switch(t){case"input":i=$i(e,i),a=$i(e,a),r=[];break;case"select":i=j({},i,{value:void 0}),a=j({},a,{value:void 0}),r=[];break;case"textarea":i=er(e,i),a=er(e,a),r=[];break;default:typeof i.onClick!="function"&&typeof a.onClick=="function"&&(e.onclick=Oa)}tr(t,a);var s;t=null;for(d in i)if(!a.hasOwnProperty(d)&&i.hasOwnProperty(d)&&i[d]!=null)if(d==="style"){var o=i[d];for(s in o)o.hasOwnProperty(s)&&(t||(t={}),t[s]="")}else d!=="dangerouslySetInnerHTML"&&d!=="children"&&d!=="suppressContentEditableWarning"&&d!=="suppressHydrationWarning"&&d!=="autoFocus"&&(Rt.hasOwnProperty(d)?r||(r=[]):(r=r||[]).push(d,null));for(d in a){var c=a[d];if(o=i!=null?i[d]:void 0,a.hasOwnProperty(d)&&c!==o&&(c!=null||o!=null))if(d==="style")if(o){for(s in o)!o.hasOwnProperty(s)||c&&c.hasOwnProperty(s)||(t||(t={}),t[s]="");for(s in c)c.hasOwnProperty(s)&&o[s]!==c[s]&&(t||(t={}),t[s]=c[s])}else t||(r||(r=[]),r.push(d,t)),t=c;else d==="dangerouslySetInnerHTML"?(c=c?c.__html:void 0,o=o?o.__html:void 0,c!=null&&o!==c&&(r=r||[]).push(d,c)):d==="children"?typeof c!="string"&&typeof c!="number"||(r=r||[]).push(d,""+c):d!=="suppressContentEditableWarning"&&d!=="suppressHydrationWarning"&&(Rt.hasOwnProperty(d)?(c!=null&&d==="onScroll"&&q("scroll",e),r||o===c||(r=[])):(r=r||[]).push(d,c))}t&&(r=r||[]).push("style",t);var d=r;(n.updateQueue=d)&&(n.flags|=4)}};Ll=function(e,n,t,a){t!==a&&(n.flags|=4)};function ft(e,n){if(!O)switch(e.tailMode){case"hidden":n=e.tail;for(var t=null;n!==null;)n.alternate!==null&&(t=n),n=n.sibling;t===null?e.tail=null:t.sibling=null;break;case"collapsed":t=e.tail;for(var a=null;t!==null;)t.alternate!==null&&(a=t),t=t.sibling;a===null?n||e.tail===null?e.tail=null:e.tail.sibling=null:a.sibling=null}}function te(e){var n=e.alternate!==null&&e.alternate.child===e.child,t=0,a=0;if(n)for(var i=e.child;i!==null;)t|=i.lanes|i.childLanes,a|=i.subtreeFlags&14680064,a|=i.flags&14680064,i.return=e,i=i.sibling;else for(i=e.child;i!==null;)t|=i.lanes|i.childLanes,a|=i.subtreeFlags,a|=i.flags,i.return=e,i=i.sibling;return e.subtreeFlags|=a,e.childLanes=t,n}function dh(e,n,t){var a=n.pendingProps;switch(rs(n),n.tag){case 2:case 16:case 15:case 0:case 11:case 7:case 8:case 12:case 9:case 14:return te(n),null;case 1:return he(n.type)&&La(),te(n),null;case 3:return a=n.stateNode,tt(),V(ue),V(ie),ms(),a.pendingContext&&(a.context=a.pendingContext,a.pendingContext=null),(e===null||e.child===null)&&(ha(n)?n.flags|=4:e===null||e.memoizedState.isDehydrated&&!(n.flags&256)||(n.flags|=1024,Ee!==null&&(Vr(Ee),Ee=null))),Mr(e,n),te(n),null;case 5:ps(n);var i=An(Wt.current);if(t=n.type,e!==null&&n.stateNode!=null)Ol(e,n,t,a,i),e.ref!==n.ref&&(n.flags|=512,n.flags|=2097152);else{if(!a){if(n.stateNode===null)throw Error(y(166));return te(n),null}if(e=An(Oe.current),ha(n)){a=n.stateNode,t=n.type;var r=n.memoizedProps;switch(a[qe]=n,a[Bt]=r,e=(n.mode&1)!==0,t){case"dialog":q("cancel",a),q("close",a);break;case"iframe":case"object":case"embed":q("load",a);break;case"video":case"audio":for(i=0;i<Tt.length;i++)q(Tt[i],a);break;case"source":q("error",a);break;case"img":case"image":case"link":q("error",a),q("load",a);break;case"details":q("toggle",a);break;case"input":zs(a,r),q("invalid",a);break;case"select":a._wrapperState={wasMultiple:!!r.multiple},q("invalid",a);break;case"textarea":js(a,r),q("invalid",a)}tr(t,r),i=null;for(var s in r)if(r.hasOwnProperty(s)){var o=r[s];s==="children"?typeof o=="string"?a.textContent!==o&&(r.suppressHydrationWarning!==!0&&ua(a.textContent,o,e),i=["children",o]):typeof o=="number"&&a.textContent!==""+o&&(r.suppressHydrationWarning!==!0&&ua(a.textContent,o,e),i=["children",""+o]):Rt.hasOwnProperty(s)&&o!=null&&s==="onScroll"&&q("scroll",a)}switch(t){case"input":aa(a),Bs(a,r,!0);break;case"textarea":aa(a),Ws(a);break;case"select":case"option":break;default:typeof r.onClick=="function"&&(a.onclick=Oa)}a=i,n.updateQueue=a,a!==null&&(n.flags|=4)}else{s=i.nodeType===9?i:i.ownerDocument,e==="http://www.w3.org/1999/xhtml"&&(e=pc(t)),e==="http://www.w3.org/1999/xhtml"?t==="script"?(e=s.createElement("div"),e.innerHTML="<script><\/script>",e=e.removeChild(e.firstChild)):typeof a.is=="string"?e=s.createElement(t,{is:a.is}):(e=s.createElement(t),t==="select"&&(s=e,a.multiple?s.multiple=!0:a.size&&(s.size=a.size))):e=s.createElementNS(e,t),e[qe]=n,e[Bt]=a,Vl(e,n,!1,!1),n.stateNode=e;e:{switch(s=ar(t,a),t){case"dialog":q("cancel",e),q("close",e),i=a;break;case"iframe":case"object":case"embed":q("load",e),i=a;break;case"video":case"audio":for(i=0;i<Tt.length;i++)q(Tt[i],e);i=a;break;case"source":q("error",e),i=a;break;case"img":case"image":case"link":q("error",e),q("load",e),i=a;break;case"details":q("toggle",e),i=a;break;case"input":zs(e,a),i=$i(e,a),q("invalid",e);break;case"option":i=a;break;case"select":e._wrapperState={wasMultiple:!!a.multiple},i=j({},a,{value:void 0}),q("invalid",e);break;case"textarea":js(e,a),i=er(e,a),q("invalid",e);break;default:i=a}tr(t,i),o=i;for(r in o)if(o.hasOwnProperty(r)){var c=o[r];r==="style"?fc(e,c):r==="dangerouslySetInnerHTML"?(c=c?c.__html:void 0,c!=null&&mc(e,c)):r==="children"?typeof c=="string"?(t!=="textarea"||c!=="")&&Dt(e,c):typeof c=="number"&&Dt(e,""+c):r!=="suppressContentEditableWarning"&&r!=="suppressHydrationWarning"&&r!=="autoFocus"&&(Rt.hasOwnProperty(r)?c!=null&&r==="onScroll"&&q("scroll",e):c!=null&&Gr(e,r,c,s))}switch(t){case"input":aa(e),Bs(e,a,!1);break;case"textarea":aa(e),Ws(e);break;case"option":a.value!=null&&e.setAttribute("value",""+hn(a.value));break;case"select":e.multiple=!!a.multiple,r=a.value,r!=null?Kn(e,!!a.multiple,r,!1):a.defaultValue!=null&&Kn(e,!!a.multiple,a.defaultValue,!0);break;default:typeof i.onClick=="function"&&(e.onclick=Oa)}switch(t){case"button":case"input":case"select":case"textarea":a=!!a.autoFocus;break e;case"img":a=!0;break e;default:a=!1}}a&&(n.flags|=4)}n.ref!==null&&(n.flags|=512,n.flags|=2097152)}return te(n),null;case 6:if(e&&n.stateNode!=null)Ll(e,n,e.memoizedProps,a);else{if(typeof a!="string"&&n.stateNode===null)throw Error(y(166));if(t=An(Wt.current),An(Oe.current),ha(n)){if(a=n.stateNode,t=n.memoizedProps,a[qe]=n,(r=a.nodeValue!==t)&&(e=fe,e!==null))switch(e.tag){case 3:ua(a.nodeValue,t,(e.mode&1)!==0);break;case 5:e.memoizedProps.suppressHydrationWarning!==!0&&ua(a.nodeValue,t,(e.mode&1)!==0)}r&&(n.flags|=4)}else a=(t.nodeType===9?t:t.ownerDocument).createTextNode(a),a[qe]=n,n.stateNode=a}return te(n),null;case 13:if(V(z),a=n.memoizedState,e===null||e.memoizedState!==null&&e.memoizedState.dehydrated!==null){if(O&&ge!==null&&n.mode&1&&!(n.flags&128))al(),et(),n.flags|=98560,r=!1;else if(r=ha(n),a!==null&&a.dehydrated!==null){if(e===null){if(!r)throw Error(y(318));if(r=n.memoizedState,r=r!==null?r.dehydrated:null,!r)throw Error(y(317));r[qe]=n}else et(),!(n.flags&128)&&(n.memoizedState=null),n.flags|=4;te(n),r=!1}else Ee!==null&&(Vr(Ee),Ee=null),r=!0;if(!r)return n.flags&65536?n:null}return n.flags&128?(n.lanes=t,n):(a=a!==null,a!==(e!==null&&e.memoizedState!==null)&&a&&(n.child.flags|=8192,n.mode&1&&(e===null||z.current&1?J===0&&(J=3):xs())),n.updateQueue!==null&&(n.flags|=4),te(n),null);case 4:return tt(),Mr(e,n),e===null&&Lt(n.stateNode.containerInfo),te(n),null;case 10:return ls(n.type._context),te(n),null;case 17:return he(n.type)&&La(),te(n),null;case 19:if(V(z),r=n.memoizedState,r===null)return te(n),null;if(a=(n.flags&128)!==0,s=r.rendering,s===null)if(a)ft(r,!1);else{if(J!==0||e!==null&&e.flags&128)for(e=n.child;e!==null;){if(s=Ka(e),s!==null){for(n.flags|=128,ft(r,!1),a=s.updateQueue,a!==null&&(n.updateQueue=a,n.flags|=4),n.subtreeFlags=0,a=t,t=n.child;t!==null;)r=t,e=a,r.flags&=14680066,s=r.alternate,s===null?(r.childLanes=0,r.lanes=e,r.child=null,r.subtreeFlags=0,r.memoizedProps=null,r.memoizedState=null,r.updateQueue=null,r.dependencies=null,r.stateNode=null):(r.childLanes=s.childLanes,r.lanes=s.lanes,r.child=s.child,r.subtreeFlags=0,r.deletions=null,r.memoizedProps=s.memoizedProps,r.memoizedState=s.memoizedState,r.updateQueue=s.updateQueue,r.type=s.type,e=s.dependencies,r.dependencies=e===null?null:{lanes:e.lanes,firstContext:e.firstContext}),t=t.sibling;return P(z,z.current&1|2),n.child}e=e.sibling}r.tail!==null&&U()>it&&(n.flags|=128,a=!0,ft(r,!1),n.lanes=4194304)}else{if(!a)if(e=Ka(s),e!==null){if(n.flags|=128,a=!0,t=e.updateQueue,t!==null&&(n.updateQueue=t,n.flags|=4),ft(r,!0),r.tail===null&&r.tailMode==="hidden"&&!s.alternate&&!O)return te(n),null}else 2*U()-r.renderingStartTime>it&&t!==1073741824&&(n.flags|=128,a=!0,ft(r,!1),n.lanes=4194304);r.isBackwards?(s.sibling=n.child,n.child=s):(t=r.last,t!==null?t.sibling=s:n.child=s,r.last=s)}return r.tail!==null?(n=r.tail,r.rendering=n,r.tail=n.sibling,r.renderingStartTime=U(),n.sibling=null,t=z.current,P(z,a?t&1|2:t&1),n):(te(n),null);case 22:case 23:return Ss(),a=n.memoizedState!==null,e!==null&&e.memoizedState!==null!==a&&(n.flags|=8192),a&&n.mode&1?me&1073741824&&(te(n),n.subtreeFlags&6&&(n.flags|=8192)):te(n),null;case 24:return null;case 25:return null}throw Error(y(156,n.tag))}function uh(e,n){switch(rs(n),n.tag){case 1:return he(n.type)&&La(),e=n.flags,e&65536?(n.flags=e&-65537|128,n):null;case 3:return tt(),V(ue),V(ie),ms(),e=n.flags,e&65536&&!(e&128)?(n.flags=e&-65537|128,n):null;case 5:return ps(n),null;case 13:if(V(z),e=n.memoizedState,e!==null&&e.dehydrated!==null){if(n.alternate===null)throw Error(y(340));et()}return e=n.flags,e&65536?(n.flags=e&-65537|128,n):null;case 19:return V(z),null;case 4:return tt(),null;case 10:return ls(n.type._context),null;case 22:case 23:return Ss(),null;case 24:return null;default:return null}}var ga=!1,ae=!1,hh=typeof WeakSet=="function"?WeakSet:Set,T=null;function Gn(e,n){var t=e.ref;if(t!==null)if(typeof t=="function")try{t(null)}catch(a){W(e,n,a)}else t.current=null}function Er(e,n,t){try{t()}catch(a){W(e,n,a)}}var No=!1;function ph(e,n){if(pr=Pa,e=Gc(),as(e)){if("selectionStart"in e)var t={start:e.selectionStart,end:e.selectionEnd};else e:{t=(t=e.ownerDocument)&&t.defaultView||window;var a=t.getSelection&&t.getSelection();if(a&&a.rangeCount!==0){t=a.anchorNode;var i=a.anchorOffset,r=a.focusNode;a=a.focusOffset;try{t.nodeType,r.nodeType}catch{t=null;break e}var s=0,o=-1,c=-1,d=0,g=0,m=e,p=null;n:for(;;){for(var f;m!==t||i!==0&&m.nodeType!==3||(o=s+i),m!==r||a!==0&&m.nodeType!==3||(c=s+a),m.nodeType===3&&(s+=m.nodeValue.length),(f=m.firstChild)!==null;)p=m,m=f;for(;;){if(m===e)break n;if(p===t&&++d===i&&(o=s),p===r&&++g===a&&(c=s),(f=m.nextSibling)!==null)break;m=p,p=m.parentNode}m=f}t=o===-1||c===-1?null:{start:o,end:c}}else t=null}t=t||{start:0,end:0}}else t=null;for(mr={focusedElem:e,selectionRange:t},Pa=!1,T=n;T!==null;)if(n=T,e=n.child,(n.subtreeFlags&1028)!==0&&e!==null)e.return=n,T=e;else for(;T!==null;){n=T;try{var b=n.alternate;if(n.flags&1024)switch(n.tag){case 0:case 11:case 15:break;case 1:if(b!==null){var w=b.memoizedProps,D=b.memoizedState,u=n.stateNode,l=u.getSnapshotBeforeUpdate(n.elementType===n.type?w:Ie(n.type,w),D);u.__reactInternalSnapshotBeforeUpdate=l}break;case 3:var h=n.stateNode.containerInfo;h.nodeType===1?h.textContent="":h.nodeType===9&&h.documentElement&&h.removeChild(h.documentElement);break;case 5:case 6:case 4:case 17:break;default:throw Error(y(163))}}catch(v){W(n,n.return,v)}if(e=n.sibling,e!==null){e.return=n.return,T=e;break}T=n.return}return b=No,No=!1,b}function It(e,n,t){var a=n.updateQueue;if(a=a!==null?a.lastEffect:null,a!==null){var i=a=a.next;do{if((i.tag&e)===e){var r=i.destroy;i.destroy=void 0,r!==void 0&&Er(n,t,r)}i=i.next}while(i!==a)}}function li(e,n){if(n=n.updateQueue,n=n!==null?n.lastEffect:null,n!==null){var t=n=n.next;do{if((t.tag&e)===e){var a=t.create;t.destroy=a()}t=t.next}while(t!==n)}}function Rr(e){var n=e.ref;if(n!==null){var t=e.stateNode;switch(e.tag){case 5:e=t;break;default:e=t}typeof n=="function"?n(e):n.current=e}}function zl(e){var n=e.alternate;n!==null&&(e.alternate=null,zl(n)),e.child=null,e.deletions=null,e.sibling=null,e.tag===5&&(n=e.stateNode,n!==null&&(delete n[qe],delete n[Bt],delete n[vr],delete n[Qu],delete n[Yu])),e.stateNode=null,e.return=null,e.dependencies=null,e.memoizedProps=null,e.memoizedState=null,e.pendingProps=null,e.stateNode=null,e.updateQueue=null}function Bl(e){return e.tag===5||e.tag===3||e.tag===4}function Fo(e){e:for(;;){for(;e.sibling===null;){if(e.return===null||Bl(e.return))return null;e=e.return}for(e.sibling.return=e.return,e=e.sibling;e.tag!==5&&e.tag!==6&&e.tag!==18;){if(e.flags&2||e.child===null||e.tag===4)continue e;e.child.return=e,e=e.child}if(!(e.flags&2))return e.stateNode}}function Dr(e,n,t){var a=e.tag;if(a===5||a===6)e=e.stateNode,n?t.nodeType===8?t.parentNode.insertBefore(e,n):t.insertBefore(e,n):(t.nodeType===8?(n=t.parentNode,n.insertBefore(e,t)):(n=t,n.appendChild(e)),t=t._reactRootContainer,t!=null||n.onclick!==null||(n.onclick=Oa));else if(a!==4&&(e=e.child,e!==null))for(Dr(e,n,t),e=e.sibling;e!==null;)Dr(e,n,t),e=e.sibling}function Nr(e,n,t){var a=e.tag;if(a===5||a===6)e=e.stateNode,n?t.insertBefore(e,n):t.appendChild(e);else if(a!==4&&(e=e.child,e!==null))for(Nr(e,n,t),e=e.sibling;e!==null;)Nr(e,n,t),e=e.sibling}var X=null,Me=!1;function Qe(e,n,t){for(t=t.child;t!==null;)jl(e,n,t),t=t.sibling}function jl(e,n,t){if(Ve&&typeof Ve.onCommitFiberUnmount=="function")try{Ve.onCommitFiberUnmount(ni,t)}catch{}switch(t.tag){case 5:ae||Gn(t,n);case 6:var a=X,i=Me;X=null,Qe(e,n,t),X=a,Me=i,X!==null&&(Me?(e=X,t=t.stateNode,e.nodeType===8?e.parentNode.removeChild(t):e.removeChild(t)):X.removeChild(t.stateNode));break;case 18:X!==null&&(Me?(e=X,t=t.stateNode,e.nodeType===8?Pi(e.parentNode,t):e.nodeType===1&&Pi(e,t),qt(e)):Pi(X,t.stateNode));break;case 4:a=X,i=Me,X=t.stateNode.containerInfo,Me=!0,Qe(e,n,t),X=a,Me=i;break;case 0:case 11:case 14:case 15:if(!ae&&(a=t.updateQueue,a!==null&&(a=a.lastEffect,a!==null))){i=a=a.next;do{var r=i,s=r.destroy;r=r.tag,s!==void 0&&(r&2||r&4)&&Er(t,n,s),i=i.next}while(i!==a)}Qe(e,n,t);break;case 1:if(!ae&&(Gn(t,n),a=t.stateNode,typeof a.componentWillUnmount=="function"))try{a.props=t.memoizedProps,a.state=t.memoizedState,a.componentWillUnmount()}catch(o){W(t,n,o)}Qe(e,n,t);break;case 21:Qe(e,n,t);break;case 22:t.mode&1?(ae=(a=ae)||t.memoizedState!==null,Qe(e,n,t),ae=a):Qe(e,n,t);break;default:Qe(e,n,t)}}function Po(e){var n=e.updateQueue;if(n!==null){e.updateQueue=null;var t=e.stateNode;t===null&&(t=e.stateNode=new hh),n.forEach(function(a){var i=Ch.bind(null,e,a);t.has(a)||(t.add(a),a.then(i,i))})}}function ke(e,n){var t=n.deletions;if(t!==null)for(var a=0;a<t.length;a++){var i=t[a];try{var r=e,s=n,o=s;e:for(;o!==null;){switch(o.tag){case 5:X=o.stateNode,Me=!1;break e;case 3:X=o.stateNode.containerInfo,Me=!0;break e;case 4:X=o.stateNode.containerInfo,Me=!0;break e}o=o.return}if(X===null)throw Error(y(160));jl(r,s,i),X=null,Me=!1;var c=i.alternate;c!==null&&(c.return=null),i.return=null}catch(d){W(i,n,d)}}if(n.subtreeFlags&12854)for(n=n.child;n!==null;)Wl(n,e),n=n.sibling}function Wl(e,n){var t=e.alternate,a=e.flags;switch(e.tag){case 0:case 11:case 14:case 15:if(ke(n,e),Fe(e),a&4){try{It(3,e,e.return),li(3,e)}catch(w){W(e,e.return,w)}try{It(5,e,e.return)}catch(w){W(e,e.return,w)}}break;case 1:ke(n,e),Fe(e),a&512&&t!==null&&Gn(t,t.return);break;case 5:if(ke(n,e),Fe(e),a&512&&t!==null&&Gn(t,t.return),e.flags&32){var i=e.stateNode;try{Dt(i,"")}catch(w){W(e,e.return,w)}}if(a&4&&(i=e.stateNode,i!=null)){var r=e.memoizedProps,s=t!==null?t.memoizedProps:r,o=e.type,c=e.updateQueue;if(e.updateQueue=null,c!==null)try{o==="input"&&r.type==="radio"&&r.name!=null&&uc(i,r),ar(o,s);var d=ar(o,r);for(s=0;s<c.length;s+=2){var g=c[s],m=c[s+1];g==="style"?fc(i,m):g==="dangerouslySetInnerHTML"?mc(i,m):g==="children"?Dt(i,m):Gr(i,g,m,d)}switch(o){case"input":Xi(i,r);break;case"textarea":hc(i,r);break;case"select":var p=i._wrapperState.wasMultiple;i._wrapperState.wasMultiple=!!r.multiple;var f=r.value;f!=null?Kn(i,!!r.multiple,f,!1):p!==!!r.multiple&&(r.defaultValue!=null?Kn(i,!!r.multiple,r.defaultValue,!0):Kn(i,!!r.multiple,r.multiple?[]:"",!1))}i[Bt]=r}catch(w){W(e,e.return,w)}}break;case 6:if(ke(n,e),Fe(e),a&4){if(e.stateNode===null)throw Error(y(162));i=e.stateNode,r=e.memoizedProps;try{i.nodeValue=r}catch(w){W(e,e.return,w)}}break;case 3:if(ke(n,e),Fe(e),a&4&&t!==null&&t.memoizedState.isDehydrated)try{qt(n.containerInfo)}catch(w){W(e,e.return,w)}break;case 4:ke(n,e),Fe(e);break;case 13:ke(n,e),Fe(e),i=e.child,i.flags&8192&&(r=i.memoizedState!==null,i.stateNode.isHidden=r,!r||i.alternate!==null&&i.alternate.memoizedState!==null||(As=U())),a&4&&Po(e);break;case 22:if(g=t!==null&&t.memoizedState!==null,e.mode&1?(ae=(d=ae)||g,ke(n,e),ae=d):ke(n,e),Fe(e),a&8192){if(d=e.memoizedState!==null,(e.stateNode.isHidden=d)&&!g&&e.mode&1)for(T=e,g=e.child;g!==null;){for(m=T=g;T!==null;){switch(p=T,f=p.child,p.tag){case 0:case 11:case 14:case 15:It(4,p,p.return);break;case 1:Gn(p,p.return);var b=p.stateNode;if(typeof b.componentWillUnmount=="function"){a=p,t=p.return;try{n=a,b.props=n.memoizedProps,b.state=n.memoizedState,b.componentWillUnmount()}catch(w){W(a,t,w)}}break;case 5:Gn(p,p.return);break;case 22:if(p.memoizedState!==null){Vo(m);continue}}f!==null?(f.return=p,T=f):Vo(m)}g=g.sibling}e:for(g=null,m=e;;){if(m.tag===5){if(g===null){g=m;try{i=m.stateNode,d?(r=i.style,typeof r.setProperty=="function"?r.setProperty("display","none","important"):r.display="none"):(o=m.stateNode,c=m.memoizedProps.style,s=c!=null&&c.hasOwnProperty("display")?c.display:null,o.style.display=gc("display",s))}catch(w){W(e,e.return,w)}}}else if(m.tag===6){if(g===null)try{m.stateNode.nodeValue=d?"":m.memoizedProps}catch(w){W(e,e.return,w)}}else if((m.tag!==22&&m.tag!==23||m.memoizedState===null||m===e)&&m.child!==null){m.child.return=m,m=m.child;continue}if(m===e)break e;for(;m.sibling===null;){if(m.return===null||m.return===e)break e;g===m&&(g=null),m=m.return}g===m&&(g=null),m.sibling.return=m.return,m=m.sibling}}break;case 19:ke(n,e),Fe(e),a&4&&Po(e);break;case 21:break;default:ke(n,e),Fe(e)}}function Fe(e){var n=e.flags;if(n&2){try{e:{for(var t=e.return;t!==null;){if(Bl(t)){var a=t;break e}t=t.return}throw Error(y(160))}switch(a.tag){case 5:var i=a.stateNode;a.flags&32&&(Dt(i,""),a.flags&=-33);var r=Fo(e);Nr(e,r,i);break;case 3:case 4:var s=a.stateNode.containerInfo,o=Fo(e);Dr(e,o,s);break;default:throw Error(y(161))}}catch(c){W(e,e.return,c)}e.flags&=-3}n&4096&&(e.flags&=-4097)}function mh(e,n,t){T=e,Gl(e)}function Gl(e,n,t){for(var a=(e.mode&1)!==0;T!==null;){var i=T,r=i.child;if(i.tag===22&&a){var s=i.memoizedState!==null||ga;if(!s){var o=i.alternate,c=o!==null&&o.memoizedState!==null||ae;o=ga;var d=ae;if(ga=s,(ae=c)&&!d)for(T=i;T!==null;)s=T,c=s.child,s.tag===22&&s.memoizedState!==null?Oo(i):c!==null?(c.return=s,T=c):Oo(i);for(;r!==null;)T=r,Gl(r),r=r.sibling;T=i,ga=o,ae=d}qo(e)}else i.subtreeFlags&8772&&r!==null?(r.return=i,T=r):qo(e)}}function qo(e){for(;T!==null;){var n=T;if(n.flags&8772){var t=n.alternate;try{if(n.flags&8772)switch(n.tag){case 0:case 11:case 15:ae||li(5,n);break;case 1:var a=n.stateNode;if(n.flags&4&&!ae)if(t===null)a.componentDidMount();else{var i=n.elementType===n.type?t.memoizedProps:Ie(n.type,t.memoizedProps);a.componentDidUpdate(i,t.memoizedState,a.__reactInternalSnapshotBeforeUpdate)}var r=n.updateQueue;r!==null&&wo(n,r,a);break;case 3:var s=n.updateQueue;if(s!==null){if(t=null,n.child!==null)switch(n.child.tag){case 5:t=n.child.stateNode;break;case 1:t=n.child.stateNode}wo(n,s,t)}break;case 5:var o=n.stateNode;if(t===null&&n.flags&4){t=o;var c=n.memoizedProps;switch(n.type){case"button":case"input":case"select":case"textarea":c.autoFocus&&t.focus();break;case"img":c.src&&(t.src=c.src)}}break;case 6:break;case 4:break;case 12:break;case 13:if(n.memoizedState===null){var d=n.alternate;if(d!==null){var g=d.memoizedState;if(g!==null){var m=g.dehydrated;m!==null&&qt(m)}}}break;case 19:case 17:case 21:case 22:case 23:case 25:break;default:throw Error(y(163))}ae||n.flags&512&&Rr(n)}catch(p){W(n,n.return,p)}}if(n===e){T=null;break}if(t=n.sibling,t!==null){t.return=n.return,T=t;break}T=n.return}}function Vo(e){for(;T!==null;){var n=T;if(n===e){T=null;break}var t=n.sibling;if(t!==null){t.return=n.return,T=t;break}T=n.return}}function Oo(e){for(;T!==null;){var n=T;try{switch(n.tag){case 0:case 11:case 15:var t=n.return;try{li(4,n)}catch(c){W(n,t,c)}break;case 1:var a=n.stateNode;if(typeof a.componentDidMount=="function"){var i=n.return;try{a.componentDidMount()}catch(c){W(n,i,c)}}var r=n.return;try{Rr(n)}catch(c){W(n,r,c)}break;case 5:var s=n.return;try{Rr(n)}catch(c){W(n,s,c)}}}catch(c){W(n,n.return,c)}if(n===e){T=null;break}var o=n.sibling;if(o!==null){o.return=n.return,T=o;break}T=n.return}}var gh=Math.ceil,Qa=Je.ReactCurrentDispatcher,Ts=Je.ReactCurrentOwner,Ae=Je.ReactCurrentBatchConfig,N=0,$=null,K=null,Z=0,me=0,Un=gn(0),J=0,Ht=null,Mn=0,di=0,Cs=0,Mt=null,le=null,As=0,it=1/0,Le=null,Ya=!1,Fr=null,ln=null,fa=!1,tn=null,$a=0,Et=0,Pr=null,ka=-1,Ia=0;function se(){return N&6?U():ka!==-1?ka:ka=U()}function dn(e){return e.mode&1?N&2&&Z!==0?Z&-Z:Xu.transition!==null?(Ia===0&&(Ia=Ic()),Ia):(e=F,e!==0||(e=window.event,e=e===void 0?16:Pc(e.type)),e):1}function De(e,n,t,a){if(50<Et)throw Et=0,Pr=null,Error(y(185));Qt(e,t,a),(!(N&2)||e!==$)&&(e===$&&(!(N&2)&&(di|=t),J===4&&Ze(e,Z)),pe(e,a),t===1&&N===0&&!(n.mode&1)&&(it=U()+500,si&&fn()))}function pe(e,n){var t=e.callbackNode;Xd(e,n);var a=Fa(e,e===$?Z:0);if(a===0)t!==null&&Ks(t),e.callbackNode=null,e.callbackPriority=0;else if(n=a&-a,e.callbackPriority!==n){if(t!=null&&Ks(t),n===1)e.tag===0?$u(Lo.bind(null,e)):el(Lo.bind(null,e)),Hu(function(){!(N&6)&&fn()}),t=null;else{switch(Mc(a)){case 1:t=Qr;break;case 4:t=xc;break;case 16:t=Na;break;case 536870912:t=kc;break;default:t=Na}t=Xl(t,Ul.bind(null,e))}e.callbackPriority=n,e.callbackNode=t}}function Ul(e,n){if(ka=-1,Ia=0,N&6)throw Error(y(327));var t=e.callbackNode;if($n()&&e.callbackNode!==t)return null;var a=Fa(e,e===$?Z:0);if(a===0)return null;if(a&30||a&e.expiredLanes||n)n=Xa(e,a);else{n=a;var i=N;N|=2;var r=Hl();($!==e||Z!==n)&&(Le=null,it=U()+500,_n(e,n));do try{yh();break}catch(o){Kl(e,o)}while(!0);cs(),Qa.current=r,N=i,K!==null?n=0:($=null,Z=0,n=J)}if(n!==0){if(n===2&&(i=cr(e),i!==0&&(a=i,n=qr(e,i))),n===1)throw t=Ht,_n(e,0),Ze(e,a),pe(e,U()),t;if(n===6)Ze(e,a);else{if(i=e.current.alternate,!(a&30)&&!fh(i)&&(n=Xa(e,a),n===2&&(r=cr(e),r!==0&&(a=r,n=qr(e,r))),n===1))throw t=Ht,_n(e,0),Ze(e,a),pe(e,U()),t;switch(e.finishedWork=i,e.finishedLanes=a,n){case 0:case 1:throw Error(y(345));case 2:wn(e,le,Le);break;case 3:if(Ze(e,a),(a&130023424)===a&&(n=As+500-U(),10<n)){if(Fa(e,0)!==0)break;if(i=e.suspendedLanes,(i&a)!==a){se(),e.pingedLanes|=e.suspendedLanes&i;break}e.timeoutHandle=fr(wn.bind(null,e,le,Le),n);break}wn(e,le,Le);break;case 4:if(Ze(e,a),(a&4194240)===a)break;for(n=e.eventTimes,i=-1;0<a;){var s=31-Re(a);r=1<<s,s=n[s],s>i&&(i=s),a&=~r}if(a=i,a=U()-a,a=(120>a?120:480>a?480:1080>a?1080:1920>a?1920:3e3>a?3e3:4320>a?4320:1960*gh(a/1960))-a,10<a){e.timeoutHandle=fr(wn.bind(null,e,le,Le),a);break}wn(e,le,Le);break;case 5:wn(e,le,Le);break;default:throw Error(y(329))}}}return pe(e,U()),e.callbackNode===t?Ul.bind(null,e):null}function qr(e,n){var t=Mt;return e.current.memoizedState.isDehydrated&&(_n(e,n).flags|=256),e=Xa(e,n),e!==2&&(n=le,le=t,n!==null&&Vr(n)),e}function Vr(e){le===null?le=e:le.push.apply(le,e)}function fh(e){for(var n=e;;){if(n.flags&16384){var t=n.updateQueue;if(t!==null&&(t=t.stores,t!==null))for(var a=0;a<t.length;a++){var i=t[a],r=i.getSnapshot;i=i.value;try{if(!Ne(r(),i))return!1}catch{return!1}}}if(t=n.child,n.subtreeFlags&16384&&t!==null)t.return=n,n=t;else{if(n===e)break;for(;n.sibling===null;){if(n.return===null||n.return===e)return!0;n=n.return}n.sibling.return=n.return,n=n.sibling}}return!0}function Ze(e,n){for(n&=~Cs,n&=~di,e.suspendedLanes|=n,e.pingedLanes&=~n,e=e.expirationTimes;0<n;){var t=31-Re(n),a=1<<t;e[t]=-1,n&=~a}}function Lo(e){if(N&6)throw Error(y(327));$n();var n=Fa(e,0);if(!(n&1))return pe(e,U()),null;var t=Xa(e,n);if(e.tag!==0&&t===2){var a=cr(e);a!==0&&(n=a,t=qr(e,a))}if(t===1)throw t=Ht,_n(e,0),Ze(e,n),pe(e,U()),t;if(t===6)throw Error(y(345));return e.finishedWork=e.current.alternate,e.finishedLanes=n,wn(e,le,Le),pe(e,U()),null}function _s(e,n){var t=N;N|=1;try{return e(n)}finally{N=t,N===0&&(it=U()+500,si&&fn())}}function En(e){tn!==null&&tn.tag===0&&!(N&6)&&$n();var n=N;N|=1;var t=Ae.transition,a=F;try{if(Ae.transition=null,F=1,e)return e()}finally{F=a,Ae.transition=t,N=n,!(N&6)&&fn()}}function Ss(){me=Un.current,V(Un)}function _n(e,n){e.finishedWork=null,e.finishedLanes=0;var t=e.timeoutHandle;if(t!==-1&&(e.timeoutHandle=-1,Ku(t)),K!==null)for(t=K.return;t!==null;){var a=t;switch(rs(a),a.tag){case 1:a=a.type.childContextTypes,a!=null&&La();break;case 3:tt(),V(ue),V(ie),ms();break;case 5:ps(a);break;case 4:tt();break;case 13:V(z);break;case 19:V(z);break;case 10:ls(a.type._context);break;case 22:case 23:Ss()}t=t.return}if($=e,K=e=un(e.current,null),Z=me=n,J=0,Ht=null,Cs=di=Mn=0,le=Mt=null,Cn!==null){for(n=0;n<Cn.length;n++)if(t=Cn[n],a=t.interleaved,a!==null){t.interleaved=null;var i=a.next,r=t.pending;if(r!==null){var s=r.next;r.next=i,a.next=s}t.pending=a}Cn=null}return e}function Kl(e,n){do{var t=K;try{if(cs(),_a.current=Ja,Ha){for(var a=B.memoizedState;a!==null;){var i=a.queue;i!==null&&(i.pending=null),a=a.next}Ha=!1}if(In=0,Y=H=B=null,kt=!1,Gt=0,Ts.current=null,t===null||t.return===null){J=1,Ht=n,K=null;break}e:{var r=e,s=t.return,o=t,c=n;if(n=Z,o.flags|=32768,c!==null&&typeof c=="object"&&typeof c.then=="function"){var d=c,g=o,m=g.tag;if(!(g.mode&1)&&(m===0||m===11||m===15)){var p=g.alternate;p?(g.updateQueue=p.updateQueue,g.memoizedState=p.memoizedState,g.lanes=p.lanes):(g.updateQueue=null,g.memoizedState=null)}var f=xo(s);if(f!==null){f.flags&=-257,ko(f,s,o,r,n),f.mode&1&&So(r,d,n),n=f,c=d;var b=n.updateQueue;if(b===null){var w=new Set;w.add(c),n.updateQueue=w}else b.add(c);break e}else{if(!(n&1)){So(r,d,n),xs();break e}c=Error(y(426))}}else if(O&&o.mode&1){var D=xo(s);if(D!==null){!(D.flags&65536)&&(D.flags|=256),ko(D,s,o,r,n),ss(at(c,o));break e}}r=c=at(c,o),J!==4&&(J=2),Mt===null?Mt=[r]:Mt.push(r),r=s;do{switch(r.tag){case 3:r.flags|=65536,n&=-n,r.lanes|=n;var u=Ml(r,c,n);bo(r,u);break e;case 1:o=c;var l=r.type,h=r.stateNode;if(!(r.flags&128)&&(typeof l.getDerivedStateFromError=="function"||h!==null&&typeof h.componentDidCatch=="function"&&(ln===null||!ln.has(h)))){r.flags|=65536,n&=-n,r.lanes|=n;var v=El(r,o,n);bo(r,v);break e}}r=r.return}while(r!==null)}Ql(t)}catch(C){n=C,K===t&&t!==null&&(K=t=t.return);continue}break}while(!0)}function Hl(){var e=Qa.current;return Qa.current=Ja,e===null?Ja:e}function xs(){(J===0||J===3||J===2)&&(J=4),$===null||!(Mn&268435455)&&!(di&268435455)||Ze($,Z)}function Xa(e,n){var t=N;N|=2;var a=Hl();($!==e||Z!==n)&&(Le=null,_n(e,n));do try{vh();break}catch(i){Kl(e,i)}while(!0);if(cs(),N=t,Qa.current=a,K!==null)throw Error(y(261));return $=null,Z=0,J}function vh(){for(;K!==null;)Jl(K)}function yh(){for(;K!==null&&!Wd();)Jl(K)}function Jl(e){var n=$l(e.alternate,e,me);e.memoizedProps=e.pendingProps,n===null?Ql(e):K=n,Ts.current=null}function Ql(e){var n=e;do{var t=n.alternate;if(e=n.return,n.flags&32768){if(t=uh(t,n),t!==null){t.flags&=32767,K=t;return}if(e!==null)e.flags|=32768,e.subtreeFlags=0,e.deletions=null;else{J=6,K=null;return}}else if(t=dh(t,n,me),t!==null){K=t;return}if(n=n.sibling,n!==null){K=n;return}K=n=e}while(n!==null);J===0&&(J=5)}function wn(e,n,t){var a=F,i=Ae.transition;try{Ae.transition=null,F=1,bh(e,n,t,a)}finally{Ae.transition=i,F=a}return null}function bh(e,n,t,a){do $n();while(tn!==null);if(N&6)throw Error(y(327));t=e.finishedWork;var i=e.finishedLanes;if(t===null)return null;if(e.finishedWork=null,e.finishedLanes=0,t===e.current)throw Error(y(177));e.callbackNode=null,e.callbackPriority=0;var r=t.lanes|t.childLanes;if(Zd(e,r),e===$&&(K=$=null,Z=0),!(t.subtreeFlags&2064)&&!(t.flags&2064)||fa||(fa=!0,Xl(Na,function(){return $n(),null})),r=(t.flags&15990)!==0,t.subtreeFlags&15990||r){r=Ae.transition,Ae.transition=null;var s=F;F=1;var o=N;N|=4,Ts.current=null,ph(e,t),Wl(t,e),Lu(mr),Pa=!!pr,mr=pr=null,e.current=t,mh(t),Gd(),N=o,F=s,Ae.transition=r}else e.current=t;if(fa&&(fa=!1,tn=e,$a=i),r=e.pendingLanes,r===0&&(ln=null),Hd(t.stateNode),pe(e,U()),n!==null)for(a=e.onRecoverableError,t=0;t<n.length;t++)i=n[t],a(i.value,{componentStack:i.stack,digest:i.digest});if(Ya)throw Ya=!1,e=Fr,Fr=null,e;return $a&1&&e.tag!==0&&$n(),r=e.pendingLanes,r&1?e===Pr?Et++:(Et=0,Pr=e):Et=0,fn(),null}function $n(){if(tn!==null){var e=Mc($a),n=Ae.transition,t=F;try{if(Ae.transition=null,F=16>e?16:e,tn===null)var a=!1;else{if(e=tn,tn=null,$a=0,N&6)throw Error(y(331));var i=N;for(N|=4,T=e.current;T!==null;){var r=T,s=r.child;if(T.flags&16){var o=r.deletions;if(o!==null){for(var c=0;c<o.length;c++){var d=o[c];for(T=d;T!==null;){var g=T;switch(g.tag){case 0:case 11:case 15:It(8,g,r)}var m=g.child;if(m!==null)m.return=g,T=m;else for(;T!==null;){g=T;var p=g.sibling,f=g.return;if(zl(g),g===d){T=null;break}if(p!==null){p.return=f,T=p;break}T=f}}}var b=r.alternate;if(b!==null){var w=b.child;if(w!==null){b.child=null;do{var D=w.sibling;w.sibling=null,w=D}while(w!==null)}}T=r}}if(r.subtreeFlags&2064&&s!==null)s.return=r,T=s;else e:for(;T!==null;){if(r=T,r.flags&2048)switch(r.tag){case 0:case 11:case 15:It(9,r,r.return)}var u=r.sibling;if(u!==null){u.return=r.return,T=u;break e}T=r.return}}var l=e.current;for(T=l;T!==null;){s=T;var h=s.child;if(s.subtreeFlags&2064&&h!==null)h.return=s,T=h;else e:for(s=l;T!==null;){if(o=T,o.flags&2048)try{switch(o.tag){case 0:case 11:case 15:li(9,o)}}catch(C){W(o,o.return,C)}if(o===s){T=null;break e}var v=o.sibling;if(v!==null){v.return=o.return,T=v;break e}T=o.return}}if(N=i,fn(),Ve&&typeof Ve.onPostCommitFiberRoot=="function")try{Ve.onPostCommitFiberRoot(ni,e)}catch{}a=!0}return a}finally{F=t,Ae.transition=n}}return!1}function zo(e,n,t){n=at(t,n),n=Ml(e,n,1),e=cn(e,n,1),n=se(),e!==null&&(Qt(e,1,n),pe(e,n))}function W(e,n,t){if(e.tag===3)zo(e,e,t);else for(;n!==null;){if(n.tag===3){zo(n,e,t);break}else if(n.tag===1){var a=n.stateNode;if(typeof n.type.getDerivedStateFromError=="function"||typeof a.componentDidCatch=="function"&&(ln===null||!ln.has(a))){e=at(t,e),e=El(n,e,1),n=cn(n,e,1),e=se(),n!==null&&(Qt(n,1,e),pe(n,e));break}}n=n.return}}function wh(e,n,t){var a=e.pingCache;a!==null&&a.delete(n),n=se(),e.pingedLanes|=e.suspendedLanes&t,$===e&&(Z&t)===t&&(J===4||J===3&&(Z&130023424)===Z&&500>U()-As?_n(e,0):Cs|=t),pe(e,n)}function Yl(e,n){n===0&&(e.mode&1?(n=sa,sa<<=1,!(sa&130023424)&&(sa=4194304)):n=1);var t=se();e=Ke(e,n),e!==null&&(Qt(e,n,t),pe(e,t))}function Th(e){var n=e.memoizedState,t=0;n!==null&&(t=n.retryLane),Yl(e,t)}function Ch(e,n){var t=0;switch(e.tag){case 13:var a=e.stateNode,i=e.memoizedState;i!==null&&(t=i.retryLane);break;case 19:a=e.stateNode;break;default:throw Error(y(314))}a!==null&&a.delete(n),Yl(e,t)}var $l;$l=function(e,n,t){if(e!==null)if(e.memoizedProps!==n.pendingProps||ue.current)de=!0;else{if(!(e.lanes&t)&&!(n.flags&128))return de=!1,lh(e,n,t);de=!!(e.flags&131072)}else de=!1,O&&n.flags&1048576&&nl(n,ja,n.index);switch(n.lanes=0,n.tag){case 2:var a=n.type;xa(e,n),e=n.pendingProps;var i=Zn(n,ie.current);Yn(n,t),i=fs(null,n,a,e,i,t);var r=vs();return n.flags|=1,typeof i=="object"&&i!==null&&typeof i.render=="function"&&i.$$typeof===void 0?(n.tag=1,n.memoizedState=null,n.updateQueue=null,he(a)?(r=!0,za(n)):r=!1,n.memoizedState=i.state!==null&&i.state!==void 0?i.state:null,us(n),i.updater=ci,n.stateNode=i,i._reactInternals=n,Ar(n,a,e,t),n=xr(null,n,a,!0,r,t)):(n.tag=0,O&&r&&is(n),re(null,n,i,t),n=n.child),n;case 16:a=n.elementType;e:{switch(xa(e,n),e=n.pendingProps,i=a._init,a=i(a._payload),n.type=a,i=n.tag=_h(a),e=Ie(a,e),i){case 0:n=Sr(null,n,a,e,t);break e;case 1:n=Eo(null,n,a,e,t);break e;case 11:n=Io(null,n,a,e,t);break e;case 14:n=Mo(null,n,a,Ie(a.type,e),t);break e}throw Error(y(306,a,""))}return n;case 0:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),Sr(e,n,a,i,t);case 1:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),Eo(e,n,a,i,t);case 3:e:{if(Fl(n),e===null)throw Error(y(387));a=n.pendingProps,r=n.memoizedState,i=r.element,ol(e,n),Ua(n,a,null,t);var s=n.memoizedState;if(a=s.element,r.isDehydrated)if(r={element:a,isDehydrated:!1,cache:s.cache,pendingSuspenseBoundaries:s.pendingSuspenseBoundaries,transitions:s.transitions},n.updateQueue.baseState=r,n.memoizedState=r,n.flags&256){i=at(Error(y(423)),n),n=Ro(e,n,a,t,i);break e}else if(a!==i){i=at(Error(y(424)),n),n=Ro(e,n,a,t,i);break e}else for(ge=on(n.stateNode.containerInfo.firstChild),fe=n,O=!0,Ee=null,t=rl(n,null,a,t),n.child=t;t;)t.flags=t.flags&-3|4096,t=t.sibling;else{if(et(),a===i){n=He(e,n,t);break e}re(e,n,a,t)}n=n.child}return n;case 5:return cl(n),e===null&&wr(n),a=n.type,i=n.pendingProps,r=e!==null?e.memoizedProps:null,s=i.children,gr(a,i)?s=null:r!==null&&gr(a,r)&&(n.flags|=32),Nl(e,n),re(e,n,s,t),n.child;case 6:return e===null&&wr(n),null;case 13:return Pl(e,n,t);case 4:return hs(n,n.stateNode.containerInfo),a=n.pendingProps,e===null?n.child=nt(n,null,a,t):re(e,n,a,t),n.child;case 11:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),Io(e,n,a,i,t);case 7:return re(e,n,n.pendingProps,t),n.child;case 8:return re(e,n,n.pendingProps.children,t),n.child;case 12:return re(e,n,n.pendingProps.children,t),n.child;case 10:e:{if(a=n.type._context,i=n.pendingProps,r=n.memoizedProps,s=i.value,P(Wa,a._currentValue),a._currentValue=s,r!==null)if(Ne(r.value,s)){if(r.children===i.children&&!ue.current){n=He(e,n,t);break e}}else for(r=n.child,r!==null&&(r.return=n);r!==null;){var o=r.dependencies;if(o!==null){s=r.child;for(var c=o.firstContext;c!==null;){if(c.context===a){if(r.tag===1){c=We(-1,t&-t),c.tag=2;var d=r.updateQueue;if(d!==null){d=d.shared;var g=d.pending;g===null?c.next=c:(c.next=g.next,g.next=c),d.pending=c}}r.lanes|=t,c=r.alternate,c!==null&&(c.lanes|=t),Tr(r.return,t,n),o.lanes|=t;break}c=c.next}}else if(r.tag===10)s=r.type===n.type?null:r.child;else if(r.tag===18){if(s=r.return,s===null)throw Error(y(341));s.lanes|=t,o=s.alternate,o!==null&&(o.lanes|=t),Tr(s,t,n),s=r.sibling}else s=r.child;if(s!==null)s.return=r;else for(s=r;s!==null;){if(s===n){s=null;break}if(r=s.sibling,r!==null){r.return=s.return,s=r;break}s=s.return}r=s}re(e,n,i.children,t),n=n.child}return n;case 9:return i=n.type,a=n.pendingProps.children,Yn(n,t),i=_e(i),a=a(i),n.flags|=1,re(e,n,a,t),n.child;case 14:return a=n.type,i=Ie(a,n.pendingProps),i=Ie(a.type,i),Mo(e,n,a,i,t);case 15:return Rl(e,n,n.type,n.pendingProps,t);case 17:return a=n.type,i=n.pendingProps,i=n.elementType===a?i:Ie(a,i),xa(e,n),n.tag=1,he(a)?(e=!0,za(n)):e=!1,Yn(n,t),Il(n,a,i),Ar(n,a,i,t),xr(null,n,a,!0,e,t);case 19:return ql(e,n,t);case 22:return Dl(e,n,t)}throw Error(y(156,n.tag))};function Xl(e,n){return Sc(e,n)}function Ah(e,n,t,a){this.tag=e,this.key=t,this.sibling=this.child=this.return=this.stateNode=this.type=this.elementType=null,this.index=0,this.ref=null,this.pendingProps=n,this.dependencies=this.memoizedState=this.updateQueue=this.memoizedProps=null,this.mode=a,this.subtreeFlags=this.flags=0,this.deletions=null,this.childLanes=this.lanes=0,this.alternate=null}function Ce(e,n,t,a){return new Ah(e,n,t,a)}function ks(e){return e=e.prototype,!(!e||!e.isReactComponent)}function _h(e){if(typeof e=="function")return ks(e)?1:0;if(e!=null){if(e=e.$$typeof,e===Kr)return 11;if(e===Hr)return 14}return 2}function un(e,n){var t=e.alternate;return t===null?(t=Ce(e.tag,n,e.key,e.mode),t.elementType=e.elementType,t.type=e.type,t.stateNode=e.stateNode,t.alternate=e,e.alternate=t):(t.pendingProps=n,t.type=e.type,t.flags=0,t.subtreeFlags=0,t.deletions=null),t.flags=e.flags&14680064,t.childLanes=e.childLanes,t.lanes=e.lanes,t.child=e.child,t.memoizedProps=e.memoizedProps,t.memoizedState=e.memoizedState,t.updateQueue=e.updateQueue,n=e.dependencies,t.dependencies=n===null?null:{lanes:n.lanes,firstContext:n.firstContext},t.sibling=e.sibling,t.index=e.index,t.ref=e.ref,t}function Ma(e,n,t,a,i,r){var s=2;if(a=e,typeof e=="function")ks(e)&&(s=1);else if(typeof e=="string")s=5;else e:switch(e){case Pn:return Sn(t.children,i,r,n);case Ur:s=8,i|=8;break;case Hi:return e=Ce(12,t,n,i|2),e.elementType=Hi,e.lanes=r,e;case Ji:return e=Ce(13,t,n,i),e.elementType=Ji,e.lanes=r,e;case Qi:return e=Ce(19,t,n,i),e.elementType=Qi,e.lanes=r,e;case cc:return ui(t,i,r,n);default:if(typeof e=="object"&&e!==null)switch(e.$$typeof){case sc:s=10;break e;case oc:s=9;break e;case Kr:s=11;break e;case Hr:s=14;break e;case Ye:s=16,a=null;break e}throw Error(y(130,e==null?e:typeof e,""))}return n=Ce(s,t,n,i),n.elementType=e,n.type=a,n.lanes=r,n}function Sn(e,n,t,a){return e=Ce(7,e,a,n),e.lanes=t,e}function ui(e,n,t,a){return e=Ce(22,e,a,n),e.elementType=cc,e.lanes=t,e.stateNode={isHidden:!1},e}function Wi(e,n,t){return e=Ce(6,e,null,n),e.lanes=t,e}function Gi(e,n,t){return n=Ce(4,e.children!==null?e.children:[],e.key,n),n.lanes=t,n.stateNode={containerInfo:e.containerInfo,pendingChildren:null,implementation:e.implementation},n}function Sh(e,n,t,a,i){this.tag=n,this.containerInfo=e,this.finishedWork=this.pingCache=this.current=this.pendingChildren=null,this.timeoutHandle=-1,this.callbackNode=this.pendingContext=this.context=null,this.callbackPriority=0,this.eventTimes=_i(0),this.expirationTimes=_i(-1),this.entangledLanes=this.finishedLanes=this.mutableReadLanes=this.expiredLanes=this.pingedLanes=this.suspendedLanes=this.pendingLanes=0,this.entanglements=_i(0),this.identifierPrefix=a,this.onRecoverableError=i,this.mutableSourceEagerHydrationData=null}function Is(e,n,t,a,i,r,s,o,c){return e=new Sh(e,n,t,o,c),n===1?(n=1,r===!0&&(n|=8)):n=0,r=Ce(3,null,null,n),e.current=r,r.stateNode=e,r.memoizedState={element:a,isDehydrated:t,cache:null,transitions:null,pendingSuspenseBoundaries:null},us(r),e}function xh(e,n,t){var a=3<arguments.length&&arguments[3]!==void 0?arguments[3]:null;return{$$typeof:Fn,key:a==null?null:""+a,children:e,containerInfo:n,implementation:t}}function Zl(e){if(!e)return pn;e=e._reactInternals;e:{if(Dn(e)!==e||e.tag!==1)throw Error(y(170));var n=e;do{switch(n.tag){case 3:n=n.stateNode.context;break e;case 1:if(he(n.type)){n=n.stateNode.__reactInternalMemoizedMergedChildContext;break e}}n=n.return}while(n!==null);throw Error(y(171))}if(e.tag===1){var t=e.type;if(he(t))return Zc(e,t,n)}return n}function ed(e,n,t,a,i,r,s,o,c){return e=Is(t,a,!0,e,i,r,s,o,c),e.context=Zl(null),t=e.current,a=se(),i=dn(t),r=We(a,i),r.callback=n??null,cn(t,r,i),e.current.lanes=i,Qt(e,i,a),pe(e,a),e}function hi(e,n,t,a){var i=n.current,r=se(),s=dn(i);return t=Zl(t),n.context===null?n.context=t:n.pendingContext=t,n=We(r,s),n.payload={element:e},a=a===void 0?null:a,a!==null&&(n.callback=a),e=cn(i,n,s),e!==null&&(De(e,i,s,r),Aa(e,i,s)),s}function Za(e){if(e=e.current,!e.child)return null;switch(e.child.tag){case 5:return e.child.stateNode;default:return e.child.stateNode}}function Bo(e,n){if(e=e.memoizedState,e!==null&&e.dehydrated!==null){var t=e.retryLane;e.retryLane=t!==0&&t<n?t:n}}function Ms(e,n){Bo(e,n),(e=e.alternate)&&Bo(e,n)}function kh(){return null}var nd=typeof reportError=="function"?reportError:function(e){console.error(e)};function Es(e){this._internalRoot=e}pi.prototype.render=Es.prototype.render=function(e){var n=this._internalRoot;if(n===null)throw Error(y(409));hi(e,n,null,null)};pi.prototype.unmount=Es.prototype.unmount=function(){var e=this._internalRoot;if(e!==null){this._internalRoot=null;var n=e.containerInfo;En(function(){hi(null,e,null,null)}),n[Ue]=null}};function pi(e){this._internalRoot=e}pi.prototype.unstable_scheduleHydration=function(e){if(e){var n=Dc();e={blockedOn:null,target:e,priority:n};for(var t=0;t<Xe.length&&n!==0&&n<Xe[t].priority;t++);Xe.splice(t,0,e),t===0&&Fc(e)}};function Rs(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11)}function mi(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11&&(e.nodeType!==8||e.nodeValue!==" react-mount-point-unstable "))}function jo(){}function Ih(e,n,t,a,i){if(i){if(typeof a=="function"){var r=a;a=function(){var d=Za(s);r.call(d)}}var s=ed(n,a,e,0,null,!1,!1,"",jo);return e._reactRootContainer=s,e[Ue]=s.current,Lt(e.nodeType===8?e.parentNode:e),En(),s}for(;i=e.lastChild;)e.removeChild(i);if(typeof a=="function"){var o=a;a=function(){var d=Za(c);o.call(d)}}var c=Is(e,0,!1,null,null,!1,!1,"",jo);return e._reactRootContainer=c,e[Ue]=c.current,Lt(e.nodeType===8?e.parentNode:e),En(function(){hi(n,c,t,a)}),c}function gi(e,n,t,a,i){var r=t._reactRootContainer;if(r){var s=r;if(typeof i=="function"){var o=i;i=function(){var c=Za(s);o.call(c)}}hi(n,s,e,i)}else s=Ih(t,n,e,i,a);return Za(s)}Ec=function(e){switch(e.tag){case 3:var n=e.stateNode;if(n.current.memoizedState.isDehydrated){var t=wt(n.pendingLanes);t!==0&&(Yr(n,t|1),pe(n,U()),!(N&6)&&(it=U()+500,fn()))}break;case 13:En(function(){var a=Ke(e,1);if(a!==null){var i=se();De(a,e,1,i)}}),Ms(e,1)}};$r=function(e){if(e.tag===13){var n=Ke(e,134217728);if(n!==null){var t=se();De(n,e,134217728,t)}Ms(e,134217728)}};Rc=function(e){if(e.tag===13){var n=dn(e),t=Ke(e,n);if(t!==null){var a=se();De(t,e,n,a)}Ms(e,n)}};Dc=function(){return F};Nc=function(e,n){var t=F;try{return F=e,n()}finally{F=t}};rr=function(e,n,t){switch(n){case"input":if(Xi(e,t),n=t.name,t.type==="radio"&&n!=null){for(t=e;t.parentNode;)t=t.parentNode;for(t=t.querySelectorAll("input[name="+JSON.stringify(""+n)+'][type="radio"]'),n=0;n<t.length;n++){var a=t[n];if(a!==e&&a.form===e.form){var i=ri(a);if(!i)throw Error(y(90));dc(a),Xi(a,i)}}}break;case"textarea":hc(e,t);break;case"select":n=t.value,n!=null&&Kn(e,!!t.multiple,n,!1)}};bc=_s;wc=En;var Mh={usingClientEntryPoint:!1,Events:[$t,Ln,ri,vc,yc,_s]},vt={findFiberByHostInstance:Tn,bundleType:0,version:"18.3.1",rendererPackageName:"react-dom"},Eh={bundleType:vt.bundleType,version:vt.version,rendererPackageName:vt.rendererPackageName,rendererConfig:vt.rendererConfig,overrideHookState:null,overrideHookStateDeletePath:null,overrideHookStateRenamePath:null,overrideProps:null,overridePropsDeletePath:null,overridePropsRenamePath:null,setErrorHandler:null,setSuspenseHandler:null,scheduleUpdate:null,currentDispatcherRef:Je.ReactCurrentDispatcher,findHostInstanceByFiber:function(e){return e=Ac(e),e===null?null:e.stateNode},findFiberByHostInstance:vt.findFiberByHostInstance||kh,findHostInstancesForRefresh:null,scheduleRefresh:null,scheduleRoot:null,setRefreshHandler:null,getCurrentFiber:null,reconcilerVersion:"18.3.1-next-f1338f8080-20240426"};if(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__<"u"){var va=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(!va.isDisabled&&va.supportsFiber)try{ni=va.inject(Eh),Ve=va}catch{}}ye.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=Mh;ye.createPortal=function(e,n){var t=2<arguments.length&&arguments[2]!==void 0?arguments[2]:null;if(!Rs(n))throw Error(y(200));return xh(e,n,null,t)};ye.createRoot=function(e,n){if(!Rs(e))throw Error(y(299));var t=!1,a="",i=nd;return n!=null&&(n.unstable_strictMode===!0&&(t=!0),n.identifierPrefix!==void 0&&(a=n.identifierPrefix),n.onRecoverableError!==void 0&&(i=n.onRecoverableError)),n=Is(e,1,!1,null,null,t,!1,a,i),e[Ue]=n.current,Lt(e.nodeType===8?e.parentNode:e),new Es(n)};ye.findDOMNode=function(e){if(e==null)return null;if(e.nodeType===1)return e;var n=e._reactInternals;if(n===void 0)throw typeof e.render=="function"?Error(y(188)):(e=Object.keys(e).join(","),Error(y(268,e)));return e=Ac(n),e=e===null?null:e.stateNode,e};ye.flushSync=function(e){return En(e)};ye.hydrate=function(e,n,t){if(!mi(n))throw Error(y(200));return gi(null,e,n,!0,t)};ye.hydrateRoot=function(e,n,t){if(!Rs(e))throw Error(y(405));var a=t!=null&&t.hydratedSources||null,i=!1,r="",s=nd;if(t!=null&&(t.unstable_strictMode===!0&&(i=!0),t.identifierPrefix!==void 0&&(r=t.identifierPrefix),t.onRecoverableError!==void 0&&(s=t.onRecoverableError)),n=ed(n,null,e,1,t??null,i,!1,r,s),e[Ue]=n.current,Lt(e),a)for(e=0;e<a.length;e++)t=a[e],i=t._getVersion,i=i(t._source),n.mutableSourceEagerHydrationData==null?n.mutableSourceEagerHydrationData=[t,i]:n.mutableSourceEagerHydrationData.push(t,i);return new pi(n)};ye.render=function(e,n,t){if(!mi(n))throw Error(y(200));return gi(null,e,n,!1,t)};ye.unmountComponentAtNode=function(e){if(!mi(e))throw Error(y(40));return e._reactRootContainer?(En(function(){gi(null,null,e,!1,function(){e._reactRootContainer=null,e[Ue]=null})}),!0):!1};ye.unstable_batchedUpdates=_s;ye.unstable_renderSubtreeIntoContainer=function(e,n,t,a){if(!mi(t))throw Error(y(200));if(e==null||e._reactInternals===void 0)throw Error(y(38));return gi(e,n,t,!1,a)};ye.version="18.3.1-next-f1338f8080-20240426";function td(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(td)}catch(e){console.error(e)}}td(),tc.exports=ye;var Rh=tc.exports,Wo=Rh;Ui.createRoot=Wo.createRoot,Ui.hydrateRoot=Wo.hydrateRoot;function Dh({sections:e,currentPath:n,onNavigate:t}){const[a,i]=en.useState(new Set),r=s=>{i(o=>{const c=new Set(o);return c.has(s)?c.delete(s):c.add(s),c})};return I.jsxs("aside",{className:"sidebar",children:[I.jsx("div",{className:"sidebar-header",children:I.jsx("h1",{className:"logo",children:I.jsx("span",{className:"logo-text",children:"AnalogIOC"})})}),I.jsx("nav",{className:"sidebar-nav",children:e.map(s=>I.jsxs("div",{className:"nav-section",children:[I.jsxs("button",{className:"section-header",onClick:()=>r(s.id),children:[I.jsx("span",{className:`chevron ${a.has(s.id)?"expanded":""}`,children:"›"}),I.jsx("span",{className:"section-title",children:s.title})]}),a.has(s.id)&&I.jsx("ul",{className:"page-list",children:s.pages.map(o=>I.jsx("li",{children:I.jsx("button",{className:`page-link ${n===o.path?"active":""}`,onClick:()=>t(o.path),children:o.metadata.title})},o.path))})]},s.id))})]})}function Nh(e,n){const t=n.match(/^([^:#?]+)\.md(#.*)?$/);if(!t||n.startsWith("/"))return null;const a=e.split("/").slice(0,-1);for(const i of t[1].split("/"))i===".."?a.pop():i!=="."&&a.push(i);return"/"+a.join("/")}function Fh({content:e,onNavigate:n,path:t=""}){const a=e.trim().split(`
+`),i=[];let r=!1,s=[],o=[];const c=m=>m.trim().replace(/^\||\|$/g,"").split("|").map(p=>p.trim()),d=m=>{const p=[];let f=m,b=0;const w=/(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g,D=f.match(w);if(!D)return m;let u=0;return D.forEach(l=>{const h=f.indexOf(l,u);if(h>u&&p.push(f.slice(u,h)),l.startsWith("`"))p.push(I.jsx("code",{children:l.slice(1,-1)},b++));else if(l.startsWith("**"))p.push(I.jsx("strong",{children:d(l.slice(2,-2))},b++));else if(l.startsWith("[")){const v=l.match(/\[([^\]]+)\]\(([^)]+)\)/);if(v){const[C,S,_]=v,x=Nh(t,_.replace(/^<|>$/g,""))??_;p.push(I.jsx("a",{href:x,onClick:L=>{x.startsWith("/")&&n&&(L.preventDefault(),n(x))},children:S},b++))}}u=h+l.length}),u<f.length&&p.push(f.slice(u)),p.length>0?p:m},g=m=>{if(o.length===0)return;const[p,...f]=o,b=f.filter(w=>!w.every(D=>/^:?-+:?$/.test(D)));i.push(I.jsxs("table",{children:[I.jsx("thead",{children:I.jsx("tr",{children:p.map((w,D)=>I.jsx("th",{children:d(w)},D))})}),I.jsx("tbody",{children:b.map((w,D)=>I.jsx("tr",{children:w.map((u,l)=>I.jsx("td",{children:d(u)},l))},D))})]},`table-${m}`)),o=[]};return a.forEach((m,p)=>{const f=m.trim();if(!r&&f.startsWith("|")){o.push(c(f));return}if(g(p),f.startsWith("```")){r?(r=!1,i.push(I.jsx("pre",{children:I.jsx("code",{children:s.join(`
+`)})},`code-${p}`))):(r=!0,s=[]);return}if(r){s.push(m);return}if(f.startsWith("### ")){i.push(I.jsx("h3",{children:f.slice(4)},p));return}if(f.startsWith("## ")){i.push(I.jsx("h2",{children:f.slice(3)},p));return}if(f.startsWith("# ")){i.push(I.jsx("h1",{children:f.slice(2)},p));return}if(f.startsWith("- ")){i.push(I.jsx("li",{children:d(f.slice(2))},p));return}if(f.match(/^\d+\.\s/)){i.push(I.jsx("li",{children:d(f.replace(/^\d+\.\s/,""))},p));return}if(f){i.push(I.jsx("p",{children:d(f)},p));return}i.push(I.jsx("br",{},p))}),g(a.length),I.jsx("div",{className:"markdown-content",children:i})}const Ph={title:"Cheatsheet",order:3},qh=`
 # Basic Commands
 
 All commands run from \`.flows/\` directory.
@@ -82,7 +82,7 @@ make help          # Show all commands
 make status        # Show project structure
 make DeleteAll     # Delete all projects
 \`\`\`
-`,qh=Object.freeze(Object.defineProperty({__proto__:null,content:Fh,metadata:Ph},Symbol.toStringTag,{value:"Module"})),Lh={title:"Setup",order:1},Oh=`
+`,Vh=Object.freeze(Object.defineProperty({__proto__:null,content:qh,metadata:Ph},Symbol.toStringTag,{value:"Module"})),Oh={title:"Setup",order:1},Lh=`
 # Installation & Environment
 
 ## One Script Setup
@@ -114,7 +114,7 @@ You can force a specific environment mode:
 - **Common**: Python 3.12, Rust (Nightly), Make, Git
 
 Everything is pinned and reproducible. No manual dependency hell.
-`,zh=Object.freeze(Object.defineProperty({__proto__:null,content:Oh,metadata:Lh},Symbol.toStringTag,{value:"Module"})),Bh={title:"Troubleshooting",order:3},jh=`
+`,zh=Object.freeze(Object.defineProperty({__proto__:null,content:Lh,metadata:Oh},Symbol.toStringTag,{value:"Module"})),Bh={title:"Troubleshooting",order:3},jh=`
 # Troubleshooting
 
 ## Bad Interpreter Error
@@ -155,7 +155,7 @@ Makefile: This Makefile must be run inside the nix-shell environment
 rm -rf ~/.volare
 ./env.sh
 \`\`\`
-`,Wh=Object.freeze(Object.defineProperty({__proto__:null,content:jh,metadata:Bh},Symbol.toStringTag,{value:"Module"})),Uh={title:"Analog Flow",order:3},Gh=`
+`,Wh=Object.freeze(Object.defineProperty({__proto__:null,content:jh,metadata:Bh},Symbol.toStringTag,{value:"Module"})),Gh={title:"Analog Flow",order:3},Uh=`
 # Analog Flow
 
 **Schematic. Layout. Simulate.**
@@ -201,7 +201,7 @@ cd .flows/analog/build/validation
 make drc
 make lvs
 \`\`\`
-`,Kh=Object.freeze(Object.defineProperty({__proto__:null,content:Gh,metadata:Uh},Symbol.toStringTag,{value:"Module"})),Hh={title:"CI/CD Workflows",order:5},Jh=`
+`,Kh=Object.freeze(Object.defineProperty({__proto__:null,content:Uh,metadata:Gh},Symbol.toStringTag,{value:"Module"})),Hh={title:"CI/CD Workflows",order:5},Jh=`
 # CI/CD Workflows
 
 **Push. Build. Verify.**
@@ -517,7 +517,7 @@ UWASIC automatically generates:
 ## Next Steps
 
 See Create Package to prepare your submission.
-`,fp=Object.freeze(Object.defineProperty({__proto__:null,content:gp,metadata:mp},Symbol.toStringTag,{value:"Module"})),yp={title:"Submit Package",order:3},vp=`
+`,fp=Object.freeze(Object.defineProperty({__proto__:null,content:gp,metadata:mp},Symbol.toStringTag,{value:"Module"})),vp={title:"Submit Package",order:3},yp=`
 # Submit to TinyTapeout
 
 ## Push to GitHub
@@ -579,7 +579,7 @@ Common issues:
 - **Don't push \`synthesis/\` folder** - Delete it first
 - **All workflows must pass** before submitting
 - **Check deadline** - TinyTapeout has submission cutoffs
-`,bp=Object.freeze(Object.defineProperty({__proto__:null,content:vp,metadata:yp},Symbol.toStringTag,{value:"Module"})),wp={title:"Build & Deploy",order:4},Tp=`
+`,bp=Object.freeze(Object.defineProperty({__proto__:null,content:yp,metadata:vp},Symbol.toStringTag,{value:"Module"})),wp={title:"Build & Deploy",order:4},Tp=`
 # Build & Deploy
 
 ## Local Development
@@ -645,7 +645,7 @@ Runs on every push to \`main\` branch.
 - Wait 1-2 minutes after push
 - Check Pages settings enabled
 - Clear browser cache
-`,_p=Object.freeze(Object.defineProperty({__proto__:null,content:Tp,metadata:wp},Symbol.toStringTag,{value:"Module"})),Cp={title:"Markdown Syntax",order:3},Ap=`
+`,Cp=Object.freeze(Object.defineProperty({__proto__:null,content:Tp,metadata:wp},Symbol.toStringTag,{value:"Module"})),Ap={title:"Markdown Syntax",order:3},_p=`
 # Markdown Syntax
 
 Supported markdown formatting in pages.
@@ -732,236 +732,96 @@ bun install
 - HTML tags
 
 Keep it simple!
-`,Sp=Object.freeze(Object.defineProperty({__proto__:null,content:Ap,metadata:Cp},Symbol.toStringTag,{value:"Module"})),xp=`# Analog LUT study: the four transcendental primitives
+`,Sp=Object.freeze(Object.defineProperty({__proto__:null,content:_p,metadata:Ap},Symbol.toStringTag,{value:"Module"})),xp=`# Application: transformer attention on the IMC core
 
-Feasibility study for the AnalogIOC working assumption (THE_COMPILER_STRUCTURE.md
-sec 8, Part IV "How far the analog goes"): can \`exp2\`, \`log2\`, \`reciprocal\`,
-\`rsqrt\` run in analog cheaper than the digital seed-table baseline? This was the
-highest-risk open assumption; it is now measured for exp2 and answered per
-primitive below.
+How a transformer attention layer maps onto AnalogIOC: which parts run in the
+analog in-memory-compute (IMC) tiles, which run on the digital rail, and why that
+split is the natural one. Model numbers are SmolLM2-135M, the model the compiler
+and golden tests use (\`scripts/models/smollm2-135m-q8_0.gguf\`).
 
-Labels follow METRICS.md: **measured** = SPICE tb in this repo, **counted** =
-yosys/compiler counts, **estimated** = documented model, **projected** =
-law-scaled.
+## 1. Two kinds of matmul
 
-## 1. The comparison that actually matters
+An attention layer has two different kinds of matrix product:
 
-A pure-digital special-function unit is almost free: a 256-entry ROM is under
-100 fJ and a couple of ns (sec 2). Analog cannot beat that on op energy and does
-not need to. The datapath is analog: attention scores arrive as charge on the
-tile integrators, softmax outputs drive the A·V row currents. Running the
-transcendental digitally means paying a domain crossing on both sides:
+| Product | Operands | Changes | Fits IMC? |
+|---|---|---|---|
+| Q, K, V, O projections | activation x **weight** | weights fixed after compile | **yes**: weight-stationary |
+| qKᵀ scores, A·V | activation x **activation** | new K, V row every token | no: would reprogram the array every token |
 
-| leg | cost | source |
+The IMC tile is weight-stationary. \`weight_tile\` holds 4-bit differential
+capacitor codes that the compiler programs once (\`scripts/compiler/compile.py\` ->
+\`programming/<matrix>.npz\`). INT8 activations stream through as PWM nibbles, and
+each column converts once per pass. That pays off only when the same weights are
+reused for every token.
+
+The projections are exactly that case. qKᵀ and A·V are not: their "weights" are
+the K and V cache, which grows by one row per token and differs per sequence.
+Holding them in analog memory means writing every new K/V row into the array,
+plus the refresh and retention that dynamic analog storage needs. That cost is
+paid per token and buys nothing back. So the split is:
+
+\`\`\`
+x --INT8--> [IMC: W_q] --> q ┐
+x --INT8--> [IMC: W_k] --> k ├─> digital rail: KV cache, scores = q·Kᵀ/sqrt(d),
+x --INT8--> [IMC: W_v] --> v ┘                 softmax, A·V
+                                                    │ INT8
+                                                    v
+                                              [IMC: W_o] --> o
+\`\`\`
+
+This is what \`golden.model.attention_forward\` implements bit-true. The four
+projections go through \`proj()\` (tile MVM, event-rate conversion, requant).
+K and V are cached as the dequantized INT8 tile outputs. Scores, \`softmax_ref\` and
+A·V are plain digital arithmetic. \`scripts/compiler/test_compile.py\` runs it on the
+real model.
+
+## 2. Where the MACs are
+
+Per token, per layer, for SmolLM2-135M (d = 576, 9 query heads and 3 KV heads of
+d_head = 64, FFN 1536, 30 layers):
+
+| Work | MACs/token/layer | Where |
 |---|---|---|
-| ADC (coarse+fine conversion) | 0.48–4.83 pJ, 1.79 pJ at mid \\|code\\| | measured, METRICS E_conv |
-| 256x8 ROM lookup | 0.09 pJ | counted (sec 2) x METRICS digital rail method |
-| DAC back to analog | 1.2 pJ, 4.6 ns settle | measured, tb_write_dac |
-| **chain total** | **1.8–6.1 pJ, ~3.1 pJ typical, >100 ns** | |
+| Q + O projections | 2 x 576 x 576 = 663,552 | IMC |
+| K + V projections (GQA) | 2 x 576 x 192 = 221,184 | IMC |
+| FFN gate/up/down | 3 x 576 x 1536 = 2,654,208 | IMC |
+| **Weight MACs total** | **3,538,944** | IMC |
+| qKᵀ + A·V at context L | 2 x 9 x 64 x L = 1,152 L | digital |
 
-So the bar for an analog primitive is ~3.1 pJ/op and the bar for the digital
-primitive (when operands are already digital) is ~0.1 pJ/op. Both bars get used
-below; which one applies is decided by where the operand lives, and that is
-decided per primitive by the op inventory (sec 5).
+The weight MACs don't depend on context length. The digital attention MACs grow
+with L, but they stay below the weight MACs up to L ≈ 3,072 (3,538,944 / 1,152).
+That covers most chat and decode workloads at this model size. Past that point,
+attention arithmetic is the larger term, and it lands on whatever digital or
+near-memory engine sits next to the KV cache. It is not an IMC problem.
 
-## 2. Digital baseline (counted + notes-derived)
+## 3. Why the mapping is a good fit
 
-Method: the fp8 shortcut from THE_COMPILER_STRUCTURE sec 8 — at 8b there are
-only 256 input bit patterns, so every primitive is a complete, exact table.
-Three tables were written as combinational Verilog case statements and
-synthesized with yosys 0.62 → \`abc -liberty sky130_fd_sc_hd tt_025C_1v80\`
-(same flow as A4's digital rail). Energy per the METRICS digital rail line:
-3 fF/cell x VDD² x a=0.1 x 1 cycle = 0.972 fJ/cell.
+- **The analog work is in the parts that never change.** All seven weight matrices
+  per layer are programmed once and reused for every token. The compiler counts
+  10,944 tile passes per token for blk.0 (\`passes.json\`, asserted in \`test_compile.py\`).
+- **Precision is matched to where errors are tolerable.** Projections absorb the tile's
+  measured residual: a ±8 LSB tile error keeps argmax 100% and cosine 0.9948
+  ([ERROR_IMPACT.md](ERROR_IMPACT.md)). Softmax is the one place that needs a wide
+  dynamic range: max subtraction, exponentials and a long-axis sum. It runs on the
+  digital rail and adds no analog error.
+- **No analog dynamic memory.** The KV cache is ordinary digital storage, so there is
+  no retention, refresh or read-disturb budget to close in analog.
+- **Activations already cross the boundary at INT8.** q, k and v leave the IMC as INT8
+  codes, and the A·V result re-enters as INT8 for W_o. The analog/digital interface
+  is the same one the FFN uses, so attention adds no new converter or port.
+- **Other architectures map the same way.** GQA, RoPE (applied digitally to q and k)
+  and MoE expert FFNs (selected expert weights resident in tiles, see
+  [MOE_MAPPING.md](MOE_MAPPING.md)) only change which weight matrices are resident.
+  The tile operation is the same.
 
-| table | cells | area (µm²) | E/lookup | latency | label |
-|---|---|---|---|---|---|
-| exp2 full fp8 e4m3 → e4m3 (exact, zero error) | 96 | 522 | 93 fJ | ~2 ns, combinational | counted / estimated (energy) |
-| exp2 8b-fraction seed → 8b mantissa | 212 | 1244 | 206 fJ | ~2 ns | counted / estimated |
-| reciprocal 8b seed (1/(1+m/256)) | 162 | 940 | 157 fJ | ~2 ns | counted / estimated |
+## 4. Open questions
 
-Notable: the *full* fp8 exp2 table synthesizes smaller than the 8b seed table
-(96 vs 212 cells) because e4m3 outputs are heavily redundant over the input
-range. The fp8 shortcut is even better than the doc assumed — the exact table
-is the cheapest of the three.
-
-Alternatives from the digital notes (S23/S26, de Dinechin & Kumm):
-
-- **CORDIC**: ~1 add-shift per output bit; unrolled at 8b ≈ 10 stages x 3
-  adders (~12b) ≈ 1500–1800 cells ≈ 1.5–1.7 pJ, 14k µm²; iterative ≈ 400 cells
-  x 10 cycles (estimated from sky130 adder cell counts). Strictly dominated by
-  the 256-entry table at 8b. CORDIC's no-multiplier argument only starts paying
-  above ~12–16 bits, and the notes' own FPGA verdict already prefers
-  table+multiplier. Not a contender here.
-- **Newton refinement** (recip/rsqrt to >8b): 4–5b seed table + one
-  y←y(2−xy) step = two 8x8 multiplies ≈ 800–1000 cells ≈ 0.8–1 pJ (estimated).
-  Each step doubles correct bits, so 16b costs one step over an 8b seed.
-- **Bipartite/multipartite** (S23): only relevant above ~10 input bits; at 8b
-  the plain ROM wins. Kept in reserve for the fp16 variants.
-
-Digital verdict inputs: at fp8, every primitive is ≤ 0.21 pJ, ≤ 1.3k µm²,
-~2 ns, exact. The digital baseline is not the weak point; the conversions are.
-
-## 3. Analog candidate: subthreshold translinear exp (measured)
-
-Falsifier: \`analog/testbenches/tb_lut_exp.py\`. One grounded-source NMOS
-(47.4/1.0, the measured translinear_softmax branch sizing) + PMOS 5/1.0 mirror
-into the 0.9 V A6 column clamp. exp is native physics: I = I0·e^(βV), so 2^x is
-a gate-voltage scaling; the "table" is one transistor plus a calibrated code→V
-map (the compiler's job, same calibration tb_softmax already does).
-
-Error budgets: fp8 e4m3 mantissa ulp = 12.5 % relative; faithful (half-ulp) =
-6.25 %. Softmax-relevant range after max-subtraction: 8 octaves (2^-8 < 1/256
-flushes in fp8).
-
-All numbers **measured** (ngspice, sky130A tt, this repo):
-
-| quantity | 27 C | 55 C | 85 C |
-|---|---|---|---|
-| exp-law window at 1 ulp (12.5 %) | 14.4 octaves | 12.9 | 11.8 |
-| window at half-ulp (6.25 %) | 12.3 octaves | 10.7 | 9.5 |
-| 64-code grid over the 8-octave range, worst rel err | 6.26 % (4.0 bits) | 6.29 % | 6.31 % |
-| β (per-temp 2-param recal) | 26.5 /V | 24.1 (−9.1 %) | 21.9 (−17.5 %) |
-| mirror nonlinearity over window | 0.60 % | 0.61 % | 0.65 % |
-
-- **Precision ceiling: 4.0 bits relative over 8 octaves**, at every temperature
-  after per-temp recalibration. That exactly meets faithful fp8-e4m3 mantissa
-  and no more. The binding constraint is subthreshold-slope curvature (β drifts
-  slowly with VGS across the window), not mismatch and not the mirror. A single
-  device does not give a 5th bit; more bits means segmenting the range across
-  trimmed devices (an rstring_ladder-seeded gate per segment) or going hybrid.
-- **Temperature**: β ∝ 1/T, −17.5 % from 27→85 C — same drift tb_softmax
-  measured (−18.1 %). Per-temp recalibration of (β, I0) restores the full
-  window; PTAT tail bias is the production fix (A3 note). Without recal the
-  code map is wrong by up to ~1.4 octaves at the range bottom: recal is
-  mandatory, not optional.
-- **Mismatch (MC, tt_mm, 8 seeds)**: σ(I)/I = 5.9–9.0 % over the window
-  (σ_VT-equivalent 2.2–3.2 mV at this 47 µm² device) → **3.5–4.1 bits
-  untrimmed**. A minimum-size device would sit near the 10–15 % / 3-bit figure
-  from the Pelgrom estimate; this branch is large enough that untrimmed error
-  ≈ the systematic ceiling. Trim (per-device stored gate offset via the
-  measured write_dac + gain-cell path, 60 mV LSB) removes the static part and
-  returns the device to the 4.0-bit systematic ceiling.
-- **Energy/latency (transient, 16 shuffled codes over 8 octaves, 2 µs slots)**:
-  mean **0.64 pJ/op**, worst 2.83 pJ (top code, both mirror legs), static
-  0.32 µW. Worst settle 1.90 µs at the bottom code (1.7 nA, mirror-node
-  τ = C/gm). The I·τ product is range-bound: settle is set by the *lowest*
-  current, energy by the *highest*, and their ratio is fixed at 2^8 — scalar
-  analog exp is stuck near ~0.5–3 pJ and ~1–2 µs regardless of bias point.
-- **Batched is the real shape**: translinear_softmax computes 8 exps *and the
-  normalization* in one 0.99 µs settle for 2.08 pJ = **0.26 pJ/exp, reciprocal
-  included** (measured, tb_softmax). All branches settle together and the tail
-  fixes total current, so energy/exp falls ~linearly with row width. Softmax is
-  exactly this batch shape (L scores per query per head).
-
-Area: 3 devices ≈ 60 µm² active + trim cell — an order below the 522 µm² ROM,
-though both are negligible; area decides nothing here.
-
-## 4. Reciprocal, rsqrt, log2 (no new sim — measured-adjacent + estimated)
-
-- **Reciprocal inside softmax is already free and already measured.** The
-  translinear normalization I_i = I_b·e^(βVi)/Σe^(βVj) IS the reciprocal: KCL
-  checksum ≤ 0.16 %, per-branch ≤ 1.4 % (~6 bits on the ratio), measured in
-  tb_softmax at 3 temps. No separate reciprocal op exists in the analog softmax
-  path at all. Sigmoid (hence SiLU) is the 2-branch special case of the same
-  circuit, so SiLU's exp+reciprocal fuse the same way.
-- **Standalone analog reciprocal** (translinear loop I1·I2 = I3·I4): estimated
-  at the same ~4-bit calibrated ceiling — MOS subthreshold loops add body-effect
-  and n-factor mismatch on top of the single-device curvature. No measured
-  candidate built; not worth building, because the only standalone reciprocal in
-  the inventory (softmax denominator when computed digitally, Newton seeds) is
-  low-volume and already digital-adjacent.
-- **rsqrt**: analog geometric-mean loop would carry the same ~4-bit ceiling.
-  RMSNorm needs 8+ bits and sits on fp32 norm statistics, which Part IV already
-  declares a digital island. At 2 ops/layer/token, the digital cost (157 fJ
-  seed + one Newton ≈ 1 pJ, estimated) rounds to zero. There is no case for
-  analog rsqrt.
-- **log2**: native in the same device run in reverse (V = ln(I)/β), same 4-bit
-  ceiling (estimated, symmetric physics with the measured exp). Only consumer
-  is softplus's midrange table (SSM); see weighting below.
-
-## 5. What the transformer actually needs per token
-
-Counts from THE_COMPILER_STRUCTURE secs 7–9, 7B-class shapes (32 layers, H=32,
-d_h=128, d_ff=11008; Mamba shapes D=8192, N=16). Counted per token per layer:
-
-| primitive | where | count/token/layer | count/token (32 L) |
-|---|---|---|---|
-| exp2 | softmax, decode | H·L = 32·L (131k at L=4k, 4.2M at 128k) | 4.2M at L=4k |
-| exp2 (+recip, fused) | SiLU sigmoid, MLP | d_ff ≈ 11k | 352k |
-| reciprocal | softmax denominator (online softmax) | H = 32 | 1k |
-| rsqrt | RMSNorm | 2 | 64 |
-| softplus (exp+log2) | Mamba 1 only | D = 8k | 262k |
-| exp2 | Mamba 1 Ā = exp(ΔA) | D·N = 131k | 4.2M **per token regardless of L** |
-| exp2 | Mamba 2 | H = 32 | 1k |
-
-Energy weighting at L=4k, per token (7B projection: 22.4 µJ/token total MVM):
-
-- softmax exp done via conversion chain: 4.2M x 3.1 pJ = **13 µJ/token** — it
-  would add ~58 % to the whole token budget. Done analog in-loop: 4.2M x
-  0.26 pJ = **1.1 µJ/token** (5 %). This single line is why the analog exp
-  matters; at 128k context it is the whole ballgame (projected 419 µJ vs
-  35 µJ).
-- SiLU: 352k ops → 1.1 µJ chain vs 0.09–0.23 µJ analog (projected from the
-  measured scalar/batched numbers). Same verdict class, smaller stakes.
-- reciprocal standalone, rsqrt, softplus: 1k + 64 + 0 ops → sub-nJ at any
-  implementation. Frequency kills the debate: these can be arbitrarily
-  expensive per op without moving the token budget.
-- Mamba 1 is the exception that keeps digital honest: 4.2M exps/token at fixed
-  cost independent of L, elementwise into a mutable state — on Chip 1, where
-  norm-statistics operands are already digital. Digital full-table (93 fJ x
-  4.2M = 0.39 µJ/token, estimated) is fast and cheap; an analog translinear
-  bank at ~2 µs settle would need ~10⁵-way parallelism to keep pace. Digital
-  wins this volume. (Mamba 2 collapses the count to 1k/token and the question
-  evaporates.)
-
-## 6. Verdicts
-
-| primitive | verdict | numbers | binding constraint |
-|---|---|---|---|
-| **exp2 (softmax / SiLU path, Chip 2 + MLP)** | **ANALOG WINS** | 0.26 pJ/exp batched incl. normalization (measured) vs 3.1 pJ digital chain (measured+counted); 4.0 bits over 8 octaves = faithful fp8 e4m3 (measured, 3 temps); settle 1–2 µs, hidden inside the 4.12 µs pass | subthreshold curvature caps it at 4 bits — fp8 exactly, nothing more; β(T) needs per-temp recal/PTAT; per-device trim needed at small geometries |
-| **exp2 (Mamba-1 volume, digital-operand contexts)** | **DIGITAL WINS** | 93 fJ, ~2 ns, 522 µm², exact (counted/estimated) | analog latency: µs settle vs 4.2M ops/token at fixed cost; operands already digital |
-| **reciprocal** | **ANALOG by fusion** (softmax/sigmoid: it is free — KCL normalization, ≤1.4 % measured); **DIGITAL standalone** (157 fJ table, counted) | standalone volume is 1k ops/token — irrelevant either way | translinear loop ceiling ~4 bits (estimated); fusion only exists inside a normalization |
-| **rsqrt** | **DIGITAL WINS** | 157 fJ seed + Newton ≈ 1 pJ (estimated), 64 ops/token | needs 8+ bits on fp32 norm statistics (declared digital island); analog ceiling 4 bits — disqualified, and frequency makes it moot |
-| **log2 / softplus** | **DIGITAL** (128-entry midrange table, trivial); analog log is native at 4 bits if a fused SSM path ever wants it (estimated) | 262k ops/token only in Mamba 1 | same curvature ceiling; no fused analog consumer exists yet |
-
-**The one-sentence version:** the analog LUT assumption survives, but narrowly
-and specifically — analog wins exactly where the operand already lives in
-charge and the op is batched behind a normalization (softmax exp+recip, SiLU),
-because what it saves is the 1.8–6.1 pJ conversion tax, not the 0.1 pJ table;
-everywhere operands are digital or precision exceeds 4 bits, the fp8 full-table
-ROM at 93 fJ is unbeatable and CORDIC never enters the picture.
-
-Chip 2's op list (MAC, max, exp2, rescale, one reciprocal) is therefore fully
-analog-feasible at fp8. Chip 1 keeps rsqrt, softplus, and bulk elementwise exp
-digital, which matches Part IV's digital-island list.
-
-## 7. Risks and open items
-
-- 4.0 bits is *exactly* faithful fp8-e4m3 — zero margin. Any additional error
-  source (drain modulation under real column loads, trim residue, aging) eats
-  into softmax quality directly. A tile-context rerun of tb_lut_exp under the
-  real A6 load is the next falsifier.
-- MC used 8 seeds (device draws); enough for a σ estimate, not tails. Trim
-  range needed: ±3σ_VT ≈ ±10 mV ≈ ±0.4 octave — well inside one write_dac LSB
-  path, but the trim DAC resolution (60 mV LSB) is coarser than the needed
-  offset step; trim wants the rstring_ladder's non-uniform taps or a finer
-  vernier. Unresolved.
-- Settle at the bottom code (1.9 µs at 1.7 nA) is the latency floor; raising
-  the whole window trades it against energy at fixed I·τ. If a future schedule
-  needs <1 µs softmax, clip the range to 6 octaves (fp8 flush at 1/64) or add
-  a per-branch settle accelerator.
-- The exp2 verdict was measured on one device geometry (47.4/1.0). The
-  batched 0.26 pJ/exp number inherits tb_softmax's 8-branch row; wider rows
-  (real L) amortize further but add wire/mirror error not yet measured.
-
-## Repro
-
-- Analog falsifier: \`PYTHONPATH=analog/schematics python analog/testbenches/tb_lut_exp.py\`
-  (ngspice 43 at build/ngspice43, sky130A via ~/.volare). PASS as of 2026-08-27.
-- Digital tables: 256-case Verilog ROMs (exp2 fp8 e4m3 full, exp2 8b seed,
-  recip 8b seed) → yosys 0.62 \`synth; abc -liberty sky130_fd_sc_hd__tt_025C_1v80\`;
-  cell/area from \`stat -liberty\`. Energy = cells x 3 fF x 1.8² x a=0.1
-  (METRICS digital rail method).
+- Throughput balance: at what context length does the digital attention engine,
+  rather than tile passes, set tokens/s? That depends on the rail's MAC rate, which
+  isn't sized yet.
+- KV cache size: 2 x 30 layers x 3 heads x 64 x L bytes at INT8 is 11.5 kB per token
+  of context. Whether that lives on-die SRAM or off-chip sets the system memory
+  budget.
 `,kp=`# K* super-tile conversion cascade (law:cascade, paper sec:supertile)
 
 Labels per METRICS.md: **measured** = SPICE tb in this repo; **derived** =
@@ -1538,409 +1398,7 @@ Timing law \`specs.cascade_pingpong_pass_time(K)\` = max(T_in, T_conv/K) +
 4 t_q swap gap is landed and in the projection tables above; on the sky130
 sim grid the pingpong rate saturates at K=2 (the window pair, not
 conversion, becomes the floor).
-`,Ip=`# Chip 2 — in-memory attention engine (implementation spec)
-
-Build target for the attention half of AnalogIOC (THE_COMPILER_STRUCTURE.md
-Part IV, B3). Full analog except (a) the die-to-die link and (b) the fp32
-digital islands the precision table mandates. Style and conventions follow
-CONTRACT.md: python netlist generators, gm/ID sizing from A1 tables, every
-block ships a numeric-assert PASS/FAIL testbench, sky130 first, one status
-line to STATUS.md per agent.
-
-Source labels used throughout: [measured, STATUS A3/METRICS] = SPICE tb in
-this repo; [paper, sec_attention/sec_formats] = paper law; [compiler doc
-Bn/Part IV] = THE_COMPILER_STRUCTURE.md; [projected] = law-scaled, no sim.
-
----
-
-## 1. Function and the traffic law
-
-One unit computes, per query, the fused loop at the KV cache:
-
-\`\`\`
-broadcast in : q                    (d_h values)
-stream local : K, V                 (2·L·d_h values, never leave the die)
-return       : (o, m, l)            (d_h + 2 values)
-\`\`\`
-
-qK^T → online-softmax → A·V, fused, is the canonical
-broadcast-stream-reduce op [compiler doc B3]. Traffic ratio:
-
-\`\`\`
-R = bytes(streamed) / (bytes(broadcast) + bytes(result))
-  = 2·L·d_h / (2·d_h + 2)  ≈  L
-\`\`\`
-
-At L = 128k this is ~**128,000×** less memory-interface traffic than
-shipping K,V to the compute [compiler doc B3/Part IV]. This ratio is the
-reason the chip exists; nothing in this spec may reintroduce an O(L) term
-across the die boundary.
-
-The same unit serves **MoE decode FFN**: tiny activation broadcast in, huge
-expert weights streamed from the same banks, tiny result out — identical
-geometry [compiler doc B3, "the MoE row is the one people miss"]. Mode
-switch in §8.
-
-### Geometry
-
-| param | mini (SPICE, this repo) | target (projected) |
-|---|---|---|
-| d_h | 8 | 128 |
-| bank = tokens/gain-cell array pair | 8 | 64 |
-| banks/group G (analog combine) | 2 | 16 (window-limited, §4) |
-| groups/session window | 1 | W_res/(G·64), e.g. 2 at W_res=2048 |
-| rows driven simultaneously | 8 | 8 (sub-bank interleave; 10 uA class-A column budget [measured, STATUS A3]) |
-
-Mini numbers are the acceptance-test scale; target numbers are parametric
-and labeled [projected] wherever used.
-
----
-
-## 2. Block list
-
-| # | block | analog realization | measured anchor |
-|---|---|---|---|
-| B1 | KV gain-cell banks | 2T all-NMOS cell, 30 fF store, 0.9 V write ceiling (components/gain_cell_array) | E_wr 7.5 fJ/cell, E_rd 2.4 pJ/8-row pass, tau_ret ~27 ms, 10 reads = -43 uV, write disturb -6.2 uV [measured, STATUS A3] |
-| B2 | qK charge-domain MAC | q as PWM on rd source lines, column charge on virtual-ground integrators; converter = integrator_conv reuse (event-rate coarse + 4b SAR) | gain-cell read monotone 16/16 levels; converter ±1 LSB, E(0) 0.50 pJ [measured, STATUS A3/A8b] |
-| B3 | running max | WTA: shared-source follower-max, replica-biased | new; budget §2.3 |
-| B4 | exp + local sum | translinear softmax bank (components/translinear_softmax); shared-source node voltage = logsumexp readout | KCL checksum ≤0.16%, branch err ≤1.4%, beta 27.31/24.71/22.36 /V at 27/55/85 C, settle 0.99 us, 2.08 pJ/op [measured, STATUS A3/METRICS]; logsumexp *readout* itself unmeasured → tb_online_softmax_analog |
-| B5 | rescale multiply | programmable gain = translinear ratio pair, gain = exp(beta·ΔV) ≤ 1; fallback V→T ramp per lora_sidecar idiom | same subthreshold physics as B4 [measured beta]; V→T eps 18 ns baseline-cancelled [measured, STATUS A3] |
-| B6 | A·V drive | softmax output currents → I→T (lora_sidecar ramp idiom) → PWM on V-array rd lines; o accumulates in charge on column integrators | V→T measured [STATUS A3]; e2e path exercised by tb_attention_e2e [CONTRACT test 2] |
-| B7 | fp32 combine island (digital) | monoid combine across groups and across time-multiplexed passes; max/exp/FMA in fp32 | mandate: softmax max+sum fp32, long-axis accumulators fp32 [compiler doc precision table] |
-| B8 | sink SRAM island (digital) | 128-entry K/V protected set, exact digital rescore | 3% energy for ~100% accuracy recovery anchor [paper, sec_attention / feng2026selective] |
-| B9 | die-to-die link | serial link + dual-clock Gray-pointer async FIFO (GALS) | Gray-CDC idiom already in A4 rail [INTERFACES.md] |
-| B10 | sequencer | async_ctrl delay-chain idiom, no global analog clock | tq_chain measured [STATUS A1] |
-| B11 | CAM spill prefilter | 2b discharge-race signatures over spilled keys, top-k candidates | **phase-2, unverified** [paper, sec_attention] |
-
-Reciprocal is **not** a Chip 2 block — decision in §3.
-
-### 2.1 KV banks (B1): sizing from the lifetime-matched-memory law
-
-Law: tau_ret > 2^b · T_use, b = 4 stored bits → tau_req = 16 · T_res,
-where T_res is window residency (seconds at ms-class token cadence), not
-the per-read interval [paper, sec_attention].
-
-- Measured CMOS cell: tau ≈ 27 ms [measured, STATUS A3] → refresh-free
-  residency T_res ≤ 27 ms / 16 ≈ **1.7 ms**. Any decode session outlives
-  that by orders of magnitude, so **refresh-from-shadow is mandatory**
-  (rewrite each entry from its digital shadow copy at tau/2 cadence; the
-  shadow exists anyway for spill) [paper, sec_attention].
-- Refresh budget, target scale (W_res = 2048, d_h = 128, K+V): 2·262k
-  cells × 7.5 fJ = 3.9 uJ per full rewrite, every tau/2 = 13.5 ms →
-  **~0.3 mW per head** [projected from measured E_wr]. Time: 150 ns
-  column write slot [measured, METRICS] × 2048 columns = 307 us per array
-  per 13.5 ms = **2.3% write duty** [projected]. Refresh writes serialize
-  against reads on the wsel/wdata buses — sequencer must interleave
-  (risk R4, §10).
-- Escape hatch: BEOL oxide-semiconductor gain cells, ~3 orders longer
-  retention [paper, sec_attention cite leroux2024analog] — drops refresh
-  to Hz-class. Not in sky130; document as production option only.
-- K/V stored at 4/4 bits per element (co-designed quantizer) [paper,
-  sec_attention]; write path = write_dac, 4b, 16/16 monotone, 1.2 pJ/slot
-  [measured, STATUS A3].
-
-### 2.2 qK MAC (B2)
-
-Per the weight-tile idiom: broadcast q as PWM durations on the 8 rd
-source lines (per 8-row sub-bank), each token column integrates
-sum_r I_read(k[r][j])·t_r = q·k_j in charge on its 0.9 V virtual-ground
-rail [measured read path, STATUS A3]. d_h = 128 → 16 sub-bank passes
-interleaved in time, partial charges summed on the shared column
-integrator (the class-A OTA sinks ≤ ~10 uA, so ≤ 8 simultaneous rows —
-compiler schedule constraint carried over verbatim from STATUS A3).
-Read-current I(V) is exponential below Vth → compiler pre-distortion via
-the code→I calibration (tb_lora method, 0.1%) [measured, STATUS A3].
-Tile phis clock-gated outside the window (A8 FIX v2 discipline).
-
-### 2.3 Running max (B3): WTA topology + precision budget
-
-**Primary topology**: N-input source-follower max — N NMOS followers
-sharing one source node with a tail sink; V_out = max(V_i) − VGS + soft
-excess. Replica follower (same coordinate, driven by a reference) cancels
-VGS. This is the softmax bank's own topology re-biased (the paper notes
-spread beyond headroom turns the normalizer *into* a WTA
-[paper, sec_formats §translinear]), so it reuses the measured device
-coordinate (47.4/1.0 at gm/ID 25 [measured, STATUS A3]).
-**Fallback**: Lazzaro current-mode WTA — rejected as primary because it
-returns argmax, not the max value.
-
-Precision budget. Softmax is shift-invariant: an m̂ error that is applied
-*consistently* to numerator and denominator cancels exactly. So the WTA
-carries no accuracy requirement, only a **range** requirement:
-
-- systematic: m̂ ∈ [m, m + nU_T·ln N] (logsumexp smoothing; 37 mV × ln 8
-  ≈ 77 mV worst-case all-equal, ≤ ~5 mV when the winner leads by 4 nU_T).
-  Overestimate is safe (pushes exp args negative); the score mapping must
-  reserve nU_T·ln N of the 120 mV window as headroom [measured window,
-  STATUS A3].
-- random: replica-cancelled offset ≤ ±5 mV (Pelgrom-sized or trimmed —
-  the paper's own budget line for the bank: sigma_VT 3–5 mV vs nU_T 36 mV
-  [paper, sec_formats]).
-- structural rule (non-negotiable): the **same physical m̂ node** biases
-  both the exp bank (B4) and the rescale pair (B5). Two independent m̂
-  copies would break shift-invariance and turn ±5 mV into ~14% exp error
-  (e^(beta·5mV), beta 27.31 /V [measured]).
-- settle ≤ 1 us (match softmax settle 0.99 us [measured]).
-
-### 2.4 exp + local sum (B4), rescale (B5), A·V (B6)
-
-- B4: scores sampled onto the bank gates inside the 0.6–0.85 V CM,
-  ≤120 mV spread window [measured, STATUS A3]. Outputs: (i) normalized
-  currents a_j·I_b (drive B6), (ii) the shared-source node voltage V_ls
-  which physically carries ln(sum_j e^(beta·s_j))/beta — the local
-  denominator in log domain, no max subtraction needed (normalization by
-  the tail is overflow-proof [paper, sec_formats eq. softmax]). V_ls as a
-  *readout* is new and unverified → acceptance test T4.
-- B5: per-bank gain g_b = exp(beta·(V_ls,bank − V_ls,group)) ≤ 1 by
-  construction, one translinear ratio pair per bank output bundle. PTAT
-  bias on the sampling gain closes beta(T) (production fix already noted
-  for the bank: fixed-bias I_b drifted 0.58→2.2 uA over 27→85 C
-  [measured, STATUS A3]).
-- B6: a_j currents → PWM durations via the measured V→T ramp idiom
-  (integrate on C, linear pfet ramp, comparator self-times the window;
-  eps cancelled by x=0 baseline pass [measured, STATUS A3]); durations
-  drive the V-array rd lines; o_bank accumulates in charge on the group's
-  column integrators (KCL, exact, carry-free [paper, sec_formats]).
-
----
-
-## 3. Reciprocal: digital, host-side. Decision and why
-
-The softmax denominator l accumulates over the full sequence axis
-(L up to 128k). The precision table is explicit: "softmax internals: fp32
-for max and sum" and "anything that accumulates over a long axis ... needs
-fp32" [compiler doc, precision table]. A translinear divide is a 1–2%-class
-operation (measured branch error 1.4% [STATUS A3]) and an error on l
-multiplies **every element of o systematically** — not a random-walk term
-the sqrt(K) budget absorbs. So:
-
-- Chip 2 never divides. It returns raw (o, m, l).
-- The one reciprocal per query row runs in fp32 on Chip 1's digital rail
-  ("reciprocal once at the end, which can live host-side"
-  [compiler doc B3]). o_t = o/l lands right where the output projection
-  consumes it.
-- Consequence: Chip 2's only mandated digital arithmetic is the B7 combine
-  island (max, exp, FMA in fp32) + the B8 SRAM island. No divider anywhere.
-
----
-
-## 4. The online-softmax monoid in analog
-
-The combine [compiler doc §6]:
-
-\`\`\`
-(m1,l1,o1) ∘ (m2,l2,o2) = (m, l1·e^(m1−m) + l2·e^(m2−m),
-                              o1·e^(m1−m) + o2·e^(m2−m)),  m = max(m1,m2)
-\`\`\`
-
-Associativity of ∘ is the offload-legality proof [compiler doc B3]: any
-grouping of per-bank partials is bit-equivalent in exact arithmetic, so
-banks may reduce independently and a tree may merge them. The hardware
-mapping splits the tree at the point the precision table dictates:
-
-**Level 0 — bank (analog).** 64 tokens (mini: 8). Produces
-(m̃ = WTA output, V_ls = log-domain l̃, o_bank = charge on integrators,
-normalized to I_b).
-
-**Level 1 — group (analog), G ≤ 16 banks.** A second shared-source stage
-over the banks' V_ls values computes the group logsumexp; B5 ratio pairs
-apply g_b = l_b/l_group to each bank's o currents; group o = KCL charge
-sum. No retroactive rescale exists at this level — banks combine
-*spatially*, in parallel, so no stored charge is ever rescaled. G is
-capped by the constant-beta window: combining G banks grows the log axis
-by up to ln G nats = 37 mV·ln 16 ≈ 103 mV, against the measured ≤120 mV
-window [measured, STATUS A3] → **G = 16 max** (mini: 2).
-
-**Level 2 — root (digital fp32, island B7).** Group partials are
-digitized and the streaming monoid runs in fp32 across (a) groups and
-(b) successive time-multiplexed passes when a session window exceeds the
-physically resident banks. Retroactive rescale (new max raises m) happens
-only here, as an fp32 multiply. This placement is exactly the mandated
-island: l at this level accumulates over L [compiler doc precision table].
-
-**Precision per partial** (what crosses level 1 → 2):
-- m̃: 8b in the score-voltage domain (existing integrator_conv converter,
-  ±1 LSB [measured]).
-- l̃: 8b code of V_ls — a *log-domain* code, so 8b buys relative precision
-  over the whole octave span [paper, sec_formats format algebra]; expanded
-  to fp32 by exp in the island.
-- o: d_h × 8b codes + one shared per-group scale (analog block-FP,
-  the inter-tile format row of Table formats [paper, sec_formats]).
-
-**Error accumulation law**: analog errors are multiplicative and compound
-as sqrt(#crossings) [paper, sec_formats "compounds as sqrt(#ops)"]. Two
-analog levels at ~1.4% per translinear crossing [measured] → ~2% analog
-contribution; everything above level 1 is exact fp32. Budget: ≤3% on any
-output element pre-requant (test T5).
-
----
-
-## 5. Sink protection (non-negotiable)
-
-KV noise sensitivity is position-concentrated: m = 8 sink tokens + the
-recent window lose most; protecting exactly those recovers near-clean
-perplexity at ~3% energy [paper, sec_attention / feng2026selective].
-Protected set: **8 sinks + 120 recent = 128 entries per head**, softmax
-kept (protection policy and scoring function chosen jointly [paper]).
-
-Two options, quantified:
-
-- **Full-analog: high-C gain cells.** +2 bits of SNR at the kT/C law
-  (sigma_V = sqrt(kT/C); +1 bit = 4× C) → 16× C: 30 fF → **480 fF** per
-  cell. Also buys ~16× retention (~430 ms) [projected from measured tau].
-  Area at MiM 2 fF/um² [STATUS O1 raw param]: 240 um²/cell × 128 entries
-  × 128 (d_h) × 2 (K,V) = **~7.9 mm² per head** [projected]. And the
-  entries still decay, still eat read disturb, still need refresh.
-- **Digital SRAM island (B8).** 128 × 128 × (4b+4b) = 128 kb per head;
-  exact, no droop, no disturb. Rescore cost: 128·d_h = 16k digital MACs
-  per query per head — the paper's measured anchor for exactly this
-  policy is **~3% energy for ~100% accuracy recovery** [paper,
-  sec_attention].
-
-**Decision: digital SRAM island.** The analog option pays ~an order of
-magnitude more area for a set whose whole point is to be *exact*, and the
-corpus result we are anchoring to is the digital-protection experiment.
-Budget line: ≤5% of per-query attention energy for the sink rescore
-(test T7; paper anchor 3%). Integrity rule inherited from the spill path:
-sink tokens are never CAM-filter candidates — pinned digital [paper,
-sec_attention].
-
----
-
-## 6. Chip 1 ↔ Chip 2 link contract
-
-Exactly one dependency edge crosses the token-local / token-crossing
-boundary in the whole model: the KV append (step 4 of token j before
-step 5 of any t > j) [compiler doc §5]. That is why this link is the only
-inter-chip dependency and why the cut survives: it carries the smallest
-tensors in the model [compiler doc Part IV].
-
-**Messages** (all O(d_h), fixed size, no O(L) term ever):
-
-| dir | flit | payload | size at d_h=128 |
-|---|---|---|---|
-| C1→C2 | KV_APPEND | hdr{session 6b, layer 6b, kv-head 6b, pos 20b} + k' d_h×4b + v d_h×4b | ~133 B |
-| C1→C2 | Q_BCAST | hdr + q d_h×8b (score-path precision [paper 4/4/8]) | ~133 B |
-| C2→C1 | O_PARTIAL | hdr + o d_h×8b + scale 8b + m 8b + l fp32 | ~137 B |
-| C1→C2 | CFG | mode bit (§8), refresh/window params, PTAT trim | ≤32 B |
-
-**Rates at decode cadence** [projected]: 1000 tok/s/session, 32 layers,
-8 KV heads (GQA), 32 query heads: forward ≈ 32·8·133 B·1e3 ≈ 34 MB/s +
-Q_BCAST 32·32·133·1e3 ≈ 136 MB/s; return ≈ 140 MB/s. Sub-GB/s per session
-against a UCIe-class die-to-die link — three orders of headroom. Mini
-scale: 128b-class flits at 22 tok/s [measured cadence, METRICS] = kHz
-traffic, trivially testable.
-
-**GALS boundary**: Chip 2's analog domain is self-timed (async_ctrl
-idiom, no global clock [CONTRACT]); the link SerDes has its own clock.
-Crossing = dual-clock **Gray-pointer async FIFO** per direction, 2FF
-synchronizers on the pointers, same discipline as the A4 rail's Gray
-event-count export and the ≥2-clk pacing rule [INTERFACES.md]. Depth 16
-flits/direction (decode-cadence traffic never backs up; assert
-never-full in T9). Data quasi-static while its req is in flight, per the
-existing A4 handshake contract.
-
-Ordering rule carried from the dependency table: KV_APPEND(pos j) must be
-ACKed by the bank sequencer before any Q_BCAST with pos > j is served for
-that (session, layer, head). Single-writer append-only cache → no other
-coherence exists [compiler doc B2].
-
----
-
-## 7. Per-session spatial batching + spill path
-
-**Batching**: sessions are parallel in **area** — each bank group holds
-one session's window for the die's layer slice, B groups run concurrently.
-No amortization exists to chase: the KV cache is private per sequence, so
-batching cannot raise arithmetic intensity [compiler doc §3]; throughput
-scales with tile-group count, which is the correct currency [paper,
-sec_attention batch mapping]. Token cadence is set by Chip 1's weight
-engine; attention hides under the FFN super-tile latency [paper].
-
-**Spill (phase 2, unverified — do not build against it)**: context beyond
-W_res spills to the digital shadow (HBM/host) as quantized KV. A 2b
-discharge-race CAM prefilter stores signatures of spilled keys; a query
-races in O(1) and returns top-k candidates; only those k are fetched and
-re-scored **exactly** — the CAM is a filter, never the scorer [paper,
-sec_attention]. Sinks never filterable (§5). Recall depends on the model
-being fine-tuned with the filter in the loop [paper] — untested, ranked
-risk R5. Phase-1 fallback: spilled tail re-streamed digitally (correct,
-slow), or window-only attention per the co-designed model.
-
----
-
-## 8. MoE decode FFN mode
-
-One config bit per bank group (CFG flit): \`MODE ∈ {ATTN, FFN}\`.
-
-| | ATTN | FFN |
-|---|---|---|
-| bank contents | K, V (per-token append) | expert weight tiles (columns = output channels) |
-| broadcast | q (rows, PWM) | activation x (rows, PWM) |
-| B3 WTA / B4 exp / B5 gain | active | **bypassed** — column charge goes straight to the converter |
-| B7 island | monoid combine | plain fp32 accumulate across sub-bank passes (long-axis mandate holds: expert accumulator fp32 [compiler doc precision table]) |
-| return flit | (o, m, l) | y slice, same O_PARTIAL format with m,l fields zeroed |
-| refresh | tau/2 shadow refresh of window | **mandatory**: weights are read-only-persistent on a consuming substrate [compiler doc Part IV, "no third chip" remark] — refresh-from-shadow at T_res ≤ tau/2^b = 1.7 ms [measured tau + paper law] |
-
-Expert swap cost [projected from measured]: a 128×256 expert slice =
-32k cells × 7.5 fJ = 0.25 nJ write energy, 256 columns × 150 ns = 38 us
-write time — fine against ms-class routing cadence, and the whole point
-at low batch: activation in, weights streamed locally, result out
-[compiler doc B3 MoE row]. Nonlinearity (SiLU) and routing stay on
-Chip 1 (position-local / S5b [compiler doc]).
-
----
-
-## 9. Acceptance tests (CONTRACT style: numeric asserts, PASS/FAIL)
-
-| tb | contents | pass criteria |
-|---|---|---|
-| T1 tb_qk_bank | 16 random (q, K) on one 8×8 bank pair, PWM broadcast, codes vs golden | every column ±1 LSB; read-pass energy ≤ 2× the 2.4 pJ anchor |
-| T2 tb_wta | 8-input follower-max, 16 patterns incl. all-equal and 1-LSB-split winners, 3 temps | settle ≤1 us to ±5 mV; m̂−m ∈ [0, nU_T·ln8 + 5 mV]; replica-cancelled offset ≤ ±5 mV; monotone under permutation |
-| T3 tb_rescale_gain | translinear ratio pair, ΔV swept −120..0 mV, PTAT bias, 27/55/85 C | gain vs e^(beta·ΔV) ≤2% rel; T-drift after PTAT ≤ 1 guard bit (paper falsifier) |
-| T4 tb_online_softmax_analog | 4 banks × 8 tokens streamed, level-0/1 analog + level-2 fp32, vs golden monoid; includes V_ls-as-logsumexp verification | final o ≤3% rel (±1 LSB post-requant), l ≤3%, m within T2 budget; **associativity**: two different bank groupings agree ≤1% |
-| T5 tb_combine_tree | G=16 synthetic partials through level-1 stage | error ≤ 1.4%·sqrt(2) + margin = 2.5% (cascade law sqrt(K)) |
-| T6 tb_kv_residency | write bank, 100 read passes + one tau/2 refresh cycle under traffic | store droop ≤1 write-DAC LSB (60 mV); ≤50 uV per 10 reads (anchor −43 uV); refresh/read interleave deadlock-free |
-| T7 tb_sink_protect | inject KV noise on analog window, 128-entry set digital, vs no-protection run | ≥90% of attention-output error recovered; sink-path energy ≤5% of query total (anchor 3%) |
-| T8 tb_moe_ffn_mode | 16→16 expert slice, MODE=FFN, vs golden | ±1 LSB all outputs; switch is CFG-only (no netlist delta between modes) |
-| T9 tb_link_fifo (iverilog) | dual-clock Gray FIFO, 1e5 random flits, clock ratios 1:1/1:3/3:1 + jitter | zero lost/duplicated/torn flits; never-full at decode-cadence rates; KV-before-Q ordering asserted |
-| T10 tb_attention_e2e_c2 | 8 tokens end to end: KV_APPEND flits → write → qK → WTA/softmax → A·V → combine → O_PARTIAL → fp32 divide on golden rail, vs golden | codes ±1 LSB (same discipline as CONTRACT tb_attention_e2e) |
-
-Every SPICE tb integrates supply current per phase and reports pJ per op
-per block (METRICS mandate).
-
----
-
-## 10. Open risks, ranked
-
-1. **WTA consistency + headroom (R1).** The whole precision story rests on
-   one m̂ node feeding both B4 and B5; any layout/buffering that forks it
-   converts ±5 mV offset into ~14% exp error (beta 27.31 /V [measured]).
-   The nU_T·ln N overestimate also eats up to 77 mV of a 120 mV window —
-   the score-mapping headroom reservation must be enforced by the
-   compiler, not hoped for. Falsifiers: T2, T4.
-2. **Translinear beta(T) (R2).** Measured −18.1% beta drift 27→85 C and
-   fixed-bias I_b 0.58→2.2 uA [measured, STATUS A3]. PTAT-scaled bias is
-   the noted production fix, but the *residual* after PTAT on this bank
-   is unmeasured; paper falsifier allows ≤1 guard bit over 60 C. T3.
-3. **Analog combine-tree error accumulation (R3).** Cascade law: relative
-   error compounds as sqrt(K) crossings [paper, sec_formats]. Budgeted at
-   2 analog levels ≈ 2%; if T5 fails and G must shrink, the digital tree
-   widens → more conversions per query (energy grows toward the
-   per-bank-conversion worst case). T4, T5.
-4. **Retention vs session length (R4).** tau 27 ms [measured] vs law
-   demand 16·T_res [paper]: refresh-from-shadow is load-bearing, its duty
-   (2.3% [projected]) collides with read traffic on shared column/wsel
-   resources, and a missed refresh silently degrades stored bits rather
-   than failing loudly. OS BEOL cell is the escape but is off-PDK. T6.
-5. **CAM prefilter (R5, phase 2).** 2b discharge-race recall is unverified
-   and the accuracy story assumes filter-in-the-loop fine-tuning [paper].
-   Nothing in phase 1 may depend on it.
-
-Secondary note: d_h = 128 needs 16-way sub-bank interleave under the
-10 uA class-A column budget [measured constraint, STATUS A3] — a schedule
-cost, or a class-AB integrator upgrade, at target scale.
-`,Mp=`# COMPOSED AnalogIOC RESULTS (task #13) — all landed levers, one number
+`,Ip=`# COMPOSED AnalogIOC RESULTS (task #13) — all landed levers, one number
 
 Pure metrics assembly from MEASURED anchors + LANDED laws. NO SPICE (an analog agent owns the sim lane). Regenerate: \`PYTHONPATH=<repo> python3 scripts/compiler/metrics/compose.py\`.
 
@@ -2004,7 +1462,7 @@ tok/s/die is projected PDK timing x tiles/die (die 400 mm2 x 0.7 fill). tok/J is
 - **tok/J, matched scope:** at the MINI subset the composed chain is 87,343 tok/J; the paper's 7B-optimized projection is ~45k tok/J (converged 3.2 fJ/MAC) — both clear the INFERRED Sohu 70B band (35-60) by ~750-1500x, BUT the mini per-pass energy scaled naively to 7B gives only 35 tok/J (static-OTA-dominated, not a production die). The honest tok/J win needs the amortized production converter, not just the mini SPICE chain. Excludes weight-rewrite energy, as METRICS.md.
 - **measured share:** the per-block energy (2190.5 pJ/pass) and the cascade amortization (0.55x/0.41x) are SPICE-measured. **derived share:** the K schedule, avg K=6.54, and tok/J arithmetic. **projected share:** tiles/die + PDK timing (asap7/n4 param sets).
 - **the 2x-Sohu gap is a servo-eg problem, not a lever-stacking one:** halving eg (0.3% -> 0.15%) roughly doubles the gain-term K cap (ln(1.02)/eg: 6.6 -> 13), pushing FFN toward K~13-14 and the 121.9k (1.95x) uniform-K=14 ceiling. Lattice thresholds do NOT get you there — they spend a budget the gain term already caps.
-`,Ep=`# AnalogIOC-mini — Implementation Contract (all agents read this first)
+`,Mp=`# AnalogIOC-mini — Implementation Contract (all agents read this first)
 
 Goal: end-to-end **inference AND training** transformer hardware on **sky130**
 (sky130A default via \`library/pdks\`; sky130B allowed where its devices help),
@@ -2038,15 +1496,9 @@ Paper reference: \`/home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circu
   (MVM \`strongarm.py\` as starting point). Output: 8b code + \`done\` event.
 - **Threshold/references**: non-uniform-capable R-string ladder + tap mux
   (monotonic by construction). Write DACs for gain cells: 4b R-string + mux.
-- **Gain-cell KV array**: 8x8 two-transistor gain cells (nfet write switch,
-  storage MOM cap ~20-50 fF, nfet read device), per-token column write,
-  non-destructive PWM read. One K-array + one V-array, d_head = 8.
 - **LoRA sidecar (training target)**: rank-1 — gain-cell vectors A (16) and
   B (16); y += B*(A·x) summed IN CHARGE onto the tile's column integrators.
   Training = outer-product update: write A,B increments from digital.
-- **Translinear softmax**: 8-input subthreshold shared-source bank + tail
-  current source; outputs = normalized currents. Verify sum(I_i) = I_b (KCL
-  checksum) and softmax accuracy vs golden at 3 temperatures (27/55/85 C).
 - **Timebase**: delay-chain/replica-based self-timed sequencer in the MVM
   \`async_ctrl\` idiom generating t_q grid + non-overlapping integrate/convert
   phases. No global clock in the analog domain (GALS).
@@ -2068,8 +1520,8 @@ Paper reference: \`/home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circu
 
 1. \`tb_tile_mvm\`: random INT8 x INT4 MVMs on the 16x16 tile vs golden —
    all output codes within +-1 LSB. Checksum residual within budget.
-2. \`tb_attention_e2e\`: 8 tokens streamed: per-token KV write -> qK^T ->
-   softmax (analog) -> A·V -> codes vs golden.
+2. \`tb_attention_e2e\`: 8 tokens streamed: Q/K/V projections on the tiles;
+   KV cache, qK^T, softmax and A·V on the digital rail -> codes vs golden.
 3. \`tb_ffn_e2e\`: FFN layer (16->16, ReLU, sign-early-exit active) vs golden.
 4. \`tb_training_step\`: one LoRA SGD step — compute error on toy target,
    outer-product update written to sidecar gain cells, re-run inference,
@@ -2099,19 +1551,19 @@ Paper reference: \`/home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circu
 - No file outside your assigned directories except appending a status line to
   \`STATUS.md\`. Read but never edit other agents' dirs.
 - Ownership: A1=library+sizing, A2=components(tile path)+their tbs,
-  A3=components(attention/sidecar/softmax)+their tbs, A4=digital/,
+  A3=components(sidecar)+their tbs, A4=digital/,
   A5=scripts/compiler/+scripts/golden/+e2e tbs.
 
 ## Metrics mandate (A6 + all)
 
 The functional simulation is a PERFORMANCE instrument, not just a checker:
 - Analog energy: every SPICE tb integrates supply current (V*I) per phase;
-  report pJ per MVM per block (tile, converter coarse/fine, softmax, KV
-  write/read, sidecar) and the E_conv-vs-|code| histogram.
+  report pJ per MVM per block (tile, converter coarse/fine,
+  sidecar) and the E_conv-vs-|code| histogram.
 - Digital energy: yosys-synthesized netlist cell counts x liberty
   cap/activity estimate (document method); report pJ/op per rail block.
 - Timing: measured per-phase latencies from SPICE (PWM window, conversion
-  done-time distribution, softmax settle) + digital cycle counts.
+  done-time distribution) + digital cycle counts.
 - scripts/metrics/report.py assembles METRICS.md: tokens/s and tokens/J for
   the mini chip (1 attention head + 1 FFN layer, 8-token stream, measured),
   PLUS law-scaled projection to full AnalogIOC (7B, per the paper's eval
@@ -2145,7 +1597,7 @@ The e2e path runs REAL pretrained weights and real token streams:
   x EXACT pass counts/token for the real model at mini-chip scale (silicon
   reuse: one physical tile time-multiplexed), plus the law-scaled 7B
   projection. Label measured vs counted vs projected explicitly.
-`,Rp=`# ERROR_IMPACT — does the in-contract +-3 LSB tile error matter? (task #24)
+`,Ep=`# ERROR_IMPACT — does the in-contract +-3 LSB tile error matter? (task #24)
 
 Ponytail check-before-fix: measure the MEASURED pass_05 residual (RESULTS3: +-2/3 LSB on ordinary in-contract mid/high codes, col13 |code|89 -> -3) at the MODEL level before building the expensive #22/SAR topology fix.
 
@@ -2179,7 +1631,7 @@ RESULTS3: with the +-3 residual present, ABFT residual = 62 (budget 199) — IN 
 
 - **Spec change (honestly justified):** relax the tb_tile_mvm acceptance gate from +-1 LSB to +-8 LSB (the model-tolerable budget). +-1 is a converter-ENOB target, not a model-accuracy requirement — transformers are quantization/noise tolerant (project notes 27k1 adversarial robustness, 27k3 analog noise), and this quantifies it: +-8 LSB on 8-bit (+-127) codes is transparent to the output.
 - **GO / NO-GO on the #22/SAR topology fix FOR CORRECTNESS: NOT REQUIRED.** The in-contract residual does not move the token. #22 is still WANTED for tok/s (parallel super-tile / cascade amortization, STATUS.md/COMPOSED_RESULTS) but is NOT a correctness blocker. Do not build the fix to chase +-1 LSB.
-`,Np=`# NOR-flash analog compute: what it got right, what it got wrong
+`,Rp=`# NOR-flash analog compute: what it got right, what it got wrong
 
 Date: 2026-08-29. Session 3, branch \`session3/conv-time-attack\`. **No SPICE run**
 (simulator owned by another agent). Every number is labelled **vendor** /
@@ -2844,8 +2296,8 @@ from \`paper/sec_laws.tex\`.
 `,Dp=`# Analog sample/hold pipeline: bounded circuit round
 
 Date: 2026-09-10. Circuit:
-[tb_imc_analog_pipeline.py](../../../../analog/testbenches/tb_imc_analog_pipeline.py).
-Artifacts: [imc_analog_pipeline.json](../../../../build/sim/imc_analog_pipeline.json).
+tb_imc_analog_pipeline.py.
+Artifacts: imc_analog_pipeline.json.
 
 **The two-bank fixture can overlap acquisition with a retained output, but
 accurate capture fails.** Raw capture error reaches 10.75 mV at TT27 and
@@ -3108,7 +2560,7 @@ The script prints individual failed capture/read gates and then
 \`PIPELINE EXPERIMENT PASS; raw capture/read accepted=False\`. That PASS means
 the experiment, arithmetic and deliberate falsifier behaved as specified; it
 does not mean the candidate meets its circuit accuracy target.
-`,Vp=`# AnalogIOC analog storage integration — new-session handoff
+`,Np=`# AnalogIOC analog storage integration — new-session handoff
 
 Updated: 2026-09-09. Workspace: \`/home/omare/Documents/Projects/Research\`.
 
@@ -3445,7 +2897,7 @@ development-only ADC or a higher analytical TOPS number does not finish this tas
 Neither patent proves a shipped lossless multilevel output latch. Do not assume
 the current M1 product has identical internals to the documented historical
 M1076. Check primary sources when extending the research; cite any new claims.
-`,Pp=`# AnalogIOC architecture research: useful tokens per second and per joule
+`,Fp=`# AnalogIOC architecture research: useful tokens per second and per joule
 
 Research date: 2026-09-07. Scope: architecture, compiler mapping, quality, residency, attention, interconnect and scheduling. This is a research recommendation with a standalone mapping experiment, not a validated chip-performance claim. This sub-review does not modify the chip or deployment compiler.
 
@@ -3458,7 +2910,6 @@ This architecture sub-review screened the Analog Compute note filenames and read
 | Local note | Design insight retained | What this review adds |
 |---|---|---|
 | 27l1 weight stationarity; 27l7 tiling | Fit the stored model and price wasted/peripheral area | Count actual configured weights and separate resident stage utilization from reload throughput |
-| 27l2 KV; 27l10 selective protection | KV is dynamic and position-sensitive | Correct refresh math; pending/verified ownership and bank write occupancy from the newer GoS paper |
 | 27l3 analog dataflow | Conversion boundaries trade error against service/energy | Separate passive averaging, physical accumulation and digital sums; count actual ADCs |
 | 27l5 wrapper; 27l11 near-memory digital | Digital reductions and traffic belong in the system budget | Local merge trees, per-cut traffic budgets and dependency-aware scheduling |
 | 27l6 MoE; 27l8 3D | Conditional access fits capacity-rich memory | Place co-selected experts on separate peripheral banks instead of requiring simultaneous tier summation |
@@ -3470,7 +2921,7 @@ One mathematical correction in 27l3 matters when applying it: \`sigma_total=sigm
 
 ## Recommendation
 
-The strongest candidate is a **resident weight engine with a small digital correction path, banked resident KV, and a compiler that allocates precision and physical service capacity per tensor**. Reduce converter demand only after the actual full-model error is acceptable. Use independent sessions to fill the resident layer pipeline, and keep reductions near their producers. For a future MoE product, store different experts in separately selectable banks or tiers that share peripheral circuits; this offers a capacity route without requiring all tiers to sum charge simultaneously.
+The strongest candidate is a **resident weight engine with a small digital correction path and a compiler that allocates precision and physical service capacity per tensor**. Reduce converter demand only after the actual full-model error is acceptable. Use independent sessions to fill the resident layer pipeline, and keep reductions near their producers. For a future MoE product, store different experts in separately selectable banks or tiers that share peripheral circuits; this offers a capacity route without requiring all tiers to sum charge simultaneously.
 
 No existing result establishes an optimal chip, a compute-bound full system, or superiority to Sohu/Mythic. Unlimited area in the mini contract makes raw throughput unbounded through replication. A meaningful optimum is a Pareto frontier at fixed model quality, context, batch, latency limit, die/package area and power. The user’s compute-bound requirement is a hard admission condition for points on that frontier.
 
@@ -3479,10 +2930,9 @@ No existing result establishes an optimal chip, a compute-bound full system, or 
 | 0 | Replace aggregate pass arithmetic with physical mapping and a dependency/resource schedule | Prevents memory traffic, idle stages and duplicate conversion savings from masquerading as throughput | Weight and KV capacity fit; link, programming, refresh and reduction service meet the target rate |
 | 1 | Per-tensor noise allocation; NORA-style rescaling; selective digital outputs/residuals; hardware-aware adaptation | Avoids making every converter expensive because a small set of outputs is sensitive | Full-depth quality with actual quantization and held-out physical residuals |
 | 2 | Resident weight banks with converter sharing chosen from real service demand | Preserves residency while reducing peripheral area and idle power | Extracted area, programming implementation, worst-layer service time |
-| 3 | KV protected/pending/bulk ownership, coalesced writes and local refresh | Improves bank occupancy and prevents state corruption or duplicate attention during migration | Worst-temperature retention plus writes, reads and refresh scheduled together |
-| 4 | Local online-softmax reductions and GQA-aware placement | Avoids shipping the score vector or repeatedly fetching the KV cache | Full attention dependency schedule; shared K/V read-port contention included |
-| 5 | MoE banks/tiers assigned using routing conflicts, with independent gating | Makes total capacity cheap relative to active compute | All experts resident; router/load imbalance and fabric limits priced |
-| 6 | Structured sparsity only where the physical tile schedule shrinks | Can remove real work, writes or converter activations | Compiler demonstrates eliminated physical services, with quality unchanged |
+| 3 | Local online-softmax reductions and GQA-aware placement | Avoids shipping the score vector or repeatedly fetching the KV cache | Full attention dependency schedule; shared K/V read-port contention included |
+| 4 | MoE banks/tiers assigned using routing conflicts, with independent gating | Makes total capacity cheap relative to active compute | All experts resident; router/load imbalance and fabric limits priced |
+| 5 | Structured sparsity only where the physical tile schedule shrinks | Can remove real work, writes or converter activations | Compiler demonstrates eliminated physical services, with quality unchanged |
 | Research | True pre-ADC charge accumulation; stacked charge accumulation | Potentially removes conversions | Actual topology, capacitor/noise budget and transistor-level summation validation |
 
 The ordering is by present evidence and dependency, not by multiplying published speedup factors.
@@ -3491,11 +2941,11 @@ The ordering is by present evidence and dependency, not by multiplying published
 
 ### Three different weight engines are being discussed
 
-The paper’s \`sec_arch.tex\` describes a 512×256 eNVM engine, with two 2-bit slices and differential devices. The mini contract describes a 16×16 charge-domain capacitor engine. The implemented [weight_tile.py](../../../../analog/schematics/components/weight_tile/weight_tile.py) specializes capacitor participation at **netlist generation time**; its \`bank()\` emits only capacitors selected by the supplied weight code. Runtime programmable weight configuration storage and its write path are not implemented there.
+The paper’s \`sec_arch.tex\` describes a 512×256 eNVM engine, with two 2-bit slices and differential devices. The mini contract describes a 16×16 charge-domain capacitor engine. The implemented weight_tile.py specializes capacitor participation at **netlist generation time**; its \`bank()\` emits only capacitors selected by the supplied weight code. Runtime programmable weight configuration storage and its write path are not implemented there.
 
 These implementations cannot inherit one another’s density, programming energy, endurance, leakage or wire constraints. A production choice between configured capacitors, SRAM-backed charge-domain CIM and eNVM must include the corresponding physical storage and peripheral circuits.
 
-The statement in [KV_FEASIBILITY.md](KV_FEASIBILITY.md) that charge redistribution destroys the *weight* is incorrect for the present capacitor-code representation. It moves signal charge, while the weight is the capacitor configuration. That charge can be re-excited on the next operation. This differs from a weight encoded as an isolated analog storage-node voltage. Non-volatility is useful for boot/standby, but is not required for runtime weight stationarity if configuration survives powered operation. Conversely, generation-time constants do not demonstrate runtime reprogrammability.
+An earlier claim that charge redistribution destroys the *weight* is incorrect for the present capacitor-code representation. It moves signal charge, while the weight is the capacitor configuration. That charge can be re-excited on the next operation. This differs from a weight encoded as an isolated analog storage-node voltage. Non-volatility is useful for boot/standby, but is not required for runtime weight stationarity if configuration survives powered operation. Conversely, generation-time constants do not demonstrate runtime reprogrammability.
 
 ### Earlier quality-based speedups were falsified
 
@@ -3505,7 +2955,7 @@ Do not reduce every converter to 5/6 bits, or endorse K>1, based on the earlier 
 
 ### Parallel digital summation is not converter amortization
 
-[tb_supertile.py](../../../../analog/testbenches/tb_supertile.py) calls the real converter for every partial in \`measure_partials()\`, then adds the resulting K codes digitally. Its step 3 nevertheless equates that schedule to the one-conversion cascade law. For M output columns:
+tb_supertile.py calls the real converter for every partial in \`measure_partials()\`, then adds the resulting K codes digitally. Its step 3 nevertheless equates that schedule to the one-conversion cascade law. For M output columns:
 
 \\[
 n_{ADC,\\,digital\\ sum}=KM,\\qquad n_{ADC,\\,true\\ preADC\\ sum}=M.
@@ -3515,7 +2965,7 @@ Parallelism can reduce elapsed time by buying K conversion paths; it does not di
 
 There is also a paper-transcription error: \`paper/sec_eval.tex\` line 49 writes \`256/K*=64\`, which implies **K*=4**. [METRICS.md](METRICS.md) line 54 instead attributes K*=64 conversion amortization to that example. The paper's reported 64 is the amortized conversion count in that equation, not the accumulation depth. Neither value validates physical conversion sharing in the mini circuit.
 
-[chip_supertile.py](../../../../analog/schematics/top/chip_supertile.py) tests passive capacitor sharing with ideal switches and capacitors. It demonstrates
+chip_supertile.py tests passive capacitor sharing with ideal switches and capacitors. It demonstrates
 
 \\[
 \\Delta V_{bus}=\\frac{\\sum_k\\Delta V_k}{K+C_{bus}/C_{int}},
@@ -3573,7 +3023,7 @@ Speculative decoding is not the first efficiency lever for a saturated, compute-
 
 The local depth result makes a strong case for **heterogeneous precision and range allocation**, not a stronger global converter specification.
 
-1. Replay held-out physical residuals conditional on input range, weight pattern, output code, column and temperature on the full quantized model. Preserve deterministic per-device error across tokens; vary read noise per use. Include saturation and analog attention error. Use a correct tokenizer and held-out corpus/task evaluations. A single pooled Gaussian SNR cannot represent every error shape.
+1. Replay held-out physical residuals conditional on input range, weight pattern, output code, column and temperature on the full quantized model. Preserve deterministic per-device error across tokens; vary read noise per use. Include saturation. Use a correct tokenizer and held-out corpus/task evaluations. A single pooled Gaussian SNR cannot represent every error shape.
 2. Compare per-output/group ranges, static tensor rescaling, outlier-channel bypass and rotations before adding ADC bits. For \`y=Wx\`, \`W'=WS\` and \`x'=S^-1 x\` preserve the exact product for invertible diagonal S. The quantized/noisy products differ; optimize S with the measured noise and range constraints. Multiplying a clipped output afterward cannot recover lost information.
 3. Give only the sensitive outputs a digital or higher-precision route. If fraction f of MACs uses energy e_d and the rest e_a, \`E/MAC=(1-f)e_a+f e_d+overhead\`; measure f and the extra service time. Do not assume that one sensitive tensor means one easily isolated channel. A low-rank residual costs \`r(n_in+n_out)\` MACs versus \`n_in*n_out\` dense MACs, but rank r must be learned and validated.
 4. Adapt the model to the calibrated residual errors. Only after quality passes should the compiler spend remaining margin on reduced conversion time, fewer conversions or smaller capacitors.
@@ -3618,61 +3068,9 @@ The new [mapping experiment](IMC_MAPPING_EXPERIMENT.md) tests 224 golden conditi
 
 Two candidates deserve follow-up. With the existing per-tensor D policy and nibble conversion, saliency **interleaving** improves FFN-down converter SQNR from 44.28 to 51.13 dB at unchanged D=1 and conversion count. Clustering instead harms it. With the merged path and proposed independent row-tile D, **clustering** improves FFN-down from 16.51 to 24.31 dB at unchanged conversion count, but needs D up to 14 and increases mean coarse evaluations from 1.519 to 1.773. Thus grouping must match range granularity; neither result is a measured token or energy gain, nor a reproduction of the full SAGE method. These concrete effects show why physical grouping is a more useful experiment than applying a universal SNR multiplier.
 
-## 4. Resident KV: repair the refresh gate and use dense migration
+## 4. Reduce locally, then move activations
 
-### The existing refresh arithmetic has two independent errors
-
-[KV_FEASIBILITY.md](KV_FEASIBILITY.md) and [CHIP2_SPEC.md](CHIP2_SPEC.md) derive a roughly 1.7 ms first-LSB retention interval, then specify refresh every 13.5 ms. Under their exponential decay model, fractional full-scale error epsilon permits
-
-\\[
-T_{refresh}\\le-\\tau\\ln(1-\\epsilon).
-\\]
-
-Using their extrapolated room-temperature tau=27 ms and epsilon=1/16 gives **1.743 ms**. A half-LSB allocation gives **0.857 ms**. Refresh at tau/2 would allow approximately 39% decay, not 1/16 full scale. Actual 16-level DAC spacing is 1/15 of range; that convention changes these example intervals slightly, without closing the 8× mismatch. Initial write error and read disturbance also consume the voltage error allowance.
-
-The documents additionally state \`524,288 cells × 7.5 fJ = 3.9 µJ\`. The correct result is **3.932 nJ**. Corrected illustrative values for one K/V head, 2,048 tokens, width 128:
-
-| Quantity | One-LSB allocation | Half-LSB allocation |
-|---|---:|---:|
-| Refresh period, tau=27 ms | 1.743 ms | 0.857 ms |
-| Cell/write-select-source energy per full rewrite | 3.932 nJ | 3.932 nJ |
-| That limited-boundary refresh power | 2.26 µW | 4.59 µW |
-| 2,048 × 150 ns serial write duty | 17.6% | 35.8% |
-
-The duty assumes the same optimistic parallelism as the original documents: a complete width-128 column is written at once, K/V overlap or have separate ports, and 150 ns remains valid at target fanout. With one width-8 write group serially reused sixteen times, duty exceeds 100% at the one-LSB cadence. Bank-parallel writes can repair this at a cost in DACs, ports and distribution energy.
-
-The 7.5 fJ figure comes from ideal-source integration in [tb_gain_cell.py](../../../../analog/testbenches/tb_gain_cell.py); it excludes the deployed write DAC, shadow memory read, clock/control and transport. The separate write DAC is reported around 1.2 pJ/slot in STATUS/CHIP2_SPEC, illustrating why cell-only energy is insufficient. The tau itself was inferred from about 3.3 µs of drift at one code, not a millisecond-scale full-range, worst-temperature retention characterization. \`tb_kv_residency.py\`, cited as a guard in KV_FEASIBILITY, is absent from \`analog/testbenches/\` at this review.
-
-Thus neither the original 0.3 mW estimate nor its unqualified GO is supported. Correct the unit error and the refresh interval together, then measure the complete write boundary.
-
-### KV capacity and refresh traffic must be in the same budget
-
-For L transformer layers, H_kv KV heads, width d_h, context T and b stored bits:
-
-\\[
-C_{KV}=2LH_{kv}d_hTb/8\\quad\\text{bytes/session}.
-\\]
-
-Derived examples, ignoring metadata/protection/redundancy:
-
-| Geometry | 2,048 context, KV4 | 131,072 context, KV4 |
-|---|---:|---:|
-| L=32, H_kv=8, d_h=128 | 64 MiB/session | 4 GiB/session |
-| L=80, H_kv=8, d_h=128 | 160 MiB/session | 10 GiB/session |
-
-A 64 MiB digital shadow rewritten every 1.743 ms generates **38.5 GB/s/session** of refresh payload. At 1,000 sessions this is 38.5 TB/s, even if those sessions generate few tokens. Keeping the shadow adjacent to the gain-cell banks removes external refresh traffic, but duplicates storage and does not remove local read/write energy. An 8+120-entry protected buffer is not a full refresh shadow.
-
-Gain-cell retention should be established against the permitted *current/score error*, not just raw voltage LSB. The read I(V) is nonlinear. Use voltage/code, temperature, process, data pattern, read count and write-disturb sweeps; derive per-bank refresh deadlines. BEOL oxide-semiconductor devices are a possible future retention improvement, unavailable in sky130. The gain-cell attention exemplar is circuit/model co-design, with attention-path projections; its large GPU-relative improvements are not complete-transformer chip measurements. [Leroux et al.](https://arxiv.org/abs/2409.19315).
-
-### Apply the newer KV scheduling result
-
-Feng et al. provide a useful refinement beyond merely pinning sink/recent entries: keep a **pending** digital set after entries leave the protected window, coalesce a dense analog programming batch, then transfer ownership only when programming succeeds. Protected + pending + active-bulk entries must participate exactly once in a single global normalization. The bounded temporary buffer is fewer than the migration threshold theta entries beyond the protected set. Their study reports programming-row utilization improving from 23.1% to 91.2% and average noisy PPL 33.91→11.95 versus clean 11.06. These are evaluation results; full-system PPA is estimated, and the authors explicitly retain HBM traffic for cold long-context tiles. The utilization ratio is not a whole-chip throughput ratio. [Primary paper, July 2026](https://arxiv.org/html/2607.29076v1).
-
-For AnalogIOC, test coalesced migration against a separate local refresh queue. Pending entries cannot be discarded after an unsuccessful write. Local bank metadata should identify the authoritative copy and retention deadline. A generic sigma/noise model does not prove sink+recent is the only sensitive subset for every model or scoring function.
-
-## 5. Reduce locally, then move activations
-
-Use the exact online-softmax merge already contemplated in CHIP2_SPEC. Each bank returns \`(m,l,o)\`, where \`m=max(s)\`, \`l=sum exp(s-m)\` and \`o=sum exp(s-m)v\`. Merge two banks with \`m=max(m_a,m_b)\`, \`alpha=exp(m_a-m)\`, \`beta=exp(m_b-m)\`:
+Use the exact online-softmax merge. Each bank returns \`(m,l,o)\`, where \`m=max(s)\`, \`l=sum exp(s-m)\` and \`o=sum exp(s-m)v\`. Merge two banks with \`m=max(m_a,m_b)\`, \`alpha=exp(m_a-m)\`, \`beta=exp(m_b-m)\`:
 
 \\[
 l=\\alpha l_a+\\beta l_b,\\qquad o=\\alpha o_a+\\beta o_b.
@@ -3680,13 +3078,13 @@ l=\\alpha l_a+\\beta l_b,\\qquad o=\\alpha o_a+\\beta o_b.
 
 The output is \`o/l\`. This preserves exact dense-attention mathematics; finite arithmetic and analog errors still need validation. It removes the need to export all T scores and intermediate attention probabilities. Keep the merge close to bank groups and make only reduced \`(m,l,o)\` cross die boundaries. The principle is independently established by the IO-aware exact attention literature. [FlashAttention](https://arxiv.org/abs/2205.14135).
 
-The two array-pass description in \`sec_attention.tex\` is only valid when the required rows, token banks, periphery and reduction capacity operate in parallel. CHIP2_SPEC’s d_h=128 target explicitly uses sixteen width-8 sub-bank passes because of the current budget. Context beyond one bank adds more banks and merging work. Do not hide attention under the *same token’s* FFN: the FFN consumes the attention output. Overlap is available across independent tokens/sessions or appropriately independent suboperations, and must be shown in the schedule.
+The two array-pass description in \`sec_attention.tex\` is only valid when the required rows, token banks, periphery and reduction capacity operate in parallel. Context beyond one bank adds more banks and merging work. Do not hide attention under the *same token’s* FFN: the FFN consumes the attention output. Overlap is available across independent tokens/sessions or appropriately independent suboperations, and must be shown in the schedule.
 
 GQA reduces stored KV head count relative to query heads. Honor that in placement instead of storing a full cache per query head. Shared KV is not automatically shared compute: different query heads require different products and may contend for bank read paths. Quantify the replication-versus-time-serialization trade. Changing an existing MHA model to GQA is a model adaptation with quality cost, not a transparent compiler rewrite. [GQA primary paper](https://arxiv.org/abs/2305.13245).
 
 At every fabric cut report bits/token, fanout, hops, sustained bandwidth, tail latency and pJ/bit. A multicast tree can distribute x once per branch rather than one packet per tile; local partial-sum trees can avoid shipping every partial. This is an architecture proposal, not a free-energy assumption. Require \`R × bits/token < available bit/s\` on each cut, including refresh and maintenance where they share the cut.
 
-## 6. MoE and 3D: exploit conditional access before simultaneous summation
+## 5. MoE and 3D: exploit conditional access before simultaneous summation
 
 The clean MoE accounting is
 
@@ -3711,7 +3109,7 @@ Use independent expert bias/rail domains where the stored state survives gating.
 
 [VERTICAL_3D.md](VERTICAL_3D.md) proposes a distinct, riskier route: many layers contributing to the same analog sum. Its automatic \`+0.5 log2(L)\` converter-bit penalty assumes fixed absolute output LSB; fixed relative output accuracy with rescaled range is a different requirement. Its resistive IR constraint also cannot simply be applied to an ideal switched-capacitor implementation. Neither observation establishes a free stacking gain: real summing capacitance, bus impedance, noise covariance, selectors and thermal gradients still decide the result. Keep separate ledgers for stacked capacity with shared converters, simultaneous charge sum, and independent active-die stacking.
 
-## 7. Sparsity and other alleged multipliers
+## 6. Sparsity and other alleged multipliers
 
 Deja Vu establishes that contextual sparsity can be predicted and exploited in particular LLM implementations. For AnalogIOC, require the predictor/placement to remove **tile services**, not merely scalar MACs from an abstract count. Column gating can save conversion energy even when other columns prevent latency reduction; row gating saves excitation but does not remove a nonempty dot-product conversion. Larger tiles make random all-zero tile skips less likely. Offline neuron permutations and grouped sparsity can improve physical alignment, with scale metadata and both FFN matrices permuted consistently. [Deja Vu primary paper](https://proceedings.mlr.press/v202/liu23am.html).
 
@@ -3719,17 +3117,16 @@ The ARCH_THROUGHPUT claim that gathering active weights is “free” because we
 
 Converter replication, shared-converter banking, reduced ADC precision, larger arrays, analog accumulation and stacked tiers compete for area, noise margin and service capacity. Their reported gains do not multiply. Speculative tokens, switching to a different MoE checkpoint, a shorter attention window or approximate retrieval change the workload/quality boundary unless shown otherwise.
 
-## 8. Concrete experiment order and deliverables
+## 7. Concrete experiment order and deliverables
 
 1. **Accounting falsifier:** generate one mapped-workload ledger and event trace for the current SmolLM2 case plus a declared 7B and 70B workload. Report stored/active parameters, ADC events, writes, SRAM/DRAM/link bytes, stage busy time and accepted outputs. Reject unsupported capacity and conversion-amortization points rather than extrapolating them.
-2. **Quality allocation sweep:** use full-model deployed quantization plus held-out converter/KV residual replay. Compare existing mapping, NORA-like scales, group/output scales, supported rotations, selective digital bypass and hardware-aware adaptation. Produce quality versus total energy/latency, with a proper tokenizer and multiple prompts/tasks. Do not infer quality from top-1 agreement alone.
-3. **KV closure:** measure worst-range/worst-temperature retention and complete write energy; schedule protected/pending/bulk migration, shadow refresh, reads and digital merge on real ports. Report the maximum feasible sessions/context and refresh bandwidth. This decides whether analog KV or a local digital bank is the better production option.
-4. **Physical macro comparison:** lay out a representative configured-capacitor macro, including storage/configuration, converter and row routing; compare converter sharing against parallel converters using actual area and service rates. This resolves the present contradictory area models before spending area on speed.
-5. **Resident pipeline simulation:** place the selected macros, allocate copies to bottleneck layers, include fabric and refresh queues, and sweep sessions until service-rate or latency bounds become active. Report batch-one latency and aggregate tok/s separately.
-6. **Only then** evaluate true pre-ADC accumulation, MoE bank/tier sharing and other device/process changes against the accepted baseline.
+2. **Quality allocation sweep:** use full-model deployed quantization plus held-out converter residual replay. Compare existing mapping, NORA-like scales, group/output scales, supported rotations, selective digital bypass and hardware-aware adaptation. Produce quality versus total energy/latency, with a proper tokenizer and multiple prompts/tasks. Do not infer quality from top-1 agreement alone.
+3. **Physical macro comparison:** lay out a representative configured-capacitor macro, including storage/configuration, converter and row routing; compare converter sharing against parallel converters using actual area and service rates. This resolves the present contradictory area models before spending area on speed.
+4. **Resident pipeline simulation:** place the selected macros, allocate copies to bottleneck layers, include fabric and refresh queues, and sweep sessions until service-rate or latency bounds become active. Report batch-one latency and aggregate tok/s separately.
+5. **Only then** evaluate true pre-ADC accumulation, MoE bank/tier sharing and other device/process changes against the accepted baseline.
 
 A candidate succeeds only if it improves accepted tok/s or tok/J at the same declared model quality and workload while satisfying capacity, memory service, physical implementation and timing constraints. A circuit simulation is labeled simulated; compiler work counts are derived; hypothetical node, stack and system results remain projected until validated at their stated boundary.
-`,Fp=`# Architecture sizing search and requirements for a competitive IMC
+`,Pp=`# Architecture sizing search and requirements for a competitive IMC
 
 2026-09-07; circuit status updated 2026-09-09. **Decision: develop a passive, low-swing, shared-capacitor macro with explicit input/weight planes and locally shared references. Further scaling of the present ballast-heavy OTA/PWM tile does not meet the declared resident-system target in this search.** Preserve two four-bit weight planes as an INT8 quality reference; qualify a cheaper W4 mode through model adaptation. The leading deterministic transfer fixture is **128 rows × 8 columns**, after repairing reset and sharing settling. Dynamic high-bit skipping delivers **4.500/4.587 fJ/A8×W4 MAC at TT27/SS85 in 366 ns average before ADCs** on the tested operands. The earlier 318-ns schedule failed SS. ADC noise, extracted corners and storage density remain open. The development targets are **100 TOPS/W minimum and 250 TOPS/W stretch at a complete chip power boundary**, corresponding to **20 and 8 fJ per useful MAC**. Weight-engine budgets below are necessary allocations before accounting for the rest of the chip; achieving them alone is insufficient. Neither target is achieved by this component result. This is a macro-development sequence, not a proven optimum.
 
@@ -3737,7 +3134,7 @@ The [self-checking search](../../../../scripts/compiler/metrics/imc_architecture
 
 ## Evidence and assumptions
 
-Read [AGENTS.md](../../../../AGENTS.md), [CONTRACT.md](CONTRACT.md), the user's 27l1/27l7 residency/tiling notes and 27h1/27h4/27h5/27h9 conversion/encoding notes, and the preceding [architecture research](IMC_ARCHITECTURE_RESEARCH.md). The script follows the implemented [weight tile](../../../../analog/schematics/components/weight_tile/weight_tile.py), [specs](../../../../analog/schematics/specs.py), [metrics](METRICS.md), and [PDK configuration](../../../../analog/schematics/library/pdks/sky130.py). It does not reuse the old fictitious division of digitally performed ADC operations by cascade depth.
+Read [AGENTS.md](../../../../AGENTS.md), [CONTRACT.md](CONTRACT.md), the user's 27l1/27l7 residency/tiling notes and 27h1/27h4/27h5/27h9 conversion/encoding notes, and the preceding [architecture research](IMC_ARCHITECTURE_RESEARCH.md). The script follows the implemented weight tile, specs, [metrics](METRICS.md), and PDK configuration. It does not reuse the old fictitious division of digitally performed ADC operations by cascade depth.
 
 Two deliberately separate tracks are evaluated:
 
@@ -4093,7 +3490,7 @@ The explicit TT cards use \`tnoimod=1\`, \`fnoimod=1\`, \`rdsmod=0\`,
 \`rbodymod=1\`, \`rgatemod=0\`, and \`igcmod=igbmod=0\`. Their selected models are
 NFET bin 26, W/L=3.5/0.15 µm, and PFET bin 35, W/L=2.25/0.15 µm, both nf=1.
 The instance cards explicitly set nrs=nrd=0.
-[Extracted coefficients and geometry](../../../../build/research/imc_flat_model_tt_27.json).
+Extracted coefficients and geometry.
 
 For the normally oriented transistor, define \`G=sourceConductance\`,
 \`D=IdovVds\`, and \`a=theta² G/D\`. Legacy BSIM4.5 assigns the source thermal
@@ -4102,17 +3499,17 @@ ratio is therefore \`(1+a)²\` **if the internal state and theta agree**. The
 corresponding reverse-oriented branch is the drain. This is a noise-source
 coefficient; neither expression replaces the electrical conductance in the
 DC/AC matrix.
-[Legacy source, lines 160–188](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4v5/b4v5noi.c),
-[4.8 source, lines 185–215](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4/b4noi.c).
+Legacy source, lines 160–188,
+4.8 source, lines 185–215.
 
 Both native implementations force internal source/drain nodes when this noise
 mode is requested. With the explicit zero source/drain squares, they substitute
 1000 S conductances for the zero resistance. The existing noise logs contain
 the corresponding warnings. Thus zero drawn access resistance does **not**
 remove this noise-partition branch in the present test.
-[Legacy node creation](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4v5/b4v5set.c),
-[Legacy conductance handling, lines 1613–1673](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4v5/b4v5temp.c),
-[Existing TT run](../../../../build/sim/imc_bsim_revision_noise_tt_27).
+Legacy node creation,
+Legacy conductance handling, lines 1613–1673,
+Existing TT run.
 
 BSIM4.8 additionally clamps theta to 0.9 and to 0.9 beta. Neither clamp exists
 in the legacy branch. For these TT coefficients, PMOS theta is always 0.34
@@ -4152,9 +3549,9 @@ For TT, A is 2.943324e-27/1.195137e-27 V²/Hz for N/P and B is
 coupling through both conductances and capacitances. It does not independently
 measure the source contribution or establish that other internal quantities
 are equal. The output uses a noiseless 1 S drain load; it is not a comparator.
-[Reanalysis and source hashes](../../../../build/research/imc_bsim_noise_source_audit.json),
-[TT stationary sweep](../../../../build/research/imc_bsim_revision_noise_tt_27.json),
-[SS stationary sweep](../../../../build/research/imc_bsim_revision_noise_ss_85.json).
+Reanalysis and source hashes,
+TT stationary sweep,
+SS stationary sweep.
 
 The large GHz PMOS discrepancy is therefore not explained by a theta clamp,
 nor can its 2.43 ratio be used as a broadband correction factor. Its square
@@ -4172,8 +3569,8 @@ dvs_dVg at line 7377. These manual derivatives feed tnoiMod=1 even when
 automatic differentiation keeps the external DC current correct. The fourth
 term lies in the vtl>0 branch, inactive for these explicit cards. The reviewer
 is testing an isolated correction; this audit does not modify the VA source.
-[Unmodified VA source](../../../../build/research/transient_noise/src/vacask/devices/spice/bsim4v8.va),
-[Native derivative equations, lines 2119–2137](../../../../build/research/ngspice43_native_prune/source-stock/src/spicelib/devices/bsim4/b4ld.c).
+Unmodified VA source,
+Native derivative equations, lines 2119–2137.
 
 After that gate, the smallest defensible legacy experiment is a separate,
 explicitly named research model selecting the legacy tnoiMod=1 equations:
@@ -4198,7 +3595,7 @@ history. Existing total stationary spectra leave those quantities, model
 mismatch across other device sizes, and actual comparator input-referred
 temporal noise unresolved. Neither revision is proven to represent measured
 Sky130 silicon noise by these software comparisons alone.
-`,Lp=`# Capacitor sizing, calibration and full-model error
+`,Vp=`# Capacitor sizing, calibration and full-model error
 
 2026-09-07. **Statistical experiments on real weights, not foundry mismatch simulation or chip measurements.** The result favors sufficient physical capacitor size and a quality-preserving weight format over extensive redundant calibration. The [circuit sizing experiment](IMC_SIZING_RESEARCH.md) separately tests transistor settling and interface energy.
 
@@ -4213,7 +3610,7 @@ These are conditional design choices. They do not establish an optimum for arbit
 
 ## 1. Fixed physical errors versus capacitor area
 
-The user's [27i1 capacitor-ratio note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27i1 Charge-Domain Compute Wins on Linearity Because a Capacitor Ratio Is a Lithographic Quantity.md>) and the existing [tb_csnr](../../../../analog/testbenches/tb_csnr.py) motivate an area-dependent mismatch study. This experiment uses their *hypothesis*:
+The user's [27i1 capacitor-ratio note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27i1 Charge-Domain Compute Wins on Linearity Because a Capacitor Ratio Is a Lithographic Quantity.md>) and the existing tb_csnr motivate an area-dependent mismatch study. This experiment uses their *hypothesis*:
 
 \`sigma_unit = (Ac/100) * sqrt(2/Cu_fF)\`.
 
@@ -4301,7 +3698,7 @@ Use the existing Nix NumPy environment. Results are \`build/research/imc_cap_cal
 Checks assert exact nominal weights, zero-weight preservation, ideal-device identity, monotone per-weight error under exact characterization, unchanged zero-noise references and restoration of original weights. An independent exhaustive enumeration checked code selection against all legal pairs. These verify the implementation and statistical hypothesis; they do not establish device noise, end-to-end deployed quality or a chip benchmark.
 `,Op=`# Fresh experiment: calibrated charge averaging with one readout
 
-Date: 2026-09-07. Testbench: [tb_charge_average_research.py](../../../../analog/testbenches/tb_charge_average_research.py). Companion review: [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md).
+Date: 2026-09-07. Testbench: tb_charge_average_research.py. Companion review: [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md).
 
 **Result: the passive divider is recoverable, but conversion precision and settling have a real cost.** A fresh Sky130 transistor-switch simulation recovers the summed voltage after calibration. The fast circuit fails the chosen deterministic-error gate at several operating points; a slower acquisition/sharing schedule restores the transfer. One unchanged ADC then has substantially more input-referred error after gain recovery. This experiment supports continued circuit exploration, not a chip-level speedup or energy claim.
 
@@ -4334,7 +3731,7 @@ The ideal passive divider is \`K + (100 + 120)/200 = K + 1.1\`. For example, K=4
 | 8 | SS, 85 °C | 38.9888 | 112.4745 | FAIL | 0.0408 |
 | 8 | FF, −20 °C | 0.0203 | 0.0407 | PASS | — |
 
-Rounded values above are from the final sweep. Fast cases use the original 0.1-ns grid; the fully settled diagnostics use a separately checked 1-ns grid. The machine-readable output is [charge_average_research.json](../../../../build/sim/charge_average_research.json).
+Rounded values above are from the final sweep. Fast cases use the original 0.1-ns grid; the fully settled diagnostics use a separately checked 1-ns grid. The machine-readable output is charge_average_research.json.
 
 At K=4, the nominal long-settled divider is approximately **5.109**, close to the ideal 5.1; at K=8 it is approximately **9.122**, close to 9.1. The small difference includes transistor loading. The restored transfer does not prove a globally constant calibration over temperature, and the sub-0.05-mV residuals do not include thermal noise, capacitor mismatch or a real comparator.
 
@@ -4399,7 +3796,7 @@ The script prints individual circuit PASS/FAIL results, verifies that longer set
 Continue this candidate as a **conversion-sharing experiment**, with a physical readout and real model reductions next. The existing conclusion that any \`1/K\` voltage divider is fundamentally unusable is too strong. The equally attractive conclusion that K outputs can be combined with one unchanged ADC for \`1/K\` energy is also unsupported.
 
 The next decisive comparison is a loaded physical converter after the averaging node, using programmable **distinct model reduction blocks**, capacitor mismatch and reference noise, versus K individually converted partials at the same full-model accuracy and total area. Wider switches, different common mode, matched capacitor reuse and a lower-load readout are legitimate design variables. Their clock energy, acquisition time, matching and area must be counted together.
-`,zp=`# Circuit and architecture convergence
+`,Lp=`# Circuit and architecture convergence
 
 Research continuation, updated 2026-09-09. **The leading candidate is a passive charge-domain array with shared complementary row drivers, retained charge for bit significance, and a direct low-load readout.** Use two four-bit weight planes as the INT8 quality reference. Use a cheaper INT4 mode only after quantization/adaptation passes the same quality target.
 
@@ -4534,7 +3931,7 @@ The [noise-tool investigation](IMC_TRANSIENT_NOISE_PATH.md) now has working isol
 
 A checked passive model of the current two 8-kΩ/60-fF input filters gives **364.9 µV RMS differential instantaneous resistor noise** at 27 °C, excluding MOS loading/noise and reset effects. An ideal boxcar would require about 11.85 ns to reduce this component to 100 µV at the comparator nodes; that boxcar is not the comparator's measured sensing aperture. Referring through the reduced circuit's settled signal gain gives **393.4 µV** and a hypothetical **13.86 ns** boxcar. Increasing filter capacitance attenuates the stored signal too: this stationary instantaneous model minimizes residue-referred noise at 177.3 µV for a 768-fF holder. That restricted minimum is not a bound on an ADC with finite sensing time. Independent stochastic RC and split-network charge-equation checks pass. These results identify a filter/aperture design issue without claiming full clocked ADC noise.
 
-A matched **768-fF floating negative holder** reduces unequal deterministic kickback, but its three-point-calibrated version still fails the exposed SS history by 5 LSB. Deferring the DAC update until after comparator reset did not fix that error. Saved waveforms instead expose the largest bottom plate still 8.45 mV below its target at the comparison aperture. Doubling only the RC-derived reference-switch widths, with acquisition and timing retained, cuts this to 0.425 mV and repairs the exact three-input SS history; positive delivery rises 3.54% to 1.432 pJ/service. The fixed repaired candidate passes the full reused development suite, including TT/SS eight-column cases at 1.417/1.451 pJ, but its next TT seed-9952 history fails by two codes near input18.04. That error has only about3.1µV of weighted bottom-plate settling error; it requires a separate calibration/loading diagnosis. No-holder and paired-interior-calibration controls are in progress, with reserved seed9953 untouched. The added holder also stores reset noise: a [checked passive submodel](../../../../analog/testbenches/tb_imc_holder_noise.py) gives **76.27/83.32 µV** input-referred persistent noise from that negative branch alone at TT/SS, assuming fully equilibrated thermal reset and the ideal settled signal gain. An identical independent two-holder model gives 107.86/117.83 µV before MOS/reference noise. Those are explicit submodel results, not the full split-CDAC noise; waiting or uniform averaging cannot remove their conserved charge mode. Capacitance, correlated sampling and the actual clocked sensitivity require joint sizing.
+A matched **768-fF floating negative holder** reduces unequal deterministic kickback, but its three-point-calibrated version still fails the exposed SS history by 5 LSB. Deferring the DAC update until after comparator reset did not fix that error. Saved waveforms instead expose the largest bottom plate still 8.45 mV below its target at the comparison aperture. Doubling only the RC-derived reference-switch widths, with acquisition and timing retained, cuts this to 0.425 mV and repairs the exact three-input SS history; positive delivery rises 3.54% to 1.432 pJ/service. The fixed repaired candidate passes the full reused development suite, including TT/SS eight-column cases at 1.417/1.451 pJ, but its next TT seed-9952 history fails by two codes near input18.04. That error has only about3.1µV of weighted bottom-plate settling error; it requires a separate calibration/loading diagnosis. No-holder and paired-interior-calibration controls are in progress, with reserved seed9953 untouched. The added holder also stores reset noise: a checked passive submodel gives **76.27/83.32 µV** input-referred persistent noise from that negative branch alone at TT/SS, assuming fully equilibrated thermal reset and the ideal settled signal gain. An identical independent two-holder model gives 107.86/117.83 µV before MOS/reference noise. Those are explicit submodel results, not the full split-CDAC noise; waiting or uniform averaging cannot remove their conserved charge mode. Capacitance, correlated sampling and the actual clocked sensitivity require joint sizing.
 
 A further [redundant coarse/fine architecture](IMC_NULL_READOUT_OPTIONS.md) now has an exhaustive arithmetic proof: six coarse decisions with overlapping range and five precise decisions can reconstruct the ten-bit result under the stated bounded coarse error and ideal fine decisions. All262,144 grid inputs,520,192 adversarial coarse paths and64 continuous path intervals pass. Physical ties require strict margin below the nominal eight-LSB allowance, and fine noise still causes output error. The signed charge sequence, extra handoff and all eleven decisions must be implemented and paid; this is a route to fewer *precision* decisions, not a measured converter saving.
 
@@ -4545,7 +3942,7 @@ Finally close extracted density, all resident-bank service demands, interconnect
 The study uses a finite eight-die/400-W scenario to make these checks concrete; it is not a user-approved production process/package requirement. A model of more dies or denser storage must include their full power and communication. Compute-bound behavior must follow from adequate capacity and bandwidth at the target rate, rather than from deliberately slowing compute to clear the memory test.
 
 The remaining deliverable is a validated full macro and then a matched token benchmark. This round supplies experimentally narrowed circuit choices, reproducible sizing and explicit budgets for that work. Its component and statistical results should not be relabeled measured tokens/s or tokens/J.
-`,Bp=`# AnalogIOC circuit research: opportunities that survive physical accounting
+`,zp=`# AnalogIOC circuit research: opportunities that survive physical accounting
 
 Date: 2026-09-07. Scope: the local Analog Compute notes and AnalogIOC manuscript, checked against the present circuit generators, testbenches, later accuracy studies, and primary literature. This report is an evidence audit. A fresh companion [charge-averaging experiment](IMC_CHARGE_AVERAGE_EXPERIMENT.md) tests one promising direction. No operational circuit, RTL, compiler implementation, or external research note was changed.
 
@@ -4580,13 +3977,13 @@ The present 16×16 weight engine uses capacitor-coded weights, repeated two-phas
 | Local fine references | Two 5-pF reservoirs per converter | References dwarf the nominal CDAC and need physical area/energy accounting |
 | Reference and control implementation | External ideal reference rails and XSPICE control models remain | A closed physical chip requires reference generation, distribution and real control timing |
 
-Sources: [weight_tile.py](../../../../analog/schematics/components/weight_tile/weight_tile.py), [integrator_conv.py](../../../../analog/schematics/components/integrator_conv/integrator_conv.py), [rstring_ladder.py](../../../../analog/schematics/components/rstring_ladder/rstring_ladder.py), [analogioc_top.py](../../../../analog/schematics/top/analogioc_top.py), and [SIZING.md](../../../../analog/schematics/sizing/SIZING.md). These are code observations, not new measurements.
+Sources: weight_tile.py, integrator_conv.py, rstring_ladder.py, analogioc_top.py, and SIZING.md. These are code observations, not new measurements.
 
 ## 2. Two architectural errors to remove before choosing circuits
 
 ### Capacitive compute does not inherently consume its weight
 
-The present weight is the **selected capacitance**, not the instantaneous stored charge. \`weight_tile.generate()\` chooses binary capacitor elements from \`Cp\` and \`Cn\`; a multiply moves charge through those same elements repeatedly. Neither charging nor discharging changes their nominal capacitance. Thus the assertion in [KV_FEASIBILITY.md](KV_FEASIBILITY.md) that the weight engine's consuming read forces HBM backing confuses coefficient storage with operand charge.
+The present weight is the **selected capacitance**, not the instantaneous stored charge. \`weight_tile.generate()\` chooses binary capacitor elements from \`Cp\` and \`Cn\`; a multiply moves charge through those same elements repeatedly. Neither charging nor discharging changes their nominal capacitance. Thus an earlier assertion that the weight engine's consuming read forces HBM backing confuses coefficient storage with operand charge.
 
 This does not mean the existing netlist is a complete programmable memory: weight selections are applied at **netlist-generation time**. A reusable accelerator needs SRAM/latches or another appropriate physical control store plus programming switches. A model-specific mask-programmed engine is a different capacity/flexibility choice. Resident weights still require enough physical cells, configuration bits, routing, and practical model-loading time.
 
@@ -4596,11 +3993,11 @@ There is direct silicon precedent for SRAM retaining the weight while capacitors
 
 ### A digital sum does not eliminate preceding ADCs
 
-[tb_supertile.py](../../../../analog/testbenches/tb_supertile.py) calls \`_cal_1col_window\` once for every partial. Each call integrates and digitizes that partial. \`parallel_output()\` then sums those values. Its later “amortization” check merely compares two functions that use the same timing formula. The code therefore performs **K conversions for K digitized partials**, although the model credits one conversion per K windows.
+tb_supertile.py calls \`_cal_1col_window\` once for every partial. Each call integrates and digitizes that partial. \`parallel_output()\` then sums those values. Its later “amortization” check merely compares two functions that use the same timing formula. The code therefore performs **K conversions for K digitized partials**, although the model credits one conversion per K windows.
 
 The claimed gain independence also comes from an explicitly injected Python gain model. \`series_output()\` implements \`(s + p) * (1 + eg)\`; \`parallel_output()\` applies \`(1 + eg)\` once per partial. This checks the chosen recurrence. It does not show that held charge on one physical integrator is multiplied by this gain at every new charge injection.
 
-[tb_cascade.py](../../../../analog/testbenches/tb_cascade.py) does demonstrate a different, narrower operation in SPICE: K windows on the **same W and same integration capacitor**, followed by one conversion of \`sum_k(W @ x_k)\` with scale \`K * D\`. Its input generator rejects windows until every running column sum stays below its headroom guard. Consequently:
+tb_cascade.py does demonstrate a different, narrower operation in SPICE: K windows on the **same W and same integration capacitor**, followed by one conversion of \`sum_k(W @ x_k)\` with scale \`K * D\`. Its input generator rejects windows until every running column sum stays below its headroom guard. Consequently:
 
 - The reduced conversion count applies only when those partials belong to one required reduction. K independently required token outputs cannot be replaced by their sum.
 - The test relaxes the output LSB by K. Its ±1-LSB tolerance is K times wider in original arithmetic units.
@@ -4619,13 +4016,12 @@ The claimed gain independence also comes from an explicitly injected Python gain
 | P2 | Binary or segmented activation encoding with charge-domain shift/add | Replace repeated unary PWM transfers with fewer weighted operations | Savings after extra conversion, capacitor and reference costs |
 | P2 | Shared ratiometric capacitor/reference structure | Reduce duplicated capacitors and calibration drift | Real distribution loading, coupling and extracted layout |
 | P2 | Precision and placement driven by model sensitivity | Protect a small sensitive subset while retaining a cheaper bulk path | Held-out full-depth model accuracy with measured error shapes |
-| P3 | IGZO/BEOL gain-cell KV substrate | Longer retention and denser cache could reduce refresh and data traffic | Access to a real process and a complete array/readout demonstration |
 
 These are experiments, not multiplicative gains already earned.
 
 ### 3.1 Make capacitor matching a first-class design variable
 
-[tb_cap_mismatch.py](../../../../analog/testbenches/tb_cap_mismatch.py) explicitly states that nominal \`tt\` runs omit device mismatch and that weight capacitors are ideal elements. Its injected capacitor model, anchored against limited transistor simulations, estimates about **23.4 dB combined CSNR** for its Sky130-derived mismatch assumption. The approximately **25.0 dB mismatch-only result** shows why perfecting the existing converter is insufficient in that model. This is an extrapolated statistical model, not a fabricated-capacitor yield measurement.
+tb_cap_mismatch.py explicitly states that nominal \`tt\` runs omit device mismatch and that weight capacitors are ideal elements. Its injected capacitor model, anchored against limited transistor simulations, estimates about **23.4 dB combined CSNR** for its Sky130-derived mismatch assumption. The approximately **25.0 dB mismatch-only result** shows why perfecting the existing converter is insufficient in that model. This is an extrapolated statistical model, not a fabricated-capacitor yield measurement.
 
 The test uses \`A_C≈2.8 %·µm\` from the PDK and infers area from a nominal capacitor density. The 0.15-fF cell is below the standard drawable MiM device assumed by that area model; a custom MOM structure cannot automatically inherit MiM density, matching and minimum geometry. The [official Sky130 capacitor model](https://foss-eda-tools.googlesource.com/skywater-pdk/libs/sky130_fd_pr/+/refs/tags/v0.10.1/cells/cap_mim_m3/sky130_fd_pr__cap_mim_m3_1.model.spice) is a useful statistical anchor, not a substitute for an actual selected layout.
 
@@ -4637,7 +4033,7 @@ The later [DEPTH_BUDGET.md](../../../../scripts/compiler/metrics/DEPTH_BUDGET.md
 
 ### 3.2 Reopen charge averaging with the correct success criterion
 
-[chip_supertile.py](../../../../analog/schematics/top/chip_supertile.py) computes the correct passive divider:
+chip_supertile.py computes the correct passive divider:
 
 \`V_bus = sum(V_k) / (K + C_bus/C_int)\`.
 
@@ -4661,7 +4057,7 @@ Shared reference generation is plausible prior art: [Mythic patent US10255205B1]
 
 ### 3.4 Replace unary work where conversions no longer dominate
 
-[pwm_driver.py](../../../../analog/schematics/components/pwm_driver/pwm_driver.py) correctly explains why a flat pulse across a capacitor does not implement multiplication by duration: its two edges transfer opposite charges. AnalogIOC avoids that error by performing one switched-capacitor transfer per active timing quantum. PWM here is repeated physical work.
+pwm_driver.py correctly explains why a flat pulse across a capacitor does not implement multiplication by duration: its two edges transfer opposite charges. AnalogIOC avoids that error by performing one switched-capacitor transfer per active timing quantum. PWM here is repeated physical work.
 
 For \`x = x_lo + 16*x_hi\`, a duration-weighted scheme can require \`x_lo + 16*x_hi\` unit transfers. If two ordinary 0–15 windows are separately digitized and shifted digitally, the arithmetic requires at most 30 active unit transfers for two unsigned four-bit digits instead of 255. The trade is a second conversion and its noise. This is an encoding-level ceiling, not a 8.5× system-speed prediction; signed range, actual activation distribution, guards, settle time and array load change the useful number.
 
@@ -4677,24 +4073,7 @@ The most useful silicon reference is [PICO-RAM](https://arxiv.org/html/2407.1282
 
 A further **derived design hypothesis** is to allocate capacitor area using sensitivity. If the local loss proxy is \`sum_i(a_i/A_i)\` because mismatch variance scales as \`1/A_i\`, and total area is fixed, minimization gives \`A_i ∝ sqrt(a_i)\`. Thus uniform cell enlargement is generally not the optimum under nonuniform sensitivity. Practical implementation would use a few tile precision classes and calibrated scales. This expression assumes a diagonal positive sensitivity approximation and independent errors; correlated parasitics, different energy per area and fixed pitches require a more complete optimization. It is a proposal for AnalogIOC, not a demonstrated published speedup.
 
-## 4. KV retention: promising device mechanism, incomplete feasibility gate
-
-The 2T gain-cell mechanism is sound: the read transistor senses the stored voltage at its gate, so read current is not intentionally drawn from the storage capacitor. Real leakage and capacitive read disturb remain. [tb_gain_cell.py](../../../../analog/testbenches/tb_gain_cell.py) observes short-term behavior under ideal column clamps; it does not establish long-session accuracy across process and temperature.
-
-[KV_FEASIBILITY.md](KV_FEASIBILITY.md) contains two important numerical errors:
-
-1. It estimates \`tau≈27 ms\`, derives a roughly **1.7-ms one-LSB retention interval**, then proposes refreshing every \`tau/2≈13.5 ms\`. Under its own exponential model, a half-time-constant interval changes a stored voltage by about 39%. At 780 mV that is roughly **307 mV, or five 60-mV write-DAC LSBs**. That cadence does not close four-bit retention.
-2. Its stated \`524,288 cells × 7.5 fJ/write\` is **3.93 nJ**, not 3.9 µJ. With a 1.7-ms cadence, the stated cell-write term is about **2.31 µW/head**, before shadow-memory, DAC, wire, reference and scheduling overhead. The document's quoted milliwatt-scale calculation is off by 1000× in this multiplication.
-
-The timing burden is more material: \`2048 columns × 150 ns = 307.2 µs\` per array sweep. Relative to 1.7 ms, that is **18.1% write occupancy**, or about 36% at a nominal half-LSB interval of 0.85 ms. These figures assume K and V arrays can refresh in parallel and ignore hot/corner tightening; serialized shared resources can be worse. They are recomputations of the document's assumptions, not new device predictions.
-
-Moreover, \`tau\` came from a few-microsecond voltage slope, not a millisecond retention curve. Different stored codes can leak in different directions. Acceptance should be based on the **read-current/MAC error** after temperature-dependent residency, not only stored-voltage drift. A nonlinear read transistor can amplify a small voltage error. Read-disturb must be measured jointly with leakage and refresh.
-
-The directly relevant external attention work, [Leroux et al.](https://arxiv.org/html/2409.19315v2), combines SPICE with hardware-aware model evaluation; its proposed 65-ns attention pipeline and gain-cell retention should not be labeled silicon measurements. High token cadence also does not determine the lifetime of a KV entry when a session pauses or its context remains resident.
-
-The material technology opportunity is real: [imec's IGZO gain-cell work](https://www.imec-int.com/en/articles/igzo-based-dram-energy-and-area-efficient-analog-memory-computing) reports multilevel storage and small 2×2/4×2 MAC demonstrations, with much longer retention than the present silicon-CMOS assumption. This is evidence for a future substrate, not a large LLM cache or Sky130-compatible process. Preserve silicon-CMOS refresh as the implementable baseline until the production process is chosen.
-
-## 5. Corrections to the local research laws
+## 4. Corrections to the local research laws
 
 These matter because the notes are used as premises in subsequent projections.
 
@@ -4709,18 +4088,17 @@ These matter because the notes are used as premises in subsequent projections.
 
 Primary context for the precision/energy limits: [Gonugondla et al., Fundamental Limits on Energy-Delay-Accuracy](https://experts.illinois.edu/en/publications/fundamental-limits-on-energy-delay-accuracy-of-in-memory-architec/). Local note corrections above are algebraic checks of the supplied research, not additional experimental findings.
 
-## 6. Concrete next acceptance sequence
+## 5. Concrete next acceptance sequence
 
 1. **Physical and statistical baseline:** one extracted representative capacitor bank, loaded column and references; characterize gain, INL, noise and mismatch over supply/temperature. Freeze this error model before optimizing its scalar CSNR.
 2. **Same-result readout comparison:** unary+fine versus binary-coarse+fine versus passive-charge/readout options. Count conversions and report total reference/driver/control/OTA energy at matched final accuracy.
 3. **Legal reduction experiment:** use actual distinct model reduction blocks, include all intermediate running sums and an overflow fallback, and compare one analog-final conversion with K digital partials.
 4. **Encoding experiment:** compare repeated-PWM, two ordinary nibble windows, bit serial and in-array shift/add under the same weight storage, capacitance, accuracy and throughput budget.
 5. **Full-model accuracy:** replay frozen physical weight errors and temporal converter errors on held-out prompts. Evaluate perplexity and task behavior; report error tails and layer sensitivity, not merely one-head cosine or a few argmax matches.
-6. **KV refresh closure:** all stored codes, hot/cold corners, actual read cadence and pauses, real write references, mandatory refresh scheduling and shadow traffic.
-7. **Physical area and power closure:** include SRAM weight controls, reference reservoirs, clock distribution, interconnect, layout parasitics and idle leakage. Only then translate per-operation results to tok/s and tok/J.
+6. **Physical area and power closure:** include SRAM weight controls, reference reservoirs, clock distribution, interconnect, layout parasitics and idle leakage. Only then translate per-operation results to tok/s and tok/J.
 
 The most attractive transferable mechanisms are programmable capacitor-ratio weight stationarity, shared capacitors/references, fewer **real** conversions, and model-sensitive precision. The present research does not support multiplying the older cascade, lattice, gain-servo, duty-factor and supertile gains together, and it does not yet support a claim of superiority to a commercial chip.
-`,jp=`# Circuit targets for a competitive AnalogIOC
+`,Bp=`# Circuit targets for a competitive AnalogIOC
 
 2026-09-07. Primary-paper research, derived design targets, and links to separately reported schematic experiments; **no measured-silicon AnalogIOC gain**. Read with [CONTRACT.md](CONTRACT.md), [circuit audit](IMC_CIRCUIT_RESEARCH.md), [precision experiment](IMC_PRECISION_EXPERIMENT.md), and [competitor audit](IMC_COMPETITOR_RESEARCH.md).
 
@@ -4816,7 +4194,7 @@ The paper precedents establish that useful circuits can operate in the required 
 
 ## 4. Size to signal and noise, not a nominal capacitor number
 
-Use the existing gm/ID lookup process for every active device. A simple first-order settling condition is \`gm ≥ C_load × ln(1/epsilon)/(beta × t_settle)\` and \`I_D = gm/(gm/ID)\`; actual closed-loop poles, slew and phase margin must then pass under the complete switched load. Minimizing current without maintaining settling does not minimize joules per correct result. The [existing sizing table](../../../../analog/schematics/sizing/SIZING.md) gives useful starting coordinates, not a guarantee for a larger array.
+Use the existing gm/ID lookup process for every active device. A simple first-order settling condition is \`gm ≥ C_load × ln(1/epsilon)/(beta × t_settle)\` and \`I_D = gm/(gm/ID)\`; actual closed-loop poles, slew and phase margin must then pass under the complete switched load. Minimizing current without maintaining settling does not minimize joules per correct result. The existing sizing table gives useful starting coordinates, not a guarantee for a larger array.
 
 For a single effective sampled capacitor, take \`sigma_thermal² = kT/C_eff\`. With only one quarter of the allowed error variance assigned to this source, \`C_eff ≥ 4 kT/sigma_total²\`. Derived examples at **85 °C**:
 
@@ -4847,7 +4225,7 @@ For A and B, the first acceptance gate is a complete **correctly scaled, signed 
 
 ## 6. Clock-load reduction: endpoint devices before reducing signal swing
 
-This addendum proposes a controlled change to the shared row switches in [the signed matrix experiment](../../../../analog/testbenches/tb_imc_sizing_research.py), followed below by the resulting schematic simulation. CAP-RAM uses PMOS compute switches above half supply, with specifically arranged switching to mitigate coupling and charge injection; its accuracy does not transfer automatically to another sequence. [CAP-RAM, §II-A](https://arxiv.org/pdf/2107.02388).
+This addendum proposes a controlled change to the shared row switches in the signed matrix experiment, followed below by the resulting schematic simulation. CAP-RAM uses PMOS compute switches above half supply, with specifically arranged switching to mitigate coupling and charge injection; its accuracy does not transfer automatically to another sequence. [CAP-RAM, §II-A](https://arxiv.org/pdf/2107.02388).
 
 **First experiment: retain the 0.9-V bottom common mode and ±0.45-V signal.** Each row has complementary positive/negative buses, each connected through a three-way reference selector. Replace the switch connected to the actual **1.35-V reference with one PMOS**, and the switch connected to the actual **0.45-V reference with one NMOS**. Retain a transmission gate to 0.9 V and all output reset transmission gates. At the endpoints, the surviving device has nominal on-state gate-to-source magnitude 1.35 V; the removed complementary device has much less endpoint overdrive. Its transient contribution is still nonzero, so settling must be remeasured.
 
@@ -4876,7 +4254,7 @@ The installed Sky130 regular NMOS/PMOS and NMOS-LVT models include **0.15-µm ga
 
 ### Readout observation: matching kickback does not establish the noise budget
 
-Sampling the reference onto a replica of the signal's 696-fF hold capacitor and 8-kΩ/60-fF filter is physically reasonable for reducing **common-mode** kickback converted into differential error by unequal source impedances. It does not cancel the StrongARM's decision-dependent **differential** kickback. This distinction is explicit in [Razavi's comparator design analysis, Fig. 16](https://www.seas.ucla.edu/brweb/papers/Journals/BR_SSCM_4_2020.pdf). Match the complete frequency-dependent impedance, including switches and CDAC bottom-plate paths, rather than just capacitor totals. The [existing integrator converter](../../../../analog/schematics/components/integrator_conv/integrator_conv.py) already records a floating replica that canceled common deposit but introduced approximately ±2–3 LSB of decision-dependent scatter in its different, 120-fF-CDAC fixture. Defer another replica experiment until comparing complete low-noise ADC interfaces.
+Sampling the reference onto a replica of the signal's 696-fF hold capacitor and 8-kΩ/60-fF filter is physically reasonable for reducing **common-mode** kickback converted into differential error by unequal source impedances. It does not cancel the StrongARM's decision-dependent **differential** kickback. This distinction is explicit in [Razavi's comparator design analysis, Fig. 16](https://www.seas.ucla.edu/brweb/papers/Journals/BR_SSCM_4_2020.pdf). Match the complete frequency-dependent impedance, including switches and CDAC bottom-plate paths, rather than just capacitor totals. The existing integrator converter already records a floating replica that canceled common deposit but introduced approximately ±2–3 LSB of decision-dependent scatter in its different, 120-fF-CDAC fixture. Defer another replica experiment until comparing complete low-noise ADC interfaces.
 
 The filters themselves require a noise budget. For an ideal floating hold capacitor \`Cs=696 fF\`, filter capacitor \`Cf=60 fF\`, and resistor \`R=8 kΩ\`, resistor noise redistributes charge between the two capacitors. With total charge fixed, its equilibrium contribution at the comparator gate is \`variance = kT × Cs/[Cf × (Cs+Cf)]\`: **252 µV RMS per side at 27 °C**, or **275 µV at 85 °C**, with relative-mode time constant \`R × Cs × Cf/(Cs+Cf) = 0.442 ns\`. These derived instantaneous node-noise figures exclude transistor parasitics and the comparator's time-dependent sensitivity; they are **not** an effective input-noise measurement or a hard input-referred floor. The decision aperture can average part of this spectrum. Waiting between already resolved decisions does not establish that averaging.
 
@@ -4908,7 +4286,7 @@ Very low ADC FoM does not settle the noise question. Bindra et al.'s measured **
 The held capacitance also consumes the noise margin. One independent \`kT/C\` sample at **85 °C** contributes **99.4 µV at 0.5 pF / 70.3 µV at 1 pF**. If **100 µV is a total** input-noise limit, these leave only **10.5 / 71.1 µV** for all other independent sources. If 100 µV is instead only the comparator allocation, add sampling, filter and quantization variances separately. The actual sharing topology can change these coefficients; neither a second sampled reference nor oversampling is free.
 
 The [outlier helper](IMC_OUTLIER_PLANES.md) must fit the same budget. Under **optimistic W4A8 accounting only**, with selected-work fraction \`f\` and precise energy \`Eprecise\`, require \`5.1403 + f*Eprecise + EADC/128 + Eother ≤ 20 or 8\`, in fJ per useful MAC. At the measured **0.850%** routing fraction, assigning **every remaining joule** to precise MACs would permit only **1.749 pJ / 336.5 fJ per precise MAC**; at **3.399%**, only **437.2 / 84.1 fJ**. Real limits are lower because the ADC and other work remain; W8 needs separately priced slices, readout, duplicated precise weights and precise arithmetic. No 50-fJ/MAC readout allocation from the historical table is available under these goals. The strongest next test is a complete low-noise readout on the held node with every supply integrated; none of the reviewed measurements already establishes the illustrative 366-fJ, ≤100-µV Sky130 interface.
-`,Wp=`# IMC competitor evidence and transferable results
+`,jp=`# IMC competitor evidence and transferable results
 
 Research date: 2026-09-07. Scope: primary-source competitor checks and circuit/architecture implications, not a new AnalogIOC performance measurement. Read \`AGENTS.md\`, \`CONTRACT.md\`, \`SOHU_VERIFIED.md\`, \`MYTHIC_ARCH.md\`, the Analog Compute notes listed below, and the manuscript's architecture/evaluation sections. Existing source files were left unchanged.
 
@@ -5048,7 +4426,7 @@ This turns “better than Mythic and Sohu” into a result that can be establish
 ## Local reference trail
 
 Consulted in \`~/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/\`: \`27n1\` (normalization), \`27n7\` (full accounting), \`27h5\` (bit-serial encoding), \`27l1\` (resident capacity), \`27l6\` (MoE), \`27k5\` (LLM adaptation), plus \`paper/sec_arch.tex\`, \`paper/sec_eval.tex\` and \`paper/REVIEW_DECISION.md\`. These are research starting points; external quantitative claims above cite the owning company or paper. The manuscript's advanced-node resistive eNVM assumptions and the contract's sky130 capacitor implementation describe different substrates and must retain separate projections.
-`,Up=`# IMC architecture discovery and falsification
+`,Wp=`# IMC architecture discovery and falsification
 
 The search produced useful circuit identities, a more defensible readout comparison, and a promising change in accumulation order. **It did not produce a verified novel architecture or a demonstrated improvement over Mythic.** The eight-plane transistor candidates tested here all failed the declared deterministic error gate. A smaller ternary-input charge-pooling fixture passed at nominal and slow/hot conditions after extending its sharing aperture. Its physical ADC, noise, memory, layout and complete workload remain unverified.
 
@@ -5245,7 +4623,7 @@ exactly the ideal unloaded pooled-converter value. Pooling can save fixed per-re
 
 ## 7. Fresh transistor verification and failed iterations
 
-[The new testbench](../../../../analog/testbenches/tb_imc_native_charge_pool.py) builds eight groups of four signed fixed W4 coefficients, real Sky130 row switches, array reset switches, radix sharing switches, holders, bus reset and pooling switches. Unit capacitance is 4 fF; local nominal capacitances are 132–232 fF; bus load is an ideal 948-fF capacitor. Clocks and references are ideal voltage sources with delivered energy counted. The circuit contains **no ADC, programmable weight storage, extracted wire, capacitor device model, random mismatch or transient noise**.
+The new testbench builds eight groups of four signed fixed W4 coefficients, real Sky130 row switches, array reset switches, radix sharing switches, holders, bus reset and pooling switches. Unit capacitance is 4 fF; local nominal capacitances are 132–232 fF; bus load is an ideal 948-fF capacitor. Clocks and references are ideal voltage sources with delivered energy counted. The circuit contains **no ADC, programmable weight storage, extracted wire, capacitor device model, random mismatch or transient noise**.
 
 \`B=1\` means a signed ternary activation plane, not a signed one-bit arithmetic claim. \`B=8\` includes −128…127. Calibration is the first six synthetic vectors. Development seed 97102 supplied eight random evaluation vectors plus zero and two fixed signed extremes. After choosing a 100-ns joining aperture, seed 97103 was used for fresh random confirmation at both corners. Fixed extreme controls remained the same.
 
@@ -5321,7 +4699,7 @@ Run using the existing cached Nix Python/NumPy environment and pinned ngspice:
 /nix/store/qk5sl1xvg05cmqh03mn1srdggj39dg7p-python3-3.12.13-env/bin/python3 analog/testbenches/tb_imc_native_charge_pool.py --bits 8 --early-pool
 \`\`\`
 
-The last command is an intentional failing experiment: it writes its full result and exits nonzero at the unchanged accuracy assertion. \`--balance-load\`, \`--reuse-reset\`, \`--join-ns\` and \`--step-ns\` reproduce the other controls. The testbench contains a fixed operand/seed specification and stores whole-word energy, outputs, calibration data, netlist hash and simulator path. Generated artifacts are in \`build/sim/imc_native_pool*\`; algebra, covariance, schedule and compiler-input hashes are in [the analysis JSON](../../../../build/research/imc_native_charge_analysis.json). The [ten-run manifest](../../../../build/research/imc_discovery_manifest.json) records independent fingerprints of the result files and exact on-disk decks, plus source-snapshot availability and the timestep comparison. These research programs do not update the existing system benchmark or turn unknown costs into zero.
+The last command is an intentional failing experiment: it writes its full result and exits nonzero at the unchanged accuracy assertion. \`--balance-load\`, \`--reuse-reset\`, \`--join-ns\` and \`--step-ns\` reproduce the other controls. The testbench contains a fixed operand/seed specification and stores whole-word energy, outputs, calibration data, netlist hash and simulator path. Generated artifacts are in \`build/sim/imc_native_pool*\`; algebra, covariance, schedule and compiler-input hashes are in the analysis JSON. The ten-run manifest records independent fingerprints of the result files and exact on-disk decks, plus source-snapshot availability and the timestep comparison. These research programs do not update the existing system benchmark or turn unknown costs into zero.
 `,Gp=`# IMC discovery: circuit mechanisms and falsification
 
 Date: 2026-09-10. This independent branch derives circuit candidates for the
@@ -5961,7 +5339,7 @@ clock energy, real mux wiring, legal capacitor area and complete PVT/mismatch
 qualification. The useful partial discovery is the cancellation identity and
 its exact limits. It survives ideal algebra; a breakthrough claim does not yet
 survive the remaining tests.
-`,Kp=`# Independent falsification of charge aggregation and alternative IMC mechanisms
+`,Up=`# Independent falsification of charge aggregation and alternative IMC mechanisms
 
 2026-09-10. Scope: independent analytical critic and five alternative mechanism branches. Read \`AGENTS.md\`, \`CONTRACT.md\`, the current system benchmark and analog-storage handoff before analysis. No existing circuit or benchmark was changed. Numerical checks below used the cached Nix Python/NumPy environment; this branch did not run a new transistor simulation.
 
@@ -6242,7 +5620,7 @@ The useful retained results are: (i) original-cap charge, rather than equal-volt
 
 ## 8. Independent audit of the root's new experiments
 
-The root subsequently implemented [the numerical analysis](../../../../scripts/compiler/metrics/imc_native_charge_analysis.py) and [the physical pooling fixture](../../../../analog/testbenches/tb_imc_native_charge_pool.py). This critic inspected their source and the saved artifacts. The numerical source correctly propagates \`qnext=rho(q+plane_charge)\`, proves exact charge reconstruction, rejects equal-voltage copying and incompatible scales, includes a correlated-noise conservation control, and distinguishes the original seven compiled tensors' scalar activation scale from the later dynamic-block paths. The fixed-load optimized-energy caveat is recorded in §4 above.
+The root subsequently implemented [the numerical analysis](../../../../scripts/compiler/metrics/imc_native_charge_analysis.py) and the physical pooling fixture. This critic inspected their source and the saved artifacts. The numerical source correctly propagates \`qnext=rho(q+plane_charge)\`, proves exact charge reconstruction, rejects equal-voltage copying and incompatible scales, includes a correlated-noise conservation control, and distinguishes the original seven compiled tensors' scalar activation scale from the later dynamic-block paths. The fixed-load optimized-energy caveat is recorded in §4 above.
 
 The physical fixture has eight groups of FOUR fixed coefficients, ideal capacitors, actual Sky130 row/reset/share/join TGs and a 948-fF capacitive load. It has no ADC, stored programmable weight memory, reference generator, stochastic noise or extracted layout. Each point fits gain/offset using six calibration words and tests eight seeded random words plus zero and signed extremes. The \`before\`, \`joined\` and \`isolated\` observations each fit their own gain/offset; their error improvements are after separate calibration, not an uncalibrated error cancellation measurement. The deterministic screen is RMS<0.25 and maximum<1 in native integer MAC units.
 
@@ -6289,7 +5667,7 @@ Local negative-control input hashes:
 \`\`\`
 
 The delta screen reads \`xq\` with shape 9×1536 and computes \`mean(diff(xq,axis=0)**2)/mean(xq**2)\` in float64. The centering screen reads \`Wq\` with shape 576×1536 and computes integer medians over its input dimension. Neither is a representative full-model benchmark. No synthesized area, extracted layout, new SPICE result, transient-noise result, accepted-token metric or verified novelty claim is produced by this independent branch.
-`,Hp=`# IMC discovery: prior art and defensible competitive targets
+`,Kp=`# IMC discovery: prior art and defensible competitive targets
 
 Research date: 2026-09-10. This is the independent literature/patent branch of the architecture-discovery experiment. It adds no circuit measurement. Read first: \`AGENTS.md\`, \`CONTRACT.md\`, \`IMC_SYSTEM_BENCHMARK.md\`, \`IMC_COMPETITOR_RESEARCH.md\`, and \`IMC_ANALOG_STORAGE_HANDOFF.md\`. The existing array/ADC failures and missing integration evidence remain in force.
 
@@ -6476,7 +5854,7 @@ The independent review found no error in the normalized mismatched-holder recurr
 One concrete provenance issue was reported to the implementer: the original testbench read \`source_sha256\` from disk after the simulation completed. Editing the file during simulation could therefore hash a different version from the executing code. Its in-memory deck hash remains meaningful. Capture the source fingerprint before the run, and keep model/helper fingerprints when qualifying a final circuit. The initial confirmation seed 97102 becomes development data once sizing is tuned against its outcomes; an untouched seed and frozen configuration are needed afterward.
 
 The newly suggested reset-port reuse connects each existing holder reset TG to a common bus, keeps that bus clamped to VCM during computation, then releases the clamp and reuses those TGs for pooling. This could remove the added holder gate's parasitic loading. A bounded follow-up search did not locate an exact reset-port topology match. General combining of switched-capacitor switches is conventional; see [Baker, CMOS Circuit Design, Layout, and Simulation, third edition, Fig. 25.25](https://www.eng.biu.ac.il/~wimers/files/courses/Old%20Courses/Digital_VLSI_Design/Book/CMOS_Circuit_Design__Layout__and_Simulation__3rd_Edition.pdf). That reference is background, not an exact anticipation finding. Quantify common-bus reset settling, reset release injection, gate-drive energy and readback disturbance before treating this local simplification as a surviving architecture.
-`,Jp=`# gm/ID sizing of a charge-domain logarithmic multiplier
+`,Hp=`# gm/ID sizing of a charge-domain logarithmic multiplier
 
 Research round, 2026-09-10. Sources and generated evidence are linked below.
 
@@ -6505,7 +5883,7 @@ using gm/ID to minimize product error and delay.
 Repository HEAD is \`7b8d241d696d58216c3c42cb9d8a9ca25217b663\`. That commit
 changes only \`docs/src/content/Project/NULLSEEK.md\`; its historical discussion concerns
 the OTA/PWM tile. The current optimization core is the working-tree
-\`matrix_probe\` in [tb_imc_sizing_research.py](../../../../analog/testbenches/tb_imc_sizing_research.py):
+\`matrix_probe\` in tb_imc_sizing_research.py:
 actual complementary row switches, fixed signed coefficient capacitors,
 real sharing/reset switches, and retained radix accumulation. Its output
 is \`accj\`, reached through the actual \`outj → Xsharej → accj\` connection.
@@ -6526,8 +5904,8 @@ words and independent corner fits; it is not fresh workload validation.
 Both whole-word gates, RMS <0.25 MAC and maximum <1 MAC, pass. There is no
 physical ADC, programmable weight memory, extracted layout or transient noise
 in that baseline. Exact commands, snapshots and hashes are in the
-[reproduction record](../../../../build/research/imc_current_core_baseline/README.md)
-and [manifest](../../../../build/research/imc_current_core_baseline/manifest.json).
+reproduction record
+and manifest.
 
 For the new logarithmic branch, define dimensionless positive operands
 \`x=Ix/Iref\` and \`w=Iw/Iref\`, initially over \`[0.25,4]\`, then explicitly over
@@ -6624,7 +6002,7 @@ inversion point can damage multiplication. The independent checker obtains
 
 The supplied notes on fixed-current-density sizing, unknown terminal voltages,
 and iterative self-loading were used. Existing
-[lookup tables](../../../../analog/schematics/sizing/lookup.py) are real TT27 SPICE
+lookup tables are real TT27 SPICE
 tables at W=10 µm and VDS=0.9 V. They propose a design coordinate; they do not
 establish the operating point of a narrow diode-connected transistor.
 
@@ -6701,9 +6079,9 @@ proof of an arbitrary large-step settling guarantee. Transients choose the
 actual schedule. The older 1-nA/0.42/1-µm device's measured diode gm/ID was
 24.25 at TT, despite its illustrative table-26 label.
 
-Sources: [DC/AC characterization](../../../../analog/testbenches/tb_imc_log_gmid.py),
-[candidate data](../../../../build/sim/imc_log_gmid_candidate.json),
-[reference-bias data](../../../../build/sim/imc_log_gmid_reference.json), and
+Sources: DC/AC characterization,
+candidate data,
+reference-bias data, and
 [independent critic](IMC_LOG_PIPELINE_CRITIC.md).
 
 Transmission gates are strongly driven switches; their sizing also needs
@@ -6767,8 +6145,8 @@ This is an ideal-source boundary, not measured regulator/clock-generator power.
 The source freezes a generator snapshot for each new run. An independent
 [result audit](../../../../scripts/compiler/metrics/imc_log_sizing_report.py) checks deck and
 snapshot hashes, product arithmetic, declared gates and energy averages.
-[All completed sizing points](../../../../build/research/imc_log_sizing/sweep.csv) and
-[the finite-population Pareto set](../../../../build/research/imc_log_sizing/summary.json)
+All completed sizing points and
+the finite-population Pareto set
 retain unsuccessful points. Noise and chip area are not fabricated Pareto axes.
 
 ## 5. Pipeline and mixed-format implications
@@ -6891,7 +6269,7 @@ still aborts on the full stream. Removing only collinear PWL vertices moves
 the abort to 124.5 µs; changing only timestep to 0.19 ns moves it to
 37.499 µs. This implicates numerical breakpoint scheduling, but the exact
 cause remains unresolved. No incomplete trace is extrapolated into a pass.
-The [diagnostic record](../../../../build/research/imc_log_zero_source_diagnostic/README.md)
+The diagnostic record
 preserves all five controls and transformed decks.
 
 Independent audit also finds a stable 100-ns current observation interval
@@ -6917,11 +6295,11 @@ TT timestep control. \`--time-ns 1500\` selects the gm/ID-derived geometry;
 Changing \`--time-ns\` instead resizes devices and is a different experiment.
 Failing single-case screens write their result and then exit nonzero.
 
-The source is [tb_imc_log_sizing.py](../../../../analog/testbenches/tb_imc_log_sizing.py),
-using [the physical multiplier generator](../../../../analog/testbenches/tb_imc_log_charge.py).
+The source is tb_imc_log_sizing.py,
+using the physical multiplier generator.
 Reports and testbenches are research additions; production circuits, flow
 templates and external notes were not changed.
-`,Qp=`# Grouped low-bit weights: quality gate remains open
+`,Jp=`# Grouped low-bit weights: quality gate remains open
 
 2026-09-09. **None of the tested W4–W7 formats closes the A8 quality target.** Group-128 second-order weight compensation reduces local calibration error and logit KL, but every scored W4/W5/W6 case and every W7 ideal-A8 case fails the unchanged joint gates, **KL ≤ 0.01 and perplexity ratio ≤ 1.01**. Their potentially cheaper single-bank readout is therefore not an accepted replacement for the two-slice W8 reference.
 
@@ -7040,7 +6418,7 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 scripts/compiler/metrics/imc_gr
 \`\`\`
 
 The shared [radix kernel](../../../../scripts/compiler/metrics/imc_radix_full_model.py) now has an explicit logical weight-format argument. Its default remains the original two-slice W8 behavior. New checks verify one-bank counts and signed arithmetic; no operational compiler or golden-model numerical behavior changes.
-`,Yp=`# Multilevel hold over an ADC-sharing wait
+`,Qp=`# Multilevel hold over an ADC-sharing wait
 
 A small Sky130 sample-and-hold fixture retains its **already sampled value**
 within an illustrative **100 µV over 9.145 µs** at TT27 and SS85. The largest
@@ -7056,7 +6434,7 @@ illustrative limit. No offset or gain was fitted.
 
 ## Fixture and frozen inputs
 
-[tb_imc_hold_retention.py](../../../../analog/testbenches/tb_imc_hold_retention.py) uses
+tb_imc_hold_retention.py uses
 one 304-fF ideal storage capacitor, a 6.72-µm NMOS/PMOS isolation TG, and a
 3.36-µm NMOS/PMOS reset TG to 0.9 V. All gate lengths are 0.15 µm. These sizes
 come from the existing 128-row retained-charge array, whose actual programmed
@@ -7088,7 +6466,7 @@ fixture energy measurements, not a complete repeated macro service cost.
 | SS85, assumed 0.3-µm diffusion extensions | −13.722 / −43.128 / −72.570 |
 | Same SS geometry, \`gmin=1e-14\` instead of \`1e-12\` | −43.534 / −43.913 / −44.215 |
 
-The native [TG generator](../../../../analog/schematics/library/cmos_switch.py) supplies
+The native TG generator supplies
 W/L but no AD/AS/PD/PS. The installed Sky130 subcircuits default these diffusion
 areas and perimeters to zero. The sensitivity case explicitly supplies
 \`AD=AS=W×0.3 µm\` and \`PD=PS=2×(W+0.3 µm)\`; it is an assumed rectangular
@@ -7142,7 +6520,7 @@ tolerances failed during reset; its deck/log are preserved as
 same established solver tolerances as the existing array testbench. The
 100-µV deterministic drift gate is illustrative and is separate from the
 unvalidated complete ADC noise budget.
-`,$p=`# Faster simulation iterations
+`,Yp=`# Faster simulation iterations
 
 Date: 2026-09-07. These are host-side research iteration improvements, not changes to predicted chip tokens/s or tokens/J.
 
@@ -7216,7 +6594,7 @@ Do not globally enlarge timesteps or relax tolerances. The charge-average experi
 
 The cached ngspice 43 binary includes KLU, but the research logs confirmed Sparse 1.3 was active. The official manual describes KLU as a potentially faster alternative, with circuit-dependent results. [ngspice 43 manual, Sections 11.1.1 and 12.6](https://ngspice.sourceforge.io/docs/ngspice-43-manual.pdf).
 
-The new [solver experiment](../../../../analog/testbenches/tb_imc_solver_speed.py) runs the same 16×8 signed physical accumulator with each solver, preserving devices, tolerances, phases and analysis. One execution took **18.10 s with Sparse versus 17.46 s with KLU: 1.036×**, too small a single-run difference to claim a material improvement. Reconstructed outputs differ by at most **2.73e−6 MAC**, delivered energy by **0.00129%**, and both deterministic gates and word time agree. No global solver setting changed. The result is in \`build/research/imc_solver_speed_r16_tt.json\`.
+The new solver experiment runs the same 16×8 signed physical accumulator with each solver, preserving devices, tolerances, phases and analysis. One execution took **18.10 s with Sparse versus 17.46 s with KLU: 1.036×**, too small a single-run difference to claim a material improvement. Reconstructed outputs differ by at most **2.73e−6 MAC**, delivered energy by **0.00129%**, and both deterministic gates and word time agree. No global solver setting changed. The result is in \`build/research/imc_solver_speed_r16_tt.json\`.
 
 \`\`\`sh
 python3 analog/testbenches/tb_imc_solver_speed.py --rows 16
@@ -7226,7 +6604,7 @@ The existing model and waveform-I/O speedups remain the measured iteration impro
 
 ### Closed null SAR comparison, 2026-09-09
 
-The [closed SAR benchmark](../../../../analog/testbenches/tb_imc_null_solver_speed.py)
+The closed SAR benchmark
 compares explicit Sparse and KLU selection on the same eight-column TT27
 fixture. It measures one frame, including physical warmup and the closing
 reset, over 591 ns. Settings are frozen: full-width acquisition switches,
@@ -7411,11 +6789,11 @@ does not turn that incorrect circuit into a passing result.
 
 Source and reproduction:
 
-- [ngspice patch](../../../../analog/testbenches/ngspice43_native_bin_prune.patch), against
+- ngspice patch, against
   official \`ngspice-43\` commit \`2af390f0b12ec460f29464d7325cf3ab5b02d98b\`.
   \`git apply --check\` passes against the unmodified checkout.
-- [Model/fallback and failure tests](../../../../analog/testbenches/tb_imc_native_bin_prune.py).
-- [Frozen SAR benchmark](../../../../analog/testbenches/tb_imc_null_solver_speed.py).
+- Model/fallback and failure tests.
+- Frozen SAR benchmark.
 - Artifacts: \`build/research/ngspice43_native_prune/{build_manifest,audit_results,failure_replay}.json\`
   and \`build/research/imc_null_native_prune_tt.json\`.
 
@@ -7448,11 +6826,11 @@ Check the two \`nativebinprune: ... kept ...\` log messages before attributing a
 new run's speed to pruning. Fallback is intentional and preserves the original
 deck. This simulator validation does not qualify a new circuit topology or
 establish intrinsic transient-noise accuracy.
-`,Xp=`# Independent gm/ID checks for the logarithmic charge multiplier
+`,$p=`# Independent gm/ID checks for the logarithmic charge multiplier
 
 Research date: 2026-09-10. **VERIFIED within the stated Sky130 DC/AC models:** the useful design variable is the ratio of actual exponential and diode-connected logarithmic slopes, not the nominal table gm/ID alone. Raising the physical reference current changes that ratio. **STRONGLY SUPPORTED as a local mechanism:** this can reduce multiplication error without changing the operand encoding. These checks do not establish a complete IMC architecture, novelty, noise performance, mismatch yield, or an advantage over Mythic.
 
-The independent source is [tb_imc_log_gmid.py](../../../../analog/testbenches/tb_imc_log_gmid.py). The physical transient multiplication and its measured energy belong to the separate [log-charge probe](../../../../analog/testbenches/tb_imc_log_charge.py) and [sizing sweep](../../../../analog/testbenches/tb_imc_log_sizing.py). This report derives and checks device behavior; it does not substitute its idealized charge calculation for those transistor-level transients. The [independent critic](IMC_LOG_PIPELINE_CRITIC.md) reviewed the charge conservation and derivative equations below.
+The independent source is tb_imc_log_gmid.py. The physical transient multiplication and its measured energy belong to the separate log-charge probe and sizing sweep. This report derives and checks device behavior; it does not substitute its idealized charge calculation for those transistor-level transients. The [independent critic](IMC_LOG_PIPELINE_CRITIC.md) reviewed the charge conservation and derivative equations below.
 
 ## Reproduction and evidence
 
@@ -7465,7 +6843,7 @@ Run from the repository root with the cached Nix Python. The existing helper res
 /nix/store/qk5sl1xvg05cmqh03mn1srdggj39dg7p-python3-3.12.13-env/bin/python3 analog/testbenches/tb_imc_log_gmid.py --reference
 \`\`\`
 
-All four modes were run at TT/27°C and SS/85°C and printed \`LOG GM/ID CHARACTERIZATION PASS\`. The corresponding records are [default](../../../../build/sim/imc_log_gmid.json), [sized](../../../../build/sim/imc_log_gmid_sized.json), [candidate](../../../../build/sim/imc_log_gmid_candidate.json), and [reference](../../../../build/sim/imc_log_gmid_reference.json). They contain dimensions, actual bias values, deck hashes, and tool/deck locations; generated decks and raw \`wrdata\` files remain in \`build/sim/imc_log_gmid*\`. PASS means the explicit characterization checks passed, not that every proposed multiplier passed.
+All four modes were run at TT/27°C and SS/85°C and printed \`LOG GM/ID CHARACTERIZATION PASS\`. The corresponding records are default, sized, candidate, and reference. They contain dimensions, actual bias values, deck hashes, and tool/deck locations; generated decks and raw \`wrdata\` files remain in \`build/sim/imc_log_gmid*\`. PASS means the explicit characterization checks passed, not that every proposed multiplier passed.
 
 The default mode covers L={0.15,0.3,0.5,1}µm, W=0.42µm, nominal targets gm/ID={20,23,26,28}/V and a 1nA control. Each bias is evaluated at operand factors {2^-0.5,1,2^0.5}. The sizing tables were generated at TT, W=10µm and fixed VDS=0.9V. The fresh diode instances instead have VDS=VGS and the actual widths. SS uses the same physical currents and sizes selected at TT, not a separately retuned corner.
 
@@ -7591,18 +6969,18 @@ Jointly scaling log and exp widths at fixed current density increases drive and 
 
 Both original C=1pF, acquisition=1ms decks aborted at time 0.016503s, with ngspice reporting \`timestep too small\`, step 6.25e-20s and trouble at \`vsense#branch\`. This equals fifteen 1.1002ms frame intervals. The old clocks simultaneously raised sample/bottom and lowered operate over the same 1ns boundary, creating a real possible overlap between the reference and y nodes. Completed old runs share that clock concern; convergence does not prove harmless overlap.
 
-One isolated TT diagnostic moved operate OFF 38ns before the next frame and added an explicit final closing reset. It still aborted at the identical frame boundary. The diagnostic is preserved in [its JSON record](../../../../build/sim/imc_log_charge_abort_diag_nonoverlap_tt.json) and \`build/sim/imc_log_charge_abort_diag_nonoverlap_tt/\`; the original evidence was not changed. Therefore removing that overlap was insufficient to resolve the abort. **The abort remains numerical nonconvergence, not evidence of a physical device failure.** Its exact numerical root cause was not established. New parent probes use their separately explicit nonoverlap schedule and do not inherit a claimed pass from this failed long run.
+One isolated TT diagnostic moved operate OFF 38ns before the next frame and added an explicit final closing reset. It still aborted at the identical frame boundary. The diagnostic is preserved in its JSON record and \`build/sim/imc_log_charge_abort_diag_nonoverlap_tt/\`; the original evidence was not changed. Therefore removing that overlap was insufficient to resolve the abort. **The abort remains numerical nonconvergence, not evidence of a physical device failure.** Its exact numerical root cause was not established. New parent probes use their separately explicit nonoverlap schedule and do not inherit a claimed pass from this failed long run.
 
 ## What remains unverified
 
 No thermal/flicker/shot-noise simulation, mismatch Monte Carlo, extracted layout, current-source circuit, programmable weight array, charge-to-log input conversion, output-drain compliance sweep, ADC integration or signed dot-product workload was run by this characterization. Only two global process/temperature combinations were examined. The intrinsic-gate model does not include switch charge or predict energy. The branch makes no novelty claim for logarithmic/translinear multiplication, gm/ID sizing, or reference-current bias adjustment; the [prior-art report](IMC_LOG_PIPELINE_PRIOR_ART.md) supplies that comparison boundary.
-`,Zp=`# Independent critic: logarithmic charge arithmetic and analog pipelines
+`,Xp=`# Independent critic: logarithmic charge arithmetic and analog pipelines
 
 Research date: 2026-09-10. **No improved complete IMC architecture is verified.** The useful surviving direction is a narrow-range log multiplier with a live slope reference, calibrated resident weights, explicit signs/zeros, and linear charge accumulation. Its area, conversion overhead, speed, precision and novelty remain open. Straight equal-cap sharing with an unchanged exp slope fails multiplication. Pooling product logarithms before one exp fails a dot product for mathematical reasons.
 
 **Later sizing result:** the physical scalar multiplier now passes a bounded deterministic 1% product screen at TT27 and SS85 with fixed geometry and a 1.8-µs word. Section K independently audits this result, its noise/area limits, and the retained faster failures. This is a useful circuit result, not verified 1% noisy precision or an improved IMC system.
 
-This report is independent of the proposing circuit branch. Reproduction is in [imc_log_pipeline_analysis.py](../../../../scripts/compiler/metrics/imc_log_pipeline_analysis.py); its self-checking run writes [the numerical record](../../../../build/research/imc_log_pipeline_analysis.json). The fixed seed is 260910. **VERIFIED** below means an explicitly stated identity, numerical calculation or captured simulation result, never a fabricated chip or complete architecture. Source hashes are embedded in the numerical record. The [prior-art branch](IMC_LOG_PIPELINE_PRIOR_ART.md) and [pipeline experiment](IMC_ANALOG_PIPELINE_ROUND.md) supply complementary evidence.
+This report is independent of the proposing circuit branch. Reproduction is in [imc_log_pipeline_analysis.py](../../../../scripts/compiler/metrics/imc_log_pipeline_analysis.py); its self-checking run writes the numerical record. The fixed seed is 260910. **VERIFIED** below means an explicitly stated identity, numerical calculation or captured simulation result, never a fabricated chip or complete architecture. Source hashes are embedded in the numerical record. The [prior-art branch](IMC_LOG_PIPELINE_PRIOR_ART.md) and [pipeline experiment](IMC_ANALOG_PIPELINE_ROUND.md) supply complementary evidence.
 
 ## Problem and comparison boundary
 
@@ -7765,7 +7143,7 @@ The new analytical checker asserts corrected/incorrect identities, zero-aware si
 
 Here \`CSNR=20 log10(||y||2/||yhat−y||2)\`. Log quantization improves individual relative accuracy, especially for small values, yet loses this dot-product normalized-error comparison. Neither observation proves neural accuracy or universal superiority. Nonuniform programmed log levels could exactly represent a fixed integer weight alphabet; that is a different representation from uniformly spaced log codes and needs its own programming precision/area accounting.
 
-Root's physical scalar fixture [tb_imc_log_charge.py](../../../../analog/testbenches/tb_imc_log_charge.py) was independently inspected. It uses three grounded diode-connected sky130 NMOS log devices for x,w and a reference; native transmission-gate capacitor stacking; and a grounded NMOS exp device with drain biased at 0.9 V. W=0.42 µm, L=1 µm, nominal reference current 1 nA, and C=200 fF. The schedule is 200 µs acquisition plus 100 µs evaluation and 0.2 µs control allowance. Calibration is **one scalar at (1,1), independently recalibrated for each corner/configuration**. These are frozen records available when this report was written:
+Root's physical scalar fixture tb_imc_log_charge.py was independently inspected. It uses three grounded diode-connected sky130 NMOS log devices for x,w and a reference; native transmission-gate capacitor stacking; and a grounded NMOS exp device with drain biased at 0.9 V. W=0.42 µm, L=1 µm, nominal reference current 1 nA, and C=200 fF. The schedule is 200 µs acquisition plus 100 µs evaluation and 0.2 µs control allowance. Calibration is **one scalar at (1,1), independently recalibrated for each corner/configuration**. These are frozen records available when this report was written:
 
 | Operation / range | Corner | Maximum product error | RMS product error | Declared 1% gate |
 |---|---|---:|---:|---|
@@ -7831,7 +7209,7 @@ g_{log}=\\frac{d\\ln I}{dV_{diode}}=\\frac{g_m+g_{ds}}{I},
 
 at the exp device's fixed drain. In an ideal unloaded stack, the local operand exponent is \`ax=g_exp(Vgate)/g_log(Ix)\` and similarly for w. A gm/ID lookup at VDS=0.9 V is therefore insufficient to prove matching to a diode at VDS=VGS. Output conductance can speed a diode node while changing its logarithmic slope unfavorably.
 
-The independent [DC/AC characterization](../../../../build/sim/imc_log_gmid.json) by the circuit branch confirms the distinction. At W=0.42 µm, L=1 µm, Iref=1 nA, the nominal gm/ID=26 planning coordinate actually gives TT27 diode gm/ID=24.2518, diode log slope=24.5455, and exp slope=24.2343 per volt. Their ratio is **0.987322**. At SS85 it is **0.986728**. The measured diode-port AC capacitances are 1.1919/1.0603 fF at TT/SS, excluding the exp gate and external sample capacitor. These are device DC/AC results, not complete product accuracy. Targets above the lookup branch's actual gm/ID peak are explicitly invalid rather than silently attainable by interpolation.
+The independent DC/AC characterization by the circuit branch confirms the distinction. At W=0.42 µm, L=1 µm, Iref=1 nA, the nominal gm/ID=26 planning coordinate actually gives TT27 diode gm/ID=24.2518, diode log slope=24.5455, and exp slope=24.2343 per volt. Their ratio is **0.987322**. At SS85 it is **0.986728**. The measured diode-port AC capacitances are 1.1919/1.0603 fF at TT/SS, excluding the exp gate and external sample capacitor. These are device DC/AC results, not complete product accuracy. Targets above the lookup branch's actual gm/ID peak are explicitly invalid rather than silently attainable by interpolation.
 
 Even with perfectly inverse log/exp characteristics, moderate inversion introduces a second-order interaction. Let \`f(u)=Vlog(Iref exp u)\`, with centered input log excursions a,b. Expanding \`f^{-1}[f(a)+f(b)−f(0)]\` gives
 
@@ -7902,7 +7280,7 @@ The proposed frozen acceptance sequence is: screen a fixed nominal input set at 
 
 ## K. Independent audit of the passing sized scalar multiplier
 
-The later [sizing wrapper](../../../../analog/testbenches/tb_imc_log_sizing.py) finds a bounded survivor: L=0.5 µm, all four core NMOS widths 1.86 µm, nominal table gm/ID=23, Iref=256.893 nA, reference-diode current **1.5 Iref**, Cstate=600 fF, and three TGs with Wn=Wp=0.42 µm and L=0.15 µm. The input magnitudes lie in \`[2^−0.5,2^0.5]\`. Acquisition is 1.5 µs, evaluation 100 ns, followed by 200 ns of scheduled closing allowance. Switch nonoverlap is enabled and the final stimulus repeats \`(1,1)\`.
+The later sizing wrapper finds a bounded survivor: L=0.5 µm, all four core NMOS widths 1.86 µm, nominal table gm/ID=23, Iref=256.893 nA, reference-diode current **1.5 Iref**, Cstate=600 fF, and three TGs with Wn=Wp=0.42 µm and L=0.15 µm. The input magnitudes lie in \`[2^−0.5,2^0.5]\`. Acquisition is 1.5 µs, evaluation 100 ns, followed by 200 ns of scheduled closing allowance. Switch nonoverlap is enabled and the final stimulus repeats \`(1,1)\`.
 
 The independent checker now audits saved records when present. It verifies the netlist and generator-snapshot SHA256 against JSON, checks the zero-valued offset source and absence of behavioral nonlinear circuit sources, parses the raw current/power trace, and recomputes endpoint error, complete observation-window error and full-word energy. These checks pass. The key original passing snapshots have generator hash \`a7a4f3c7c55e25e388e71ad2c8eb1ac33e598e517e18b2627cfdeecd59645591\`; all individual netlist hashes and result paths are in the generated analysis JSON's \`saved_passing_audit\` section.
 
@@ -7947,7 +7325,7 @@ The four core devices and six TG devices total only **4.098 µm² of W×L**, an 
 Replicating this state at every one of the benchmark's 79,691,776 weight positions would imply approximately **23,908 mm²** of single-layer plate area, or 11,954 mm² with ideal two-layer stacking. This is a conditional replication calculation, **not a proposed chip-area measurement**. Amortizing state across a row or column, sharing expanders, or encoding weights as thresholds changes both the circuit and its throughput. Those are the necessary next architecture questions.
 
 **Audit outcome:** the positive scalar deterministic pass survives source, calibration, timing-window and energy checks. Its physical reference bias is a useful mechanism for compensating slope error. High-precision noise/yield, layout area, signed accumulation, converter integration, large fanout and a useful chip-level Pareto improvement remain unverified. The result is retained as a **VERIFIED bounded deterministic simulation**, with the broader architecture **SPECULATIVE**.
-`,em=`# Log-domain charge sharing and analog pipeline: independent prior-art audit
+`,Zp=`# Log-domain charge sharing and analog pipeline: independent prior-art audit
 
 Research date: 2026-09-10. This is a bounded literature and first-principles branch, not a transistor simulation report. The target is the user's proposed combination of analog holding/pipelining, logarithmic operand encoding, multiplication by charge sharing, and conversion back to ordinary values. Read alongside [the existing contract](CONTRACT.md) and [the previous discovery report](IMC_DISCOVERY.md). The user's area objective supersedes the old contract's infinite-area exploration assumption.
 
@@ -8135,7 +7513,7 @@ The on-disk deck SHA256 and frozen generator-snapshot SHA256 match every reviewe
 Acquisition is also not independently proven converged: in the wide TT stack fixture, the largest change in \`vx\` during the final 10 µs of acquisition is 102.1 µV; average mode gives 27.2 µV. The saved \`early_log_acquisition_error_V\` compares an early sample against the chosen late sample, not against a DC golden value. The reported gate-transfer error compares measured gate voltage with ideal combinations of those sampled log-node voltages; it does not isolate static capacitor attenuation from incomplete acquisition, injection, leakage or load disturbance.
 
 Accordingly, **VERIFIED** here means arithmetic/provenance/accounting consistency and deterministic circuit responses at the fixed apertures. Static transfer accuracy, stable hold latency, noise, mismatch yield and a useful pipeline initiation interval remain unverified. The known geometric-mean control and the much smaller stack product error remain useful partial discoveries.
-`,nm=`# SAGE-inspired AnalogIOC tile mapping experiment
+`,em=`# SAGE-inspired AnalogIOC tile mapping experiment
 
 Date: 2026-09-07. **Golden-model placement experiment, not SPICE or end-to-end LLM inference.**
 No implementation/compiler behavior was changed. Existing \`scripts/compiler/out/programming\` INT4 weights and \`scripts/compiler/out/acts\` INT8 inputs are frozen; the first six saved token positions choose the permutation and converter scales, and the last three score it. The original compiler fitted upstream quantization scales on its full nine-token stream, so this is held out only for the new mapping/range decision, not an independently calibrated deployment-quality test.
@@ -8232,7 +7610,7 @@ This experiment can falsify a simple training-free grouping recipe or identify a
 Checks: permutation bijections; exact integer MVM invariant; float MVM invariant; matched ADC and tile-pass counts within each path; positive integer scales. **PASS**.
 
 Reproduce: \`OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 scripts/compiler/metrics/imc_mapping_experiment.py\` inside the repository NumPy environment. Full scales, permutations, errors and event counts: \`build/research/imc_mapping/results.json\`; source fingerprints and split: \`build/research/imc_mapping/inputs.json\` (generated artifacts).
-`,tm=`# Mythic's nulled columns and the retained-charge readout
+`,nm=`# Mythic's nulled columns and the retained-charge readout
 
 Research follow-up, 2026-09-07. **Yes: the local research explicitly considered Mythic's column nulling. Its most useful transferable feature is a local balancing DAC with a shared precision reference. That deserves a fresh, complete readout experiment on the new passive accumulator.** The earlier rejection in [NULLSEEK.md](NULLSEEK.md) evaluated the old OTA/PWM path and cannot settle that experiment.
 
@@ -8355,10 +7733,10 @@ a = V_lo - V_in + V_span (16 D_coarse + D_fine)/1024
 
 Keep a trial bit when \`a <= 0\`, subject to confirming the physical latch's output polarity. An ideal two-node solve and ten-step comparator-feedback enumeration checked all 1,024 interior codes: PASS, with maximum transfer error 2.22e-16 of span. The acquisition shift has unity gain in this ideal model.
 
-Negative controls also behaved as predicted. Increasing only the bridge by 1% produces a 16-code-period residual with maximum 0.13846 LSB after endpoint gain/offset correction. Removing the dummy produces 0.91908-LSB maximum residual. Keeping the dummy but failing to sample the input on it changes input gain to 1023/1024. The numerical record is [split_sar_ideal.json](../../../../build/research/mythic_nulling/split_sar_ideal.json); this check used no SPICE or device/noise model.
+Negative controls also behaved as predicted. Increasing only the bridge by 1% produces a 16-code-period residual with maximum 0.13846 LSB after endpoint gain/offset correction. Removing the dummy produces 0.91908-LSB maximum residual. Keeping the dummy but failing to sample the input on it changes input gain to 1023/1024. The numerical record is split_sar_ideal.json; this check used no SPICE or device/noise model.
 
 The ideal check does not demonstrate avoidance of an additional sampling load. If the CDAC replaces the existing accumulator, its capacitances and switching states must preserve the complete accumulation recurrence; if sampled from a separate retained node, include that acquisition load. Top-node parasitic capacitance must enter both cases. In particular, extra capacitance at B changes the fine/coarse ratio. A schematic with ideal input sampling cannot demonstrate that the passive accumulator supplies the required charge with unchanged gain, noise and energy.
-`,am=`# Readout alternatives after the split-CDAC nulling prototype
+`,tm=`# Readout alternatives after the split-CDAC nulling prototype
 
 Research follow-up, 2026-09-09. **The next distinct topology worth testing is a six-bit coarse CDAC with four-bit bidirectional charge injection directly onto the retained node.** It removes the split DAC's fine node and confines the charge-injection circuit to a small residual range. It does not remove the ten comparator decisions. A capacitor-biased preamplifier is a separate, promising experiment for making those decisions accurate without standing bias. Neither proposal has a demonstrated complete-service energy or noise advantage in Sky130.
 
@@ -8393,7 +7771,7 @@ After an ordinary six-bit search, the coarse trial lies below the input by less 
 3. Repeat with signed two-unit and one-unit packets.
 4. The final sign selects the trial code or the preceding code.
 
-All **1,024 interior input codes** passed an ideal charge-arithmetic enumeration with an input at one quarter LSB inside each code. The identity error was zero at the tested numerical precision. The diagnostic record is [imc_hybrid_null_sar_ideal.json](../../../../build/research/imc_hybrid_null_sar_ideal.json). This checks a ten-comparison search, with at most fifteen unit-packet activations in the fine phase; it contains no device, timing, energy or noise model.
+All **1,024 interior input codes** passed an ideal charge-arithmetic enumeration with an input at one quarter LSB inside each code. The identity error was zero at the tested numerical precision. The diagnostic record is imc_hybrid_null_sar_ideal.json. This checks a ten-comparison search, with at most fifteen unit-packet activations in the fine phase; it contains no device, timing, energy or noise model.
 
 **Both packet signs are necessary.** CAP-RAM's down-only cell cannot implement this single-ended sequence. Use complementary source/sink cells, or explicitly add and price a second held node with differential steering. A golden-precomputed packet sequence is not a closed converter. Likewise, connecting a precharged capacitor to a floating node performs charge sharing, not an ideal additive packet; the transfer device and its finite output impedance must appear in the netlist.
 
@@ -8466,7 +7844,7 @@ and [23v2 reference-load note](</home/omare/Documents/Projects/OmarSiwy.github.i
 The midpoint becomes a DAC rail, so sharing its precision source must include
 both static accuracy and the larger load after the first decision.
 
-The new [reference-load screen](../../../../analog/testbenches/tb_imc_reference_load.py)
+The new reference-load screen
 enumerates all **1,023 precomparison prefix states** in about 0.06 s. It retains
 the physical 756-fF coarse bank, 192-fF fine bank, 12.8-fF bridge and merged
 24-fF midpoint dummy. Its 60-fF input filter is treated as settled. With
@@ -8504,7 +7882,7 @@ change the trade. Local switch resistance, the filter's 8-kΩ dynamic response,
 MOS/parasitic loading, reference noise and reset distribution are omitted.
 The result rejects treating a low-impedance passive divider as free; the next
 reference implementation needs its own transient, noise and all-port energy
-check. Artifact: [imc_reference_load.json](../../../../build/research/imc_reference_load.json).
+check. Artifact: imc_reference_load.json.
 
 ## Next finite-reference experiment for the VCM-start circuit
 
@@ -8726,7 +8104,7 @@ these deterministic matching controls establishes temporal-noise performance.
 ## Reset-noise cost of the matched floating holder
 
 The scalar negative-holder experiment adds a real sampled thermal state.
-[\`tb_imc_holder_noise.py\`](../../../../analog/testbenches/tb_imc_holder_noise.py)
+\`tb_imc_holder_noise.py\`
 checks a restricted passive model: CH to ground resets through a thermal
 switch; a thermal R connects CH to the comparator-side CF. After an
 explicitly assumed equilibrium reset opens, total charge is conserved.
@@ -8751,7 +8129,7 @@ The check verifies equilibrium through the continuous Lyapunov identity and
 then integrates physical branch-current Langevin noise in 16,384 independent
 trajectories. The 16-ns variance agrees within 0.734%, the conserved-mode
 variance within 1.162%, and maximum charge drift is 1.04e-30 C. Runtime is
-about 0.5 seconds. Euler stepping at tau/64 introduces a small fast-mode bias (about 0.79% in its stationary variance); the 5% stochastic gate is a sanity check, not subpercent numerical validation. [Results and reset-only sizing sweep](../../../../build/research/imc_holder_noise.json).
+about 0.5 seconds. Euler stepping at tau/64 introduces a small fast-mode bias (about 0.79% in its stationary variance); the 5% stochastic gate is a sanity check, not subpercent numerical validation. Results and reset-only sizing sweep.
 
 This identifies a real cost of holding the negative input: deterministic
 kickback matching does not provide noise cancellation. Larger matched
@@ -8881,10 +8259,10 @@ the two comparator modes under the same actual loading and noise model.
 
 Reproduce with \`python3 scripts/compiler/metrics/imc_redundant_sar.py\` (stdlib only).
 The cached Nix Python used here completes the full check in **8.43 s** and
-prints PASS; [generated results](../../../../build/research/imc_redundant_sar.json)
+prints PASS; generated results
 preserve every continuous coarse interval, all fine charge paths and the
 deliberate failing controls. No current circuit or SPICE result was changed.
-`,im=`# OTA-free charge-nulling SAR: physical feasibility and sizing
+`,am=`# OTA-free charge-nulling SAR: physical feasibility and sizing
 
 This research converter performs ten actual comparator-driven binary-search
 decisions on a split capacitor DAC. It is the charge-domain analogue of the
@@ -8947,7 +8325,7 @@ remains unqualified despite passing the larger development regression.
 
 ## Circuit and arithmetic
 
-The fixture in [tb_imc_null_sar.py](../../../../analog/testbenches/tb_imc_null_sar.py) uses
+The fixture in tb_imc_null_sar.py uses
 real Sky130 transmission gates, the existing StrongARM comparator, and real
 minimum CMOS output receivers and DAC mux logic. Ideal capacitors, voltage
 references, stimulus and timing are explicit. XSPICE flip-flops retain the
@@ -9731,11 +9109,11 @@ or device technology of this new charge-domain fixture. The note's derived
 approximately 13× saving against a standing-bias TIA cannot be multiplied into
 the already passive IMC core. See [the nulling review](IMC_MYTHIC_NULLING.md)
 for the evidence and the differences from the current-mode patented circuit.
-`,rm=`# Independent review of the charge-null SAR experiment
+`,im=`# Independent review of the charge-null SAR experiment
 
 Review begun 2026-09-09. The prototype performs **ten causal comparator-driven SAR decisions**. Its initial three-input SPICE run fails the numerical conversion gate; stronger reset plus a fixed physical reference trim subsequently passes twelve separate validation inputs at TT/27°C and SS/85°C. The ideal split-capacitor arithmetic is correct. This is a research fixture, not a production converter or evidence of a Mythic benchmark win.
 
-The read-only review covers [tb_imc_null_sar.py](../../../../analog/testbenches/tb_imc_null_sar.py), its saved transient traces, the [Mythic nulling research](IMC_MYTHIC_NULLING.md), and the user's [27h10 note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27h10 A Null-Balancing SAR Readout Pays for Precision with Matching Instead of Standing Bias.md>). No additional SPICE runs were launched by this review. Follow-up circuit changes and final results belong in [IMC_NULL_SAR.md](IMC_NULL_SAR.md).
+The read-only review covers tb_imc_null_sar.py, its saved transient traces, the [Mythic nulling research](IMC_MYTHIC_NULLING.md), and the user's [27h10 note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Analog Compute/27h10 A Null-Balancing SAR Readout Pays for Precision with Matching Instead of Standing Bias.md>). No additional SPICE runs were launched by this review. Follow-up circuit changes and final results belong in [IMC_NULL_SAR.md](IMC_NULL_SAR.md).
 
 ## Charge arithmetic and initial conditions
 
@@ -9779,9 +9157,9 @@ The original TT, 27°C, three-input smoke run used 0.84-µm reset switches. It r
 
 The circuit lane's first 3.36-µm reset diagnostic returned \`[6, 516, 1023]\`: the large history error was reduced, but **5-LSB maximum error remains, FAIL**. A digital offset subtraction alone cannot validate the full input range: the saturated high-end code can conceal missing codes, and subtracting an offset after saturation loses information. A physical reference/offset trim or an explicitly smaller usable input range is required before claiming full-range calibrated conversion.
 
-The initial artifact is [the three-input smoke record](../../../../build/sim/imc_null_sar_n1_f3_tt_27_cb0_cu12_iw3p5_sw1p68_rw0p84_t28_e2_cf60.json); the stronger-reset diagnostic is [imc_null_sar_reset_diagnosis.json](../../../../build/sim/imc_null_sar_reset_diagnosis.json). These results are preserved as failed controls, even if later sizing succeeds.
+The initial artifact is the three-input smoke record; the stronger-reset diagnostic is imc_null_sar_reset_diagnosis.json. These results are preserved as failed controls, even if later sizing succeeds.
 
-The follow-up fixes the comparator reference at \`VCM−1.900 mV\` after the diagnostic, without subtracting a correction from saturated output codes. Twelve distinct validation inputs then pass at both TT/27°C and SS/85°C: maximum error 1 LSB and RMS error 0.577 LSB at each corner. The identical RMS values reflect different patterns of integer errors, not identical codes. The [trim-validation artifact](../../../../build/sim/imc_null_sar_trim_validation.json) reports 2.531 and 2.561 pJ per service, respectively, using the corrected measurement windows. This verifies the stated twelve-input deterministic control; it is not an exhaustive transition, noise, mismatch, or full-range PVT qualification. The physical precision/trim reference circuitry remains unpriced.
+The follow-up fixes the comparator reference at \`VCM−1.900 mV\` after the diagnostic, without subtracting a correction from saturated output codes. Twelve distinct validation inputs then pass at both TT/27°C and SS/85°C: maximum error 1 LSB and RMS error 0.577 LSB at each corner. The identical RMS values reflect different patterns of integer errors, not identical codes. The trim-validation artifact reports 2.531 and 2.561 pJ per service, respectively, using the corrected measurement windows. This verifies the stated twelve-input deterministic control; it is not an exhaustive transition, noise, mismatch, or full-range PVT qualification. The physical precision/trim reference circuitry remains unpriced.
 
 The initial twelve-input set is not wholly independent of calibration: the 512.25-code input repeats one of the three calibration voltages, under a different preceding input history. Eleven voltage levels are new. Subsequent sizing sees the entire twelve-input set, so it is a development set thereafter. The planned three-frame, eight-column test supplies 21 fresh random voltage levels on columns 1–7 and three previously seen fixed levels on column 0; reporting all 24 as fresh would also overstate independence.
 
@@ -9792,9 +9170,9 @@ Subsequent capacitor-proportional switches and half-width latch PMOS reduce ener
 | 20-ns decision, 0.5-ns clock edge, 2-ns resolution | 1-LSB max, 2.045 pJ | 3-LSB max, 2.105 pJ | No |
 | 23-ns decision, 2-ns clock edge, 2-ns resolution | 1-LSB max, 2.093 pJ | 2-LSB max, 2.096 pJ | No |
 
-The corresponding paid cycles are 265 and 295 ns. Neither TT-only speed/energy number is a passing PVT result. These failures are preserved in [imc_null_sar_sized_suite.json](../../../../build/sim/imc_null_sar_sized_suite.json) and [imc_null_sar_sized_slow_edge_suite.json](../../../../build/sim/imc_null_sar_sized_slow_edge_suite.json). The twelve inputs now serve as development tests, since sizing decisions have seen their outcomes; independent random-column inputs must remain a separate check.
+The corresponding paid cycles are 265 and 295 ns. Neither TT-only speed/energy number is a passing PVT result. These failures are preserved in imc_null_sar_sized_suite.json and imc_null_sar_sized_slow_edge_suite.json. The twelve inputs now serve as development tests, since sizing decisions have seen their outcomes; independent random-column inputs must remain a separate check.
 
-An explicit internal-drain reset experiment, guided by the user's [19u2 precharge note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Comparators/19u2 Precharge Gives the Input Pair Saturation and Erases Node Memory.md>), adds two PMOS switches from the input-pair drain nodes to VDD during comparator reset. Their supply energy and clock-gate delivery enter the existing measured ports. The three-input SS smoke pass does not survive the twelve-input development set: maximum error is 3 LSB, RMS 1.258 LSB, and delivery 2.190 pJ at 23-ns decisions. Restoring the reduced-latch design to the original 28-ns decisions and 4-ns resolution interval without internal resets also fails: maximum error 2 LSB, RMS 0.816 LSB, delivery 2.120 pJ. See [the memory controls](../../../../build/sim/imc_null_sar_memory_controls.json).
+An explicit internal-drain reset experiment, guided by the user's [19u2 precharge note](</home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/Analog Design/Comparators/19u2 Precharge Gives the Input Pair Saturation and Erases Node Memory.md>), adds two PMOS switches from the input-pair drain nodes to VDD during comparator reset. Their supply energy and clock-gate delivery enter the existing measured ports. The three-input SS smoke pass does not survive the twelve-input development set: maximum error is 3 LSB, RMS 1.258 LSB, and delivery 2.190 pJ at 23-ns decisions. Restoring the reduced-latch design to the original 28-ns decisions and 4-ns resolution interval without internal resets also fails: maximum error 2 LSB, RMS 0.816 LSB, delivery 2.120 pJ. See the memory controls.
 
 The added switches do accomplish their intended precharge action. Across the saved predecision states, the drain nodes reach 1.79984–1.80001 V, with maximum differential 0.140 mV. The longer-window control without these switches has drain voltages 1.1600–1.3153 V and maximum differential 105.6 mV. Receiver settling still leaves at least 1.76 ns before the latch deadline in the explicit-reset case. Therefore unresolved digital output is not the observed failure. Equalizing drain precharge is insufficient to restore conversion accuracy: the new devices also change the transient charge coupled into the held input. Varying input/trial voltages contribute to the observed drain differences; these aggregate ranges do not independently isolate previous-decision memory. The two controls also differ in clock timing, so their kickback magnitudes cannot be used to assign a quantitative isolated-device benefit. No direct-reset efficiency or accuracy improvement is accepted from these tests.
 
@@ -9802,7 +9180,7 @@ The next repair retains full 1.68-µm input-acquisition switches while grading o
 
 The corresponding eight-column TT check completes 24 conversions with maximum error 1 LSB, RMS 0.456 LSB, and 2.01013 pJ per service. An independent trace audit confirms all 240 actual trial DAC states and eight distinct input streams. Integrating the seven positive-delivery group traces over one contiguous window, then dividing by \`3 frames × 8 columns\`, reproduces 2010.12895457 fJ per service; this independently verifies phase partition and normalization. The differing input mix prevents attributing the lower energy versus the single-column cases to reference amortization.
 
-**The eight-column SS check fails: maximum error 6 LSB, RMS 1.514 LSB, delivery 2.05381 pJ. The 295-ns candidate is therefore not accepted.** An independent trace check verifies all 240 SS trial states and reproduces its contiguous-window energy exactly, so these failures do not arise from a mistaken decoded trial history or energy normalization. Column 2's second input is at code position 250.904, but the converter returns 256; column 6's first input is at 637.082, but returns 640. At the erroneous 256 trial, the predecision residue is only +70 µV and changes to −407 µV during evaluation. At the erroneous 640 trial it is already −153 µV and changes to −1.65 mV. Receiver margins exceed approximately 1.89 ns. These are wrong analog coarse branches with resolved digital outputs. The strict suite stops at this failure before reaching its physical bad-bridge control. See [imc_null_sar_wide_acquisition_suite.json](../../../../build/sim/imc_null_sar_wide_acquisition_suite.json). These random voltages are now development evidence for any subsequent sizing change.
+**The eight-column SS check fails: maximum error 6 LSB, RMS 1.514 LSB, delivery 2.05381 pJ. The 295-ns candidate is therefore not accepted.** An independent trace check verifies all 240 SS trial states and reproduces its contiguous-window energy exactly, so these failures do not arise from a mistaken decoded trial history or energy normalization. Column 2's second input is at code position 250.904, but the converter returns 256; column 6's first input is at 637.082, but returns 640. At the erroneous 256 trial, the predecision residue is only +70 µV and changes to −407 µV during evaluation. At the erroneous 640 trial it is already −153 µV and changes to −1.65 mV. Receiver margins exceed approximately 1.89 ns. These are wrong analog coarse branches with resolved digital outputs. The strict suite stops at this failure before reaching its physical bad-bridge control. See imc_null_sar_wide_acquisition_suite.json. These random voltages are now development evidence for any subsequent sizing change.
 
 One concrete sizing hypothesis remains: a capacitor driven at its bottom while the common top floats presents approximately \`Ci(1−Ci/Ctotal)\` to the switch. Sizing reference switches proportional to Ci alone therefore does not equalize their settling times. With a nominal 768-fF coarse bank, the second and third coarse branches have approximately 1.5 and 1.75 times the MSB branch's RC under the existing rule. The fine node has a different effective total capacitance, and transistor/wire loading also changes these ratios. This is an analytical explanation to test, not a demonstrated repair or permission to claim the failed point's speed/energy as accepted.
 
@@ -9841,7 +9219,7 @@ The exact official \`ngspice-43\` Git tag was obtained for this read-only audit:
 | 2.25 | 35 → 35 | 35 → 35 |
 | 3.36 or 3.50 | 26 → 26 | 26 → 26 |
 
-The benchmark lane subsequently ran a compiled-model audit on all twelve distinct MOS geometries in the frozen TT fixture. It confirms **seven model-bin changes**, exactly as predicted above for those geometries, while W/L, \`nf=1\`, multiplier and junction geometry remain identical. The 0.735/1.26-µm additions and SS entries in the table remain source predictions rather than compiled checks. Expanded model records fall from 1,728 to 12, demonstrating that early pruning works. The full-PDK twelve-device DC audit takes 3.990 s in native mode and 3.903 s with HSA; this small probe does not measure full-SAR acceleration. Its expected model-equivalence gate fails, and the lane stops before a full-SAR HSA timing claim. See [the compiled-bin audit](../../../../build/research/imc_null_hsa_bin_audit.json). An independent review of its device records confirms all seven differences and the identical geometry fields.
+The benchmark lane subsequently ran a compiled-model audit on all twelve distinct MOS geometries in the frozen TT fixture. It confirms **seven model-bin changes**, exactly as predicted above for those geometries, while W/L, \`nf=1\`, multiplier and junction geometry remain identical. The 0.735/1.26-µm additions and SS entries in the table remain source predictions rather than compiled checks. Expanded model records fall from 1,728 to 12, demonstrating that early pruning works. The full-PDK twelve-device DC audit takes 3.990 s in native mode and 3.903 s with HSA; this small probe does not measure full-SAR acceleration. Its expected model-equivalence gate fails, and the lane stops before a full-SAR HSA timing claim. See the compiled-bin audit. An independent review of its device records confirms all seven differences and the identical geometry fields.
 
 All fixture MOS devices default to \`nf=1\`, so HSA's use of W/nf for binning does not itself change their dimensions. Other HSA branches affect multiplier propagation, power expressions, early scale handling and DC-sweep convergence. The selected MOS models have no power operators; the closed fixture has no explicit multipliers or behavioral sources and runs a transient. No additional active semantic conflict was identified. HSA remains the officially recommended SKY130 mode, but adopting it changes the selected device models here and requires circuit revalidation. It cannot be recorded as a performance improvement that preserves the existing models. [Ngspice SKY130 guidance](https://ngspice.sourceforge.io/applic.html).
 
@@ -9863,7 +9241,7 @@ switches and −1.9-mV trim. The twelve-input TT/SS development checks pass at
 2176.88/2170.78 fJ per service; the development eight-column checks pass at
 2025.16/2059.68 fJ. The physical 30% bridge-error control fails as intended,
 returning 27/512 for targets 31/511, with intact causal feedback. These completed
-gates are in [the RC suite](../../../../build/sim/imc_null_sar_rc_suite.json).
+gates are in the RC suite.
 
 The separately frozen seed-9952 eight-column set passes at TT but **fails at SS**:
 the third measured frame, column 7, returns 807 for input code position 809.307.
@@ -9879,8 +9257,8 @@ integrates the seven delivery traces over one contiguous interval covering
 exactly three measured frames. Division by 24 column services reproduces
 2059.6842597 and 2060.8349742 fJ respectively. Thus the fresh failure is not a
 digital decode or phase-energy-normalization error.
-[Independent trace results](../../../../build/research/imc_null_rc_independent_trace_audit.json),
-[fresh SS result](../../../../build/sim/imc_null_sar_rc_fresh_ss.json).
+Independent trace results,
+fresh SS result.
 
 ## Physical VCM-start branch: read-only topology audit
 
@@ -9961,7 +9339,7 @@ falls from 568.1 s to 94.5 s for this matched input/control. The original
 comparison JSON placed these whole-run iteration counts inside a \`warmup\`
 object; the corrected artifact names them at top level. This is one functional
 speed observation, not universal runtime scaling or full converter acceptance.
-[Comparison artifact](../../../../build/sim/imc_null_sar_startup_equivalence.json).
+Comparison artifact.
 
 The first 24-code TT8 VCM suite result passes ±1 LSB at 1350.54 fJ/service.
 The subsequent SS8 development case fails by up to five LSB at 1377.14 fJ;
@@ -9989,8 +9367,8 @@ fJ/service: +48.889312 fJ, or +3.53549%**. Signed net delivery changes from
 boundaries; the positive-delivery increase must not be replaced with the net
 decrease. The separate TT calibration comparison increases positive delivery
 by 2.11674%, so it is not the same-case SS comparison.
-[Original holder replay](../../../../build/sim/imc_null_sar_vcm_negative_hold_replay_ss_col5.json),
-[Wider-reference replay](../../../../build/sim/imc_null_sar_vcm_negative_hold_refs2_replay_ss_col5.json).
+Original holder replay,
+Wider-reference replay.
 
 The new commanded-rail targets use actual earlier receiver decisions, with
 correct bit activation timing and a doubled fine dummy. Independently
@@ -10023,7 +9401,7 @@ produces 27/509 versus 31/511 with valid feedback, correctly failing transfer
 accuracy by four LSB. This is development evidence for the fixed reference
 width, not yet the reserved-input qualification or a noise result. This review
 uses the completed saved results and does not rerun SPICE.
-`,sm=`# AnalogIOC: research directions for useful tokens/s and tokens/J
+`,rm=`# AnalogIOC: research directions for useful tokens/s and tokens/J
 
 **Continued sizing and architecture work:** [circuit convergence](IMC_CIRCUIT_CONVERGENCE.md) is the current entry point. It sets 100-TOPS/W minimum and 250-TOPS/W stretch research targets, records actual 128-row charge accumulation and its limitations, and connects full-model readout tests to the energy budget. The following report preserves the initial research/audit findings.
 
@@ -10183,7 +9561,7 @@ For each comparison, record model/checkpoint/tokenizer, generated output length,
 Do not prioritize another scalar gain servo, uniform extra ADC bits, blind repeat-read averaging, automatic deep cascades, a universal LVT substitution, or speculative decoding as guaranteed wins. Fixed mismatch does not average away; adaptation cannot repair saturation; low Vt does not guarantee better gm/ID at the chosen operating point; and speculative verification pays extra work on an already compute-bound engine. For speculation, measure accepted tokens per round A and require both \`(T_draft+T_verify)/A < T_baseline\` and \`(E_draft+E_verify)/A < E_baseline\`. [Original speculative decoding method](https://arxiv.org/abs/2211.17192).
 
 The best supported direction is therefore selective, resident, heterogeneous analog compute with verified conversion sharing. The remaining uncertainty is which physical configuration satisfies the quality and capacity gates at the lowest energy and highest sustainable token rate. The experiments and bounds here make that choice testable.
-`,om=`# Outlier-channel routing to reduce radix planes
+`,sm=`# Outlier-channel routing to reduce radix planes
 
 2026-09-07. Exact behavioral experiment on frozen compiler artifacts; no SPICE, complete ADC, physical digital residual engine or full-model quality result.
 
@@ -10261,7 +9639,7 @@ python3 scripts/compiler/metrics/imc_outlier_planes.py
 \`\`\`
 
 Output: \`build/research/imc_outlier_planes.json\`, containing all 147 records, selections, B histograms, conditional noise coefficients, payload costs and SHA-256 hashes of all 14 input artifacts. **PASS:** signed-code/radix identity, exact residual recombination, stable ties, calibration isolation, and dynamic remaining-maximum checks. No SPICE or source compiler artifacts are modified.
-`,cm=`# Selective precision: a new held-out full-depth experiment
+`,om=`# Selective precision: a new held-out full-depth experiment
 
 2026-09-07. **Result: protecting one FFN-down tensor, representing 0.833% of MAC work across the model's seven weight-projection types, reduces simulated output-distribution error by approximately 5–8× on the tested passages.** Protecting the equally sized neighboring tensor gives essentially no improvement. This supports a small selectively precise compute path; it does not establish a whole-chip speed or energy improvement.
 
@@ -10327,7 +9705,7 @@ The simulator now uses batched matrix multiplication for attention and partial v
 Numerical checks passed: zero-noise reference, protected-call placement, paired draws, 210 MVM calls, tied/random vocabulary selection and full-model parity. Artifacts: \`build/research/imc_precision_experiment.json\`, \`imc_precision_experiment_quick.json\`, and the original pre-optimization result retained as \`imc_precision_experiment_original.json\`.
 
 The entire 64-case experiment was rerun after acceleration and completed in **130.4 s**. Against the original run, maximum KL change was **7.97e-7**, maximum PPL-ratio change **2.09e-6**, and argmax/top-five metrics were identical in every case. Quick screening completed in **16.8 s** including loading/tokenization; its reduced workload is not a numerical substitute for the full run. The independent golden suite also passed all 15 checks.
-`,lm=`# Full-model test of the physical radix/readout model
+`,cm=`# Full-model test of the physical radix/readout model
 
 2026-09-07. **The 128-row circuit's high deterministic accuracy does not by itself preserve model quality.** A full-depth experiment maps integer partial sums to actual modeled held voltages, adds readout/sharing errors, quantizes and clips each physical slice, and reconstructs every projection. At 100-µV read noise, the unsmoothed 128-row case increases observed perplexity by 1.35–3.68% over its W8 reference. The follow-up [channel-scaling experiment](IMC_SMOOTH_RADIX.md) addresses this limitation without presuming that higher ADC resolution alone solves it.
 
@@ -10396,9 +9774,9 @@ python3 scripts/compiler/metrics/imc_radix_full_model.py --activation-mode dynam
 \`\`\`
 
 The final 26 cases completed in 302.6 seconds. Outputs are separate JSON artifacts under \`build/research/imc_radix_full_model_*\`; each records source hashes, exact settings, reference perplexities, clipping counts and quality metrics. Earlier exploratory artifact names predate the added span/bit suffix. Quick screens remain screening data rather than deployment benchmarks.
-`,dm=`# Concrete passive-MAC sizing experiment
+`,lm=`# Concrete passive-MAC sizing experiment
 
-Date: 2026-09-07. Research testbench: [tb_imc_sizing_research.py](../../../../analog/testbenches/tb_imc_sizing_research.py). Artifacts: [imc_sizing_research.json](../../../../build/sim/imc_sizing_research.json). This supplements [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md) and [IMC_CHARGE_AVERAGE_EXPERIMENT.md](IMC_CHARGE_AVERAGE_EXPERIMENT.md); it changes no operational circuit.
+Date: 2026-09-07. Research testbench: tb_imc_sizing_research.py. Artifacts: imc_sizing_research.json. This supplements [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md) and [IMC_CHARGE_AVERAGE_EXPERIMENT.md](IMC_CHARGE_AVERAGE_EXPERIMENT.md); it changes no operational circuit.
 
 **The most complete tested candidate is a 128-row × 8-column signed passive macro with physical bit-significance accumulation.** On three saved FFN-down input words, a variable seven/six/five-plane schedule with a 15.6-ns sharing aperture achieves 70.13-dB deterministic transfer at TT/27°C and 62.47 dB at SS/85°C; both pass the original full-word error screen. Mean A8 word time is 366 ns, and ideal-port positive delivery is 4.4998/4.5872 fJ/MAC, before ADC, memory-control and regulator costs. It uses four-fF unit capacitors, 0.42-µm hybrid row switches, 3.36-µm matched reset switches and 6.72-µm sharing TGs. The faster 318-ns schedule passes TT but fails SS. This is a schematic-level W4 result with ideal capacitors and incomplete parasitics; it does not establish 100 or 250 TOPS/W for a chip.
 
@@ -10406,7 +9784,7 @@ The concrete improvements are physically shared row drivers, legal charge accumu
 
 ## Candidate circuit and physical boundary
 
-The present [weight_tile.py](../../../../analog/schematics/components/weight_tile/weight_tile.py) repeatedly transfers charge through a biased OTA, uses a nominal 0.15-fF unit, 4-fF ballast per populated bank, and a 500-fF column ballast. Its compile-time capacitor selection is not a programmable memory implementation. The initial sizing experiment instead directly connects the tops of sixteen weighted capacitor banks to a passive output node. Each bottom plate selects common mode, a high reference, or a low reference through a **real complementary Sky130 transmission gate**. The column reset also uses a real TG. There is no per-weight top ballast or standing OTA bias.
+The present weight_tile.py repeatedly transfers charge through a biased OTA, uses a nominal 0.15-fF unit, 4-fF ballast per populated bank, and a 500-fF column ballast. Its compile-time capacitor selection is not a programmable memory implementation. The initial sizing experiment instead directly connects the tops of sixteen weighted capacitor banks to a passive output node. Each bottom plate selects common mode, a high reference, or a low reference through a **real complementary Sky130 transmission gate**. The column reset also uses a real TG. There is no per-weight top ballast or standing OTA bias.
 
 The initial weight vector is \`[1,2,3,4,5,6,7,8]\` repeated twice: sixteen **fixed unsigned 4-bit weights**. Inputs are signed ternary activation slices, \`x_i ∈ {-1,0,+1}\`. A zero-input bank stays clamped to common mode during evaluation, rather than floating and changing the denominator. The 4-bit banks are nominal lumped equivalents of binary-weighted unit-cap combinations. This initial fixture does not contain SRAM, programmable coefficient switches, or signed-weight routing. The later distinct-column matrix experiment described below adds complementary row buses and fixed signed-weight routing, with their energy included. Runtime programmable storage remains missing throughout.
 
@@ -10508,7 +9886,7 @@ This includes the perturbation of the denominator. It avoids asserting a univers
 
 ## gm/ID decision
 
-The actual [sizing lookup](../../../../analog/schematics/sizing/lookup.py) tables are real nominal Sky130 sweeps at VDS=0.9 V and 27°C. For an NMOS input device at L=0.3 µm and fixed gm=72 µS:
+The actual sizing lookup tables are real nominal Sky130 sweeps at VDS=0.9 V and 27°C. For an NMOS input device at L=0.3 µm and fixed gm=72 µS:
 
 | gm/ID (V⁻¹) | ID (µA) | W (µm) | VGS (V) | Intrinsic gm/gds |
 |---:|---:|---:|---:|---:|
@@ -10527,7 +9905,7 @@ An identical-column loading test multiplies signal/load capacitance by sixteen a
 
 The first lumped-reset deck exceeded the PDK's device-width bins; it was corrected to one real reset TG per column. A 32-column extreme subsequently hit a ngspice startup timestep failure and is **not a result**. The script now rejects incomplete transients explicitly even if ngspice's batch process returns exit code zero. These solver failures are not silicon failures, and neither should be silently converted into performance points.
 
-The real [StrongARM generator](../../../../analog/schematics/components/strongarm/strongarm.py) was also tested against a held 696-fF input capacitor, matched 8-kΩ/60-fF input filters, and 10-fF loads on both latch outputs. A real TG acquires the held input. A separate zero-input acquisition calibrates its deterministic injection offset; the following tests start at approximately ±0.977 mV, half an LSB for a nine-bit, one-volt quantizer. Nine repeated decisions at the **same threshold** expose cumulative kickback. This is not a SAR conversion, since no changing CDAC or bit decisions are implemented.
+The real StrongARM generator was also tested against a held 696-fF input capacitor, matched 8-kΩ/60-fF input filters, and 10-fF loads on both latch outputs. A real TG acquires the held input. A separate zero-input acquisition calibrates its deterministic injection offset; the following tests start at approximately ±0.977 mV, half an LSB for a nine-bit, one-volt quantizer. Nine repeated decisions at the **same threshold** expose cumulative kickback. This is not a SAR conversion, since no changing CDAC or bit decisions are implemented.
 
 | Latch input-pair width | Corner / clock edge | Initial differential | Nine decisions | Held-node drift | Positive energy per decision |
 |---|---|---:|---|---:|---:|
@@ -10681,7 +10059,7 @@ The initial 22 decks consumed approximately 148 seconds of aggregate simulation/
 \`\`\`
 
 ngspice resolves through \`build/ngspice43/bin/ngspice\`, the pinned Nix ngspice 43 binary. The script prints each candidate's PASS/FAIL and asserts convergence and negative controls. An overall experiment PASS means the screening/controls behaved as specified; individual candidate failures remain failures. Extension reuse is allowed only when the generated deck matches the existing \`.cir\` byte for byte and its trace exists; a reused result is flagged in the JSON.
-`,um=`# Frozen channel smoothing with physical radix readout
+`,dm=`# Frozen channel smoothing with physical radix readout
 
 **Calibration-only noise-aware smoothing improved joint acceptance on reused validation passages, but failed the fresh-note check.** Frozen per-MVM alpha choices at **4-fF units / 100-µV read noise** pass **3/4 physical cases** on two new 512-token passages; the ideal A8 controls pass **1/2**. Every KL passes, but two cases exceed the unchanged **PPL ratio ≤ 1.01** gate. This grid is stopped without changing its choices. It supplies a useful candidate, not a converged chip or a validated readout-noise requirement.
 
@@ -10925,7 +10303,7 @@ unequal input scales, signed nine-bit endpoints and exact service/plane
 counts pass the expanded self-check. Broader data and combined physical
 error families remain necessary even for a configuration that passes all
 these short development cases.
-`,hm=`# Executable IMC system benchmark
+`,um=`# Executable IMC system benchmark
 
 The [benchmark](../../../../scripts/compiler/metrics/imc_system_benchmark.py) reports **TOPS,
 watts, TOPS/W and fJ/MAC**, together with **tok/s and tok/J**, from one common
@@ -10940,9 +10318,9 @@ Run from the repository root in the existing Nix Python environment:
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /nix/store/qk5sl1xvg05cmqh03mn1srdggj39dg7p-python3-3.12.13-env/bin/python3 scripts/compiler/metrics/imc_system_benchmark.py
 \`\`\`
 
-Outputs are [the report](../../../../build/research/imc_system_benchmark/results.md),
+Outputs are the report,
 \`results.json\` and editable \`inputs.json\` in \`build/research/imc_system_benchmark/\`.
-The same run also writes [the comparison with equal weight positions and ADC count](../../../../build/research/imc_system_benchmark/mythic_comparison.md)
+The same run also writes the comparison with equal weight positions and ADC count
 and \`mythic_comparison.json\`. Use that report for the Mythic hardware comparison;
 the original single-macro token scenario is a separate diagnostic.
 Supply \`--config path/to/inputs.json\` to change a scenario and \`--out build/research/name\`
@@ -11152,7 +10530,7 @@ During implementation, the legacy \`scripts/compiler/metrics/report.py\` TOPS/W 
 was also corrected: an extra \`1e-3\` understated its result by 1,000×. Its older
 subset/projection assumptions otherwise remain; it is not the new benchmark's
 measurement source.
-`,pm=`# Executable path to clocked comparator noise characterization
+`,hm=`# Executable path to clocked comparator noise characterization
 
 2026-09-09. Tool/model investigation and isolated bootstrap. Native RC noise
 and device model-revision checks now run; an isolated VA derivative repair
@@ -11277,8 +10655,8 @@ bundled models and runtime assets. The sole packaging adaptation is a local
 worktrees remain clean. NumPy/SciPy for the upstream regression required a
 separate 30.1-MiB SciPy cache fetch. No automatic approval rejection occurred.
 The research dependency expressions, scripts, hashes and logs are captured in
-[the bootstrap manifest](../../../../build/research/transient_noise/build_manifest.json)
-and [build handoff](../../../../build/research/transient_noise/FEASIBILITY.md).
+the bootstrap manifest
+and build handoff.
 [OpenVAF build features at the inspected commit](https://github.com/OpenVAF-Reloaded/OpenVAF/blob/5ed9e63afe70ac95129a78af7b3732e7d431b1e5/openvaf/openvaf-driver/Cargo.toml),
 [OSDI and build documentation](https://github.com/OpenVAF-Reloaded/OpenVAF/blob/5ed9e63afe70ac95129a78af7b3732e7d431b1e5/README.md)
 
@@ -11293,11 +10671,11 @@ the model's Boltzmann-constant rounding. Postsettling measured variance is
 1.00656×\`kT/C\` for R=1 kΩ, C=100 µF and 300.15 K. A matched \`noisescale=0\`
 control gives exactly zero transient voltage. These are RC infrastructure
 checks, not a transistor-noise result.
-[Upstream run](../../../../build/research/transient_noise/rc_upstream/run.json),
-[independent RC check](../../../../build/research/transient_noise/rc_upstream/independent_check.json),
-[zero-noise control](../../../../build/research/transient_noise/rc_zero/run.json).
+Upstream run,
+independent RC check,
+zero-noise control.
 
-[\`tb_imc_bsim_revision.py\`](../../../../analog/testbenches/tb_imc_bsim_revision.py)
+\`tb_imc_bsim_revision.py\`
 compares the actual W=3.5 µm NFET input-pair and W=2.25 µm PFET latch sizes,
 both L=0.15 µm and nf=1. It preserves every original wrapper bin and changes
 only a local copy's version to 4.8.2. A separate copied 4.5 wrapper must first
@@ -11314,8 +10692,8 @@ derivative. It does not test the VA model port, stationary noise or clocked-latc
 behavior. Native 4.8 also prints a
 TNOIMOD=1 deprecation warning; its source still implements that noise branch,
 so its spectrum must be compared rather than inferred from DC agreement.
-[TT results](../../../../build/research/imc_bsim_revision_tt_27.json),
-[SS results](../../../../build/research/imc_bsim_revision_ss_85.json).
+TT results,
+SS results.
 
 The same fixture's \`--noise\` branch gives each device a separate output with a
 1-S ideal controlled-source load. This supplies finite noiseless admittance;
@@ -11336,12 +10714,12 @@ correction, including division in 4.5 versus multiplication in 4.8. The
 explicit PFET parameters prevent either theta clamp from activating in this
 case. Full source attribution and its limits are recorded in
 [the independent audit](IMC_BSIM_NOISE_AUDIT.md).
-[TT spectra](../../../../build/research/imc_bsim_revision_noise_tt_27.json),
-[SS spectra](../../../../build/research/imc_bsim_revision_noise_ss_85.json).
+TT spectra,
+SS spectra.
 
 ## Full model extraction and VA port gate
 
-[\`tb_imc_flat_model.py\`](../../../../analog/testbenches/tb_imc_flat_model.py) extracts
+\`tb_imc_flat_model.py\` extracts
 the fully evaluated model cards with ngspice's \`listing r\`, which avoids the
 fixed-buffer truncation affecting ordinary expanded listings. Compiled model
 audits establish leaf bins 26 and 35; the runnable MOS invocation itself still
@@ -11352,10 +10730,10 @@ PFET diffusion terms. Native flat replay matches all 14 measured current,
 derivative, charge and capacitance vectors exactly at all 438 biases/device,
 at both TT and SS. Simulator defaults remain implicit.
 [ngspice 43 listing implementation](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/frontend/inp.c),
-[TT extraction/replay](../../../../build/research/imc_flat_model_tt_27.json),
-[SS extraction/replay](../../../../build/research/imc_flat_model_ss_85.json).
+TT extraction/replay,
+SS extraction/replay.
 
-[\`tb_imc_vacask_bsim.py\`](../../../../analog/testbenches/tb_imc_vacask_bsim.py) ports
+\`tb_imc_vacask_bsim.py\` ports
 those fixed leaves to the full \`sp_bsim4v8\` model. It retains all explicit
 coefficients except native dispatch parameter \`level=54\`, retains the bin
 bounds and instance parameters, explicitly quotes version \`4.8.2\`, and sets
@@ -11371,10 +10749,10 @@ noise is as low as 0.08144× NFET and 0.22377× PFET native 4.8.2 PSD. Four
 manual derivative expressions omit gate chain-rule terms that remain in the
 native source. Automatic differentiation preserves the current equations,
 while the incorrect manual values feed \`tnoimod=1\` noise.
-[Unmodified DC failure](../../../../build/research/imc_vacask_bsim_tt_27.json),
-[unmodified noise failure](../../../../build/research/imc_vacask_bsim_noise_tt_27.json).
+Unmodified DC failure,
+unmodified noise failure.
 
-The isolated [four-line patch](../../../../analog/testbenches/vacask_bsim4v8_derivative.patch)
+The isolated four-line patch
 restores \`tmp1=Gds+Gm*dVgsteff_dVd\`, \`tmp2=Gmb+Gm*dVgsteff_dVb\`, \`tmp3=Gm\`,
 and the missing \`Gm*T11\` term in the velocity derivative. It follows native
 ngspice43 \`b4ld.c\` lines 2119–2137; two agents independently checked the
@@ -11382,7 +10760,7 @@ expressions. The last term is inactive for the selected cards' vtl=0.
 The original source checkout and installed model are unchanged. A separate
 OSDI compiled in 4.62 s and is selected only by \`--derivative-fix\`.
 [Native derivative equations](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/spicelib/devices/bsim4/b4ld.c),
-[patch provenance](../../../../build/research/transient_noise/bsim_derivative_fix/provenance.json).
+patch provenance.
 
 After this repair, stationary PSD agrees with native 4.8.2 within
 **1.06×10⁻⁸ relative at TT** and **3.46×10⁻⁹ at SS**, over the same nine biases
@@ -11398,12 +10776,12 @@ biases/device**, with maximum difference divided by field peak below
 no coefficients or comparison tolerances changed. The original unmatched
 failures remain recorded. This qualifies only the fixed-device 4.8.2 port;
 it does not validate native 4.5 noise, other geometries, or a clocked comparator.
-[Corrected TT DC](../../../../build/research/imc_vacask_bsim_fix_tt_27.json),
-[corrected SS DC](../../../../build/research/imc_vacask_bsim_fix_ss_85.json),
-[corrected TT noise](../../../../build/research/imc_vacask_bsim_fix_noise_tt_27.json),
-[corrected SS noise](../../../../build/research/imc_vacask_bsim_fix_noise_ss_85.json).
-[Matched TT DC/charge gate](../../../../build/research/imc_vacask_bsim_fix_tt_27_native_noise_topology.json),
-[matched SS DC/charge gate](../../../../build/research/imc_vacask_bsim_fix_ss_85_native_noise_topology.json).
+Corrected TT DC,
+corrected SS DC,
+corrected TT noise,
+corrected SS noise.
+Matched TT DC/charge gate,
+matched SS DC/charge gate.
 
 An opt-in 21-bias extension adds six forward cases at normalized body bias
 −0.4/−0.6 V and six reverse-drain cases at body bias −0.6 V. Its reverse
@@ -11414,21 +10792,21 @@ case: at normalized VGS=0.1 V, VDS=−0.2 V, VBS=−0.6 V and 1 GHz, TT NFET
 output PSD changes from 5.2754×10⁻²⁹ to 7.1049×10⁻²³ V²/Hz. These are
 spectra at the fixture's 1-S load, not comparator noise, and demonstrate why
 a scalar correction between model revisions is inappropriate.
-[Absolute PSD audit](../../../../build/research/imc_bsim_extended_noise_ratio_audit.json).
+Absolute PSD audit.
 
 A second, explicitly named **hybrid variant** retains corrected 4.8.2
 DC/charge equations and restores the native 4.5 \`tnoimod=1\` thermal equations:
 remove both theta clamps and divide, rather than multiply, the applicable
 source/drain noise conductance correction. It does not change fitted model
-coefficients. Its [small separate patch](../../../../analog/testbenches/vacask_bsim4v8_legacy_tnoi1.patch)
-and [separate OSDI provenance](../../../../build/research/transient_noise/bsim_legacy_tnoi1/provenance.json)
+coefficients. Its small separate patch
+and separate OSDI provenance
 preserve the unmodified and corrected 4.8 controls. Compilation took 4.53 s.
 The hybrid's stationary spectra match native 4.5 at all 21 biases and 91
 frequencies/device within **1.306 ppm TT** and **1.037 ppm SS**, with the same
 comparison gates. This qualifies the sampled stationary-noise behavior of
 these two geometries; it is not a full BSIM4.5 port or a measured silicon model.
-[Hybrid TT gate](../../../../build/research/imc_vacask_bsim_fix_legacy_tnoi1_noise_extended_tt_27.json),
-[hybrid SS gate](../../../../build/research/imc_vacask_bsim_fix_legacy_tnoi1_noise_extended_ss_85.json).
+Hybrid TT gate,
+hybrid SS gate.
 
 The exact nine-MOS StrongARM uses five distinct geometries: input NFET 3.5 µm,
 tail NFET 0.42 µm, regeneration NFET 1 µm, regeneration PFET 2.25 µm and reset
@@ -11437,8 +10815,8 @@ PFET 1 µm, all L=0.15 µm. Full-card extraction preserves their selected bins
 matches the original wrapper's 14 fields exactly at 438 biases per geometry,
 at TT 27°C and SS 85°C. The separate native 4.8 revision gate fails the four
 capacitance fields above; it is preserved as a failure.
-[Five-geometry TT export](../../../../build/research/imc_latch_model_export_tt_27.json),
-[SS export](../../../../build/research/imc_latch_model_export_ss_85.json).
+Five-geometry TT export,
+SS export.
 
 The native getters have the same meanings. The capmod=2 T0<0 branch changes
 \`dT0_dVb*(1-T5)\` in 4.5 to \`dT0_dVb*(T4-T5)\` in 4.8 when computing
@@ -11453,8 +10831,8 @@ the sampled points. It does not waive the failed migration gate or establish
 clocked waveform equivalence.
 [Native 4.5 equations](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/spicelib/devices/bsim4v5/b4v5ld.c),
 [native 4.8 equations](https://sourceforge.net/p/ngspice/ngspice/ci/ngspice-43/tree/src/spicelib/devices/bsim4/b4ld.c),
-[TT numerical derivative audit](../../../../build/research/imc_latch_body_derivative_tt_27.json),
-[SS audit](../../../../build/research/imc_latch_body_derivative_ss_85.json).
+TT numerical derivative audit,
+SS audit.
 
 The additional five-geometry VA port gate compares the hybrid against native
 4.8 with matched noise-job topology at the same 438 biases per geometry. All
@@ -11462,12 +10840,12 @@ The additional five-geometry VA port gate compares the hybrid against native
 9.88×10⁻¹⁵. A reset-PMOS rail-crossing probe at normalized VGS=0.741±1 µV
 and VDS=−1 µV/−1 nV/0/+1 nV/+1 µV/+1 mV also agrees. These port gates
 remain distinct from the failed native 4.5-to-4.8 body-Jacobian screen.
-[Five-geometry port fixture](../../../../analog/testbenches/tb_imc_latch_static_port.py),
-[rail-crossing port gate](../../../../build/research/imc_latch_static_port_tt_27_rail_crossing.json).
+Five-geometry port fixture,
+rail-crossing port gate.
 
 ## One-comparator clocked qualification
 
-[\`tb_imc_latch_noise.py\`](../../../../analog/testbenches/tb_imc_latch_noise.py) uses the
+\`tb_imc_latch_noise.py\` uses the
 exact exported nine-MOS topology, ideal input sources at common mode 0.9 V,
 ±2 mV differential input, and 10 fF output loads. Two physical clock/reset
 cycles run; the second full 20 ns cycle is compared and charged all positive
@@ -11489,15 +10867,15 @@ error 2.736→1.257→0.281 mV. Relative tolerances 10⁻⁴ and 10⁻³ also ap
 gate and is excluded. The accepted deterministic settings are native 1 ps and
 VA 2 ps, reltol=10⁻⁵; physical acceptance limits remain 5 mV maximum/1 mV RMS,
 100 ps decision time, and 0.5% energy difference.
-[Convergence study and retained strict failure](../../../../build/research/imc_latch_solver_convergence_tt.json).
+Convergence study and retained strict failure.
 
 Both input polarities pass deterministic reset, decision, waveform and energy
 gates at TT 27°C and SS 85°C. Worst waveform differences are 0.281/0.327 mV,
 RMS 26.74/47.79 µV, with identical decision time on a 1 ps grid and maximum
 energy differences 0.00328%/0.00159%. This is a bounded clocked migration check,
 not a comparator offset or input-noise characterization.
-[TT clocked results](../../../../build/research/imc_latch_noise_tt_27.json),
-[SS clocked results](../../../../build/research/imc_latch_noise_ss_85.json).
+TT clocked results,
+SS clocked results.
 
 **Default intrinsic-noise settings fail.** The zero-amplitude noise
 control passes, but seed 0 with the original unit noise scale fails before the
@@ -11512,7 +10890,7 @@ variants. Adding exact ZOH grid breakpoints does not fix the comparator: LTE is
 tested before breakpoint history reset. This isolates part of the limitation
 to the simulator's treatment of stochastic discontinuities and algebraic
 source currents, independent of MOS physics.
-[Stiff RC diagnostic](../../../../build/research/imc_stiff_rc_noise_probe.json).
+Stiff RC diagnostic.
 
 A separately named exploratory branch uses SDE mode and the documented
 \`tran_noiselte=30\` stochastic error-estimator floor, with **unit physical noise
@@ -11523,8 +10901,8 @@ seed 0 repeats exactly, and seed 1 produces a distinct trajectory. Both tested
 seeds resolve the fixed +2 mV input correctly. Each noisy run takes about one
 second. The different-seed output separation during regeneration is 43.9 mV
 at TT; that is an output waveform difference, **not input-referred noise**.
-[TT exploratory controls](../../../../build/research/imc_latch_noise_tt_27_sde_lte30.json),
-[SS exploratory controls](../../../../build/research/imc_latch_noise_ss_85_sde_lte30.json).
+TT exploratory controls,
+SS exploratory controls.
 
 This closes only the executable noise/replay sanity check. Stochastic-floor,
 timestep and frequency-parameter convergence, adequate sampling, input source
@@ -11617,7 +10995,7 @@ equations, initialized at zero and allowed to settle, verifies the result.
 Across 8,192 independent trajectories, the largest variance discrepancy over
 seven boxcar widths was 3.63%; charge conservation also passed. Reproduce with
 the cached NumPy Python and
-[\`analog/testbenches/tb_imc_filter_noise.py\`](../../../../analog/testbenches/tb_imc_filter_noise.py):
+\`analog/testbenches/tb_imc_filter_noise.py\`:
 
 \`\`\`sh
 python3 analog/testbenches/tb_imc_filter_noise.py
@@ -11682,7 +11060,7 @@ integrating preamplifier or changed isolation scheme alongside capacitor
 growth. The capacitance sweep and charge-equation assertions run with the
 existing passive stochastic check and are saved under
 \`settled_signal_sizing\` in its JSON artifact. No extra SPICE run is required.
-`,mm=`# Near-tile digital rail — port contracts (A4)
+`,pm=`# Near-tile digital rail — port contracts (A4)
 
 Everything the analog agents (A2/A3) and the compiler (A5) target. RTL in
 \`rtl/\`, self-checking tbs in \`tb/\`, \`make test\` / \`make synth\`
@@ -11858,226 +11236,7 @@ tile_fsm. \`make synth\` maps it to sky130_fd_sc_hd
 - Latencies (clk cycles): SAR bit ~ 5 + comparator delay; coarse event
   ~ 4 + analog decision; sign-early-exit conversion ~ 6 total after
   integ_ack (no analog conversion activity at all).
-`,gm=`# KV Feasibility Gate for Chip 2 (in-memory analog attention engine)
-
-Two physics questions decide whether the KV cache can live in analog gain cells
-on Chip 2 with **no HBM in the attention path**:
-
-- **Q1** — Do the attention MACs (qKᵀ and A·V) *consume* the stored KV?
-- **Q2** — Is leakage low enough to hold KV uncorrupted long enough, and what refresh does it cost?
-
-Verdict up front: **GO.** Reads are non-destructive (**−4.3 µV/read**, cumulative);
-retention to first-LSB corruption is **~1.7 ms refresh-free** (τ = 27 ms, 4-bit law),
-closed by refresh-from-shadow. Caveats: session length forces refresh, and τ is
-temperature- and technology-dependent (Si logic ~ms; IGZO/BEOL ~seconds+).
-
-Sources: repo measured data (\`tb_gain_cell.py\`, STATUS A3, CHIP2_SPEC), research
-notes 27i6 / 27l2 / 27l10 / 27i3 / 27h7, and analog-IMC literature (Leroux 2024,
-Feng 2026, imec/IEEE IGZO 2T0C DRAM).
-
----
-
-## Q1 — Non-destructive? YES.
-
-### Mechanism (the 2T decoupled read)
-
-A 2T gain cell separates *store* from *read*. In \`gain_cell_array.py\`:
-
-- \`Xw wdata wsel store\` — write switch onto the isolated storage node.
-- \`Cs store vss 30f\` — the MOM storage cap.
-- \`Xr col store rd\` — the **read device whose *gate* is on \`store\`**.
-
-Because the read transistor senses the stored charge through its **gate**, the
-read current is drawn **from the column rail / read source line, not from the
-storage cap** (note 27i6: "the read device M_R has its *gate* on S, so reading
-draws no charge from the storage node at all — the read current comes from the
-supply, and the cell provides gain rather than dividing charge"). The stored
-value is only gate-coupled; the multiply is a transconductance sense, not a
-charge dump. Contrast a 1T1C DRAM cell, which reads by dumping charge onto the
-bitline and must write back — destructive by construction. This gate isolation
-is the enabling property for a parallel in-memory MAC: many rows read at once,
-none loses state.
-
-### Why this differs from the weight-tile read (resolving the "no third chip" remark)
-
-\`THE_COMPILER_STRUCTURE.md\` Part IV says analog IMC reads are **consuming for
-weights** but survivable for KV. That is not a contradiction — it is two
-different substrates:
-
-- **Weight tile = charge-domain capacitive MVM.** The multiply *is* charge
-  redistribution: the stored charge on the tile caps is steered/shared onto the
-  integration node every operation (note 27i3: a capacitive cell dissipates
-  \`α·C·V²\` **per transition** and its state moves during the op). The read
-  *is* the perturbation; the stored value is the operand being redistributed.
-  Reading disturbs it, and power-loss erases it — fatal for a value that must
-  live the model's whole deployment. Hence weights keep HBM backing and there
-  is no third chip.
-- **KV gain cell = gate-sensed current.** The storage node is behind an off
-  write-switch and is only read *through a gate*. No stored charge leaves the
-  cap during qKᵀ or A·V. The read is gain, not redistribution.
-
-The second half of the asymmetry is *lifetime*: a KV entry is written fresh
-every request and read a **bounded** number of times inside its attention
-window (note 27i6's τ > 2ᵇ·T_use law is *about* this), whereas a weight must be
-read-only-persistent forever. A consuming read is intolerable for the latter and
-survivable for the former even if it weren't perfectly non-destructive — and
-here it *is* effectively non-destructive.
-
-### Measured drift per read (repo, \`tb_gain_cell.py\`, live run)
-
-- **10 read pulses (100 ns each, level 13 = 780 mV victim) shift storage by −42.8 µV → −4.3 µV/read.**
-- 10th read still delivers full current (2.041 µA) — reads stay alive.
-- Write-disturb from a neighbouring-column write (opposite data) = **−6.2 µV**, < 1 LSB.
-- 1 LSB (write DAC) = 60 mV. So one read is **~1/14,000 of an LSB**.
-
-### Cumulative-disturb math over a KV entry's read count
-
-Read pattern (CHIP2_SPEC §2.2): d_h = 128 stored as 16 sub-banks × 8 rows. Each
-query reads a token's **K** entry once (qKᵀ) and its **V** entry once (A·V). Over
-a residency window of W tokens, an entry is read by each subsequent query:
-worst case ~W K-reads and ~W V-reads.
-
-Total read-disturb over W reads = W × 4.3 µV. To stay under 1 LSB (60 mV):
-
-    W_max ≈ 60 mV / 4.3 µV ≈ 14,000 reads.
-
-So even a **W ≈ 2048-token residency window** (target scale, CHIP2_SPEC §2.1)
-costs ≤ 2048 × 4.3 µV ≈ **8.8 mV of read-disturb — well under 1 LSB (60 mV)**,
-and this drift is *systematic single-polarity*, absorbable by the code→I
-calibration. Read-disturb is **not** the binding constraint; leakage (Q2) is.
-(Repo test T6 \`tb_kv_residency\` guards exactly this: ≤ 50 µV per 10 reads over
-100 passes + a refresh cycle.)
-
-### Literature confirmation (a)
-
-- **Leroux 2024** (Nature Comp. Sci. s43588-025-00854-1 / arXiv 2409.19315):
-  gain-cell crossbar simultaneously stores the KV cache and computes attention;
-  a dedicated read transistor generates current from the cap voltage so **"unlike
-  DRAM, this enables non-destructive read operations, supporting highly parallel
-  IMC computations."** 1.5B-param model, up to ~70,000× energy and ~100× speed
-  vs GPU (for the modified attention path).
-- **IGZO 2T0C DRAM** (imec; IEEE 10019435): 2T0C cells "offer non-destructive
-  read operations" — same 2T gate-decoupled principle in a BEOL oxide-semiconductor
-  process.
-
-**Q1 verdict: NON-DESTRUCTIVE.** Mechanism = 2T gate-decoupled read (no charge
-leaves the storage cap); measured **−4.3 µV/read**; cumulative disturb over a
-2048-read window ≈ 8.8 mV ≪ 60 mV LSB; confirmed by Leroux 2024 and the IGZO
-2T0C line. Chip 2's "KV in analog" premise survives Q1.
-
----
-
-## Q2 — Retention long enough? YES with mandatory refresh.
-
-### Measured retention (repo, \`tb_gain_cell.py\` live run)
-
-- Store 780 mV, droop over 3.30 µs = **+92.8 µV** → **τ ≈ 27.2 ms** (linear
-  extrapolation V₀/droop-rate; STATUS A3 quotes ~27 ms).
-- Note: the 2T all-NMOS cell uses a **long-L write switch specifically for
-  retention** (subthreshold + GIDL leakage on the store node is what sets τ).
-
-### Retention to first-LSB corruption (the τ > 2ᵇ·T_use law, note 27i6 / CHIP2_SPEC §2.1)
-
-Requiring decay over the use interval to stay under 1 LSB (2⁻ᵇ) gives
-**τ > 2ᵇ·T_use**. KV is stored at **b = 4 bits**, so the refresh-free residency is:
-
-    T_res(1-LSB) ≤ τ / 2ᵇ = 27 ms / 16 ≈ **1.7 ms.**
-
-That is the retention time to first-LSB corruption for a 4-bit KV element. Any
-real decode session (seconds to minutes) outlives 1.7 ms by orders of magnitude,
-so **refresh is mandatory**, not optional.
-
-### Refresh scheme + cost (refresh-from-shadow)
-
-The digital shadow copy of KV exists anyway (for spill / the B8 sink SRAM
-island), so refresh = **rewrite each entry from its shadow at τ/2 cadence**
-(no read-back-and-restore, no accumulated analog error):
-
-- Cadence: τ/2 ≈ **13.5 ms**.
-- Energy (W_res = 2048, d_h = 128, K+V = 2·262k cells) at measured
-  E_wr = 7.5 fJ/cell = 3.9 µJ per full rewrite / 13.5 ms ≈ **~0.3 mW per head**.
-- Time: 150 ns column write slot × 2048 columns = 307 µs per array per 13.5 ms
-  = **~2.3% write duty** (projected). Refresh writes serialize against reads on
-  the wsel/wdata buses → sequencer must interleave (open risk R4).
-
-Read-disturb (Q1) and leakage add, but leakage dominates: 1.7 ms leakage budget
-vs the 8.8 mV read-disturb over a full window means the refresh cadence set by
-leakage already covers read-disturb with margin.
-
-### Technology lever (Si vs IGZO/BEOL) and temperature caveat
-
-- **τ is exponential in temperature** (note 27i6 "when it breaks": subthreshold
-  leakage is exponential in T; a hot die shrinks τ, tightening T_res and the
-  refresh cadence). The repo softmax already shows a hot-die drift path
-  (β(T)); the same physics shortens KV retention. **The 27 ms is a room-temp
-  number** — budget refresh cadence against the worst-case junction temperature.
-- **Escape hatch for long/idle sessions: BEOL oxide-semiconductor (IGZO) gain
-  cells.** Wide-bandgap IGZO has extremely low off-current → orders-of-magnitude
-  longer retention:
-  - Leroux 2024: OS gain cells project **~3 orders longer** τ than Si CMOS.
-  - imec: capacitor-less IGZO 2T0C DRAM **>400 s retention**; **>10³ s** with
-    >10¹¹ endurance (researchgate 359127289).
-  - IEEE 10019435: **10 ks @ RT, 7 ks @ 85 °C**, sub-10 ns speed, 3-bit.
-  This drops refresh from ms-class (kHz cadence) to **Hz-class or below** — the
-  right substrate for multi-hour parked sessions (note 27l2: the residency win
-  is largest exactly where a session sits idle holding state). **Not available
-  in sky130** — document as a production/technology option, not this tape-out.
-
-### Literature confirmation (b)
-
-- **Leroux 2024**: silicon CMOS gain-cell **τ = 5 ms** (28 nm PDK); OS devices
-  orders longer. The repo's **27 ms** (sky130) is ~5× better than Leroux's Si
-  number — the long-L write switch pays off — but same regime and same law.
-- **imec / IEEE IGZO 2T0C**: ms-class Si vs seconds-to-ks IGZO confirms the
-  technology lever quantitatively.
-
-**Q2 verdict:** retention-to-1-LSB-corruption = **~1.7 ms** (τ = 27 ms / 2⁴).
-Refresh-from-shadow at τ/2 ≈ 13.5 ms closes it at **~0.3 mW/head, ~2.3% write
-duty**. Temperature shortens τ; IGZO/BEOL is the lever (seconds–ks) if sessions
-or thermals demand it.
-
----
-
-## Overall GO / NO-GO for "KV stays in analog, no HBM"
-
-### GO.
-
-Both physics gates pass on measured sky130 data and are corroborated by the
-analog-IMC literature:
-
-- **Q1:** reads are non-destructive (2T gate-decoupled), −4.3 µV/read, cumulative
-  disturb ≪ 1 LSB over a full residency window. The consuming-read problem that
-  kills a weights-in-memory "third chip" (charge-domain redistribution) **does
-  not apply** to gate-sensed gain cells with bounded lifetime.
-- **Q2:** 1.7 ms refresh-free at 4 bits, closed by refresh-from-shadow that reuses
-  the digital shadow already present for spill, at ~0.3 mW/head.
-
-### Honest caveats that shape the build plan
-
-1. **Refresh is load-bearing, not optional.** The "no HBM in the *attention
-   path*" claim holds, but a **digital shadow of KV** must exist (host/SRAM
-   island B8) and be rewritten every ~13.5 ms. A missed refresh silently
-   degrades stored bits rather than faulting — the sequencer must guarantee the
-   refresh/read interleave (risk R4). This is a *shadow*, not the HBM streaming
-   the two-chip cut was built to kill; the interconnect still carries only
-   O(d_h) messages.
-2. **Temperature.** 27 ms is room-temp; a hot die shrinks τ and tightens the
-   refresh cadence. Budget cadence at worst-case T_j; leave a trim knob.
-3. **Session length / technology.** Si logic gain cells (ms τ) are fine for
-   active decode with refresh. Long-idle / parked sessions (minutes–hours) want
-   **IGZO/BEOL** (seconds–ks τ, Hz-class refresh) — a production-node option,
-   not this tape-out.
-4. **Noise is non-uniform (does not change GO, changes accuracy plan).** Note
-   27l10 / Feng 2026: zero-mean analog KV noise *flattens* softmax and hits
-   sink + recent tokens hardest (perplexity 11.06 → 33.91 unprotected). Fix is
-   already in the spec: pin the **B8 digital sink+recent set** (index-only
-   policy, ~3% energy) and keep the bulk on analog. This is an accuracy caveat,
-   not a feasibility blocker.
-
-**Bottom line:** the "KV lives in analog, no HBM in the attention path" premise
-is physically sound. Build it, with refresh-from-shadow as a first-class,
-sequenced subsystem and a temperature/technology margin on the refresh cadence.
-`,fm=`# AnalogIOC layout requirements (per component)
+`,mm=`# AnalogIOC layout requirements (per component)
 
 Source of truth for device sizes: \`analog/schematics/specs.py\` (executable
 design math) and \`analog/schematics/sizing/SIZING.md\`. This table drives the
@@ -12101,7 +11260,7 @@ Structure: 16 rows x 17 columns (16 data + checksum). Crosspoint = 2 4-bit
 banks (C+/C-). Column rails → integrator virtual grounds. Common-centroid
 within banks.
 
-## 2. gain_cell_array (8x8, two instances: K + V)
+## 2. gain_cell_array (8x8)
 
 | Device/group | Type | W/L or value | Count | Constraint |
 |---|---|---|---|---|
@@ -12164,18 +11323,7 @@ NAND2 logic (outa = (inp&phi1e)|(inn&!phi1); outb mirror) + 2-stage buffers
 (mid 0.84/1.68, final 4.0/8.0 N/P) for ~100 fF row load. outa/outb slew
 matching = equal charge fraction both signs.
 
-## 8. translinear_softmax
-
-| Device/group | Type | W/L | Count | Constraint |
-|---|---|---|---|---|
-| Tail | NFET | 47.4/1.0 | 1 | gm/ID=25 subthreshold, vb 0.44 V |
-| Branches | NFET | 47.4/1.0 | 8 | Identical to tail, all pair-matched |
-| Mirror diode | PFET diode | 5.0/1.0 | 8 | Low diode-node cap |
-| Mirror out | PFET | 5.0/1.0 | 8 | Matched parasitics per branch |
-
-Score window ≤ ~120 mV about 0.6–0.85 V CM.
-
-## 9. lora_sidecar
+## 8. lora_sidecar
 
 A(16) + B(16) gain cells (same 2T cell as gain_cell_array), A.x integrator
 (telescopic OTA + 1 pF C_int + reset TG), ramp PFET 0.875/0.5 (~2 uA) +
@@ -12183,7 +11331,7 @@ enable PFET 2.52/0.15 + 100 GΩ bleed, comparator OTA + 3-inverter chain
 (stage-1 skewed N 1.26/0.15) + NAND, B-driver N 100/0.15 pull-down + P
 10/0.15 restore, 2x write_dac. colb drains tie to tile integrators.
 
-## 10. async_ctrl
+## 9. async_ctrl
 
 Reset chain 10 stages + settle chain 20 stages (inverter pairs 0.42/0.84 +
 220 fF loads), Muller C-element (P-series 1.0/0.15, N-series 0.5/0.15,
@@ -12204,9 +11352,9 @@ keepers), tq_chain 4 taps x 2 inverters + 550 fF loads (~10 ns/tap).
 ## Gate lengths needed (drives Tech trait scope)
 
 150 (switches, latches, logic), 300 (OTA in/ncasc), 500 (OTA p-side/tail,
-gain cells, ramp), 1000 (softmax). Upstream sky130 ATOLL MOS tile only ships
+gain cells, ramp). Upstream sky130 ATOLL MOS tile only ships
 L150 — custom long-L tile required (first work item in analog/layout).
-`,ym=`# AnalogIOC-mini METRICS (A6)
+`,gm=`# AnalogIOC-mini METRICS (A6)
 
 Labels: **measured** = SPICE tb in this repo; **counted** = exact
 compiler/yosys counts; **estimated** = documented cap model;
@@ -12294,28 +11442,28 @@ of the SNR headroom lattice would add. Full breakdown + interference proof in
 COMPOSED_RESULTS.md.
 
 Digital rail: 3158 cells, 24712 um2 (counted, A4 yosys), 0 latches; audit/ABFT overhead = checksum col (1/17 columns = 5.9% counted) + 1268/3158 abft cells (counted).
-`,vm=`# MoE mapping onto AnalogIOC (#19 "support any model")
+`,fm=`# MoE mapping onto AnalogIOC (#19 "support any model")
 
 Analysis + energy projection, **not** an implementation. It answers how a
-Mixture-of-Experts (MoE) model maps onto the two-chip architecture, quantifies
+Mixture-of-Experts (MoE) model maps onto the IMC tiles, quantifies
 the token/J advantage, names what blocks a full analog MoE, and states honest
 scope. No SPICE, no compiler lowering — the compiler MoE path is deferred (§4).
 
 Source labels: [compiler doc Bn/Part IV] = THE_COMPILER_STRUCTURE.md;
-[CHIP2 §n] = CHIP2_SPEC.md; [27l6] = the MoE-economics note; [projected] =
+[27l6] = the MoE-economics note; [projected] =
 law-scaled, no sim. specs.py is imported read-only for the energy numbers.
 
 ---
 
-## 1. How MoE maps to the two chips
+## 1. How MoE maps to the chip
 
 MoE is not a new operator surface. THE_COMPILER_STRUCTURE.md already places
 every piece of it; this section just reads them off.
 
-**Expert weights → Chip 1 analog tiles (already weight-stationary).**
+**Expert weights → analog IMC tiles (already weight-stationary).**
 An expert FFN is \`W_down·(SiLU(W_gate·x) ⊙ W_up·x)\` — the same
 \`activation × weight\` position-local GEMM as the dense MLP (steps 10–11), and
-Chip 1 is built for exactly that: mostly-fixed analog in-memory tiles whose
+the chip is built for exactly that: mostly-fixed analog in-memory tiles whose
 weights are stationary [compiler doc Part IV / B1 S1]. An expert is just a set
 of weight tiles. The array cannot time-multiplex, so each expert occupies
 crosspoints permanently and area is charged for all \`E\` experts (§2) [27l6].
@@ -12326,28 +11474,9 @@ The router is a top-k over a learned gate: \`logits = W_g·x\` (fp32), then
 the ONLY dynamic-shape residue in the whole model — binding stage **S5b**
 [compiler doc B1]. It is small, control-flow-adjacent, and **not** analog
 (router logits are fp32 by mandate: low-precision ties cause routing thrash
-[compiler doc precision table]). It lives in Chip 1's small digital
+[compiler doc precision table]). It lives in the chip's small digital
 dispatch island — the programmable escape hatch that B1 licenses, not a sea of
 cores [compiler doc Part IV].
-
-**Decode-FFN → Chip 2 with one CFG bit.**
-The paper's load-bearing insight: MoE **decode** expert-FFN has the *same*
-broadcast-stream-reduce geometry as attention — tiny activation broadcast in,
-huge expert weight matrix streamed locally from the banks, tiny result out
-[compiler doc B3 "the MoE row is the one people miss"]. So Chip 2 offloads it
-with **no netlist change**: \`CFG.MODE ∈ {ATTN, FFN}\` swaps bank contents
-(K,V → expert weight tiles), the broadcast operand (q → activation x), and
-bypasses the WTA/exp/rescale softmax path; the fp32 combine island degrades
-to a plain long-axis accumulate (expert accumulator fp32) [CHIP2 §8].
-Expert-slice swap cost is ~0.25 nJ / ~38 us for a 128×256 slice, fine against
-ms-class routing cadence [CHIP2 §8, projected]. Routing and the SiLU
-nonlinearity stay on Chip 1 (S5b / position-local).
-
-> Prefill vs decode split (unchanged from the dense case, §4 of compiler doc):
-> at high batch the expert FFN is compute-bound and wants Chip 1's big array;
-> at low-batch decode it is bandwidth-bound with weight-reuse ≈ 1 (different
-> tokens pick different experts [compiler doc B2]) and wants Chip 2's
-> stream-at-the-weights geometry.
 
 ### What the compiler must emit for S5b
 
@@ -12360,7 +11489,7 @@ the entire dynamic-shape surface, and it is small:
 | **top-k indices** (per token) | top-k over expert axis (A4) | dispatch |
 | **per-expert group sizes** (runtime shapes) | histogram / bincount over expert axis (A4) | grouped-GEMM scheduler |
 | Expert **offsets** (prefix over group sizes) | cumsum (A4) | gather |
-| **gather** (dispatch): tokens → expert order | gather by index vector (A5) | Chip 1 tiles / Chip 2 banks |
+| **gather** (dispatch): tokens → expert order | gather by index vector (A5) | expert tiles |
 | **grouped GEMM**, per-group shapes | A1 "the one that hurts" | expert tiles |
 | **scatter-accumulate** (combine): expert order → token order | scatter-with-accumulate (A5) | residual stream |
 | Capacity / drop policy (padding to a static cap, or ragged) | histogram + clamp | scheduler |
@@ -12450,10 +11579,10 @@ gated on the front-end being charge-domain.
 Yes, structurally. This is the one load-bearing analog requirement, and
 AnalogIOC's tiles already meet it:
 
-- Chip 2 accumulates column charge on virtual-ground integrators (no TIA
-  standing bias in the read path) [CHIP2 §1/§8, B2/B6].
-- Tile phis are **clock-gated outside the window** (A8 FIX v2 discipline)
-  [CHIP2 §2.2], and the S4 bias-gating duty is already modeled (\`DUTY_SQ\`
+- The tiles accumulate column charge on virtual-ground integrators (no TIA
+  standing bias in the read path).
+- Tile phis are **clock-gated outside the window** (A8 FIX v2 discipline),
+  and the S4 bias-gating duty is already modeled (\`DUTY_SQ\`
   in pdk_projections) — the mechanism that makes an idle expert's periphery
   draw ~0 during the token window.
 
@@ -12496,9 +11625,6 @@ This is a **mapping + energy analysis, not an implementation.**
   (\`moe_energy\`, PROJECTION-grade), consistent with the E/k economics and the
   measured charge-domain / static-power anchors, but the MoE many-idle-expert
   gating case has **not been run on an array** [27l6: nothing has].
-- Chip 2's \`MODE=FFN\` path is specified (CHIP2 §8) with acceptance test
-  \`T8 tb_moe_ffn_mode\` — but that verifies the *mode switch is CFG-only*, not
-  a full MoE decode.
 
 Deliverable now: the mapping (§1), the E/k energy projection (§2, with the
 additive \`moe_energy\` function), the block-by-block coverage (§3). Deferred:
@@ -12508,11 +11634,9 @@ compiler lowering + validation, gated on a real MoE GGUF.
 
 ## One-paragraph summary
 
-MoE adds no new operator surface to AnalogIOC: expert weights sit on Chip 1's
-weight-stationary analog tiles, the router is the S5b digital dispatch island
-(fp32 top-k — the only dynamic-shape residue), and decode expert-FFN offloads
-to Chip 2 by one CFG bit because it has attention's broadcast-stream-reduce
-geometry. The compiler must emit top-k, per-expert group sizes (dynamic
+MoE adds no new operator surface to AnalogIOC: expert weights sit on the
+weight-stationary analog tiles, and the router is the S5b digital dispatch island
+(fp32 top-k — the only dynamic-shape residue). The compiler must emit top-k, per-expert group sizes (dynamic
 shapes), gather/scatter, grouped GEMM, and a histogram/cumsum for offsets —
 its only dynamic-scheduling branch. The token/J win is the **E/k** factor
 (**32×** for DeepSeek-class E=256/k=8, **4×** for Mixtral), real *iff* the
@@ -12521,7 +11645,7 @@ per-expert power-gating granularity and separate-tile mapping are the needed
 additions. All-to-all remains the interconnect tax. Implementation is deferred:
 the e2e model is dense, so a real MoE GGUF is required to build and validate
 the S5b lowering.
-`,bm=`# Mythic's analog readout: what it actually is
+`,vm=`# Mythic's analog readout: what it actually is
 
 **2026-09-07 evidence correction:** this report identifies a patented architecture, not a verified production-chip schematic. In ordinary binary search, early residuals can be large; only the final bracket approaches one LSB. The 13.6× bias comparison is assumption-dependent, and common-mode servo transconductance cannot automatically be inserted into the differential settling equation. See the updated [Mythic nulling review](IMC_MYTHIC_NULLING.md) for the precise mechanism and its application to the new passive accumulator.
 
@@ -13165,7 +12289,7 @@ supplies §4.3's missing physical basis); \`scripts/compiler/metrics/ARCH_THROUG
 commits \`9c85e75\` (measured \`T_conv ∝ N\`), \`84410e6\` (charge-bus loss).
 Vault notes \`27h5\`, \`27h7\`, \`27h9\`, \`27d7\`, \`27d9\`, \`27d10\`, \`27d12\`, \`27l11\`;
 laws \`law:ir\`, \`law:convdens\`, \`law:moe\`, \`law:cascade\`, \`law:esnr\`.
-`,wm=`# AnalogIOC optimization — session 2 handoff
+`,ym=`# AnalogIOC optimization — session 2 handoff
 
 **Goal: MAXIMIZE tok/s vs Etched Sohu AND improved tok/J.**
 
@@ -13174,7 +12298,7 @@ laws \`law:ir\`, \`law:convdens\`, \`law:moe\`, \`law:cascade\`, \`law:esnr\`.
 1. \`docs/src/content/Project/OPTIMIZATION_RESULTS.md\` — the consolidated scorecard from
    session 1 (start here; labels every result measured/derived/projected).
 2. Backing analyses: \`CASCADE.md\`, \`SERVO_EG.md\`, \`SOHU_VERIFIED.md\`,
-   \`ERROR_IMPACT.md\` / \`OT_IMPACT.md\`, \`KV_FEASIBILITY.md\`, \`METRICS.md\`,
+   \`ERROR_IMPACT.md\`, \`METRICS.md\`,
    \`COMPOSED_RESULTS.md\`, \`VERTICAL_3D.md\`, \`MOE_MAPPING.md\`.
 3. \`AGENTS.md\` + \`CONTRACT.md\` for conventions; \`analog/schematics/specs.py\`
    for the laws.
@@ -13238,10 +12362,6 @@ laws \`law:ir\`, \`law:convdens\`, \`law:moe\`, \`law:cascade\`, \`law:esnr\`.
   #24 model-adequacy pattern — the model tolerates ±8 LSB, so don't chase ±1).
 - Default paths stay byte-identical (opt-in flags); preserve A7/A8/A11 anchors
   - \`specs.py\` K=1 self-check; commit per green result.
-- Chip 2 (analog attention engine) is **functionally proven** (o_t cos 0.998,
-  KV-in-analog); its digital integration (#27: RTL fp32 island, GALS die-link,
-  CAM, batch) is **deferred** — don't reopen unless asked. Session 1's partial
-  \`digital/chip2_island/\` RTL was deleted.
 
 ## Workflow that worked
 
@@ -13252,7 +12372,7 @@ coordinator-owned to avoid write races). Use research agents for load-bearing
 uncertainties (Sohu numbers, device feasibility). Read
 \`OPTIMIZATION_RESULTS.md\`, then propose the SNR-raising + OTA-static + LVT plan
 BEFORE spawning agents.
-`,Tm=`# NULLSEEK — is a null-seeking column worth building?
+`,bm=`# NULLSEEK — is a null-seeking column worth building?
 
 **2026-09-07 scope correction:** the main rejection below evaluates the earlier OTA/PWM topology and its error assumptions. It does not rule out an OTA-free charge-null SAR on the new passive accumulator. The comparator's ±10-mV test range is not a measured noise/resolution floor, and charge-domain nulling need not use incremental ΔΣ. See the current [Mythic nulling review](IMC_MYTHIC_NULLING.md) and [circuit convergence](IMC_CIRCUIT_CONVERGENCE.md). Historical calculations below retain their stated topology and assumptions.
 
@@ -14036,7 +13156,7 @@ two-step extended-counting verdict.
 - *A Review of SRAM-based Compute-in-Memory Circuits* (arXiv 2411.06079) and
   *IMAGINE* (arXiv 2412.19750) — surveyed for a null-balance readout; **none
   found** (bounded search, §7).
-`,_m=`# AnalogIOC optimization campaign — consolidated honest scorecard
+`,wm=`# AnalogIOC optimization campaign — consolidated honest scorecard
 
 Date: 2026-08-29. Baseline \`ce939f6\` → head (25+ commits). Every number below
 is labeled **measured** (SPICE tb in this repo), **derived** (specs.py law on
@@ -14064,9 +13184,6 @@ prominently as the wins.
   ±1) on real multi-bank passes; the model tolerates ±8 LSB (100% argmax) — so
   it's fine. The strict ±1 gate was a converter-ENOB target, not a model
   requirement.
-- **Chip 2 (analog attention engine) is functionally PROVEN end-to-end**
-  (o_t cos 0.998, KV-in-analog, no HBM) — the decode-compute-bound
-  differentiator Sohu structurally cannot match from HBM.
 
 ## 2. Silicon-proven (measured SPICE)
 
@@ -14078,13 +13195,6 @@ prominently as the wins.
 | Per-column measured gain | col1 −48 → exact (removes cell-pattern scatter) | bff2b15 |
 | mac+15 fine-SAR fix | tb_integrator_conv 5/5 ±1 LSB (fine_ref_trim) | 30022ce |
 | Tile accuracy model-adequate | ±3 LSB measured; model tolerant to ±8 (argmax 100%) | cd44e48/ee8e810 |
-| WTA running-max (Chip 2) | shift-invariance 0.14% (vs 14% forked); 28/28 tb | 77e1de4 |
-| Analog online-softmax monoid | associativity 1e-12; single-bank l 0–1.15% | fd61806 |
-| Combine tree (G=16 holds) | group o/l 1.80% < 2.5%; 103 mV < 120 mV window | 1e4a4a9 |
-| Long-stream rescale → fp32 | analog charge-rescale marginal/compounds (confirms spec §4) | 1e4a4a9 |
-| Chip 2 e2e attention | o_t cos 0.998; qK 0.21%; 29.6 pJ/tok, 2.17 µs/tok; model-adequate | 366e612/da4119a |
-| PTAT softmax bias | I_b +22.4% (vs +281% fixed); + compiler score-prescale → drift −13%→−1.4% | ca7643d/e9f49fd |
-| KV gain-cell feasibility | non-destructive read −4.3 µV/read; τ 27 ms → 1.7 ms refresh-free | 254fd5d |
 | Parallel super-tile | gain error K-INDEPENDENT (flat 0.44% K=1/2/4 vs series 0.44→1.13%); 1.20× Sohu; charge-bus lossy→INT8 digital sum | 84410e6 |
 
 ## 3. Projected (labeled, lower confidence)
@@ -14125,57 +13235,23 @@ prominently as the wins.
   analog edge lives). tok/s comparison is thus cross-regime.
 - Sohu **tok/J is UNPUBLISHED**; the 35–60 band is inferred. Our ">5× tok/J"
   is our projection vs an inferred denominator.
-- Where AnalogIOC has a *structural* edge Sohu can't copy: **decode attention
-  is compute-bound** (KV in analog, no HBM) — Chip 2. Sohu pulls KV through
-  HBM and stays memory-bound in decode.
 
 ## 6. Remaining work (ranked, not blocking the above)
 
 - **#22 parallel super-tile** — SPICE verification in flight; projected ~1.2×
   tok/s (gain K-independent). Modest; optional.
-- **#27 Chip 2 system integration** — RTL fp32 island + GALS die-link +
-  long-context CAM + batch mapping. Large digital/interface effort; the
-  analog datapath is already proven.
-- **Reduce exp+A·V translinear error** for Chip 2 margin (PTAT co-scale helps);
-  not a correctness blocker (#26).
 
 ## 7. The one-paragraph verdict
 
 AnalogIOC is a **defensible energy-efficient analog accelerator, not a raw-speed
-killer**. Its silicon-proven strengths are the cascade amortization, KV
-residency (decode compute-bound), and model-adequate charge-domain accuracy;
+killer**. Its silicon-proven strengths are the cascade amortization and model-adequate charge-domain accuracy;
 its honest position is **tok/s parity** with a 4 nm production ASIC (projected)
 and a **tok/J advantage that is real in the laws but projection-contingent** on
 the amortized converter, compared against a Sohu energy number that isn't even
 published. The campaign's value is the *map*: every lever measured or refuted,
-every claim labeled, the wins (cascade, Chip 2, KV) separated cleanly from the
+every claim labeled, the wins (cascade) separated cleanly from the
 mirages (2× tok/s, −33% CSD, DPS-48, adaptive range).
-`,Cm=`# OT_IMPACT — is the Chip2 18.8 LSB o_t error model-breaking? (task #26)
-
-The tb_attention_chip2_e2e e2e ('A-CHIP2 inc4', commit 366e612) got o_t cos 1.000/1.000/0.9978/0.9978 over 4 tokens but max|err| 18.8 LSB on the 3-4-key tokens FAILED the \`<=8 LSB\` envelope. That +-8 LSB was measured by #24 for the TILE-MVM \`y12\` code, NOT for the attention output o_t. This task measures the correct o_t budget with #24's error-impact method.
-
-## Method (scripts/compiler/golden math, NO SPICE)
-Real SmolLM2-135M blk.0 (head-0 attn + SwiGLU FFN), real 9-token prompt [504, 2365, 6354, 16438, 27003, 690, 260, 23790, 2767]. Compile ONCE clean; re-run the real golden forward with \`golden.model.ATTN_OUT_ERR = make_attn_out_err(lsb)\` — GAUSSIAN (sigma=lsb/3, 3-sigma clip) additive code error on the attention output o8 (INT8 +-127, so 1 code == 1 LSB of the o_t range), fresh per token. This models the Chip2 analog exp+A.V translinear residual (~1.4% class) that the tb measured on o_t = p@V. Injected vs bit-exact clean, 8 seeds.
-
-**Metric honesty.** blk.0 output (OUTX) cosine + rel-MSE is the real signal; the next-token argmax/top-5 uses the same PROXY head as #24 (\`output_norm(OUTX[-1]) @ token_embd.T\`, tied embeddings): 1 of 30 blocks + head-0 only, so it measures argmax STABILITY vs the clean quantized path, not a true LM prediction. Same clean ref as #24.
-
-## Results (injected vs bit-exact clean)
-
-| o_t +-LSB | blk.0 cos | cos(min) | rel MSE | argmax agree | top5 overlap |
-|----------:|----------:|---------:|--------:|-------------:|-------------:|
-| 18.8 (measured) | 0.99348 | 0.99302 | 1.308e-02 | 100% | 4.38/5 |
-| 37.6 (2x) | 0.98427 | 0.98225 | 3.146e-02 | 100% | 3.50/5 |
-| 75.2 (4x) | 0.95117 | 0.94134 | 9.626e-02 | 75% | 2.25/5 |
-
-Clean proxy next-token argmax = id 29 '-'; clean top-5 = [29, 281, 365, 402, 446].
-
-## Verdict
-**18.8 LSB o_t (cos 0.998 per-head) is MODEL-ADEQUATE.** At the measured worst-token severity: blk.0 cos 0.99348 (>0.99), argmax agreement 100%, top-5 4.38/5. The \`<=8 LSB\` gate the Chip2 e2e failed is the #24 TILE-MVM proxy MIS-APPLIED to o_t — a tile-code budget does not transfer to the attention output.
-
-- **Correct o_t model budget: +-18.8 LSB of the o_t range** (highest swept level holding BOTH 100% argmax AND blk.0 cos>0.99, the #24 criterion). argmax agreement itself survives 100% out to +-37.6 LSB (2x measured); the model only breaks (argmax <100%) at +-75.2 LSB (4x). o_t is a convex softmax average (p@V, no bit growth) that then passes through Wo + residual add + RMSNorm + the FFN, so per-head o_t error is attenuated far more than a raw tile code — the o_t budget is much looser than the y12 tile's +-8.
-- **Chip 2 attention MEETS its o_t budget as-built:** the measured worst-token 18.8 LSB sits AT the cos>0.99 ceiling (18.8 LSB) and 2x inside the argmax-survival ceiling (37.6 LSB). Relax the tb_attention_chip2_e2e acceptance from the borrowed \`<=8 LSB\` tile proxy to the o_t budget (cos>0.99 AND max|err| <= 18.8 LSB). The e2e 'FAIL' is a mis-applied criterion, not a real accuracy shortfall.
-- Reducing the exp+A.V translinear error (PTAT co-scale, #18/#25) stays WANTED for margin/cascade headroom but is NOT a correctness blocker for blk.0 next-token.
-`,Am="# PTAT score pre-scale (task #25) — compiler half of softmax temperature-invariance\n\nPairs with #18's analog tail-PTAT (`analog/.../ptat_bias/ptat_bias.py`). Together\nthey make the translinear softmax temperature-invariant. Neither half alone does.\n\n## Why the compiler must do this\n\nThe translinear softmax output ratios are\n\n    I_i / I_j = exp( beta(T) * (V_i - V_j) ),   beta(T) = 1/(n*U_T) ~ 1/T.\n\nThe ratios depend ONLY on `beta(T)` and the score SPREAD `dV = V_i - V_j` about the\ncommon mode. The tail/normalization current `I_b` cancels out of every ratio.\n\n- #18's tail-PTAT stabilizes `I_b` (measured +22.4%/58C clean PTAT vs the fixed-bias\n  +281% blow-up), so the KCL sum stays put — but it CANNOT touch `beta(T)`.\n- So tail-PTAT alone leaves the sharpness drifting with `beta(T) ~ 1/T`: measured\n  **-13% winning-branch ratio drift 27->85 C** (#18 config-B).\n\nThe only knob that cancels `beta(T)` is `dV`. If the compiler pre-scales the score\nspread by `T/T0`, then\n\n    beta(T) * dV_scaled = (1/(n*U_T(T))) * (T/T0) * dV  ~  const,\n\nbecause `U_T = kT/q ~ T`. That is temperature-invariant sharpness. #18 config-C\n(tail-PTAT + this score co-scale) measured **+0.4%** — flat.\n\n## What landed\n\nScalar pre-scale on the score map, flag-gated by device temperature.\n\n- `scripts/golden/model.py`\n  - `ptat_score_gain(t_kelvin, t0_kelvin=300.15)` -> `T/T0` (mirror of the analog\n    `ptat_bias.ptat_score_gain`; the ideal-physics factor).\n  - `attention_forward(..., score_gain=1.0)` multiplies the dequantized score `z`\n    (the spread about CM; softmax subtracts its own max, so CM is irrelevant) by\n    `score_gain` before `softmax_ref`. Default `1.0` -> byte-identical.\n- `scripts/compiler/compile.py`\n  - `run(..., score_temp=None)`; when set, `score_gain = G.ptat_score_gain(T)` is\n    threaded into `attention_forward` and echoed into `digital_config.json`'s\n    `attention` block as `score_temp_k` / `score_gain` (emitted ONLY when opted in,\n    so the default tree stays byte-identical).\n  - `--score-temp <Kelvin>` CLI flag. Unset = `T0` = default path.\n\n`T0 = 300.15 K` (27 C) nominal. `T = T0` -> factor exactly `1.0`.\n\n## Verification\n\n`scripts/golden/test_golden.py::test_ptat_score_gain` uses the measured translinear\n`beta(T) = 27.31 / 24.71 / 22.36 /V` at 27/55/85 C (STATUS A3, CHIP2_SPEC B4) on a\nfixed score pattern (dV about CM):\n\n| T     | ratio drift, no pre-scale | ratio drift, with `T/T0` pre-scale |\n|-------|--------------------------:|-----------------------------------:|\n| 27 C  | 0.00%                     | 0.00%                              |\n| 55 C  | -5.82%                    | -0.64%                             |\n| 85 C  | -11.37%                   | -1.38%                             |\n\nThe pre-scale collapses the drift from ~-13% to under ~1.4% — mirroring #18's\nconfig-B (-13%) vs config-C (+0.4%). The ~1.4% residual is the gap between the\nideal `T/T0` factor and the *measured* `beta(T)` (measured -18.1% drift vs ideal\n1/T's -16.2%); for exact cancellation, drive `score_gain` from measured `beta(T)`\ninstead of `T/T0`, at the cost of a per-corner calibration table.\n\n## How the two halves pair\n\n| symptom             | analog fix (#18)        | compiler fix (#25)            |\n|---------------------|-------------------------|-------------------------------|\n| `I_b` / KCL drift   | tail-PTAT bias          | —                             |\n| `beta(T)` sharpness | (cannot — ratios cancel `I_b`) | score spread x `T/T0`  |\n\nEnable both for full temperature-invariance: PTAT tail bias in silicon,\n`--score-temp <T>` (or `run(score_temp=T)`) in the compile.\n",Sm=`# AnalogIOC overnight results — Thu Aug 27 02:47:41 AM EEST 2026
+`,Tm=`# AnalogIOC overnight results — Thu Aug 27 02:47:41 AM EEST 2026
 - PASS tb_rstring
 - PASS tb_pwm_driver
 - PASS tb_weight_tile
@@ -14200,12 +13276,12 @@ Clean proxy next-token argmax = id 29 '-'; clean top-5 = [29, 281, 365, 402, 446
 - PASS metrics
 
 Finished Thu Aug 27 07:21:17 AM EEST 2026
-`,xm=`# AnalogIOC A7 rerun (calibration + early-term + timeouts) — Thu Aug 27 11:15:43 AM EEST 2026
+`,Cm=`# AnalogIOC A7 rerun (calibration + early-term + timeouts) — Thu Aug 27 11:15:43 AM EEST 2026
 - PASS tb_integrator_conv
 - FAIL tb_tile_mvm (see logs/tb_tile_mvm.log)
 - PASS tb_eventrate
 - FAIL tb_audit (see logs/tb_audit.log)
-`,km=`# AnalogIOC acceptance re-run (task #14, "chip actually works" gate) — 2026-08-28
+`,Am=`# AnalogIOC acceptance re-run (task #14, "chip actually works" gate) — 2026-08-28
 
 All accuracy fixes landed: A7/A8 (charge-scale K_CAL + x=0 zero-point + tile
 clock-gate/park), A9 (n_banks charge correction, opt-in), A10 (per-column
@@ -14300,7 +13376,7 @@ correctness blocker - it reverts to a pure tok/s lever (optional). Cascade
 structure + single-bank + eventrate + tile (model-adequate) all green.
 Remaining acceptance tbs (ffn/audit/training/attention) still to re-run under
 CODE_TOL=8.
-`,Im=`# SERVO_EG (task #21) — achievable gain-servo residual eg, the eg→tok/s curve, and the honest verdict on 2x-Sohu
+`,_m=`# SERVO_EG (task #21) — achievable gain-servo residual eg, the eg→tok/s curve, and the honest verdict on 2x-Sohu
 
 Pure compiler math + committed measured data. NO SPICE (an analog agent owns
 the sim lane). Regenerate the sweep:
@@ -14491,7 +13567,7 @@ Consequences:
   projection uses is the pessimistic topology; the parallel super-tile is the
   actual unlock, and it is **floored, not by the servo, but by the
   uncorrelated Pelgrom mismatch + the random-SNR budget.**
-`,Mm=`# Etched Sohu — Verified Specs & Comparison Audit
+`,Sm=`# Etched Sohu — Verified Specs & Comparison Audit
 
 Researched 2026-08-28. Purpose: check the repo's Sohu comparison anchors
 (\`62,500 tok/s/die\`, \`35–60 tok/J\`, 70B) against what Etched has actually
@@ -14588,10 +13664,10 @@ throwing away all generality.
   https://www.spheron.network/blog/etched-ai-sohu-vs-nvidia-transformer-asic-inference/
 - TechTimes (2026-06-30) — $800M raised, $1B contracts, stealth exit:
   https://www.techtimes.com/articles/319393/20260630/transformer-chip-startup-etched-exits-stealth-800m-raised-1b-contracts.htm
-`,Em=`A4 DONE: digital rail complete in scripts/digital/. RTL (9 modules + rail_top synth wrapper): nibble_combine (sat12 16x shift-add), slice_combine (sat14 x4), bacc_accum (param W, b_acc=20 per contract, tile_cnt port, saturating), abft_check (16+chk, 25b exact residual, programmable budget), requant (8b scale/5b shift/round-half-up/8b zero-point, sat INT8), sar_ctrl (4b SAR, 4-phase req/ack, 2FF sync on ack+result), event_ctrl (4b charge-balance count, early termination on no-cross, cap@15, Gray copy for CDC), sign_exit, tile_fsm (integrate/coarse/fine/readout, ReLU sign-early-exit skips whole conversion, coarse_en gates analog decisions so no orphaned req, ready-valid to fabric, Gray event-count export). Tests: 10/10 iverilog tbs PASS (self-checking, randomized vs independent tb reference; tb_rail integration incl. ABFT fault injection at T=1/2/4/8). Synth: yosys -> sky130_fd_sc_hd tt_025C_1v80: rail_top 3158 cells, 24712 um2, 9.1% seq, 0 check problems, no latches. Per-module cells: abft 1268, requant 1344, bacc 168, tile_fsm subtree 220 (event 57, sar 70, sign 1), nibble 49x2, slice 60. Port contract for A2/A3/A5 in scripts/digital/INTERFACES.md (handshake pacing >=2clk between reqs, quasi-static data rules, col_code = clamp(+-16*Nev+Dsar,127), Gray-restart caveat).
+`,xm=`A4 DONE: digital rail complete in scripts/digital/. RTL (9 modules + rail_top synth wrapper): nibble_combine (sat12 16x shift-add), slice_combine (sat14 x4), bacc_accum (param W, b_acc=20 per contract, tile_cnt port, saturating), abft_check (16+chk, 25b exact residual, programmable budget), requant (8b scale/5b shift/round-half-up/8b zero-point, sat INT8), sar_ctrl (4b SAR, 4-phase req/ack, 2FF sync on ack+result), event_ctrl (4b charge-balance count, early termination on no-cross, cap@15, Gray copy for CDC), sign_exit, tile_fsm (integrate/coarse/fine/readout, ReLU sign-early-exit skips whole conversion, coarse_en gates analog decisions so no orphaned req, ready-valid to fabric, Gray event-count export). Tests: 10/10 iverilog tbs PASS (self-checking, randomized vs independent tb reference; tb_rail integration incl. ABFT fault injection at T=1/2/4/8). Synth: yosys -> sky130_fd_sc_hd tt_025C_1v80: rail_top 3158 cells, 24712 um2, 9.1% seq, 0 check problems, no latches. Per-module cells: abft 1268, requant 1344, bacc 168, tile_fsm subtree 220 (event 57, sar 70, sign 1), nibble 49x2, slice 60. Port contract for A2/A3/A5 in scripts/digital/INTERFACES.md (handshake pacing >=2clk between reqs, quasi-static data rules, col_code = clamp(+-16*Nev+Dsar,127), Gray-restart caveat).
 A1 DONE: library + sizing complete, all checks green. Tables: 8 real ngspice sweeps (sizing/tables/), max gm/ID 25.2-30.1 S/A (in 25-38 band), verified by sizing/test_tables.py (PASS). Fixed lookup.py invertible-branch selection: pfet L=0.15 has a VGS~0 leakage hump (apparent gm/ID 25.2) above its true subthreshold peak (15.5 at 0.63 V); branch now starts at the LAST local max, lookups clamp at 15.5 for that geometry. Sizing documented in sizing/SIZING.md: OTA (telescopic, in-pair (gm/ID=12, L=0.3) 0.91u, ncasc (10,0.3) 0.62u, pcasc/pmirr (10,0.5) 4.38u, tail (18,0.5) 11.76u, ID=10uA/side; measured: loop gain 330, settle 12.3/25.1 ns, SR 104 V/us, PASS); StrongARM (MVM sizes validated: offset <=2 mV, delay 0.48 ns, PASS); write switches (measured Ron: gc_write_n 5-64 kOhm over 0-0.9 V but 22.9 MOhm at 1.2 V -> WRITE-LEVEL CEILING 0.9 V for A3, series worst 90 k -> 8b settle 17 ns << 100 ns). tq_chain recalibrated: tq_cload 2.2p->550f (measured 40.5 ns/stage before, 10.15 ns/stage inner + 7.7 ns first stage now; tb_async_ctrl PASS incl. sequencing). Testbenches: tb_ota, tb_strongarm, tb_async_ctrl all ngspice-batch, numeric asserts, PASS. Imports for A2/A3 (PYTHONPATH=scripts): from library.pdk import NFET, PFET, VDD, mos, inv, nand2, nor2, include_models, lib_include; from library.ota import ota_spice, bias_spice, BIAS (ports: inp inn out vb_nc vb_pc vb_tail vdd vss); from library.cap_array import cap_array_spice; from library.cmos_switch import cmos_switch_spice; from components.strongarm.strongarm import generate (ports: vinp vinn outp outn clk vdd vss; vinp>vinn -> outp LOW); from components.async_ctrl.async_ctrl import generate, tq_chain_subckt (async_ctrl ports: go adc_done xbar_rst adc_go latch_out done vdd vss; tq_chain: in tap1..tap4 vdd vss, 10 ns/tap); from sizing import lookup (J_D/VGS/gm_gds/ft/W_for_gm); testbench helpers in library.testbenches.base (spice_prelude, run_ngspice, load_wrdata). Env caveat: flake dev shell unbuildable (schemify hash placeholder) — ngspice 43 pinned at build/ngspice43/bin/ngspice (auto-found by base.find_ngspice), python+numpy from a nix store env (e.g. /nix/store/ixcjbi65vkrg1id59px3snzkak7d1kpy-python3-3.13.13-env/bin/python3).
 A5 DONE: compiler+golden complete. gguf_reader.py (existing, verified vs real smollm2-135m-q8_0.gguf: llama/30L/576d/9h/3kv/1536ffn/49152v, Q8_0+F32+F16+Q4_0 dequant, greedy tokenizer, fixture writer). scripts/golden/model.py rewritten to mirror A4 bit-exact (verified vs rtl/*.v): eventrate = evt-count sat15 + 4b SAR, mag=16*cnt+sar, col_code clamp +-127, n_eval=min(cnt+1,15); sat12/sat14(4*p_hi+p_lo)/20b-acc/requant sat8 8b-unsigned-scale shift0..24 offset-after-shift round-half-up; relu sign-exit = energy prediction + free fabric ReLU clamp (exact rule documented, single-row-tile only -> relu_en=0 for real model); ABFT residual now subtracts compile-known e.xq/D term (raw budgets 460-977 hid single-cap faults; corrected budgets 151-227 catch stuck-cap +8 at xq=127 with margin); float-safe conversion rounding for in-charge LoRA. compile.py: tiles REAL blk.0 head-0 (Wq/Wk/Wv 64x576, Wo 576x64) + FFN (gate/up 1536x576, down 576x1536) -> EXACT 10944 tile passes/token (576 attn + 10368 ffn), 9-token real prompt, bit-true forward THROUGH model.py (out finite, max 48, corr 0.985 vs float), emits manifest/digital_config/passes.json + programming/acts npz + golden_trace.npz + 11 representative real passes (worst|y12|=895, sparse, eterm min/max, chk_max, 1/matrix) as caps/params/pwm_lo/pwm_hi .spice + expected.json (emit_spice.py, documented in scripts/compiler/FORMATS.md). Early-termination measured on real weights: mean n_eval 1.36-1.73 of 15. Tests: test_golden.py 12/12 (quant roundtrips, PWM sums=|xq|*tq, mac identity, eventrate vs independent bit model incl sat/early-term, rails vs requant.v model, checksum linearity + fault trip, relu-exit rule, LoRA in-charge bound + SGD loss decrease, softmax KCL, kv decay, mvm accuracy) and test_compile.py 7/7 (reader vs real file, fixture roundtrip, tokenizer exact rejoin, vectorized==loop bit-true, pass counts, e2e real forward sane, emitted files self-consistent) — all print PASS via plain python.
-A3 DONE: attention/memory analog set complete, all 4 tbs PASS. Components (scripts/components/): gain_cell_array (8x8 2T all-NMOS cells, 30f store, token=column write via row-shared wdata + per-column wsel, PWM row read via rd source lines 0.9V idle -> 0V pulse, cells SINK from 0.9V column rails; ports wdata0..7 wsel0..7 rd0..7 col0..7 vss); write_dac (4b binary in b0..3, R-string 15x10k 0..vref + 4:16 nand/nor decoder + tg tap mux); translinear_softmax (8 branch nfets 47.4/1.0 shared-source + tail 47.4/1.0 at (gm/ID=25,L=1.0) vb_tail=0.44V I_b~0.58uA, simple pfet mirrors 5/1.0 out; ports vin0..7 iout0..7 vb_tail vdd vss); lora_sidecar (A[16]+B[16] gain cells, telescopic-OTA integrator C_int=1p on cola virtual ground, pfet ramp 2uA-design/3.4uA-meas V->T, OTA comparator + gate logic self-times B window, wide 100/0.15 rdb driver swinging vcm->0, embedded 2x write_dac update path). WRITE-LEVEL CHOICE per A1 constraint: NMOS-only cell switch, storage range capped 0..0.9V (write_dac vref=0.9, LSB 60mV); TG upgrade path documented in gain_cell_array docstring. Measured: gain cell store err -12..-30mV (injection, <1LSB), read current monotone 16/16 levels (7.3pA..6.35uA), tau_retention ~27ms (92.8uV droop/3.3us, 600x margin), non-destructive 10 reads=-43uV, write disturb -6.2uV, E_wr 7.5fJ/cell E_rd 2.4pJ/8-row pass; DAC 16/16 exact levels monotone, settle 4.6ns worst (spec 100ns), 1.2pJ/slot; softmax KCL checksum <=0.16% (spec 1%) all 3 temps x 3 patterns, per-branch rel err <=1.4% (spec 10%), beta 27.31/24.71/22.36 /V at 27/55/85C (drift -18.1% vs -16.2% ideal 1/T; I_b 0.58/1.18/2.2uA fixed-bias — PTAT bias is the production fix), settle 0.99us, 2.1uW static; sidecar outer product worst col err 1.36% pre-update, 0.93% post-update (spec 5%), eps=18ns V->T offset, E 7.1pJ/cell-write 67pJ/op. A6 INTERFACE: tie colb0..15 (B-cell drains) to tile column integrator virtual-ground (inn) nodes — sidecar sums IN CHARGE onto tile C_int; charges are baseline-differential (x=0 pass = per-column zero-point, matches A4 requant zero-point; re-zero after update writes); sidecar A-column current budget <=~10uA (class-A OTA limit) constrains A-level/x schedules; gain-cell col rails same 0.9V virtual-ground convention, same <=10uA note for simultaneous-row PWM; softmax input window: score spread <=~120mV about 0.6-0.85V CM for <10% ratio err (compiler maps scores; beta(T) above). Read-current I(V) is exponential-ish below Vth — compiler pre-distortion via the code->I calibration (tb_lora method: in-situ store sampling, I_cal to 0.1%).
+A3 DONE: attention/memory analog set complete, all 4 tbs PASS. Components (scripts/components/): gain_cell_array (8x8 2T all-NMOS cells, 30f store, token=column write via row-shared wdata + per-column wsel, PWM row read via rd source lines 0.9V idle -> 0V pulse, cells SINK from 0.9V column rails; ports wdata0..7 wsel0..7 rd0..7 col0..7 vss); write_dac (4b binary in b0..3, R-string 15x10k 0..vref + 4:16 nand/nor decoder + tg tap mux); lora_sidecar (A[16]+B[16] gain cells, telescopic-OTA integrator C_int=1p on cola virtual ground, pfet ramp 2uA-design/3.4uA-meas V->T, OTA comparator + gate logic self-times B window, wide 100/0.15 rdb driver swinging vcm->0, embedded 2x write_dac update path). WRITE-LEVEL CHOICE per A1 constraint: NMOS-only cell switch, storage range capped 0..0.9V (write_dac vref=0.9, LSB 60mV); TG upgrade path documented in gain_cell_array docstring. Measured: gain cell store err -12..-30mV (injection, <1LSB), read current monotone 16/16 levels (7.3pA..6.35uA), tau_retention ~27ms (92.8uV droop/3.3us, 600x margin), non-destructive 10 reads=-43uV, write disturb -6.2uV, E_wr 7.5fJ/cell E_rd 2.4pJ/8-row pass; DAC 16/16 exact levels monotone, settle 4.6ns worst (spec 100ns), 1.2pJ/slot; softmax KCL checksum <=0.16% (spec 1%) all 3 temps x 3 patterns, per-branch rel err <=1.4% (spec 10%), beta 27.31/24.71/22.36 /V at 27/55/85C (drift -18.1% vs -16.2% ideal 1/T; I_b 0.58/1.18/2.2uA fixed-bias — PTAT bias is the production fix), settle 0.99us, 2.1uW static; sidecar outer product worst col err 1.36% pre-update, 0.93% post-update (spec 5%), eps=18ns V->T offset, E 7.1pJ/cell-write 67pJ/op. A6 INTERFACE: tie colb0..15 (B-cell drains) to tile column integrator virtual-ground (inn) nodes — sidecar sums IN CHARGE onto tile C_int; charges are baseline-differential (x=0 pass = per-column zero-point, matches A4 requant zero-point; re-zero after update writes); sidecar A-column current budget <=~10uA (class-A OTA limit) constrains A-level/x schedules; gain-cell col rails same 0.9V virtual-ground convention, same <=10uA note for simultaneous-row PWM; softmax input window: score spread <=~120mV about 0.6-0.85V CM for <10% ratio err (compiler maps scores; beta(T) above). Read-current I(V) is exponential-ish below Vth — compiler pre-distortion via the code->I calibration (tb_lora method: in-situ store sampling, I_cal to 0.1%).
 A2 [1/5] rstring_ladder + tb_rstring PASS: 16 taps monotone exact (<0.01mV err, rails 0.55/1.35V), CDAC kickback recovery 3.4ns@R_SEG=200 (spec 5ns, 4x-wide tap TG; 1x write_tg was 12.2ns).
 A2 [2/5] pwm_driver + tb_pwm_driver PASS: chopped-SC row drive (outa/outb = env gated by !phi2/!phi1), transfer count == code exact for 0..15 both signs, width linearity 0.26% dev (spec 2%), edges 0.25ns (spec 3.3ns), hi-window (16tq chop) exact. NOTE: PWM->charge realized as 2-phase SC transfer, 1 code unit = C_u*VDD/chop-cycle.
 A2 [3/5] weight_tile + tb_weight_tile PASS: dump-at-connect SC banks + 500fF rail ballast. Linearity R2=0.999999 slope 99.1%, diff null +0.4 LSB, mirror 0.98%, real-worst cancelling column (32:32 units/cyc, = A5 pass max 34) -0.31 LSB; 64:64 synthetic -3.6 LSB = documented C_RAIL ceiling. Topology ladder measured+rejected in docstring (staggered phi2, hardwired-R, R+TG hybrids). read_caps() parses A5 caps.spice.
@@ -14614,8 +13690,8 @@ O1 ITEM2 LANDED r-string R_SEG 200 -> 8k (specs.r_seg static-power budget; 200 o
 O1 ITEM3 LANDED OTA re-bias 10->6 uA/side (specs.I_SIDE, constant-J width scaling through specs.ota() -> sky130 pdk.sizing: in 0.54u, ncasc 0.37u, pcasc/pmirr 2.63u, tail 7.06u; BIAS voltages J-invariant). Falsifier PASS: tb_ota 50mV-step settle 21.9 ns < cadence/2 = 30 ns, loop gain 483 (>200), SR 57 V/us, tail 8.2 uA; tb_integrator_conv point mac +16 -> code 16 EXACT (E_coarse 0.64 pJ). OTA static 612 -> 367 uW (17 cols); tau_absorb 30 ns keeps the 60 ns cadence on-grid (specs self-check asserts the chain).
 O2 PDK PROJECTIONS: library/pdks/asap7_proj.py + tsmc_n4_proj.py landed (projection-grade PDKConfig sets, every raw param sourced+confidence-labeled, NOT registered as active PDKs, no SPICE; additive fields cal_proj/t_q_grid/topology_flags — 0.7/0.75V breaks the 5-stack telescopic -> two-stage/ring-amp flag, fin quantization flag). scripts/metrics/pdk_projections.py evaluates specs.py per PDK -> scripts/metrics/PDK_PROJECTIONS.md (sky130 anchor asserted: tau 30ns/cadence 60ns; specs.py untouched). Headline (squeezes S4/S5/S6): asap7 tau 4.6ns/cadence 9.2ns/conv 193ns/pass 212ns/21pJ; N4 4.3ns/8.7ns/182ns/200ns/23pJ. Findings from the formulas: C_int re-derives to 52fF at both advanced nodes (kT/C law binds, not layout); t_q floor flips from jitter (sky 200ps) to row RC (~85-90ps); pass stays conversion-bound everywhere (conv/window ~13x); tau_absorb becomes C_FILT_MIN(60f)-floored. vs Etched Sohu (vendor 62.5k tok/s/die, 35-60 tok/J): tok/J WON at 70B — asap7 175 / N4 161 tok/J = 3-5x margin (projected); tok/s/die LOST on cadence alone (N4 7B best 8.5k = 13.6%); crossover needs conversion amortization K>=13 windows/conv (paper law:wrapper, K*=64) -> 122k tok/s/die at 7B = 2x Sohu; 70B needs ~6 dies. O1b hooks noted in PDK_PROJECTIONS.md: TQ_SIM/sar_time/T_ACQ constants -> per-PDK derivation, _CAL -> PDKConfig field, pass_energy_pj pass-time arg, V_SWING/MAC_MAX/ladder-kick constants sky-anchored, C_FILT_MIN scaling law, per-PDK gm/ID tables (fin-quantized).
 O1b DEBT (O2 specs.py refinement list, deferred — mechanical, no falsifier risk): (1) TQ_SIM should derive from max(t_q_floor, jitter_budget) per PDK; (2) sar_time/T_ACQ/T_TRIAL/T_SAR_TAIL should scale with tau_absorb (5ns literal in sar_time unreachable off-sky130); (3) K_CAL -> PDKConfig field (currently specs._CAL keyed by pdk.name — works, just not a config field); (5) ladder-kick constants C_KICK_CDAC/V_KICK/band are sky130-anchored, parameterize for per-PDK r_seg/c_tap; (6) C_FILT_MIN needs a CDAC scaling law. Item (4) pass-time argument to pass_energy_pj LANDED this pass. NEXT-ITERATION TOP ITEM (O2, do first): conversion amortization K>=13 — the paper's K* super-tile cascade (share one conversion across K accumulated tile windows; mini is K=1). Dominant remaining tok/s lever, ~14x on the binding constraint at fast nodes (metrics/PDK_PROJECTIONS.md). Not implemented in this pass by coordinator instruction.
-C2 SPEC: docs/src/content/Project/CHIP2_SPEC.md landed — Chip 2 in-memory attention engine implementation spec (CONTRACT style). Fused qK^T->online-softmax->AV broadcast-stream-reduce, traffic ratio ~L = 128,000x at L=128k; 11 blocks anchored to measured A3 numbers (gain-cell E_wr 7.5fJ / E_rd 2.4pJ / tau 27ms, softmax KCL <=0.16% + beta(T), V->T sidecar idiom); retention law tau>2^b*T_use forces refresh-from-shadow (T_res<=1.7ms refresh-free, ~0.3mW/head + 2.3% duty projected); monoid = analog bank reduce (WTA follower-max + translinear logsumexp readout) -> analog group combine G<=16 (120mV window cap) -> fp32 digital island for cross-group/streaming combine (precision-table mandate); reciprocal digital host-side on Chip 1; sink set 8+120 = digital SRAM island (~3% energy anchor) over 16x-C analog option (7.9mm2/head rejected); GALS dual-clock Gray-FIFO link contract with O(d_h) flits + KV-before-Q ordering; MoE FFN mode = 1 CFG bit (softmax bypass + mandatory weight refresh); 10 numeric acceptance tbs; risks ranked WTA consistency > beta(T) PTAT residual > sqrt(K) cascade > retention/refresh collision > phase-2 CAM.
-LUT DONE: analog transcendental-LUT feasibility study complete (docs/src/content/Project/ANALOG_LUT_STUDY.md + falsifier analog/testbenches/tb_lut_exp.py PASS). Measured: subthreshold exp branch (softmax sizing) holds 2^x over 14.4 octaves @ 1ulp fp8 / 12.3 @ half-ulp at 27C; 4.0 bits over the 8-octave softmax range at 27/55/85C after per-temp (beta,I0) recal (beta -17.5% 27->85C, PTAT fix); MC tt_mm 8 seeds sigma 5.9-9.0% untrimmed (3.5-4.1b, trim via write_dac/gain-cell path); scalar 0.64 pJ/op mean, settle 1.9us worst; batched = tb_softmax 0.26 pJ/exp incl free KCL reciprocal. Counted digital baseline (yosys->sky130_hd): full fp8 exp2 table 96 cells/522um2/93fJ (smaller than the 212-cell 8b seed!), recip seed 162/940um2/157fJ; digital-in-analog chain = ADC 1.79 + ROM 0.09 + DAC 1.2 = 3.1 pJ typical. VERDICTS: exp2+recip ANALOG in softmax/SiLU path (saves ~12 uJ/token @7B L=4k = 58% of token budget vs conversion chain; 4b ceiling = fp8 exactly, zero margin); rsqrt/softplus/Mamba1-volume exp DIGITAL (precision >4b or digital operands; frequency 64-262k/token makes cost moot). Next falsifier: tb_lut_exp under real A6 column load.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
+(analog LUT study entry removed 2026-10-04: study dropped with the attention engine)
 
 DPS+LATTICE DONE (A5, scripts/compiler/ + scripts/golden/): (B) DPS rank-48 root-caused honestly and test_dps now GREEN encoding TRUE behavior. The +7.52 dB tax is NOT a bug: the scheme is exact in integer arithmetic (measured algorithm tax -0.02 dB on real attn_q, matching the paper's +0.13 dB claim), but folded A-side combos are sums of up to 16 INT4 weights (|A| reaches ~35, ~7 bits) and forcing them into one 4b differential cap slice needs a provably-minimal per-product shift s_a (plus s_b on the B-side) that throws away ~2 bits -> +4.69..+10.93 dB across the 7 real matrices. Recovering it needs a 2nd slice = 2*48/64 = 1.5x passes, erasing the 0.75x tile win. VERDICT: DPS-48 is NET-NEGATIVE at INT4xINT8 cap quantization -- kept flag-gated OFF as a documented dead-end-at-this-precision (may turn positive at fp8/higher b_x where S=2 is already baseline). test_dps asserts algorithm-tax<=0.5 dB AND INT4-tax>=3 dB (the real hardware penalty); FORMATS.md 'DPS-48 verdict' table. (C) --lattice CSNR mid-lattice thresholds (law:csnr/L6): golden output_lattice/lattice_thresholds/convert_lattice/convert_uniform/csnr_db (additive; existing fns untouched, default out/ bit-identical -- 10944 passes/token, deterministic). scripts/compiler/lattice.py emits per-tensor tap-code threshold schedule (out_lattice/threshold_schedule.json, 4b R-string taps tap_k=vrn+k*(vrp-vrn)/15, code-unit->volt via vcm+c*u) + measured csnr_gain.json. Measured: controlled sparse col (pitch 3) +inf dB at pitch/sigma 7.5 dying to +0.17 dB at 0.5; dense lattice ~0 dB (mid==uniform, death regime) = paper's law reproduced. Real matrices peak +15.8..+25.7 dB in low-noise regime, decaying slowly with sigma_a (sparse achievable set over wide extent). SPICE wiring out of scope; A3 converter handoff documented in FORMATS.md 'lattice thresholds'. test_lattice.py 4/4 PASS. Baselines re-verified: golden 12/12, formats 9/9, compile 7/7, dps + lattice all green.
 
@@ -14633,24 +13709,24 @@ SERVO-EG ACHIEVABLE + 2x VERDICT (task #21, compiler math + committed measured d
 
 TASK #23 COARSE-LOOP INL ROOT-CAUSED — it is a FINE-SAR + gain-interaction OPERATING-POINT INL, NOT a per-count packet drift; NO single-variable digital LUT (per-count OR per-fine) can linearize it (analog/testbenches/diag_countinl.py, sole-driver cheap 1-col sweeps). Characterization err(N): (1) UNCORRECTED real pass_05 lo columns carry a LARGE multi-bank charge deficit — col13 mac-89 reads -73 (err +16 low), so the A10 measured gain is MANDATORY and removes the bulk. (2) POST-GAIN residual on a FIXED synth column, swept across count boundaries: err 0/0/+1/-2/0/0/-2/0/0/+1 at count 1..8 — NOT monotone in N, NOT a repeatable f(N) (N=4/6/7 read 0 while N=3/5 read -2; the discriminator is the FINE residue, not the count). CASCADE.md Task B "count-dependent" was a confound: the B1 sweep varied q, moving count AND fine together. (3) FINE-ISOLATION sweep (3-unit col, count~0-2, fine 0->15, gain~1): the converter reads UNIFORMLY HIGH +1..+3 LSB, a fine-SAR positive DNL humped at mid-fine (fine~8 -> +2/+3), fine 0/15 -> ~0. This +1 mid-range bias persists WITH the shipping A11 fine_ref_trim=0.80 already applied (a scalar trim cannot flatten a hump). ROOT CAUSE: the 4b charge-redistribution fine SAR has a mid-code positive DNL (~+1 LSB, +2/+3 at fine~8); on real multi-bank mixed-sign columns this ENTANGLES with the per-column gain over/under-correction, so at a GIVEN (count,fine) readout the residual can be +2 OR -2 depending on the column's gain (pass_05 in-contract: col1 +2 / col2 -2 / col7hi -3 / col13 -3, all different sign at similar operating points). Because the error sign is set by an un-observable-at-readout quantity (the column's charge deficit vs its applied gain), NO readout-indexed LUT (count or fine) inverts it -> the per-count DIGITAL correction the task hypothesized is the WRONG TOOL and was NOT implemented (would add a golden+RTL LUT that does not close +-1). LOCUS DECISION (reported to coordinator): NO digital-domain change made; scripts/golden/compiler/digital UNTOUCHED, default path byte-identical, A7/A8/A11 anchors unmoved, energy/K=1 anchor unmoved. Only analog/testbenches/diag_countinl.py added (characterizer). ACHIEVABLE ENVELOPE: with A10 gain + A11 fine-trim, typical in-contract codes are +-1..+-3 (bulk closed from the raw ~+16 deficit); the residual +-2/+3 on ordinary mid/high in-contract codes (RESULTS3 pass_05 col13 -3) is the fine-SAR-DNL x gain-interaction INL and is IRREDUCIBLE by reference-cal or a 1-D digital LUT. TWO legitimate closers, both out of the reference/LUT scope: (a) reduce the fine-SAR DNL itself (a 5th SAR redundancy bit / larger CDAC unit + per-code cal, an analog TOPOLOGY change that moves fine energy/time and the K=1 anchor), or (b) the #22 PARALLEL charge-summing super-tile — the coarse loop then sees ONE clean charge sum with ONE per-column gain (no mixed-sign multi-bank deficit to over-correct), removing the gain-interaction that flips the residual sign. #22 remains the real correctness fix, now for the RIGHT reason (kills the gain-interaction, not a count drift).
 
-TASK #18 PTAT SOFTMAX BIAS DONE (analog/schematics/components/ptat_bias/ + tb_softmax.py). NEW COMPONENT ptat_bias: classic dVgs-over-R PTAT — PMOS mirror K:1 (K=4) forces the diode NMOS leg to carry 4x the R-leg current; both NMOS legs same W (47.4/1.0 = softmax tail, deep subthreshold at sub-uA), so the R-leg source sits nUT*ln4 ~ 48 mV lower and I_ptat = nUT*ln4/R ~ T. Output mirror copies I_ptat into a DIODE-CONNECTED TAIL REPLICA (47.4/1.0) exporting vb_tail -> the softmax tail gate-mirrors it. R_PTAT=86k trim knob (poly R is temp-flat; only UT drifts). Resistive 50Meg vb_p pull-down seeds startup (an always-on NMOS startup pinned the loop at a 7uA degenerate op point — removed). MEASURED (ngspice, --check + tb): I_b = 568.9/629.7/696.3 nA at 27/55/85C = +22.4%/58C CLEAN PTAT (ideal +19.4%), vs the fixed-0.44V bias's 0.58/1.18/2.2uA = +281% blow-up. Ports vb_tail vdd vss; self-check \`python .../ptat_bias.py --check\` asserts I_b band + slope. RATIO-DRIFT STUDY (tb_softmax.ratio_drift_study, fixed reference score pattern CM 0.75V +-70mV, winning-branch share drift 27->85C): (A) fixed-bias/fixed-input = -15.2% (the ratio-drift baseline, tracks beta -18.1%); (B) PTAT-bias/fixed-input = -13.0% -> HONEST: tail-PTAT ALONE barely helps the ratios because softmax ratios I_i/I_j = exp(beta*(Vi-Vj)) depend ONLY on beta=1/(nUT)~1/T, NOT on I_b (normalization cancels) — tail-PTAT fixes the TAIL/normalization current, not the sharpness; (C) PTAT-bias + PTAT-input co-scale (score spread x T/T0, ptat_score_gain) = +0.4% -> ratios temperature-FLAT. KCL <=1% holds under PTAT bias all configs/temps; existing fixed-bias regression (3 patterns x 3 temps, KCL <=0.16%, per-branch <=1.4%, subthreshold OP, settle 0.99us) UNTOUCHED and green. COMPILER REQUIREMENT (the tail PTAT cannot do this in analog): to fully remove ratio drift the compiler's qK^T-score -> input-voltage map MUST co-scale the score SPREAD by T/T0 (PTAT pre-scaling of dV about the CM); ptat_score_gain(T) is the ideal-physics factor (use measured beta(T) for exactness). Without it, tail-PTAT leaves ~-13% ratio drift. FILE OWNERSHIP respected: only analog/schematics/components/ptat_bias/* (new) + analog/testbenches/tb_softmax.py touched; softmax component, specs, other components, scripts/golden/compiler/digital UNTOUCHED.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
 
 TASK #24 ERROR-IMPACT (model-level, no SPICE): the measured in-contract +-3 LSB tile-MVM residual (RESULTS3 pass_05, col13 -3) is TRANSPARENT to the model — injected on y12 through the REAL blk.0 forward (9-token prompt), +-3 gives blk.0 cos 0.9973 / softmax-L1 0.014 / 100% proxy next-token argmax agreement; the model-tolerable budget is +-8 LSB (100% argmax, cos>0.99), first break at +-16 (88%), so measured +-3 sits ~5x inside spec. VERDICT: the +-1 LSB acceptance gate is a converter-ENOB target, not a model requirement — RELAX it to the model-tolerable +-8 LSB; the #22/SAR topology fix is NOT required for correctness (still wanted for tok/s). ABFT stays in budget at +-3 (62/199) so fault detection is unaffected. NEW FILES ONLY: docs/src/content/Project/ERROR_IMPACT.md + scripts/compiler/test_error_impact.py + opt-in golden.model.TILE_ERR (default None -> default path byte-identical, test_golden 11/11 + test_compile 7/7 green).
 
-TASK #15 INCR-1 WTA RUNNING-MAX DONE (Chip 2 B3, THE #1 RISK R1 — analog/schematics/components/wta/* + analog/testbenches/tb_wta.py, GO). Built the N=8 shared-source NMOS follower-max (softmax device re-biased: follower+tail 47.4/1.0 at gm/ID 25, vb_tail 0.44V, matched to translinear_softmax): winner's gate holds the common source rail mrail = max(vin)-VGS, a matched REPLICA follower (gate=vref, matched tail) gives rrail = vref-VGS, so the consumer reads input-domain m_hat = mrail-rrail+vref with VGS cancelled by symmetry. ONE physical mrail/rrail pair feeds exp+rescale (no forked m_hat). Running max across streamed blocks = the previous m_hat re-injected on the vin_hold follower (register lives in the INPUT domain — rail is VGS-offset, so direct rail feedback would double-count VGS; recovered via mrail-rrail+vref). Chold=200f settle cap. MEASURED (ngspice, tt, 27/55/85C, tb PASS): **shift-invariance (R1, load-bearing) HOLDS decisively** — +50mV common-mode on all inputs+vref drifts (vin_i - m_hat) by only 0.053 mV -> 0.14% exp arg error (raw mrail shifts +40.8mV but rrail rides the same CM, so the softmax-relevant difference is invariant; forking m_hat would instead turn a 5mV offset into 14.6% exp error). Max-tracking is a RANGE spec per CHIP2_SPEC 2.3 and is a SAFE OVERESTIMATE everywhere with vref set to TOP of the score window (0.85V, keeps replica Vds ~ winner's — a bottom-of-window vref UNDER-cancels VGS at high winner-lead and produces an UNSAFE underestimate, measured -35mV; documented). m_hat-m: clear winner +3..+8mV; all-near-equal +82/+89/+96mV at 27/55/85C = the nUT*ln8 logsumexp soft-floor (nUT=1/beta, beta 27.31/24.71/22.36 measured -> ceiling grows with T; overestimate pushes exp args negative = safe; compiler must reserve this as score-window headroom, R1). Settle 13-117 ns (<< 1us spec). Energy 4.2/8.5/15.9 pJ/update (subthreshold current ~T; static P 2.1/4.2/7.9 uW). Replica VGS-cancel residual +3.4/+5.5/+8.5 mV at 27/55/85C (single-signed systematic Vds-match term ~nUT(T), safe/consistent; the spec's +-5mV is the 27C random/Pelgrom line — trim/PTAT for the hot corner). Permutation-invariant to 0.00mV; streamed 3-block rising-then-falling test HOLDS the running max across the falling block (no reset). VERDICT: **GO on voltage-mode follower-max** — the ONE-m_hat-node shift-invariance that the whole precision story rests on is PROVEN (0.14% vs the 14% forked-node failure mode), settle/energy pass with margin, and the only "error" (nUT*ln8 overestimate) is exactly the safe direction the spec anticipated. Current-mode Lazzaro WTA NOT needed (it returns argmax not the max value anyway). INCREMENT 2 NEEDS: (1) rescale multiply B5 = translinear ratio pair g=exp(beta*(V_ls,bank - V_ls,group)) driven off THIS mrail/rrail pair; (2) online-softmax monoid integration = wire WTA m_hat + translinear logsumexp V_ls readout + o-charge into the level-0 bank reduce, verify against golden monoid (CHIP2_SPEC T4 tb_online_softmax_analog); (3) the score-window headroom reservation (nUT*lnN ~ up to 96mV of the 120mV window at 85C) must be enforced by the compiler score->voltage map, not hoped for — flag to the compiler agent. FILE OWNERSHIP respected: only wta/* (new) + tb_wta.py (new) + this STATUS line; specs.py/other components/golden/compiler/digital UNTOUCHED (no sizing constant needed — reused softmax's 47.4/1.0 and c_hold class). No git commit.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
 
-TASK #25 PTAT SCORE PRE-SCALE DONE (compiler half of softmax temp-invariance, pairs with #18; scripts/compiler/ + scripts/golden/, NO sims). Completes #18: the translinear softmax ratio I_i/I_j = exp(beta(T)*dV) depends ONLY on beta(T)=1/(nUT)~1/T and the score SPREAD dV about the CM (I_b cancels in every ratio), so #18's tail-PTAT (which stabilizes I_b) CANNOT remove the beta(T) sharpness drift -> tail-PTAT ALONE leaves -13% ratio drift 27->85C. FIX: opt-in COMPILER pre-scale of the score spread by T/T0 (T0=300.15K), making beta(T)*dV_scaled T-invariant (UT~T cancels the T/T0). LANDED (minimal scalar, flag-gated by temperature): scripts/golden/model.py ptat_score_gain(T,T0)=T/T0 (mirror of analog ptat_bias.ptat_score_gain) + attention_forward(..., score_gain=1.0) multiplies the dequantized score z before softmax_ref (default 1.0 -> byte-identical); scripts/compiler/compile.py run(..., score_temp=None) + --score-temp <Kelvin> computes score_gain=ptat_score_gain(T), threads it in, and echoes score_temp_k/score_gain into digital_config.json attention block ONLY when opted in. GOLDEN-MODEL VERIFICATION (test_golden.test_ptat_score_gain, measured beta 27.31/24.71/22.36 /V @ 27/55/85C from A3/CHIP2_SPEC B4, fixed score pattern): winning-branch ratio drift WITHOUT pre-scale 0.00/-5.82/-11.37% (tracks 1/T, mirrors #18 cfg-B -13%); WITH T/T0 pre-scale 0.00/-0.64/-1.38% = T-FLAT within ~1.4% (mirrors #18 cfg-C +0.4%). The ~1.4% residual is ideal-T/T0 vs measured-beta(T) gap; exact cancel wants score_gain from measured beta(T) (per-corner table). DEFAULT PATH BYTE-IDENTICAL: T=T0 -> gain 1.0; re-ran default compile, scripts/compiler/out/ sha256 tree unchanged (74 files); test_golden 13/13 (new test_ptat_score_gain), test_compile 7/7, test_error_impact PASS. NEW FILE docs/src/content/Project/PTAT_SCORE.md documents how it pairs with #18's tail-PTAT. FILE OWNERSHIP respected: only scripts/compiler/compile.py + scripts/golden/model.py + scripts/golden/test_golden.py + PTAT_SCORE.md (new) + this STATUS line; analog/ (live agent), digital/, CASCADE/METRICS/RESULTS3 UNTOUCHED. No git commit.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
 
-TASK #15 INCR-2 ANALOG ONLINE-SOFTMAX CORE DONE (Chip 2 B4/B5 single-bank monoid — scripts/golden/model.py additive + analog/schematics/components/rescale/* new + analog/testbenches/tb_online_softmax_analog.py new; GO). Built the level-0 bank reduce + the B5 rescale and verified the analog running (m,l) against a golden monoid across a streamed rising-max block set (g<1 exercised). (1) GOLDEN MONOID (additive, pure numpy): block_reduce(scores,values,beta)->(m,l,o) local reduce; monoid_combine(p,q,beta) the associative online-softmax combine (m=max, l/o rescaled by e^(beta*(old_m-m))<=1); online_softmax_monoid(blocks,beta) left-folds them. test_golden.test_online_softmax_monoid asserts ASSOCIATIVITY (left/right/balanced-tree groupings agree to 1e-12 — the offload-legality proof) + EQUIVALENCE to plain softmax over concatenated scores (o/l == softmax@values, l == denominator refd to global max) + g<=1 by construction; golden 14/14 GREEN (13 existing untouched, default path byte-identical). (2) RESCALE COMPONENT (components/rescale): two-branch shared-source translinear pair (softmax device coordinate 47.4/1.0, SAME vb_tail port as the bank -> beta match, CHIP2_SPEC R1/R2), current ratio g=ilo/ihi=exp(beta*(vlo-vhi)); driven off the WTA mrail/rrail m_hat (running-max rescale) or the two V_ls nodes (level-1 bank/group). MEASURED (ngspice tt 27C): g<=1 EXACT by construction (g(0mV)=1.0000), rel err vs exp(beta*dV) 0.00/1.72/3.28/4.44/5.09/5.21/4.85% over dV=0..-120mV, worst 5.2% at -100mV, ~6.2 pJ/eval. HONEST: raw 5.2% > CHIP2_SPEC T3 2% target — same beta(T)/large-dV translinear-crossing class as the bank; PTAT tail + score co-scale (#18/#25, tb_softmax cfg-C 27%->0.4%) is the noted fix and is wired in (opt-in bias='ptat' path in the tb). (3) V_LS-AS-LOGSUMEXP READOUT (NEW, was unverified per CHIP2_SPEC 2.4/B4 T4): the translinear_softmax shared-source node v(xsm.s) physically carries (1/beta_ls)*ln(sum_j e^(beta*V_j))+const. KEY FINDING — the V_ls-to-logsumexp slope beta_ls=33.9/V is NOT the branch-current beta (27.0/V): the SOURCE node swings on 1/UT while the branch CURRENT fit sees kappa/UT (body effect), so beta_ls/beta=kappa~1.25. It is a FIXED circuit constant -> calibrate once (least-squares vs golden logsumexp, exactly as the compiler already calibrates the branch beta). AFTER slope calibration V_ls tracks logsumexp with residual <=0.004 nat (<0.5% on l) across 3 blocks = V_ls IS the log-domain denominator, PROVEN. (4) SINGLE-BANK MONOID STREAM (3 blocks, rising max .74->.80->.85): per block read analog m (WTA, its own m_hat register re-injected on vin_hold) + analog local l (V_ls via beta_ls), fold with the monoid applying the analog rescale g (m_old vs m_new) to the running partial; C offset calibrated once on block0. RESULT: running m EXACT (0.0 mV err — shift-invariant per inc1), running l rel err 0.00/0.73/1.15% across the stream, ALL within the 5% bank-reduce budget. tb OVERALL PASS. ENERGY: bank reduce ~6.2 pJ/block, rescale ~6.2 pJ/factor (subthreshold, ~T). VERDICT: **GO on the single-bank analog monoid** — associativity proven in golden, V_ls readout proven to carry logsumexp (after a fixed slope calib the compiler does anyway), rescale g<=1 exact and ~5% raw (PTAT-closable to <1%), and analog running (m,l) tracks golden to ~1% across a rising-max stream. INC3 PUNCH-LIST (deferred, bounded per instruction): (a) CROSS-BANK COMBINE TREE = level-1 group stage (2nd shared-source over banks' V_ls + per-bank rescale on o-currents, G<=2 mini / <=16 target, log-axis grows ln G<=103mV vs 120mV window) + tb_combine_tree associativity across two groupings (CHIP2_SPEC T5, <=2.5% cascade-law budget); (b) O-CHARGE ACCUMULATION = wire the softmax output currents through I->T (lora_sidecar ramp) onto the column integrators so o accumulates in charge (KCL carry-free) and the rescale g multiplies the STORED o-partial — inc2 verified (m,l) only, o path is charge-domain not yet netlisted; (c) FP32 CROSS-GROUP ISLAND (B7) = digitize group partials (m 8b score-domain, l 8b log-code, o d_h*8b+scale), run the retroactive-rescale monoid in fp32 across groups + time-multiplexed passes (l accumulates over L, precision-table mandate); (d) GALS LINK (B9) = O_PARTIAL flit (o,m,l fp32) across the dual-clock Gray-FIFO die boundary (T9). FILE OWNERSHIP respected: only rescale/* (new) + tb_online_softmax_analog.py (new) + scripts/golden/model.py & test_golden.py (ADDITIVE, existing fns + 13 tests untouched, default byte-identical) + this STATUS line; wta.py/translinear_softmax/ptat_bias REUSED unmodified, specs.py/compiler/digital/CASCADE/METRICS/RESULTS3 UNTOUCHED. No git commit.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
 
 
-TASK #15 INCR-3 ANALOG ATTENTION DATAPATH DONE (Chip 2 level-1 cross-bank combine tree + o-charge accumulation — analog/schematics/components/softmax_combine/* new + analog/testbenches/tb_combine_tree.py & tb_o_charge.py new + scripts/golden/model.py additive group_combine; GO on combine tree, MARGINAL-analog / fp32-island-confirmed on stored-charge rescale). Builds on inc1 (WTA) + inc2 (rescale + single-bank monoid). (a) CROSS-BANK COMBINE TREE (level-1 group stage, CHIP2_SPEC 4 level 1): NEW component softmax_combine = a SECOND shared-source translinear stage (softmax device coordinate 47.4/1.0, SAME vb_tail -> beta match, R1/R2) driven by the G banks' V_ls voltages; its shared-source node = logsumexp-of-logsumexps = ln l_group, its mirrored branch currents igrp_b = the per-bank group weights g_b = l_b/l_group. Golden: additive group_combine(partials,beta) left-folds the monoid (test_golden.test_group_combine asserts == streaming monoid + grouping-invariance, golden 14/14 GREEN, 13 existing untouched, default byte-identical). tb_combine_tree (G=2, ngspice tt 27C): (1) the group V_ls node IS logsumexp-of-logsumexps — fitted slope 41.5/V, worst linearity residual 0.0077 nat over a bank-V_ls sweep (<0.02 => PROVEN, level-1 analogue of inc2's level-0 V_ls proof). (2) KEY FINDING carried up from inc2: the group BRANCH weights run at branch-beta (~27/V) but the bank l's live on the V_ls slope beta_ls (~34/V), kappa=beta_ls/beta=1.253 — so the raw group weights are on the WRONG log-scale for l_b/l_group; the fix is a POWER law g_b ∝ igrp_b^kappa (raising e^(beta*x) to kappa = e^(beta_ls*x)), the SAME one-constant kappa calibration inc2 root-caused and the compiler pre-distorts scores for (2.4). (3) The reused B5 rescale pair (components/rescale) gated by the two shifted bank V_ls gives EXACTLY the group-stage weight ratio (0.00% — proves B5 == group weight, same shared-source physics). (4) LEVEL-SHIFT: the level-0 V_ls node sits ~VGS below the score window, so a fixed common +0.47V level-shift restores the group stage into the near-constant-beta segment (a COMMON offset -> cancels in every V_ls ratio). RESULT vs golden.group_combine (kappa-calibrated, scores kept in a ~60mV spread about CM = the compiler headroom reservation 2.3/2.4): group l rel 0.07%, group o rel(max) 1.73%, and the ATTENTION OUTPUT o/l = sum_b g_b*(o_b/l_b) 1.80% — all inside CHIP2_SPEC T5 (2.5% = 1.4%*sqrt(2)+margin); o/l is grouping-INVARIANT by construction (same per-bank g_b regardless of tree order = the offload-legality property, and golden flat==pairwise EXACT). tb OVERALL PASS. HONEST: at the raw ~120mV wide-window fixture o/l ran 2.98% (just over T5) — the residual group-node nonlinearity; tightening the score spread to the reserved-headroom window (which the compiler must enforce, R1) brings it to 1.80%. G=2->16: log-axis growth 37mV*ln16=103mV vs 120mV window => G=16 HOLDS (26mV at G=2). ENERGY: bank reduce ~6.2 pJ/bank, group combine ~6.2 pJ (one G-wide stage), rescale ~0.3-0.4 pJ/bank (inc2). (b) O-CHARGE ACCUMULATION (the charge-domain output path inc2 did NOT netlist): tb_o_charge builds a REAL transistor-level column integrator (library.ota telescopic + C_int=200fF virtual ground) and accumulates o=sum_j a_j*v_j as timed charge packets (the gain-cell read-current * I->T ramp duration, lora_sidecar idiom), then RETROACTIVELY rescales the STORED o-charge by g<1 when the running max rises via switched-cap charge redistribution (C_int shared with C_share sized so C_int/(C_int+C_share)=g -> the stored voltage the converter reads scales by g). Stream 3 blocks rising max 0.20->0.60->1.10 (2 retroactive rescales). RESULT vs golden online_softmax_monoid o: per-step o rel err 0.57% / 6.03% / 3.59%, FINAL o rel err 3.59% (within a 5% budget). **RETROACTIVE-RESCALE-IN-CHARGE VERDICT: analog HOLDS at mini scale (few rescales) but is MARGINAL and COMPOUNDS per rescale** — the mid-stream 6.03% spike shows the SC-redistribution loss + OTA finite-gain charge leak accumulate with each max-rise; over a long rising-max stream (L up to 128k, many max-rises) it would blow the budget. This CONFIRMS the CHIP2_SPEC 4 claim that retroactive rescale belongs in the fp32 island (level 2), not analog: analog stored-charge rescale is viable ONLY for the few-rescale group-local case, NOT the streaming long-axis accumulator. The l accumulates-over-L precision-table mandate stands. G=2->16 PROJECTION: the combine-tree o/l error is cascade-law sqrt(K) at ~1.8% for K=2 analog levels; G=16 stays one level-1 stage (K unchanged, o/l budget holds); the log-axis window (103mV) is the binding G constraint, not accuracy. INC4 PUNCH-LIST: (i) FP32 CROSS-GROUP ISLAND (B7) — digitize group partials (m 8b score-domain via integrator_conv, l 8b log-code from V_ls, o d_h*8b + shared per-group scale = analog block-FP), run the RETROACTIVE-rescale monoid in fp32 across groups AND time-multiplexed passes (this is where inc3's marginal stored-charge rescale moves, per the verdict); (ii) GALS LINK (B9) — O_PARTIAL flit (o d_h*8b + scale 8b + m 8b + l fp32) across the dual-clock Gray-pointer async FIFO die boundary, KV-before-Q ordering, never-full at decode cadence (T9, iverilog); (iii) KV-BANK WIRING — connect the qK charge MAC (B2, gain_cell_array reads + q PWM) into the level-0 bank scores so the datapath is q->K->score->WTA/exp->A->V->o end to end, not fed synthetic score voltages; (iv) E2E ATTENTION TB (T10 tb_attention_e2e_c2) — 8 tokens KV_APPEND->write->qK->WTA/softmax->A.V->combine->O_PARTIAL->fp32 divide on golden rail vs golden, codes +-1 LSB. FILE OWNERSHIP respected: only softmax_combine/* (new) + tb_combine_tree.py & tb_o_charge.py (new) + scripts/golden/model.py & test_golden.py (ADDITIVE group_combine + test, existing 13 tests untouched, default byte-identical) + this STATUS line; wta.py/rescale/translinear_softmax/lora_sidecar/gain_cell_array/ota REUSED unmodified, specs.py/compiler/digital/CASCADE/METRICS/RESULTS3 UNTOUCHED. No git commit.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
 
-A-CHIP2 inc4 e2e: analog attention q->o PROVEN functional (tb_attention_chip2_e2e). qK MAC 0.21%; o_t vs golden cos 1.000/1.000/0.9978/0.9978 over 4 tokens; tok0/1 0.4 LSB PASS, tok2/3 18.8 LSB (>8 proxy, cos>0.99) FAIL on strict envelope. Error dominated by analog exp+A.V bank (~1.4% translinear, grows w/ key count); fp32 island EXCELLENT 0.4 LSB (8b digitize+rescale, divide exact). Energy 29.6 pJ/token, latency 2.17us/token. chip2_attention.py datapath + golden fp32_island_combine (15/15). Chip 2 analog attention datapath COMPLETE + functionally verified; open: o_t model-adequacy (o_t-level #24 study), reduce exp+A.V translinear error; RTL fp32 island + GALS die-link + long-context CAM + batch = integration follow-ons.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
 
 TASK #17 ADAPTIVE-RANGE CONVERTER — CHARACTERIZED, VERDICT: ALREADY-CAPTURED-BY-EARLY-TERM (small remainder, NOT the 27h2 4.5x). The concept: adapt the coarse packet charge Delta_c per-column to |partial-sum| so sparse columns fire fewer packets. QUANTIFIED HONESTLY on the REAL SmolLM2-135M workload (compiler out/passes/pass_*typ_* = attn q/k/v/o + ffn gate/up, 192 columns) against the EXISTING early-termination. Deliverables (additive, default byte-identical, no analog circuit change): specs.adaptive_range_saving(coarse_packets, r) — additive model keyed to the MEASURED out/tile_energy.json e_vs_code points (E_coarse=0.204pJ floor + 0.559pJ/packet; fine/SAR FLAT 0.274pJ, code-independent) — plus analog/testbenches/tb_adaptive_range.py (rolls the model over the compiler's per-column packet counts; asserts a/b/c + the whole-pass verdict; OVERALL PASS). FINDINGS: (1) THE OPPORTUNITY IS MOSTLY GONE. Early-term already fires 0 coarse packets on 52% of columns (|code|<16 -> pure floor: measured code0 0.204pJ == code15 0.206pJ) and mean packets/col is only 1.11. Adaptive range only bites on the 29% of columns with >=2 packets. (2) 27h2's 4.5x is vs a FIXED-RANGE NON-EARLY-TERM baseline and it is a Delta-RELAXATION (accuracy give-up) number, NOT a same-accuracy range saving — the note's own algebra (E=k1 log(VDD/Delta)+k2(VDD/Delta)^2) proves range adaptation at fixed absolute accuracy buys NOTHING; only relaxing the LSB or skipping conversions pays, and the integrating coarse loop's early-term IS the skip. (3) INCREMENTAL OVER EARLY-TERM: at r=2 (Delta_c 2x coarser, packets halved, but the 4b SAR must grow to 5b to absorb the coarser residue) = 19.9% of DYNAMIC E_conv; r=4 (6b SAR) = 29.4%. (4) BUT WHOLE-PASS IT IS ~0%: pass energy is 83% OTA static burn (1513/1813 pJ), set by conversion TIME which adaptive range does NOT shorten; conv-dynamic is 10% and packets ~57% of that. Adaptive-range 2x saves 3.7 pJ/pass = 0.2% of pass energy = 0.2% tok/J. HONEST VERDICT: NOT worth an analog Delta_c circuit (would need a 5-6b SAR redesign + per-column magnitude pre-sense for a 0.2% whole-pass gain — textbook over-engineering; the SAR-absorb constraint blocks the free lunch, and the LSB-relaxation that WOULD pay is a per-tensor SNR give-up already owned by the cascade-K knob). The real converter-energy lever is cascade K (shortens conversion TIME -> cuts the 83% static: measured tok/J x1.47/x1.93/x2.28 at K=2/4/8, specs self-check). Adaptive-RANGE is a ~0.2% remainder after early-term, not a tok/J lever. FILE OWNERSHIP respected: specs.py (+41 additive lines, self-check PASS) + tb_adaptive_range.py (new) + this STATUS line only; integrator_conv.py/event_ctrl UNTOUCHED (tb_integrator_conv 5/5 + A7/A8/A11 + K=1 energy anchor preserved byte-identical); CASCADE/METRICS/RESULTS3/compiler/golden/digital UNTOUCHED. No git commit.
 
-TASK #26 O_T MODEL-ADEQUACY DONE (scripts/compiler/golden math, NO sims; answers the 'A-CHIP2 inc4' open item o_t model-adequacy). The tb_attention_chip2_e2e 'FAIL' (tok2/3 o_t 18.8 LSB > 8) was the #24 TILE-MVM y12 proxy MIS-APPLIED to the attention output o_t. Reused #24's error-impact method: opt-in golden.model.ATTN_OUT_ERR = make_attn_out_err(lsb) (GAUSSIAN sigma=lsb/3 3-sigma-clip additive on the o8 INT8 code = the Chip2 exp+A.V translinear ~1.4% residual on o_t, fresh per token) injected into the REAL SmolLM2 blk.0 attention output, measured vs bit-exact clean (8 seeds, same PROXY head as #24). RESULT (docs/src/content/Project/OT_IMPACT.md): 18.8 LSB (measured) blk.0 cos 0.99348, argmax 100%, top5 4.4/5 = MODEL-ADEQUATE; 2x/37.6 LSB cos 0.98427 argmax 100%; 4x/75.2 LSB cos 0.95117 argmax 75% = BREAK. Model-tolerable o_t budget = +-37.6 LSB of the o_t range (last 100%-argmax, cos>0.99) — ~4.7x LOOSER than the borrowed +-8 LSB tile gate (o_t is a convex softmax p@V average, then Wo+residual+RMSNorm+FFN attenuate it). VERDICT: Chip 2 attention MEETS its o_t budget as-built (18.8 << 37.6 LSB, 2x inside); the e2e FAIL is a mis-applied criterion — relax tb_attention_chip2_e2e to (o_t cos>0.99 AND max|err| <= 37.6 LSB). exp+A.V translinear reduction (PTAT co-scale #18/#25) stays WANTED for margin/cascade headroom, NOT a next-token correctness blocker. FILE OWNERSHIP respected: only scripts/golden/model.py (ADDITIVE ATTN_OUT_ERR hook default None -> byte-identical, + make_attn_out_err) + scripts/compiler/test_error_impact.py (o_t variant) + docs/src/content/Project/OT_IMPACT.md (new) + this STATUS line; analog/ (live agent), digital/, scripts/compiler/compile.py default path, CASCADE/METRICS/RESULTS3 UNTOUCHED. test_golden 14/14, test_compile 7/7 GREEN, default compile path byte-identical (test_fast_pipeline_is_bit_true). No git commit.
+(Chip 2 attention-engine entry removed 2026-10-04: attention engine dropped from scope)
 
 TASK #22 PARALLEL charge-summing super-tile (BUILT + VERIFIED in SPICE, PASS): the topology that makes cascade gain-error K-INDEPENDENT, unlocking deeper FFN K (#21's ~1.2x, now verified). NEW FILES ONLY: analog/testbenches/tb_supertile.py (falsifier), analog/schematics/top/chip_supertile.py (parallel assembly + charge-bus loss probe), + additive specs.py parallel-cascade law (parallel_cascade_snr_db / parallel_k_star / tokens_per_s_parallel + self-check). weight_tile/integrator_conv REUSED UNCHANGED; CASCADE/METRICS/RESULTS3, scripts/compiler/, digital/, scripts/golden/ UNTOUCHED. A7/A8/A11 anchors preserved (specs self-check K=1 = 4.12us/22.2 tok/s unmoved). No git commit.
   (1) CHARGE-BUS vs DIGITAL-SUM verdict (chip_supertile.charge_bus_probe, SPICE): summing K=4 partial charges (4x30 mV, ideal sum 120 mV) on a shared bus reads only 26.7 mV (attenuation 0.222 ~ 1/(K+C_bus/C_int)) — charge-bus summing is a K-WAY DIVIDER, LOSSY. => the super-tile MUST use the INT8 DIGITAL partial sum (exactly the paper's "partials leave as INT8 on the digital fabric", law:cascade). Charge-domain summing does NOT work in SPICE; digital-sum is the honest variant.
@@ -14994,11 +14070,12 @@ TOP-column bank Wn.56/Wp.70 repairs initial1ps chargefailure but costs2.40%
 more fixtureenergy than the passingBOTTOM Wn.50/Wp.70 point; finercontrol live.
 Added independently configurable columnDC bias and launched±250mV column
 controls to expose voltage-dependentloading outside the original.9V clamp.
-`,Rm=`# The compiler structure
+2026-10-04: Chip 2 (analog attention engine) dropped. Blocks chip2_attention, wta, rescale, softmax_combine, ptat_bias, translinear_softmax deleted; attention scores/softmax/A·V moved to the digital rail; gain_cell_array kept for LoRA weights only. See docs/src/content/Project/APPLICATION_ATTENTION.md.
+`,km=`# The compiler structure
 
 This document is the AnalogIOC design method written down. A compiler cannot schedule a single instruction until it understands the workload completely: which values are constants, which bytes get read twice, which buffers die young, which loops parallelize, which do not. That analysis already exists for LLM inference. If we extract it and take it seriously, the hardware design falls out of it. The compiler dictates what the machine should be, not the other way around.
 
-The payoff sits at the end: the analysis forces a two-chip machine with no HBM in the attention path. Chip 1 is a main accelerator built around analog in-memory compute. Chip 2 is an in-memory attention engine that lives where the KV cache lives. Everything before Part IV is the evidence for that split.
+The payoff sits at the end: the analysis maps onto a single chip, AnalogIOC, built around analog in-memory compute for the token-independent work, with attention's token-dependent work on its digital rail. Everything before Part IV is the evidence for that split.
 
 The document has four parts:
 
@@ -15188,7 +14265,7 @@ with $o_t = o^{(\\text{last})}/\\ell^{(\\text{last})}$. Each rescaling factor is
 
 $$(m_1,\\ell_1,o_1)\\circ(m_2,\\ell_2,o_2) = \\big(m,\\ \\ell_1 e^{m_1-m} + \\ell_2 e^{m_2-m},\\ o_1 e^{m_1-m} + o_2 e^{m_2-m}\\big),\\quad m=\\max(m_1,m_2)$$
 
-Associativity means partial results can be combined in any grouping. That single algebraic property licenses both tree-parallel reduction and near-memory offload (B3). It is the mathematical permission slip for Chip 2.
+Associativity means partial results can be combined in any grouping. That single algebraic property licenses both tree-parallel reduction and near-memory offload (B3). It is the mathematical permission slip for near-memory attention.
 
 ## 7. Operation inventory for attention
 
@@ -15268,7 +14345,7 @@ Total transcendental ROM: on the order of a kilobyte. Negligible against 144 GB 
 
 ### AnalogIOC note: these tables are analog candidates
 
-A seed table plus a low-order polynomial correction is a small, fixed, read-only function of a few input bits. Nothing about it demands digital logic. These lookups can plausibly be done in analog, and that is AnalogIOC's working assumption: aside from PCIe and the chip-to-chip interconnect, essentially every block in this document is a candidate for analog implementation. The research on analog function tables specifically has not been done yet; treat this as a stated direction, not a verified result. Part IV returns to it.
+A seed table plus a low-order polynomial correction is a small, fixed, read-only function of a few input bits. Nothing about it demands digital logic. These lookups can plausibly be done in analog, and that is AnalogIOC's working assumption: aside from PCIe and the digital rail, essentially every block in this document is a candidate for analog implementation. The research on analog function tables specifically has not been done yet; treat this as a stated direction, not a verified result. Part IV returns to it.
 
 ---
 
@@ -15511,7 +14588,7 @@ The question this pass asks: for every value in the model, *when does it become 
 
 Concretely, S5b is: MoE routing, sparse-attention block selection, speculative-decode accept counts, continuous-batching sequence lengths. Four things. That's the entire list.
 
-> **Design consequence:** if you are building a machine, S0 through S5a can be hardwired. S5b needs the escape hatch. That is the smallest programmable surface that covers modern models, a much narrower requirement than "make the chip general-purpose." For AnalogIOC this is the license to make Chip 1 mostly fixed-function analog with a small digital control region, instead of a sea of programmable cores.
+> **Design consequence:** if you are building a machine, S0 through S5a can be hardwired. S5b needs the escape hatch. That is the smallest programmable surface that covers modern models, a much narrower requirement than "make the chip general-purpose." For AnalogIOC this is the license to make the chip mostly fixed-function analog with a small digital control region, instead of a sea of programmable cores.
 
 ### A naming suggestion
 
@@ -15592,7 +14669,7 @@ Decode at batch 1 has reuse factor 1 on **both** weights and KV. Everything is s
 
 ## B3. Near-memory offload legality
 
-This pass is the theoretical core of Chip 2. It answers: which operations are *allowed* to move out of the main accelerator and into the memory that holds their data?
+This pass answers: which operations are *allowed* to move out of the main accelerator and into the memory that holds their data?
 
 **The test:** an op is offloadable iff it has the **broadcast-stream-reduce** shape. One small operand broadcast in, one large resident operand streamed locally, one small result returned.
 
@@ -15611,7 +14688,7 @@ In words: the big operand never crosses a chip boundary, only the small ones do,
 | \`o = Σ a_j v_j\` | \`a\`: \`L\` | \`V\`: \`L·d_h\` | \`o\`: \`d_h\` | ≈ \`d_h\` |
 | **fused all three** | \`q\`: \`d_h\` | \`K,V\`: \`2L·d_h\` | \`o,m,ℓ\`: \`d_h+2\` | **≈ \`L\`** |
 
-Fused, you cross the boundary with \`2·d_h\` values instead of \`2·L·d_h\`. At \`L = 128k\` that is roughly a **128,000×** reduction in memory-interface traffic. This single table is why Chip 2 exists.
+Fused, you cross the boundary with \`2·d_h\` values instead of \`2·L·d_h\`. At \`L = 128k\` that is roughly a **128,000×** reduction in memory-interface traffic.
 
 ### Why the fusion is legal
 
@@ -15705,42 +14782,29 @@ Both are properties of the *algebra*, not the arithmetic. That is why List A is 
 
 # Part IV: what this forces for AnalogIOC
 
-Everything above was analysis. This part is the design decision it produces: a two-chip accelerator with no HBM in the attention path.
+Everything above was analysis. This part is the design decision it produces: one chip, with the token-independent work on analog IMC and the token-dependent attention work on the digital rail.
 
-## Chip 1: the main accelerator
+## The chip
 
-Chip 1 handles the position-local work: norms, QKV and output projections, RoPE, MLP, and the S5b control residue (routing, sampling, dispatch). It is built around analog in-memory compute plus other blocks for more general usage, so AnalogIOC can operate at the same general-purpose degree as Nvidia while being faster and more energy efficient.
+AnalogIOC handles the position-local work: norms, QKV and output projections, RoPE, MLP, and the S5b control residue (routing, sampling, dispatch). It is built around analog in-memory compute plus other blocks for more general usage, so AnalogIOC can operate at the same general-purpose degree as Nvidia while being faster and more energy efficient.
 
 The compiler analysis says exactly how much generality that requires, and it is less than you'd fear. B1 showed that S0 through S5a can be hardwired, because their shapes are static even when their values are not. Only the S5b residue (four things: MoE routing, sparse-block selection, speculative-decode accept counts, continuous-batching lengths) needs a programmable escape hatch. So "general-purpose degree of Nvidia" does not mean a sea of cores. It means a mostly fixed-function analog datapath with a small dynamic-dispatch region, which is a far better energy proposition.
 
-## Chip 2: the in-memory attention engine
+## Attention on the digital rail
 
-Attention means grabbing the KV cache, and normally (as in Etched's architecture) that goes through HBM. However fast HBM is, section 3 showed the problem stays memory-bound: the FLOP-to-byte ratio of decode attention is a small constant that batching cannot improve. Meanwhile the main accelerator is compute-bound, whether from digital systolic arrays or analog IMC. Feeding a compute-bound machine from a memory-bound pipe wastes one of them at all times.
-
-Chip 2's goal is to stop being memory-bound entirely: move the computation to where the KV cache lives, so the problem turns back into a compute-bound one, which we can then keep optimizing with analog IMC and mathematical techniques. B3 is the proof this is legal and profitable:
-
-- The fused \`QK^T\` → online-softmax → \`AV\` loop is the canonical broadcast-stream-reduce op. Broadcast \`q\` in (\`d_h\` values), stream \`K,V\` locally, return \`o,m,ℓ\` (\`d_h+2\` values). At \`L = 128k\` the interface traffic drops by roughly 128,000×.
-- The fusion is legal because the online-softmax monoid is associative (section 6): each bank reduces its own slice, a small tree merges partials, no global pass needed.
-- The unit needs only MAC, \`max\`, \`exp2\`, and a rescale multiply per bank, with one \`reciprocal\` at the end. No \`rsqrt\`, no \`log2\`; those stay on Chip 1 with the position-local ops.
-- KV cache is append-only (B2): immutable after write, no coherence protocol, free prefix sharing, and the only hazard in the structure (\`write(j) → read(t>j)\`) is erased in prefill by ordering writes before reads. The memory system Chip 2 needs is therefore radically simpler than a general cache hierarchy.
-- The same unit offloads MoE expert FFN at decode with no modification, because tiny-activation-in, huge-weights-streamed, tiny-result-out is the same geometry. Chip 2 is an attention engine that happens to also be an MoE decode engine.
-- The SSM scan offloads partially: local scans run in-memory, cross-chunk carries return to Chip 1.
-
-## The interconnect between them
-
-Section 5 found exactly one dependency edge crossing the token-local / token-crossing boundary: the KV append. Chip 1 sends \`k'_t, v_t\` across once per token; Chip 2 sends back \`o_t\` per query. Both are \`O(d_h)\`-sized messages. The chip-to-chip link carries the smallest tensors in the entire model, which is what makes a two-chip cut survivable where an arbitrary cut would drown in traffic.
+Q/K/V/O projections run on the IMC tiles. The KV cache, \`QK^T\` scores, online softmax and \`AV\` are token-dependent (section 2) and run on the digital rail. See [APPLICATION_ATTENTION.md](APPLICATION_ATTENTION.md).
 
 ## How far the analog goes
 
-Working assumption: essentially everything other than PCIe and the chip-to-chip interconnect should be analog. The op inventory backs this up. Sections 7 and 8 reduced the entire model to MACs, a small vector ALU, and four transcendentals built from seed tables plus refinement, and a seed table is a small fixed read-only function that has no inherent need to be digital. The function lookup tables themselves are analog candidates. The dedicated research on analog LUTs has not been done yet, so this is a direction we are committing to investigate, not a verified result. The digital islands that must remain are the fp32 accumulation and decision points from the precision table (norm statistics, router logits, long-axis accumulators, SSM state) plus the S5b control logic and the serial links.
+Working assumption: essentially everything other than PCIe and the attention path on the digital rail should be analog. The op inventory backs this up. Sections 7 and 8 reduced the entire model to MACs, a small vector ALU, and four transcendentals built from seed tables plus refinement, and a seed table is a small fixed read-only function that has no inherent need to be digital. The function lookup tables themselves are analog candidates. The dedicated research on analog LUTs has not been done yet, so this is a direction we are committing to investigate, not a verified result. The digital islands that must remain are the fp32 accumulation and decision points from the precision table (norm statistics, router logits, long-axis accumulators, SSM state) plus the KV cache and attention scores/softmax/\`AV\`, the S5b control logic and the serial links.
 
-## The remark: why there is no third chip for the weights
+## The remark: why there is no separate weights-in-memory chip
 
-The obvious next step would be a third chip doing weights-in-memory, the way Chip 2 does KV-in-memory. It was purposefully avoided, and the effect classes from B2 explain the asymmetry.
+The obvious next step would be a separate chip doing weights-in-memory. It was purposefully avoided, and the effect classes from B2 explain the asymmetry.
 
-Weights are read-only-persistent: written once at model load, read forever, never invalidated. But our analog IMC is consuming: the stored data is disturbed whenever math is done with it, and lost when power is lost. A consuming substrate cannot hold a read-only-persistent value; every read would degrade the thing that must never change. So the weights would still need HBM backing anyway, which defeats the purpose of the third chip.
+Weights are read-only-persistent: written once at model load, read forever, never invalidated. But our analog IMC is consuming: the stored data is disturbed whenever math is done with it, and lost when power is lost. A consuming substrate cannot hold a read-only-persistent value; every read would degrade the thing that must never change. So the weights would still need HBM backing anyway, which defeats the purpose of such a chip.
 
-This stays true until a non-consuming approach to analog IMC is researched, one where reads leave the weights untouched and unmodified, and the cells do not drift over long periods. Digital IMC may be the right space for that, since digital storage does not degrade on read and does not drift. Note the contrast that makes Chip 2 viable where a weight chip is not: the KV cache is written fresh every request and read a bounded number of times, so a consuming read is survivable there in a way it never is for weights that must live for the model's whole deployment.
+This stays true until a non-consuming approach to analog IMC is researched, one where reads leave the weights untouched and unmodified, and the cells do not drift over long periods. Digital IMC may be the right space for that, since digital storage does not degrade on read and does not drift.
 
 ---
 
@@ -15759,7 +14823,7 @@ This stays true until a non-consuming approach to analog IMC is researched, one 
 - DeepSeek-V3 Technical Report - https://arxiv.org/abs/2412.19437
 - DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence - https://arxiv.org/html/2606.19348v1
 - Kimi Linear: An Expressive, Efficient Attention Architecture - https://arxiv.org/pdf/2510.26692
-`,Nm=`# VERTICAL 3D CHARGE ACCUMULATION (lever #16 / law L18) — feasibility + projection
+`,Im=`# VERTICAL 3D CHARGE ACCUMULATION (lever #16 / law L18) — feasibility + projection
 
 Assessment of AnalogIOC's vertical charge-accumulation lever: stack \`L\` crossbar
 layers in the BEOL and accumulate their partial products as **charge on one
@@ -15943,7 +15007,7 @@ unmeasured anywhere in the literature.
 - BEOL IGZO/ZnO TFT CIM, <400 °C thermal ceiling — https://pmc.ncbi.nlm.nih.gov/articles/PMC10539278/ ; https://advanced.onlinelibrary.wiley.com/doi/10.1002/aelm.202500521
 - 2D charge-domain multi-bit CIM (not vertical) — https://www.sciengine.com/SCIS/doi/10.1007/s11432-025-4615-6 ; https://arxiv.org/pdf/2107.02388
 - 3D-stack thermal / retention-loss binding failure — https://eps.ieee.org/images/files/HIR_2023/ch20_thermalfinal.pdf
-`,Dm=`# Capacitor layout and parasitic extraction
+`,Mm=`# Capacitor layout and parasitic extraction
 
 Status: **VERIFIED within the installed DRC/extraction model**. Four full-top-metal
 and four contact-only-top-metal coupons pass full Magic DRC and independent
@@ -16063,7 +15127,7 @@ sharing radix, fine DAC, clock/control and full network quality remain
 unverified. This is STRONGLY SUPPORTED geometry and SPECULATIVE system benefit.
 The small low bank passes its first signed SS85 charge test; the larger high
 bank is being tested with admittance-informed .63/.70µm switching devices.
-`,Vm=`# Passive voltage boost of a native holder
+`,Em=`# Passive voltage boost of a native holder
 
 This experiment asks whether a retained MAC voltage can be sensed at larger
 amplitude by reconnecting its physical storage capacitors from parallel to
@@ -16072,7 +15136,7 @@ switched-capacitor principle. The first fixture uses external physical
 acquisition, not an array or complete converter. Prior-art checking is
 separate; no novelty is claimed.
 
-The source is [tb_imc_cap_stack.py](../../../../../analog/testbenches/tb_imc_cap_stack.py).
+The source is tb_imc_cap_stack.py.
 It has two matched stacks, real Sky130 transmission gates, an actual
 acquisition phase, explicit output load/reset, series connection, and return
 to parallel storage. Optional sensing uses the actual balanced StrongARM from
@@ -16922,7 +15986,7 @@ Neither remedy has passed a physical full-converter test.
 ### Physical selected-cap and coarse-guard tests: failures retained
 
 The new source is
-[\`tb_imc_guard_stack.py\`](../../../../../analog/testbenches/tb_imc_guard_stack.py).
+\`tb_imc_guard_stack.py\`.
 It acquires two real15.5pF banks through TGs. Each has1920fF and960fF guard
 capacitors,12.62pF selected state, and a real8+4 split12-bit fineCDAC in
 its lowest section. UF=3.053225806fF makes its nominal seen capacitance
@@ -17169,7 +16233,7 @@ remain unresolved; another blind settling/width sweep is not justified.
 The completed artifacts end in \`timeout3600_settle600\` and
 \`timeout3600_sample3.36_guard6.72\`, with full decks, source snapshots and
 traces preserved. No full physical 14-bit converter has passed.
-`,Pm=`# Circuit evidence map for the ten-hour campaign
+`,Rm=`# Circuit evidence map for the ten-hour campaign
 
 Archive reviewed 2026-09-10, beginning 22:37 UTC. This is an evidence map and
 experiment proposal, not a new transistor result. The root campaign owns the
@@ -17200,7 +16264,7 @@ retains the failed gate even when the mechanism is useful.
 
 The archive inventory records SHA-256, headings, line counts, local document
 links, source functions, and assertion counts in
-[\`build/research/campaign_circuit_evidence/inventory.json\`](../../../../../build/research/campaign_circuit_evidence/inventory.json).
+\`build/research/campaign_circuit_evidence/inventory.json\`.
 It covers all **61 root project documents, 15,034 lines**, and **123 selected
 analog testbench, schematic, sizing, and layout source files** at the start of
 the campaign. This is an inventory, not a claim that every source line was
@@ -17227,14 +16291,14 @@ Failure classes distinguish:
 
 | Mechanism | Strongest relevant evidence | Failure or boundary | Useful retained result and exact source |
 |---|---|---|---|
-| Native passive charge MAC and radix holder | TT RMS/max 0.042771/0.079342 MAC; SS 0.103329/0.223379. Mean 366 ns for three 7/6/5-plane words. 4.499809/4.587238 fJ/MAC. | Fixed W4 coefficient capacitors, 24 scored outputs after nine calibration words; no converter, noise, programmable weight-cell overhead, mismatch, or PEX. Qualification boundary. | Real row endpoints, reset, and sharing can preserve whole-word radix. [Sizing research](../IMC_SIZING_RESEARCH.md), [test source](../../../../../analog/testbenches/tb_imc_sizing_research.py), [fresh manifest and replay](../../../../../build/research/imc_current_core_baseline/README.md). |
+| Native passive charge MAC and radix holder | TT RMS/max 0.042771/0.079342 MAC; SS 0.103329/0.223379. Mean 366 ns for three 7/6/5-plane words. 4.499809/4.587238 fJ/MAC. | Fixed W4 coefficient capacitors, 24 scored outputs after nine calibration words; no converter, noise, programmable weight-cell overhead, mismatch, or PEX. Qualification boundary. | Real row endpoints, reset, and sharing can preserve whole-word radix. [Sizing research](../IMC_SIZING_RESEARCH.md), test source, fresh manifest and replay. |
 | Larger array reset | 128-row fixed-eight-plane TT result improved from 34.31 dB with 0.84-µm reset to 69.66 dB with 3.36-µm reset; 5.140 fJ/MAC, 424 ns. | The small reset is a sizing/timing failure, not evidence against charge accumulation. | Reset and sharing switches need independent sizing from the 0.42-µm row devices. Same source; saved \`imc_sizing_research.json\`, \`share_settling_repair\` section. |
 | Longer sharing | Dynamic schedule at 318 ns passed TT but had SS RMS 0.931 MAC. Share duration 7.6→15.6 ns repaired SS at nearly unchanged delivered energy. | Worst-corner settling, not a noise result. | Holding longer can be much cheaper than increasing all signal-device widths. [Circuit convergence](../IMC_CIRCUIT_CONVERGENCE.md). |
 | Repeated half-radix | Exact ideal recurrence when holder and array capacitance match. A 1% ratio error fails whole-word accuracy. | Ratio error changes each bit's significance; a single scalar correction cannot restore all words. Topology/mismatch sensitivity. | Early spatial aggregation can reduce the number of independent radix ratios. [Discovery circuits](../IMC_DISCOVERY_CIRCUITS.md). |
-| Native-charge pooling | Eight unequal original holders preserve the charge identity; a B1 ternary fixture with 100-ns join passes fresh seed 97103 at TT 0.00633/0.01863 and SS 0.02057/0.05147 MAC. SS half-step refinement remains passing. | Eight groups contain only four rows each. The full A8 case fails: late join RMS/max 6.251/17.67 MAC; reset reuse 4.704/12.67; early pooling 3.704/9.056. No ADC decisions. | Store and join charge on the original unequal capacitors, not equal-cap copies of their voltages. [Discovery](../IMC_DISCOVERY.md), [physical test](../../../../../analog/testbenches/tb_imc_native_charge_pool.py), [ten-run manifest](../../../../../build/research/imc_discovery_manifest.json). |
+| Native-charge pooling | Eight unequal original holders preserve the charge identity; a B1 ternary fixture with 100-ns join passes fresh seed 97103 at TT 0.00633/0.01863 and SS 0.02057/0.05147 MAC. SS half-step refinement remains passing. | Eight groups contain only four rows each. The full A8 case fails: late join RMS/max 6.251/17.67 MAC; reset reuse 4.704/12.67; early pooling 3.704/9.056. No ADC decisions. | Store and join charge on the original unequal capacitors, not equal-cap copies of their voltages. [Discovery](../IMC_DISCOVERY.md), physical test, ten-run manifest. |
 | Early pooling mismatch advantage | Independent ratio MC at 1%: early-pool RMS 2.458 MAC versus late pooled 58 MAC. Stronger baseline with eight independently calibrated digital partials gives 9.973 MAC, reducing the apparent benefit to about 4.06×. | Independent identical ratio variance is assumed despite unequal capacitor areas. Static gradients, covariance, and foundry mismatch are unmeasured. | A real advantage can survive a stronger baseline, but the spectacular 23× figure was largely a calibration-degree difference. [Independent derivation and calibrated baseline](../IMC_DISCOVERY_CIRCUITS.md). |
-| Floating-node retention | A 304-fF holder retains over 9.145 µs with 30.91 µV TT drift and at most 72.57 µV in the investigated SS diffusion model; SS lower-gmin result 44.22 µV. | Acquisition offset 1.68–11.43 mV; no transistor gate leakage in the selected model settings, no layout dielectric leakage or neighboring ADC. A 100-pA control fails by −2.948 mV. | Retention can be adequate while capture accuracy is poor. Only 3.324 pA is allowed for a 100-µV/9.145-µs requirement. [Retention](../IMC_HOLD_RETENTION.md), [test](../../../../../analog/testbenches/tb_imc_hold_retention.py). |
-| Two-bank analog pipeline | Real TGs, alternate acquisition and read loading: ideal schedule II 295 ns versus matched serial 395 ns; first-result delay stays 395 ns. Isolation control without proper switching fails by about 310 mV. | TT/SS capture errors about 10.75/10.91 mV; read errors 2.94/4.56 mV. Both fail the frozen 1-mV screen. A 948-fF read load is present, not an ADC. | Two resident states permit overlap; they do not repair sampling injection or remove conversion resources. [Pipeline round](../IMC_ANALOG_PIPELINE_ROUND.md), [test](../../../../../analog/testbenches/tb_imc_analog_pipeline.py). |
+| Floating-node retention | A 304-fF holder retains over 9.145 µs with 30.91 µV TT drift and at most 72.57 µV in the investigated SS diffusion model; SS lower-gmin result 44.22 µV. | Acquisition offset 1.68–11.43 mV; no transistor gate leakage in the selected model settings, no layout dielectric leakage or neighboring ADC. A 100-pA control fails by −2.948 mV. | Retention can be adequate while capture accuracy is poor. Only 3.324 pA is allowed for a 100-µV/9.145-µs requirement. [Retention](../IMC_HOLD_RETENTION.md), test. |
+| Two-bank analog pipeline | Real TGs, alternate acquisition and read loading: ideal schedule II 295 ns versus matched serial 395 ns; first-result delay stays 395 ns. Isolation control without proper switching fails by about 310 mV. | TT/SS capture errors about 10.75/10.91 mV; read errors 2.94/4.56 mV. Both fail the frozen 1-mV screen. A 948-fF read load is present, not an ADC. | Two resident states permit overlap; they do not repair sampling injection or remove conversion resources. [Pipeline round](../IMC_ANALOG_PIPELINE_ROUND.md), test. |
 
 For the reproduced core, the actual holder capacitances are
 568, 484, 304, 600, 516, 336, 444, and 424 fF. The matrix fixture uses
@@ -17249,17 +16313,17 @@ old passing decks and explicitly records source, stimulus, and trace hashes.
 
 | Mechanism | Strongest relevant evidence | Failure class and retained conclusion | Source/artifact |
 |---|---|---|---|
-| Original split null SAR | Ten comparator-directed decisions with physical comparator, CMOS receivers, reference muxes, and actual capacitor charges. Original TT/SS 12-input suite passed at 2.531/2.561 pJ and 345 ns. | A valid limited deterministic converter baseline. XSPICE decision state is functional, not priced RTL. Voltage acquisition is from a controlled source. | [Null SAR](../IMC_NULL_SAR.md), [test](../../../../../analog/testbenches/tb_imc_null_sar.py). |
+| Original split null SAR | Ten comparator-directed decisions with physical comparator, CMOS receivers, reference muxes, and actual capacitor charges. Original TT/SS 12-input suite passed at 2.531/2.561 pJ and 345 ns. | A valid limited deterministic converter baseline. XSPICE decision state is functional, not priced RTL. Voltage acquisition is from a controlled source. | [Null SAR](../IMC_NULL_SAR.md), test. |
 | Reduced-time SAR | 295-ns suite passed 12 inputs at roughly 2.160/2.196 pJ; an eight-column SS suite then failed by six LSB. RC-graded reference drivers repaired development inputs, but fresh seed 9952 still failed by two. | Loading and held-out-input failure. Development suite success was insufficient. | Same report, \`build/sim/imc_null_sar*\` frozen plans and suites. |
 | VCM-start, no negative holder | All bottoms begin at VCM; ten decisions but only nine monotonic updates. Frozen seed 9951 and 9952 TT/SS suites pass ≤1 code at approximately 1.42–1.46 pJ. Paid service is 295 ns. | Reserved seed 9953 TT passes; SS fails input 1017.98088→1019 versus ideal floor 1017. RMS .577 code, max 2; 1.47166 pJ. **FAILED** overall. | \`build/sim/imc_null_sar_vcm_refs2_calibrated_{plan,suite,seed9952_tt,seed9952_ss,seed9953_tt,seed9953_ss}.json\`; [review](../IMC_NULL_SAR_REVIEW.md). |
 | Kickback diagnosis | Failing final comparison changes differential input +947→−2542 µV. Gate-port KCL gives about 1.137/1.144 fC on the two inputs. Weighted bottom settling error is only 31.1 µV; receiver state is stable. | A floating signal and stiff negative reference respond differently to nearly equal injected charge. 1.14 fC/768 fF≈1.48 mV is commensurate with the failure. This is strong support, not a unique full nonlinear explanation. | \`build/sim/imc_null_sar_fresh_failure_trace.json\`; [readout options](../IMC_NULL_READOUT_OPTIONS.md). |
-| Negative reference holder | A real 768-fF holder reduces one source-impedance asymmetry. | A five-code SS failure remained until reference drivers were repaired; a later TT endpoint still failed by two codes. A second holder also adds conserved reset noise and area. | [Null SAR](../IMC_NULL_SAR.md), [holder-noise test](../../../../../analog/testbenches/tb_imc_holder_noise.py). |
+| Negative reference holder | A real 768-fF holder reduces one source-impedance asymmetry. | A five-code SS failure remained until reference drivers were repaired; a later TT endpoint still failed by two codes. A second holder also adds conserved reset noise and area. | [Null SAR](../IMC_NULL_SAR.md), holder-noise test. |
 | Larger internal precharge | Comparator internal drain precharge makes initial nodes about 1.8 V and their mismatch about 0.14 mV. | Still three-code SS failure and about 2.19 pJ; extending the old resolution window with a smaller latch also fails. Equalized startup is not a sufficient readout cure. | [Null SAR](../IMC_NULL_SAR.md). |
 | Split-DAC parasitics | Fixed coarse top capacitance divides signal and reference step equally in ideal null conversion. Fine-top parasitic 1/4/8/16 fF causes endpoint INL .0718/.2832/.5559/1.0722 LSB. | Top parasitics are not universally harmless: fine-node capacitance changes the bridge ratio; all added capacitance changes noise gain. | Exact bridge correction is \`(CF+PB)/15\`; [Mythic nulling](../IMC_MYTHIC_NULLING.md), [Null SAR](../IMC_NULL_SAR.md). |
 | Wrong-bridge control | A 30% bridge error gives codes 27/509 instead of 31/511. | A deliberately strong negative control catches four-code distortion. A 1% bridge perturbation produces only .138-LSB INL and was too weak to falsify the integer gate. | [Null SAR](../IMC_NULL_SAR.md). |
-| Existing passive filters | 8-kΩ/60-fF branches, one coupled to a 768-fF floating holder and one to a stiff reference, give 393.374 µV instantaneous residue-referred thermal RMS. | Fundamental within this stationary linear network. A settled node is still noisy; 12 ns of settling is not 12 ns of comparator averaging. | [Noise path](../IMC_TRANSIENT_NOISE_PATH.md), [filter test](../../../../../analog/testbenches/tb_imc_filter_noise.py). |
+| Existing passive filters | 8-kΩ/60-fF branches, one coupled to a 768-fF floating holder and one to a stiff reference, give 393.374 µV instantaneous residue-referred thermal RMS. | Fundamental within this stationary linear network. A settled node is still noisy; 12 ns of settling is not 12 ns of comparator averaging. | [Noise path](../IMC_TRANSIENT_NOISE_PATH.md), filter test. |
 | Holder reset noise | One optional 768+60-fF negative branch has 76.27/83.32 µV TT/SS conserved reset noise, before MOS noise. Two-holder hypothetical gives 107.86/117.83 µV. | This common mode cannot be suppressed by temporal averaging. It is not the stationary resistor exchange mode. | Same report and \`tb_imc_holder_noise.py\`; 16,384-path check. |
-| Reference generator loading | Exact Schur-complement enumeration over 1,023 states gives VCM load 55.65→205.91 fF/column and a three-rail slow mode up to 460.54 fF/column. | Ideal voltage-source delivery does not establish a finite reference generator. Eight coherent columns can require about 931 Ω in the specified 250-mV→100-µV/12-ns screen. | [Readout options](../IMC_NULL_READOUT_OPTIONS.md), [reference test](../../../../../analog/testbenches/tb_imc_reference_load.py). |
+| Reference generator loading | Exact Schur-complement enumeration over 1,023 states gives VCM load 55.65→205.91 fF/column and a three-rail slow mode up to 460.54 fF/column. | Ideal voltage-source delivery does not establish a finite reference generator. Eight coherent columns can require about 931 Ω in the specified 250-mV→100-µV/12-ns screen. | [Readout options](../IMC_NULL_READOUT_OPTIONS.md), reference test. |
 | Comparator energy floor of the current implementation | At the frozen 12-input TT point, comparator 496.4 fJ + receivers 315.1 fJ + timing 211 fJ ≈1.02 pJ per conversion. Total is 1.515 pJ. | Optimistic W8 system converter allowance was about .704 pJ. Changing only fine-DAC capacitance cannot meet that allowance. This is an implementation floor, not a physics lower bound. | [Null SAR](../IMC_NULL_SAR.md), [system benchmark](../IMC_SYSTEM_BENCHMARK.md). |
 | Coarse SAR plus charge injection | Ideal 6+4 bidirectional packet arithmetic reproduces 1,024 interior codes. At a 768-fF holder, fine unit charge is .375 fC. | No physical bidirectional packet generator; 15 packet activations and a 60-µV allocation imply per-packet sigma <.01190 fC under independent errors. Down-only current removal is insufficient for this signed residual protocol. | [Readout options](../IMC_NULL_READOUT_OPTIONS.md). |
 
@@ -17316,16 +16380,16 @@ logs; see [gm/ID round](../IMC_LOG_GMID_ROUND.md).
 
 | Mechanism | Measured result or counterexample | What survives | Source |
 |---|---|---|---|
-| PWM capacitor tile with OTA integrator | 0.15-fF units, 4-fF bank ballast, 500-fF rail ballast. Without ballast a code-15 floating node reaches about −.36 V and loses 4% charge. | Floating-node headroom and junction conduction must be included before calling charge arithmetic linear. | [Results](../RESULTS.md), [results 2](../RESULTS2.md), [weight tile](../../../../../analog/schematics/components/weight_tile/weight_tile.py). |
+| PWM capacitor tile with OTA integrator | 0.15-fF units, 4-fF bank ballast, 500-fF rail ballast. Without ballast a code-15 floating node reaches about −.36 V and loses 4% charge. | Floating-node headroom and junction conduction must be included before calling charge arithmetic linear. | [Results](../RESULTS.md), [results 2](../RESULTS2.md), weight tile. |
 | Opposite-sign cancellation | Bare 32:32 and 64:64 cancellation errors −13/−37 LSB improve to −.36/−3.6 with 500-fF rail ballast. | Common-mode excursion, not only total charge, determines cancellation accuracy. Ballast costs real area and attenuates signal. | [Results 2](../RESULTS2.md), [composed results](../COMPOSED_RESULTS.md). |
 | Sequencing and isolation attempts | Staggered phase gives +77/−8 LSB; series resistance loses 9% gain; resistor plus TG gives 2–9% sign asymmetry. | Delaying release can leave an intermediate node's charge stranded. These are rejected topologies for the old packet path. | [Results 2](../RESULTS2.md), [optimization results](../OPTIMIZATION_RESULTS.md). |
-| Multi-bank packet correction | Single-bank transfer is 99.06%, but 11–21 simultaneously active banks transfer only about 84%. Scalar correction is explicitly partial. | One calibration packet does not characterize a differently loaded multi-bank event. Preserve dependence on bank count, sign, and headroom. | [CASCADE](../CASCADE.md), [diagnostic](../../../../../analog/testbenches/diag_cascade_gain.py). |
-| Old integrator/fine-SAR acquisition | A 480-fF fine bank drags an OTA residue by about 22% during 40-ns acquisition. Current source uses 7.5-fF units/120-fF bank, whereas old layout requirements still say 30 fF/480 fF. | Readout loading forced real design changes. Current code, frozen deck, and date must decide the baseline. | [Integrator source](../../../../../analog/schematics/components/integrator_conv/integrator_conv.py), [layout requirements](../LAYOUT_REQUIREMENTS.md). |
+| Multi-bank packet correction | Single-bank transfer is 99.06%, but 11–21 simultaneously active banks transfer only about 84%. Scalar correction is explicitly partial. | One calibration packet does not characterize a differently loaded multi-bank event. Preserve dependence on bank count, sign, and headroom. | [CASCADE](../CASCADE.md), diagnostic. |
+| Old integrator/fine-SAR acquisition | A 480-fF fine bank drags an OTA residue by about 22% during 40-ns acquisition. Current source uses 7.5-fF units/120-fF bank, whereas old layout requirements still say 30 fF/480 fF. | Readout loading forced real design changes. Current code, frozen deck, and date must decide the baseline. | Integrator source, [layout requirements](../LAYOUT_REQUIREMENTS.md). |
 | Parking the OTA | Fine-phase parking walks the residue 896.3→894.7→893.3→891.6 mV. Keeping the OTA awake costs about 2 pJ. Done-gated coarse termination remains useful. | Saving bias can lose the analog state; a retained state needs an explicit isolation topology. | [CASCADE](../CASCADE.md), [optimization results](../OPTIMIZATION_RESULTS.md). |
-| Conversion cascade | K=1/2/4 gives chain energies 336.9/372.5/550.3 pJ and per-pass 336.9/186.2/137.6 pJ. | Fewer conversions can amortize OTA overhead if passes belong to one legal reduction and intermediates stay in range. Accuracy gates were scaled with K; this is not a fixed-quality speedup for arbitrary tokens. | [CASCADE](../CASCADE.md), [physical cascade test](../../../../../analog/testbenches/tb_cascade.py). |
-| Supertile parallelism | \`tb_supertile\` converts each partial separately, then sums/calibrates in Python. Its ideal charge-bus probe is separate. | Measured partial conversion count cannot be divided by K merely because the final digital sum is INT8. | [Supertile test](../../../../../analog/testbenches/tb_supertile.py). |
+| Conversion cascade | K=1/2/4 gives chain energies 336.9/372.5/550.3 pJ and per-pass 336.9/186.2/137.6 pJ. | Fewer conversions can amortize OTA overhead if passes belong to one legal reduction and intermediates stay in range. Accuracy gates were scaled with K; this is not a fixed-quality speedup for arbitrary tokens. | [CASCADE](../CASCADE.md), physical cascade test. |
+| Supertile parallelism | \`tb_supertile\` converts each partial separately, then sums/calibrates in Python. Its ideal charge-bus probe is separate. | Measured partial conversion count cannot be divided by K merely because the final digital sum is INT8. | Supertile test. |
 | Old full-pass accuracy | Physical 17-column pass_05 has about ±3 LSB after measured gain; strict ±1 LSB fails. Some later prose relaxes to ±8 LSB using one-block/head-0 quality proxies. | Preserve measured transfer, but do not inherit the relaxed full-model qualification. | [Contract](../CONTRACT.md), [results 3](../RESULTS3.md), [error impact](../ERROR_IMPACT.md). |
-| Column gain servo | Numerical RLS removes a column-constant gain to about .196–.437% residual. | Does not identify within-column cell errors or radix-ratio distortion. Characterization precision and observability cost must be included. | [SERVO_EG](../SERVO_EG.md), [servo test](../../../../../analog/testbenches/test_gain_servo.py). |
+| Column gain servo | Numerical RLS removes a column-constant gain to about .196–.437% residual. | Does not identify within-column cell errors or radix-ratio distortion. Characterization precision and observability cost must be included. | [SERVO_EG](../SERVO_EG.md), servo test. |
 | Null-seeking old readout | Under the old error model, replacing the converter with perfection raises 23.42→25.03 dB, only +1.61 dB. | Converter optimization cannot cure old tile nonlinearity. The result is explicitly scoped to the old OTA/PWM path, not the later passive core. | [NULLSEEK](../NULLSEEK.md). |
 
 Git history contains important reversals: \`5856c12\` identifies circular A10
@@ -17340,15 +16404,12 @@ Neither those words nor old TOPS/TOPS/W tables are accepted evidence here.
 
 | Mechanism | Actual evidence | Limit and opportunity | Source |
 |---|---|---|---|
-| Two-transistor gain cell | Two 0.42/0.5-µm NMOS devices and ideal 30-fF storage capacitor. Sixteen write levels up to .9 V; read current 7.3 pA–6.35 µA with an ideal .9-V column clamp. | Gate voltage is retained during current read. Row input is source PWM, not demonstrated analog log-amplitude multiplication. | [Cell source](../../../../../analog/schematics/components/gain_cell_array/gain_cell_array.py), [test](../../../../../analog/testbenches/tb_gain_cell.py), [KV feasibility](../KV_FEASIBILITY.md). |
+| Two-transistor gain cell | Two 0.42/0.5-µm NMOS devices and ideal 30-fF storage capacitor. Sixteen write levels up to .9 V; read current 7.3 pA–6.35 µA with an ideal .9-V column clamp. | Gate voltage is retained during current read. Row input is source PWM, not demonstrated analog log-amplitude multiplication. | Cell source, test. |
 | Gain-cell retention/disturb | One short retention trace extrapolates roughly 27-ms time constant; ten 100-ns reads move stored voltage −43 µV; neighboring write −6.2 µV. | A 3.3-µs one-code trace is not a hot all-code millisecond proof. Refresh every tau/2 loses about 39%, inconsistent with four-bit accuracy; one-LSB estimate about 1.7 ms implies substantial refresh occupation. | [Circuit research corrections](../IMC_CIRCUIT_RESEARCH.md). |
-| Weight write energy | Cell-only write about 7.5 fJ; physical write DAC about 1.2 pJ/slot. LoRA full write about 7.1 pJ/cell. | Do not multiply a cell-only number and call it complete programming energy. The old 524,288-cell refresh arithmetic had a 1,000× unit error: 3.93 nJ, not µJ. | Same reports; [LoRA test](../../../../../analog/testbenches/tb_lora_sidecar.py). |
-| Physical LoRA sidecar | 32 cells, two write DACs, OTA first-stage integration, current-ramp voltage-to-time, second-stage source PWM; output errors 1.36% before and .93% after updates, 67 pJ/op. | Reference uses measured stored voltages/read law and measured ramp. It proves composition under that calibration, not linear raw weight codes without mapping. | [Composed results](../COMPOSED_RESULTS.md), [LoRA source](../../../../../analog/testbenches/tb_lora_sidecar.py). |
-| Shared-source softmax | Eight exponential devices: normalized ratios within about 1.4%, KCL within .16%, .99-µs settling, about 2.1 pJ. | Ideal score voltages and output clamps. Normalization cancels common tail gain and can make a poor standalone exponential useful. | [Softmax test](../../../../../analog/testbenches/tb_softmax.py), [OT impact](../OT_IMPACT.md). |
-| Temperature correction | Fixed-bias tail grows .58→2.2 µA from 27→85 °C; PTAT reduces drift, but softmax slope still changes. Score T/T0 correction reduces −11.37% slope drift to −1.38%. | Current compensation and logarithmic slope compensation are different tasks. Physical reference-current adjustment can tune scalar-product slope, as the new log experiment confirms. | [PTAT_SCORE](../PTAT_SCORE.md). |
-| Analog exponential LUT | Per-temperature two-parameter fitting across eight octaves still gives max error about 6.3%; weak-end settling can reach 1.9 µs. | Curvature limits this device regime to about four relative bits over that span, even before mismatch. A digital fp8 exp2 reference is smaller/faster in the stated synthesis/estimated-energy comparison; those estimates are not SPICE energy. | [Analog LUT study](../ANALOG_LUT_STUDY.md). |
-| Scalar charge-stacked log product | Physical gm/ID-sized W=1.86 µm, L=.5 µm, C=600 fF, reference 256.893 nA with kappa=1.5. Frozen fresh short point: TT max .878%, SS .647%, 1.2-µs acquisition and 1.5-µs word. | Positive operands over a factor-two local window, scalar product, ideal operand current sources, no random mismatch/noise, no array. Equal log-voltage averaging instead computes a geometric mean and fails product by about 313%. | [Product sizing](../IMC_GMID_PRODUCT_SIZING.md), [log test](../../../../../analog/testbenches/tb_imc_log_charge.py). |
-| Actual log gm/ID | At the selected diode, \`(gm+gds)/I\` is 22.703 TT /19.267 SS; diode-port capacitance about 3.55 fF. Exponential gate AC capacitance is 4.828/4.711 fF, larger than Cgg 3.912/3.802 fF. | Table gm/ID at fixed drain is not a diode logarithm's slope. Nonlinear charge conservation retains the initial exponential gate charge and changes both operand exponents. | [DC/AC report](../IMC_LOG_GMID_ROUND.md), [characterization script](../../../../../analog/testbenches/tb_imc_log_gmid.py), \`build/sim/imc_log_gmid_sized.json\`. |
+| Weight write energy | Cell-only write about 7.5 fJ; physical write DAC about 1.2 pJ/slot. LoRA full write about 7.1 pJ/cell. | Do not multiply a cell-only number and call it complete programming energy. The old 524,288-cell refresh arithmetic had a 1,000× unit error: 3.93 nJ, not µJ. | Same reports; LoRA test. |
+| Physical LoRA sidecar | 32 cells, two write DACs, OTA first-stage integration, current-ramp voltage-to-time, second-stage source PWM; output errors 1.36% before and .93% after updates, 67 pJ/op. | Reference uses measured stored voltages/read law and measured ramp. It proves composition under that calibration, not linear raw weight codes without mapping. | [Composed results](../COMPOSED_RESULTS.md), LoRA source. |
+| Scalar charge-stacked log product | Physical gm/ID-sized W=1.86 µm, L=.5 µm, C=600 fF, reference 256.893 nA with kappa=1.5. Frozen fresh short point: TT max .878%, SS .647%, 1.2-µs acquisition and 1.5-µs word. | Positive operands over a factor-two local window, scalar product, ideal operand current sources, no random mismatch/noise, no array. Equal log-voltage averaging instead computes a geometric mean and fails product by about 313%. | [Product sizing](../IMC_GMID_PRODUCT_SIZING.md), log test. |
+| Actual log gm/ID | At the selected diode, \`(gm+gds)/I\` is 22.703 TT /19.267 SS; diode-port capacitance about 3.55 fF. Exponential gate AC capacitance is 4.828/4.711 fF, larger than Cgg 3.912/3.802 fF. | Table gm/ID at fixed drain is not a diode logarithm's slope. Nonlinear charge conservation retains the initial exponential gate charge and changes both operand exponents. | [DC/AC report](../IMC_LOG_GMID_ROUND.md), characterization script, \`build/sim/imc_log_gmid_sized.json\`. |
 
 The underused cell opportunity is **stored logarithmic weight plus a shared row
 activation perturbation, with per-cell exponential read current and column KCL**.
@@ -17416,7 +16477,7 @@ circuit's admissible interface.
 
 ### Experiment 1: physical CDAC state reuse, then real conversion
 
-Root owns [tb_imc_connected_core.py](../../../../../analog/testbenches/tb_imc_connected_core.py).
+Root owns tb_imc_connected_core.py.
 For coarse unit \`u\`, coarse capacitance is \`63u\`, fine capacitance \`16u\`, and
 bridge \`16u/15\`. With the fine top floating, effective top capacitance is
 \`64u+C0\`. Choose \`C0=CA−64u\` only after including filter and settled device
@@ -17549,7 +16610,7 @@ belong to the other campaign reports.
 |---|---|
 | CONTRACT, STATUS, NEXT_SESSION, INTERFACES, THE_COMPILER_STRUCTURE | Authoritative gates, execution history, actual interfaces, programming/calibration origin. |
 | RESULTS, RESULTS2, RESULTS3, OPTIMIZATION_RESULTS, COMPOSED_RESULTS, CASCADE, NULLSEEK | Old OTA/PWM physics, loading, rejected timing, calibration and cascade boundaries. |
-| ERROR_IMPACT, OT_IMPACT, PTAT_SCORE, SERVO_EG, ANALOG_LUT_STUDY, KV_FEASIBILITY, CHIP2_SPEC | Proxy-quality limits, normalized exponential behavior, temperature and gain calibration, storage/read primitives. |
+| ERROR_IMPACT, SERVO_EG | Proxy-quality limits, gain calibration. |
 | LAYOUT_REQUIREMENTS, FLASH_LESSONS, VERTICAL_3D | Proposed versus implemented layout, flash lessons, process/area assumptions. No extracted current macro established. |
 | IMC_CIRCUIT_RESEARCH, IMC_CIRCUIT_TARGETS, IMC_CIRCUIT_CONVERGENCE, IMC_SIZING_RESEARCH, IMC_ANALOG_STORAGE_HANDOFF | Current physical core, switch sizing, timing, storage and source-accounting boundaries. |
 | IMC_CHARGE_AVERAGE_EXPERIMENT, IMC_DISCOVERY, IMC_DISCOVERY_CIRCUITS, IMC_DISCOVERY_CRITIC, IMC_DISCOVERY_PRIOR_ART | Arithmetic identity, original-holder pooling, A8 failure, stronger calibration baseline and novelty collisions. |
@@ -17565,7 +16626,7 @@ controls that exposed previous optimism. The first integration failures already
 show why matching a DC capacitance, measuring a quiet held node, and passing a
 stiff-source comparator are three insufficient substitutes for a complete
 charge-to-code experiment.
-`,Fm=`# Compact physical weight cells: evidence and a falsifiable Sky130 branch
+`,Dm=`# Compact physical weight cells: evidence and a falsifiable Sky130 branch
 
 Research date: 2026-09-10. Scope: compact multilevel weight storage and multiplication, with shared row excitation and column summation. This is a primary-source audit plus an intrinsic-device experiment, not an established improvement over Mythic. The user's area objective supersedes the old contract's infinite-area assumption. Read with [SOTA evidence](SOTA_EVIDENCE.md) and [earlier log/pipeline audit](../IMC_LOG_PIPELINE_PRIOR_ART.md).
 
@@ -17592,9 +16653,9 @@ Research date: 2026-09-10. Scope: compact multilevel weight storage and multipli
 
 ## Existing repository baseline
 
-[gain_cell_array.py](../../../../../analog/schematics/components/gain_cell_array/gain_cell_array.py) already implements an ordinary 2T1C cell: a W/L=0.42/0.5-µm write NFET, equal-size read NFET, and 30-fF grounded storage capacitor. Read source is a row signal, drain is the column, and the held gate encodes weight. Thus the proposed physical interface exists; the operating regime and row waveform change.
+gain_cell_array.py already implements an ordinary 2T1C cell: a W/L=0.42/0.5-µm write NFET, equal-size read NFET, and 30-fF grounded storage capacitor. Read source is a row signal, drain is the column, and the held gate encodes weight. Thus the proposed physical interface exists; the operating regime and row waveform change.
 
-[tb_gain_cell.py](../../../../../analog/testbenches/tb_gain_cell.py) checks voltage programming, monotonic readout, a few microseconds of retention and read disturbance against a 60-mV budget. It uses ideal column clamps. These checks do not establish percent-level stored current, calibrated multiplication, random mismatch tolerance or a physical column's ability to support all active rows. In a log cell, 60 mV is comparable to an e-folding or larger current change.
+tb_gain_cell.py checks voltage programming, monotonic readout, a few microseconds of retention and read disturbance against a 60-mV budget. It uses ideal column clamps. These checks do not establish percent-level stored current, calibrated multiplication, random mismatch tolerance or a physical column's ability to support all active rows. In a log cell, 60 mV is comparable to an e-folding or larger current change.
 
 Transistor count is not layout area. An unsigned cell can be 2T1C; differential signed storage normally doubles it to 4T2C before shared column subtraction and sign scheduling. A stored sign bit plus current steering is an alternative with its own area. Positive exponential current never provides an exact zero; an explicit off code or gating path must bound the aggregate leakage floor.
 
@@ -17680,7 +16741,7 @@ Row-source error is also amplified: 1% ideal input-current accuracy at 300 K nee
 
 ## Implemented intrinsic experiment and next physical test
 
-[tb_imc_source_weight_cell.py](../../../../../analog/testbenches/tb_imc_source_weight_cell.py) directly uses Sky130 NFETs with W=0.42 µm and L=0.15/0.3/0.5/1 µm, \\(V_d=0.9\\) V and \\(V_{s0}=0.2\\) V. It screens 1/10/100-nA unit currents and positive weights 1–15. Each corner first obtains a one-dimensional gate/current calibration and a source/current calibration at reference weight 4. Both maps are written and hashed **before** a separate two-dimensional operating-point deck.
+tb_imc_source_weight_cell.py directly uses Sky130 NFETs with W=0.42 µm and L=0.15/0.3/0.5/1 µm, \\(V_d=0.9\\) V and \\(V_{s0}=0.2\\) V. It screens 1/10/100-nA unit currents and positive weights 1–15. Each corner first obtains a one-dimensional gate/current calibration and a source/current calibration at reference weight 4. Both maps are written and hashed **before** a separate two-dimensional operating-point deck.
 
 Development and reserved weight/input sets are fixed in source. Reserved points use noninteger weights and input exponents absent from the development set. Product error and cross-ratio error are reported independently, with gm/ID, source slope, body/drain headroom and a mixed-derivative diagnostic. Mantissa acceptance is fixed at under 1% maximum and under 0.3% RMS deterministic intrinsic error. This deliberately leaves room for additional physical errors but is not an ENOB specification. Corner maps are separately calibrated.
 
@@ -17690,7 +16751,7 @@ The physical extension replaces the ideal gate with the existing write NFET and 
 
 All simulations below are fresh ngspice43/Sky130 runs; JSON files contain deck/data hashes and archived generator sources. Maps are calibrated separately at every corner. Reserved input/weight points are distinct from the development grid; the reported mantissa result covers 44 reserved combinations inside ±0.5 input bits, not an exhaustive continuous-domain guarantee.
 
-Generation 1 used 1/10/100-nA unit currents, W=0.42 µm and all four lengths. **All 36 corner/length/current candidates failed** the 1%-maximum/0.3%-RMS deterministic mantissa budget. The minimum-length 1-nA case gives TT 1.1692%/0.5401%, SS85 1.3234%/0.6151%, FF−40 1.1579%/0.5339% maximum/RMS. Larger currents generally worsen nonseparability. Saved results are under [TT generation 1](../../../../../build/research/imc_source_weight_cell/split_decks_v2/tt_27_results.json) and [SS/FF generation 1](../../../../../build/research/imc_source_weight_cell/generation1_corners_v3). The first oversized all-configurations deck did not produce data; splitting independent cases fixed the harness runtime issue. The initial SS row-voltage calibration range was insufficient for its largest current; it was expanded before generating that corner's two-dimensional validation.
+Generation 1 used 1/10/100-nA unit currents, W=0.42 µm and all four lengths. **All 36 corner/length/current candidates failed** the 1%-maximum/0.3%-RMS deterministic mantissa budget. The minimum-length 1-nA case gives TT 1.1692%/0.5401%, SS85 1.3234%/0.6151%, FF−40 1.1579%/0.5339% maximum/RMS. Larger currents generally worsen nonseparability. Saved results are under TT generation 1 and SS/FF generation 1. The first oversized all-configurations deck did not produce data; splitting independent cases fixed the harness runtime issue. The initial SS row-voltage calibration range was insufficient for its largest current; it was expanded before generating that corner's two-dimensional validation.
 
 Generation 2 tested lower currents with a new reserved seed, 97531. The chosen L=0.15-µm, 0.1-nA-unit cell passed the intrinsic test. It still failed the wide input range, so retaining a narrow mantissa is essential.
 
@@ -17706,7 +16767,7 @@ The apparent retention failure had an important numerical component. Default gmi
 
 The first physical transient attempted the tighter DC tolerances and stopped near startup; a completed transient used reltol=10⁻⁵, abstol=10⁻¹⁶ A, vntol=10⁻⁸ V and Gear integration. No partial trace is scored as a pass. The preserved startup failure and default-gmin results are part of the record.
 
-Representative artifacts: [intrinsic generation 2](../../../../../build/research/imc_source_weight_cell/lower_current_generation2), [TT physical generation 3](../../../../../build/research/imc_source_weight_cell/storage20fF_tt_physicalrow_gen3/storage_results.json), [SS physical generation 3](../../../../../build/research/imc_source_weight_cell/storage20fF_ss_physicalrow_gen3/storage_results.json), [FF physical generation 3](../../../../../build/research/imc_source_weight_cell/storage20fF_ff_physicalrow_gen3/storage_results.json), [TT regularization check](../../../../../build/research/imc_source_weight_cell/storage20fF_tt_physicalrow_gmin16/storage_results.json).
+Representative artifacts: intrinsic generation 2, TT physical generation 3, SS physical generation 3, FF physical generation 3, TT regularization check.
 
 For reproducibility, the working Nix-store Python is \`/nix/store/lmam35qlyl43gaw4x19128gqhymcgkgr-python3-3.13.13-env/bin/python3\`; ngspice resolves through the repository's pinned \`build/ngspice43/bin/ngspice\`. Example commands from the repository root, using an output directory that does not already exist:
 
@@ -17745,7 +16806,7 @@ The surviving format is a positive narrow mantissa. Activation and weight signs,
 
 ## Width, geometry, endpoint and numerical audits
 
-Generation4 directly tested the larger widths at TT27/SS85/FF−40 with independently calibrated maps and new reserved seed97541. At minimum length, all three widths have a useful intrinsic narrow-mantissa regime. The selected larger TT devices give reserved maximum/RMS error0.4053%/0.1993% for W≈3.83µm and0.3487%/0.1713% for W≈24.5µm. Actual TT gm/ID spans24.74–25.74V⁻¹ and26.64–27.57V⁻¹ respectively over the broader screened grid; direct width scaling would not predict those changes. Generation4 still had zero junction geometry. Its artifacts are [320-ns sizing point](../../../../../build/research/imc_source_weight_cell/width320ns_intrinsic_gen4) and [50-ns sizing point](../../../../../build/research/imc_source_weight_cell/width50ns_intrinsic_gen4).
+Generation4 directly tested the larger widths at TT27/SS85/FF−40 with independently calibrated maps and new reserved seed97541. At minimum length, all three widths have a useful intrinsic narrow-mantissa regime. The selected larger TT devices give reserved maximum/RMS error0.4053%/0.1993% for W≈3.83µm and0.3487%/0.1713% for W≈24.5µm. Actual TT gm/ID spans24.74–25.74V⁻¹ and26.64–27.57V⁻¹ respectively over the broader screened grid; direct width scaling would not predict those changes. Generation4 still had zero junction geometry. Its artifacts are 320-ns sizing point and 50-ns sizing point.
 
 With real held gates, larger source-to-gate feedthrough offsets the intrinsic improvement. Generation5, reference weight4 and20fF, gives TT0.5367%/0.2800% for3.83µm but SS85 and FF−40 fail the reserved RMS budget at0.3102% and0.3054%. The24.5µm device fails at all three corners, with RMS0.5363%/0.5864%/0.5118%. Choosing reference weight8 in a separately frozen generation6 improves the TT reserved RMS to0.1831% and0.3482%; it does not eliminate the invariant cross-ratio error. These are zero-junction mechanism experiments.
 
@@ -17758,7 +16819,7 @@ The full-junction generation7 uses the Sky130 symbol dimensions, rounded widths,
 | 24.5µm /20fF | 1.0581% /0.4420% | 1.6316% /0.7951% | FAILED |
 | 24.5µm /60fF | 0.7142% /0.2889% | 1.1085% /0.5216% | FAILED |
 
-The next paired seed97545 changes the24.5µm/20fF reserved score to0.5667%/0.2206%, while its fixed endpoint result stays1.6316%/0.7950%. The favorable random score is therefore **sampling sensitivity**, not a circuit improvement. The60fF paired control gives0.3527%/0.1442% reserved but1.1089%/0.5216% at the fixed points. This is why the pass rule was tightened. Representative raw results: [compact full geometry](../../../../../build/research/imc_source_weight_cell/compact_junctions_tt_gen7_tol/storage_results.json), [3.83µm](../../../../../build/research/imc_source_weight_cell/width320ns_junctions_tt_gen7_tol/storage_results.json), [24.5µm20fF](../../../../../build/research/imc_source_weight_cell/width50ns_junctions_tt_gen7_tol/storage_results.json), [24.5µm60fF](../../../../../build/research/imc_source_weight_cell/width50ns_60fF_junctions_tt_gen7_tol/storage_results.json).
+The next paired seed97545 changes the24.5µm/20fF reserved score to0.5667%/0.2206%, while its fixed endpoint result stays1.6316%/0.7950%. The favorable random score is therefore **sampling sensitivity**, not a circuit improvement. The60fF paired control gives0.3527%/0.1442% reserved but1.1089%/0.5216% at the fixed points. This is why the pass rule was tightened. Representative raw results: compact full geometry, 3.83µm, 24.5µm20fF, 24.5µm60fF.
 
 Full geometry first caused programming transients to abort at33–47ns. Removing only NRD/NRS, or retaining all geometry and relaxing absolute current tolerance from10⁻¹⁶ to10⁻¹⁴A, completed the calibration. Their121-point programming-current curves differ by0.00223% maximum and0.000606% RMS at270ns. The full geometry was retained. A separate frozen validation at10⁻¹⁵A changes error by under0.000264 percentage point for the compact and60fF examples.
 
@@ -17768,7 +16829,7 @@ Time-step refinement is less satisfactory. Identical frozen programming voltages
 
 The parent proposed replacing storage MIM capacitance with read-device replicas, gates connected to the stored gate and source/drain both tied to the0.2-V reference. Their zero-VDS channel contributes no DC channel current, though junction leakage and reference circuitry still exist. The hypothesis is that replica gate capacitance tracks the weight dependence of the read device's capacitance, reducing variation in its source-coupling fraction.
 
-A full-junction,1-MHz **conditional AC** screen supports the mechanism at W=24.5µm. Across weights1/2/4/8/15, the source-current logarithmic slope has6.382% peak-to-peak spread with20fF,4.222% with60fF,3.497% with three replicas and no MIM, and3.333% with three replicas plus20fF. Three replicas alone yield total held-node capacitance78.7–86.1fF and source coupling0.0987–0.1130; the60fF control gives79.7–81.2fF and coupling0.0975–0.1198. Similar total capacitance with better slope consistency is a useful mechanism. [AC artifact](../../../../../build/research/imc_source_weight_cell/moscap_compensation_ac_gen8/results.json).
+A full-junction,1-MHz **conditional AC** screen supports the mechanism at W=24.5µm. Across weights1/2/4/8/15, the source-current logarithmic slope has6.382% peak-to-peak spread with20fF,4.222% with60fF,3.497% with three replicas and no MIM, and3.333% with three replicas plus20fF. Three replicas alone yield total held-node capacitance78.7–86.1fF and source coupling0.0987–0.1130; the60fF control gives79.7–81.2fF and coupling0.0975–0.1198. Similar total capacitance with better slope consistency is a useful mechanism. AC artifact.
 
 **Physical MOSCAP result: unverified.** Both three-replica transient configurations stop during programming with full geometry, including a trial at absolute tolerance10⁻¹³A; no partial trace is scored. Small-signal compensation is not a successful sampled memory. Three gates occupy11.0µm² of gate area, but the stated one-finger diffusion rectangles occupy about53.7µm² of active area before contacts, isolation or routing. Folding and shared diffusion may reduce this, so a comparison against approximately30µm² of ideal60fF MIM area needs actual layout. The simple gate-area comparison alone cannot establish a density advantage.
 
@@ -17780,7 +16841,7 @@ A separate TT stationary-noise screen uses the physically observed gate/source b
 | 3.83µm /320ns | 1.760–1.885 | 1.006–1.126 |
 | 24.5µm /50ns | 1.858–1.987 | 1.027–1.174 |
 
-The last column numerically integrates the PSD with a rectangular averaging response from1Hz to100GHz at the stated aperture. The1-Hz lower bound is an explicit stationary-observation assumption; no program/read correlation or correlated double sampling is modeled. The actual white device noise suggests approximately563–603ns instead of320ns and93–99ns instead of50ns at these sampled biases, before further noise. These are conditional estimates, not proven uniform bounds on the full design domain. Stored-gate noise, row-current/voltage driver noise, receiver noise and physical timed integration remain absent. [Noise artifacts](../../../../../build/research/imc_source_weight_cell/channel_noise_gen9_plotfix/results.json) include per-bias PSDs, current, geometry/source hashes and measurement decks. The initial noise-script run selected ngspice's integrated-noise plot instead of its spectral plot; it produced no scored results and is retained separately.
+The last column numerically integrates the PSD with a rectangular averaging response from1Hz to100GHz at the stated aperture. The1-Hz lower bound is an explicit stationary-observation assumption; no program/read correlation or correlated double sampling is modeled. The actual white device noise suggests approximately563–603ns instead of320ns and93–99ns instead of50ns at these sampled biases, before further noise. These are conditional estimates, not proven uniform bounds on the full design domain. Stored-gate noise, row-current/voltage driver noise, receiver noise and physical timed integration remain absent. Noise artifacts include per-bias PSDs, current, geometry/source hashes and measurement decks. The initial noise-script run selected ngspice's integrated-noise plot instead of its spectral plot; it produced no scored results and is retained separately.
 
 ## Current-fed row normalization: wide-range intrinsic test
 
@@ -17803,7 +16864,7 @@ Generation11 uses eight read NFETs with weights{1,2,3,4,7,9,12,15}, individually
 | 3.83µm /0.91147nA | 7.7031% /1.0838% | 2.8502% /0.5013% | FAILED |
 | 24.5µm /5.83343nA | 6.7384% /0.9343% | 3.5040% /0.5545% | FAILED |
 
-Every row includes4088 current comparisons. Grounded-body source voltages stay approximately0.20–0.39V and VDS remains above0.507V; loss of drain headroom is not the failure. Tying the body to the source substantially improves separability, consistent with removing the source-induced variation of the body-dependent exponential coefficient, but does not meet the1%-maximum/0.3%-RMS target. This is a retained mechanism, not proof that well isolation is worthwhile. No sampled gate, row-current DAC, timed integration or PVT robustness is established by this DC screen. [Grounded-body3.83µm result](../../../../../build/research/imc_source_weight_cell/width320ns_currentrow_bodyfixed_tt_gen11/tt_27_currentrow_results.json), [source-tied counterpart](../../../../../build/research/imc_source_weight_cell/width320ns_currentrow_sourcebody_tt_gen11/tt_27_currentrow_results.json).
+Every row includes4088 current comparisons. Grounded-body source voltages stay approximately0.20–0.39V and VDS remains above0.507V; loss of drain headroom is not the failure. Tying the body to the source substantially improves separability, consistent with removing the source-induced variation of the body-dependent exponential coefficient, but does not meet the1%-maximum/0.3%-RMS target. This is a retained mechanism, not proof that well isolation is worthwhile. No sampled gate, row-current DAC, timed integration or PVT robustness is established by this DC screen. Grounded-body3.83µm result, source-tied counterpart.
 
 The broad input range imposes a severe scaling condition: a persistent fractional mismatch \\(\\epsilon\\) between branch logarithmic source slopes accumulates approximately \\(\\epsilon\\ln511\\) log-ratio error. Keeping that below1% requires an average mismatch near \\(\\ln(1.01)/\\ln511\\approx0.16\\%\\). A static one-point weight trim does not remove it.
 
@@ -17843,7 +16904,7 @@ Two primary circuit papers reinforce that boundary. [Yang et al., IEICE2020](htt
 The parent located [Charge-CIM / You Only Charge Once2.0](https://arxiv.org/html/2608.11116v1), August2026. SectionsIII–V reuse capacitors for input DAC, MAC, weight shift-add and embedded SAR; inverse coding merges paired partial sums during differential conversion. Its28nm post-layout and architecture simulations report20ns analog VMM latency and36.19dB end-to-end SNR, not measured silicon. Generic complete capacitor reuse and analog pre-ADC aggregation therefore collide directly with this preprint. TableIII andIV give different area numbers for2.66fF units; the comparison needs clarification before using its area model as ground truth.
 
 **Status:** source-driven multiplication and its strongest floating-gate precursor are **STRONGLY SUPPORTED** by primary measured work. The ideal equations and error diagnostics are **VERIFIED analytically under stated assumptions**. A compact Sky130 stored-gate cell beating weighted capacitors, PWM gain cells or Mythic is **SPECULATIVE** until physical storage, readout, noise and system costs survive testing. No negative result should be converted into an architecture-wide rejection without isolating its mechanism.
-`,qm=`# Native charge accumulation and conversion
+`,Nm=`# Native charge accumulation and conversion
 
 This campaign tests a complete electrical connection between the repository's
 strongest physical charge MAC fixture and a conversion capacitor network.
@@ -17954,7 +17015,7 @@ this is 60.25 fF per column before any duplicate pipeline bank.
 
 ## Initial experiments
 
-[tb_imc_connected_core.py](../../../../../analog/testbenches/tb_imc_connected_core.py)
+tb_imc_connected_core.py
 reuses the archived 128×8 physical row network and analysis. Only Cacc0 is
 replaced; the other seven loaded columns serve as controls. The generated
 original and modified decks, imported source snapshots, simulator identity,
@@ -18009,7 +17070,7 @@ fine-top reset injection, mismatched bridge ratio, charge leakage during the
 conversion interval and a converter precision/range incompatible with the
 full model. Pipeline gain additionally requires two independent resident
 states and real overlap; an isolated sample-and-hold schedule is insufficient.
-`,Lm=`# Conditional StrongARM decision-noise experiment
+`,Fm=`# Conditional StrongARM decision-noise experiment
 
 **Current result: no statistically demonstrated noise improvement from 4-fF or
 16-fF internal capacitors.** Fresh 256-seed-per-input cohorts give approximately
@@ -18062,7 +17123,7 @@ additional factor two relative to a single pooled holder's charge coefficient,
 while retaining both native noise contributions. Neither operation removes
 switching, mismatch, reference or headroom constraints.
 
-Source: [decision-noise testbench](../../../../../analog/testbenches/tb_imc_decision_noise.py).
+Source: decision-noise testbench.
 Protocol, per-seed outcomes, source/model hashes and fit are in
 \`build/campaign/decision_noise/tt_sde30_step2_initial/\`; individual physical
 decks and raw traces are retained under \`build/sim/campaign_decision_noise_*\`.
@@ -18188,7 +17249,7 @@ Audit source: \`analog/testbenches/tb_imc_decision_cohort_audit.py\`. Results:
 fresh cohort names are \`tt_iw3p5_geom_n256_fresh_resumed\`,
 \`tt_iw3p5_geom_ci4_n256_fresh_resumed\` and
 \`tt_iw3p5_geom_ci16_n256_fresh_resumed\`.
-`,Om=`# Dense W8 core sizing and timing
+`,Pm=`# Dense W8 core sizing and timing
 
 Research checkpoint, 2026-09-11 00:45 UTC. The first complete dense low-slice
 run passes the predeclared physical charge-residual allocation, while failing
@@ -18277,9 +17338,9 @@ and array reset, so shortening recovery cannot hide those disturbances.
 
 ## Reproduction and scope
 
-- [Dense workload testbench](../../../../../analog/testbenches/tb_imc_dense_core.py)
-- [Preserved numerical controls](../../../../../analog/testbenches/tb_imc_dense_convergence.py)
-- [Explicit geometry and waveform transformations](../../../../../analog/testbenches/imc_research_geometry.py)
+- Dense workload testbench
+- Preserved numerical controls
+- Explicit geometry and waveform transformations
 - Evidence: \`build/campaign/dense_core/\`, including exact decks, source/fixture
   hashes, logs and incomplete traces.
 
@@ -18395,7 +17456,7 @@ control and the matched original high slice remain unqualified.
 
 Interrupted old runs remain incomplete. In particular the 0.1-pA full-diffusion
 control timed out before its final frame; it is not a positive numerical check.
-`,zm=`# Dynamic sensing experiment: a stronger simple comparator control
+`,qm=`# Dynamic sensing experiment: a stronger simple comparator control
 
 The integrating preamplifier is **FAILED as a low-noise, low-energy readout
 candidate in the tested sizing**. It reduces regenerative disturbance, but
@@ -18408,10 +17469,10 @@ StrongARM in this standalone fixture.
 This is not a complete ADC or MAC connection, and no novelty is claimed. The
 root's [connected charge-core experiment](CONNECTED_CHARGE_CORE.md) must test
 the mechanism against the actual CDAC's frequency-dependent input impedance.
-The source is [tb_imc_dynamic_preamp.py](../../../../../analog/testbenches/tb_imc_dynamic_preamp.py).
+The source is tb_imc_dynamic_preamp.py.
 Results, decks, logs, traces, and available generator snapshots are indexed by
-the [artifact manifest](../../../../../build/research/imc_dynamic_preamp_campaign/manifest.json)
-and [numerical summary](../../../../../build/research/imc_dynamic_preamp_campaign/summary.json).
+the artifact manifest
+and numerical summary.
 
 ## Fixture and accounting
 
@@ -18648,7 +17709,7 @@ generation, extracted parasitics, mismatch/yield, transient noise and BER,
 and full-model error qualification. The immediate integration candidate is
 the balanced direct comparator with a properly matched floating reference;
 the preamp remains a useful negative result and a source of gm/ID/noise data.
-`,Bm=`# Floating-inverter readout: physical characterization
+`,Vm=`# Floating-inverter readout: physical characterization
 
 Status: **STRONGLY SUPPORTED deterministic interface only**; noise, complete
 ADC and integrated IMC operation remain unverified. Initial sizing is a
@@ -18745,7 +17806,7 @@ and checking a flat positive remainder supports the white decomposition;
 adding that remainder back is an algebraic check, not an independent sum of
 every physical noise source. Source and thermal/flicker component audit are in
 \`build/campaign/fia_noise/native_components_r1/result.json\`.
-`,jm=`# Connected native stack and FIA fixture
+`,Om=`# Connected native stack and FIA fixture
 
 2026-09-12 research round. **N1 direct control VERIFIED for the bounded deterministic gates; N4 hybrid FAILED reset and fine-DAC co-gain gates.** Neither is a noise-qualified converter or integrated IMC result.
 
@@ -18825,7 +17886,7 @@ Both wider-residue controls preserve the original ±500 µV native calibration a
 Artifacts: \`n1_tt_reset20_residue10m_r1\` and \`n4_tt_reset20_residue10m_r1\`. All nonzero decision signs pass. N4 fails native linearity, native reset, and nominal fine co-gain. N1 passes this sparse endpoint experiment, but its nonmonotonic endpoint errors do not prove continuous-range INL. N1 positive source energy remains2.3987–2.4570 pJ/frame. A direct FIA is therefore a stronger candidate for a once-per-word residue amplifier when its separate noise budget allows it. N4 remains a higher-gain alternative for smaller residues, with unresolved receiver reset noise and ADC-radix correction costs.
 
 Completed stack \`trace.csv\` files are losslessly archived as \`trace.csv.gz\` to limit build storage. \`build/campaign/fia_stack/trace_archive_index.json\` records original SHA256 and sizes; every archive was decompressed and hash-verified before removing its uncompressed duplicate. Results, source/deck manifests and logs remain untouched. Restore a CSV from its gzip archive before invoking an analyzer that expects the original filename.
-`,Wm=`# Physical output DAC weights and held-code carries
+`,Lm=`# Physical output DAC weights and held-code carries
 
 This bounded experiment measures all seven output-DAC weights and physical7→8 and63→64 transitions. It tests whether individual bit responses predict multibit behavior. It is not a complete SAR search, a full code-coverage test or a receiver-noise qualification.
 
@@ -18879,7 +17940,7 @@ The four cohorts cost76 frames,18.24 µs and173.229 pJ total in this diagnostic 
 **VERIFIED bounded physical measurements:** seven weights, polarity asymmetry, two static-to-static carry comparisons and two actual held-code transitions at native TT with contacted-coupon parasitic sensitivity. **STRONGLY SUPPORTED within this tested subset:** the earlier compact bit-weight model is a reasonable description despite radix differing from8. **UNVERIFIED:** full search logic and code coverage, calibrated full-converter quantization error, thermal/flicker/partition noise, comparator decision statistics, PVT/mismatch, actual reference drivers, integration with a computational holder and continuous service timing.
 
 The two incomplete monolithic traces are losslessly stored as \`trace.csv.gz\`; \`failed_trace_archive_index.json\` records original SHA256 and sizes. Every decompressed archive was hash-verified before removing its uncompressed duplicate, saving approximately0.878 GiB. Their failure logs, sources and decks remain unchanged. Completed r3 cohort CSV traces remain available for independent review.
-`,Um=`# Causal seven-bit fine SAR on an isolated FIA output
+`,zm=`# Causal seven-bit fine SAR on an isolated FIA output
 
 This experiment closes the decision path using actual native transistor-latch results. It does not substitute an ideal ADC or copy an analog state. Digital sequencing is ideal and its implementation energy/area are unpriced; physical analog, reference and TG-clock source energy is measured in the final replay.
 
@@ -19007,7 +18068,7 @@ The paid reset candidate adds two native PMOS devices, eachW0.42/L0.15 µm, from
 The screening estimate uses a5× local-capacitance allowance and \`t = Rmax × (5 Cmax) × ln(0.6 V /1 µV) =3.644 ns\`, versus the14 ns low-clock interval between SAR decisions. The5× allowance is an explicit engineering margin, not a proven bound on the dynamic multi-node capacitance or tail charging. Added channel area is0.126 µm²; total layout area and clock-driver implementation remain unqualified. The full transient must still falsify reset settling, kickback, added energy and calibration shift.
 
 Sizing artifacts are \`build/campaign/latch_reset_sizing/tt_minimum_r1\`. Matched independent controls are \`tt_boundary64_{minus,plus}_ir042_r1\`; after those complete, corresponding consecutive histories use the same reset topology. Frozen old calibration is retained. Default-width-zero generation remains byte-for-byte unchanged for checked single-word and two-word decks.
-`,Gm=`# Independent FIA current-noise and acquisition-boundary audit
+`,Bm=`# Independent FIA current-noise and acquisition-boundary audit
 
 Status: **VERIFIED mathematical normalization; conditional compact-model
 characterization; physical receiver noise remains unverified.** This audit does
@@ -19347,7 +18408,7 @@ native spectra and charge-model calculations. White adjoint and forward
 covariance agree within6ppm. Native flicker exponents remain0.84/1.0. This
 controlled point preserves a useful white-noise mechanism while showing that
 reservoir enlargement alone has diminishing value once flicker dominates.
-`,Km=`# FIA native-noise assessment at measured gm/ID trajectories
+`,jm=`# FIA native-noise assessment at measured gm/ID trajectories
 
 **VERIFIED as a conditional current-observation calculation:** archived native PSD and gm trajectories give **33.342 µV RMS** for an ideal independent-white-current observer. This observer omits capacitive feedthrough and dynamic-charge signal paths and has not reproduced the complete FIA signal transfer. It therefore does **not** yet establish a lower bound on physical FIA noise or prove that the circuit cannot meet 20 µV. Reset, reservoir, switches, flicker and latch noise also remain unqualified.
 
@@ -19456,7 +18517,7 @@ which differ from the ideal-current oracle. This materially improves transfer
 support but still excludes explicit latch/reset/rail and gate-noise paths.
 See the pipeline agent's \`independent_ports_r1/result.json\` and
 \`independent_port_ltv_r1/result.json\` under the FIA audit artifacts.
-`,Hm=`# Physical FIA output split-DAC fixture
+`,Wm=`# Physical FIA output split-DAC fixture
 
 **VERIFIED for frozen deterministic final-read loading/step tests only.** No complete SAR, receiver-noise, ADC-reference or IMC-system qualification is claimed. The earlier failure with pre-isolation calibration remains preserved; this experiment explicitly freezes calibration at119 ns before running new residue amplitudes.
 
@@ -19495,7 +18556,7 @@ Independent critic confirmed physical weights, bridge arithmetic, reset timing, 
 The completed coupon step fixtures \`tt_bit0_coupon_r2\` and \`tt_bit3_coupon_r2\` both pass the frozen final native gates, with gains18.038755/18.038760 and maximum fresh error below7.225 µV. Fine output slope is−1762.430539 µV/V bottom and coarse slope−14556.441970 µV/V. The resulting actual radix is **8.2592997**, a3.241% discrepancy from8. Fine/coarse symmetric-step center residuals are−0.26376/−2.18939 µV output. \`radix_audit.json\` records source hashes and both measured ratios.
 
 Thus contacted unit parasitics barely change amplifier gain but approximately double the radix discrepancy relative to the real-MOS/ideal-mutual control. Under the explicitly conditional binary-other-weight assumption, illustrative coarse-boundary DNL rises from+0.12853 to+0.25930 fine LSB. This remains a single-bit response measurement, not a measured maximum converter DNL. Physical bit-weight calibration, bridge sizing/trim or redundancy must be evaluated in an actual search sequence before selecting a repair.
-`,Jm=`# Direct FIA output isolation fixture
+`,Gm=`# Direct FIA output isolation fixture
 
 **Initial isolation coordinate FAILED the frozen pre-isolation calibration gate.** Signal retention exists, but physical switching and latch activity alter the transfer. No receiver-noise or complete fine-SAR qualification is claimed.
 
@@ -19544,7 +18605,7 @@ In particular, the input acquisition TG now injects an uncancelled approximately
 The ideal reference supplies4.50–5.72 fJ positive energy per frame, included in total2.1535–2.1739 pJ. At67.8 ns, across cases, input common mode spans0.893406–0.902732 V, stored-output common mode0.887355–0.890726 V, upper floating source rail1.61994–1.62712 V and lower rail0.26090–0.26869 V. These measurements show no gross rail violation at that sampled phase; they do not replace full transistor-region/headroom checks.
 
 Independent critic confirmed the removed holder/acquisition TG, stiff reference, unchanged differential amplitude and energy boundary. \`singleended_physical_audit.json\` preserves detailed common modes, rails, acquisition shifts and reference energy. The original manifest's \`input_holder_fF_per_side\` label means per sampled side in this control; the immutable deck contains only one holder, the audit makes the count explicit, and the current generator now records holder count separately. Original failure artifacts remain unchanged.
-`,Qm=`# Small passive stack with a measured FIA: conditional architecture screen
+`,Um=`# Small passive stack with a measured FIA: conditional architecture screen
 
 **SPECULATIVE circuit candidate, verified linear graph calculations.** An N4 crossed stack with the short-L FIA and approximately6pF native capacitance is worth a bounded physical test. The long-L N2 combinations have poor conditional margins. No hybrid receiver has passed noise, DAC linearity or throughput validation.
 
@@ -19621,7 +18682,7 @@ N4/4pF screen approximately18.76µV. This preserves the preference for the
 6pF candidate while narrowing its margin. Missing reset/rail/gate noise and
 a real stack's time-varying input admittance remain unresolved. The input-C
 proxies are not proven upper/lower bounds on that admittance.
-`,Ym=`# Floating-inverter residue readout: prior-art checkpoint
+`,Km=`# Floating-inverter residue readout: prior-art checkpoint
 
 2026-09-11. Generic once-per-word floating-inverter residue amplification
 in a pipelined SAR is established prior art. Its use here is a baseline
@@ -19697,7 +18758,7 @@ Arbitrary IMC outputs are not band-limited adjacent samples, so ordinary
 noise shaping or chopping followed by temporal averaging cannot be assumed
 to preserve the workload. Group rescaling, correlated errors and actual
 switching/reset costs must be included. This remains SPECULATIVE.
-`,$m=`# Independent review of the physical N4–FIA fixture
+`,Hm=`# Independent review of the physical N4–FIA fixture
 
 Status: **INDEPENDENT REVIEW COMPLETE; N1 passes declared deterministic gates, N4 fails fine co-gain and native reset.** This review
 covers \`analog/testbenches/tb_imc_fia_stack.py\` and the frozen generated deck at
@@ -19878,7 +18939,7 @@ post-conversion digital offset subtraction cannot restore lost analog headroom
 or repair comparator decisions that were never centered on the intended residue.
 Actual IMC-native acquisition may have a different charge boundary from this
 voltage-source/TG fixture and must be tested directly.
-`,Xm=`# Fixed MIM mismatch: coefficient-error audit
+`,Jm=`# Fixed MIM mismatch: coefficient-error audit
 
 **VERIFIED arithmetic under the installed PDK variation model; not silicon yield
 or complete IMC quality.** A fixed-per-weight error persists across inputs and
@@ -19923,7 +18984,7 @@ statistics. It is not the model's actual activation-weight covariance or a
 quality guarantee. The radix8 rows cover the observed symmetric−127…127 support;
 full signed−128 requires an explicit extra code/representation.
 
-The [saved numerical audit](../../../../../build/campaign/fixed_cap_mismatch/coefficient_sensitivity.json)
+The saved numerical audit
 uses512 independent columns of256 fixed random weights drawn from that histogram.
 Each physical binary capacitor gets one independent Gaussian error, reused for
 every input. Repeated identical MVMs return identical errors. The heterogeneous
@@ -19965,8 +19026,8 @@ bit beyond the8-bit logical weight, or encoded in a correspondingly larger
 physical state space. Independently controllable digit signs and the calibration
 read/scheduling/energy must be paid. No full-model or physical net advantage has
 been demonstrated. Evidence is saved in
-[result](../../../../../build/campaign/redundant_weight_calibration/result.json) and
-[loading budget](../../../../../build/campaign/redundant_weight_calibration/oracle_loading_budget.json).
+result and
+loading budget.
 
 For scale, a4-fF selected capacitor driven through0.45V onto2.4pF produces only
 0.75mV. Resolving0.5% of that signal requires about3.75µV standard error. Even
@@ -19995,8 +19056,8 @@ can remove its calibrated mean while leaving input-dependent residual error.
 The white-input coefficient audit above does not capture this opportunity.
 
 A new [runner](../../../../../scripts/compiler/metrics/imc_mismatch_offset_quality.py) and frozen
-[die1](../../../../../build/campaign/mismatch_offset_quality/die1/protocol.json)/
-[die2](../../../../../build/campaign/mismatch_offset_quality/die2/protocol.json) protocols
+die1/
+die2 protocols
 use exactly the same capacitor realizations as the uncalibrated mismatch runs.
 Calibration captures only the old128 clean tokens, runs the actual finite ADC
 model with fixed capacitor mismatch, and records the mean error against each
@@ -20017,7 +19078,7 @@ No quality result is presumed before the frozen campaigns complete.
 
 Both36-case die runs completed and their source hashes were rechecked. Die1 has
 11/36 individual passes and die2 has10/36; no architecture passes all six cases.
-The [summary](../../../../../build/campaign/fixed_mismatch_quality/summary.json) preserves
+The summary preserves
 both passages, mismatch-only diagnostics, and the two fixed-mismatch+thermal+
 20µV read-noise cases per passage. This is two modeled realizations, not a yield
 estimate. Every architecture also fails some physically noisy cases; the
@@ -20073,8 +19134,8 @@ All source hashes were rechecked. Die1 has10/36 passes and die2 has17/36. Signed
 | 2 | signed8 | common_A11_separate | 6/6 | 0.0095712 | 1.0097696 |
 | 2 | signed8 | common_A10_pooled | 2/6 | 0.0139396 | 1.0186520 |
 
-[Complete summary](../../../../../build/campaign/mismatch_offset_quality/summary.json). Two realizations do not estimate yield. The constants were frozen using the old128-token calibration input; no held-out fitting was used.
-`,Zm=`# Sequential comparator-noise correlation
+Complete summary. Two realizations do not estimate yield. The constants were frozen using the old128-token calibration input; no held-out fitting was used.
+`,Qm=`# Sequential comparator-noise correlation
 
 Status: **VERIFIED within the declared finite-band hybrid fixture**. This
 is a component-level measurement of repeated
@@ -20243,7 +19304,7 @@ the boosted fine holder. Correlated slow noise, finite-range coarse
 clipping, actual held-node noise, reference disturbance and PVT still
 bound its value. No novelty or Mythic comparison is established by this
 component experiment.
-`,eg=`# Clocked comparator sizing with gm/ID
+`,Ym=`# Clocked comparator sizing with gm/ID
 
 **Current sizing interpretation:** fresh 256-seed-per-input noise cohorts do not
 confirm a statistically significant benefit from internal drain capacitance.
@@ -20287,8 +19348,8 @@ their extra decision energy must be paid. Statistical noise runs for the
 3.5- and7-µm physical-diffusion fixtures are ongoing. There is no demonstrated
 complete-column optimum yet.
 
-Sources: [clocked sizing testbench](../../../../../analog/testbenches/tb_imc_latch_gmid.py),
-[native model exporter](../../../../../analog/testbenches/tb_imc_latch_model_export.py).
+Sources: clocked sizing testbench,
+native model exporter.
 Evidence is under \`build/campaign/latch_gmid/\`, with exact exported models,
 source hashes, time-dependent device parameters and both simulator traces.
 
@@ -20344,7 +19405,7 @@ loaded-source or complete-converter test demonstrates a compensating benefit.
 A 4 fF variant may still help a separately measured kickback or timing constraint,
 but its older 329µV noise estimate is not a qualified justification. No new
 geometry or optimum is inferred from this audit.
-`,ng=`# Low-rank correction as a paid mismatch baseline
+`,$m=`# Low-rank correction as a paid mismatch baseline
 
 **FAILED full-depth quality acceptance for every tested rank1 candidate.** The
 weighted-subspace error reduction is verified only within its analytical model. This combines the repo's existing LoRA-sidecar idea with fixed-cap
@@ -20380,8 +19441,8 @@ For signed8, expected fixed-error energy remaining on the two passages is:
 | 8 | .3183 | .3328 | 2.3003% | 10.39104MB |
 | 16 | .2929 | .3090 | 4.6007% | 20.16000MB |
 
-[Full per-MVM results](../../../../../build/campaign/mismatch_subspace_screen/result.json)
-and [summary](../../../../../build/campaign/mismatch_subspace_screen/summary.json) retain
+Full per-MVM results
+and summary retain
 both representations. Rank1 captures most of this oracle benefit. Aggregate
 energy weighting is not task sensitivity; it does not predict KL or PPL by
 itself. Storage and MAC counts exclude the tied output head, just as the current
@@ -20397,8 +19458,8 @@ exposed512-token passages. Inference does not access per-weight true errors or
 fit coefficients from evaluation activations. The old calibration averages are
 noiseless and factors float32; these are explicit optimistic limits.
 
-The [die1 protocol](../../../../../build/campaign/mismatch_rank1_quality/die1/protocol.json)
-and [die2 protocol](../../../../../build/campaign/mismatch_rank1_quality/die2/protocol.json)
+The die1 protocol
+and die2 protocol
 were frozen before full-depth results. The hook self-check verifies correction
 before downstream operations, clean-reference identity and restoration of the
 original callback. Calibration verifies that rank1 regression does not increase
@@ -20436,7 +19497,7 @@ The signed8 A11 separate candidate was frozen with the same rank1 factors, fixed
 | 2 | 10 | 4/4 | 0.0086233 | 1.0087732 |
 | 2 | 20 | 3/4 | 0.0092355 | 1.0108021 |
 
-**FAILED as a two-die robust quality candidate:** reducing read noise to zero does not remove the die1 PPL failure. This rules out assuming that a better comparator alone will rescue this modeled core. It does not prove a fundamental impossibility or silicon yield. Die2 passes all four cases at0 and10µV but only three at20µV. The matching20µV cases reproduce parent rank1 cases exactly wherever those parent cases have completed; all eight matching cases now reproduce the completed parent campaign exactly. [Frozen protocol and detailed results](../../../../../build/campaign/rank1_read_budget/die1/quality_Cu4.json), [summary](../../../../../build/campaign/rank1_read_budget/summary.json).
+**FAILED as a two-die robust quality candidate:** reducing read noise to zero does not remove the die1 PPL failure. This rules out assuming that a better comparator alone will rescue this modeled core. It does not prove a fundamental impossibility or silicon yield. Die2 passes all four cases at0 and10µV but only three at20µV. The matching20µV cases reproduce parent rank1 cases exactly wherever those parent cases have completed; all eight matching cases now reproduce the completed parent campaign exactly. Frozen protocol and detailed results, summary.
 
 ## Completed full-depth rank1 correction campaign
 
@@ -20457,8 +19518,8 @@ Both36-case campaigns completed and all source fingerprints pass. Each row inclu
 | 2 | signed8 | common_A11_separate | 5/6 | 0.0092355 | 1.0108021 |
 | 2 | signed8 | common_A10_pooled | 2/6 | 0.0140302 | 1.0194156 |
 
-[Complete summary](../../../../../build/campaign/mismatch_rank1_quality/summary.json). [Exact eight-case read20 reproduction audit](../../../../../build/campaign/rank1_read_budget/parent_pair_audit.json). A low-dimensional correction can reduce a linear error norm yet fail PPL because layer sensitivity, nonlinear propagation and calibration-distribution shift remain. The current tests do not isolate their relative contributions. Increasing correction rank, retraining, enlarging capacitors or changing arithmetic sharing would require a separately frozen experiment and paid hardware costs; none is credited here.
-`,tg=`# Native accumulator pipeline investigation
+Complete summary. Exact eight-case read20 reproduction audit. A low-dimensional correction can reduce a linear error norm yet fail PPL because layer sensitivity, nonlinear propagation and calibration-distribution shift remain. The current tests do not isolate their relative contributions. Increasing correction rank, retraining, enlarging capacitors or changing arithmetic sharing would require a separately frozen experiment and paid hardware costs; none is credited here.
+`,Xm=`# Native accumulator pipeline investigation
 
 2026-09-11. Status: ideal trim, selectable trim and OFF-replica variants pass three small archived validation products at TT and SS85 after corner calibration. Fresh full-range history stress fails the computation-accuracy gate for both OFF-replica pipeline and matched serial. Retention still passes; no full-range pipeline or ADC qualification is claimed. This tests whether the actual charge-domain core can preserve one result while directly computing the next into another native accumulator. It does not copy the computed voltage to a separate analog latch. No ADC or whole-chip throughput improvement is claimed.
 
@@ -20503,7 +19564,7 @@ The legacy deterministic column-zero accuracy criterion is RMS < 0.25 MAC and ma
 
 ## Reproducibility
 
-Generator: [tb_imc_native_pipeline.py](../../../../../analog/testbenches/tb_imc_native_pipeline.py). It uses \`connected_sar.capture\` to obtain the real core, the same waveform-closing helper, and the shared physical-diffusion annotation. Exactly flat PWL vertices are removed only after checking voltage-waveform equivalence. Original and modified decks, imported source snapshots, frozen input hashes, solver settings and output hashes are retained under \`build/campaign/native_pipeline/\`. Choose new names for reruns.
+Generator: tb_imc_native_pipeline.py. It uses \`connected_sar.capture\` to obtain the real core, the same waveform-closing helper, and the shared physical-diffusion annotation. Exactly flat PWL vertices are removed only after checking voltage-waveform equivalence. Original and modified decks, imported source snapshots, frozen input hashes, solver settings and output hashes are retained under \`build/campaign/native_pipeline/\`. Choose new names for reruns.
 
 \`\`\`sh
 /nix/store/lmam35qlyl43gaw4x19128gqhymcgkgr-python3-3.13.13-env/bin/python3 analog/testbenches/tb_imc_native_pipeline.py --name tt_serial_3_untrimmed --banks 1 --max-words 3
@@ -20783,7 +19844,7 @@ Neither more exact small-signal radix nor lower estimated worst-case Ron is
 sufficient for fullrange accuracy. This round therefore retains the native-hold
 mechanism and bias-characterization data, and rejects both tested modifications
 as complete accuracy solutions. Neither is claimed novel.
-`,ag=`# Shared signed-digit codes for an uncertain charge-retention ratio
+`,Zm=`# Shared signed-digit codes for an uncertain charge-retention ratio
 
 **VERIFIED bounded arithmetic experiment; SPECULATIVE circuit-sizing method.**
 The [source](../../../../../scripts/compiler/metrics/imc_nonbinary_activation_campaign.py) asks
@@ -20794,8 +19855,8 @@ before table construction. These are not measured device distributions.
 
 Protocol SHA-256 is
 \`9a015c5595d654cfb0a4dbeaab0098fd4fb81c6d8cbff9bf87a8b3fa70be7d0a\`.
-The [results](../../../../../build/campaign/nonbinary_activation/results.json),
-[tables](../../../../../build/campaign/nonbinary_activation/frozen_tables.npz), source
+The results,
+tables, source
 snapshot and66 independent unpruned checks are retained in that build directory.
 Circuit-branch code review found no algebraic error within the declared model.
 
@@ -20910,8 +19971,8 @@ a cheaper differently sized cell would need its own measured interval.
 
 ## Exact continuous-interval certificate
 
-A separate [checker](../../../../../build/campaign/nonbinary_activation/certify_interval.py)
-and [result](../../../../../build/campaign/nonbinary_activation/interval_certificate.json)
+A separate checker
+and result
 close the gap between grid points without modifying the frozen tables or
 selection algorithm. For one code x, let N(r)=Σd_j*r^j and D(r)=Σj=0…8*r^j.
 D is strictly positive on both intervals. Proving
@@ -20941,7 +20002,7 @@ rounded upward within2e−8 code of the previous dense-grid maxima. The
 certify directly. This proves the frozen tables' bounds, not that their
 sampled-grid selection is globally optimal for the continuous minimax problem.
 It adds no device, energy or full-model validation.
-`,ig=`# Analog IMC optimization contract
+`,eg=`# Analog IMC optimization contract
 
 Updated 2026-09-11 following the user's explicit requests for minimal area,
 delay and power, continued breakthrough research, and gm/ID sizing. This
@@ -21143,7 +20204,7 @@ SHA256 after decompression, then removes only the uncompressed copy. Every
 file has a restore record. Active simulations, pinned tools, model dependencies
 and source files are excluded. Monitor disk space as new batches complete;
 do not confuse disk occupancy with the simulator's active RAM requirement.
-`,rg=`# Independent stationary-noise and native-pipeline audit
+`,ng=`# Independent stationary-noise and native-pipeline audit
 
 Audited \`tb_imc_reset_share_stationary.py\`, \`tb_imc_reset_share_noise.py\`, \`tb_imc_native_pipeline.py\`, archived stationary results and completed nine-word TT/SS results. No owned pipeline source or simulation result was modified. This review does not certify a physical readout or complete IMC architecture.
 
@@ -21199,7 +20260,7 @@ The matched extreme-history runs have now completed with the original six-word c
 The replica's maximum one-word drift is only .062518 MAC for either ordering, passing the .25-MAC retention gate. Its large compute error therefore cannot be explained by end-of-word retention drift alone. Serial failure shows an underlying full-range compute/calibration limitation; the apparently smaller replica error does not establish a usable improvement while both fail. These tests do not isolate a unique physical cause.
 
 The separate frozen moderate-random replica history passes: capture RMS/max .051645/.081380 MAC, retained .033634/.045002 MAC, maximum drift .009792 MAC. Thus local retention and moderate-input accuracy survive additional history testing, while full-scale compute accuracy remains FAILED. No calibration or sizing was changed to hide the extreme-history failures.
-`,sg=`# Candidate population and falsification ledger
+`,tg=`# Candidate population and falsification ledger
 
 Initial checkpoint: 2026-09-10 23:55 UTC. See the later corrections below.
 This is an evolving research population,
@@ -21436,7 +20497,7 @@ baseline before making a narrower novelty claim.
 
 The candidate population remains open. None of these points establishes a
 complete-chip advantage over the strongest matched prior art.
-`,og=`# Integrating preamp: noise, headroom and gm/ID sizing bound
+`,ag=`# Integrating preamp: noise, headroom and gm/ID sizing bound
 
 Status: **VERIFIED conditional analytical identities**, supported by archived
 stationary PDK characterization; **SPECULATIVE** new implementation. The
@@ -21603,7 +20664,7 @@ to several pF of input capacitance changes the compute radix, kickback and
 noise. The next architecture needs a physically verified cancellation,
 calibration or gain mechanism; a larger copy of the failed preamp is not
 an established improvement.
-`,cg=`# Physical programmable-capacitor bank controls
+`,ig=`# Physical programmable-capacitor bank controls
 
 The testbench compares ideal compiled capacitances with two physically
 switched unsigned 4-bit banks. All 15 unit capacitances remain installed.
@@ -21859,7 +20920,7 @@ width,~2.40% higher aggregatefixture energy and smaller charge-error margin.
 Neither isolatedfixture energy nor width is a completeMAC or layout metric.
 The TOP.50/.70 point remains a physical1ps failure, with its0.5ps numerical
 abort separately preserved and0.4ps control active.
-`,lg=`# Programmable-capacitor bypass: conditional charge and noise identities
+`,rg=`# Programmable-capacitor bypass: conditional charge and noise identities
 
 **VERIFIED linear RC identities; SPECULATIVE transistor implementation.**
 Root's physical control connects an unused capacitor's bottom plate back to
@@ -21907,14 +20968,14 @@ unused capacitor can suppress its bypass differential-mode contribution,
 despite still consuming installed area. This is a conditional passive-network
 identity, not an assertion that MOS programming switches are noiseless.
 
-The independent [checker](../../../../../build/campaign/weight_digits/bypass_noise_check.py)
+The independent checker
 passes256 fixed-seed matrix cases with1/2/7/32 unused capacitors. It compares
 the closed-form column variance with full matrix inversion, verifies the
 conserved-charge constraint, covariance positivity, and the continuous-time
 Lyapunov equation generated by the resistor conductance matrix. Separately,
 complex Schur elimination verifies the input-admittance formula. A zero-Cp
 control confirms no column perturbation from the internal bypass mode.
-The [result](../../../../../build/campaign/weight_digits/bypass_noise_check.json) retains
+The result retains
 the checker hash, seed, scope and numerical residuals.
 
 This covariance excludes reset-generated common-charge noise. If another
@@ -21926,7 +20987,7 @@ Installed area includes every unused physical capacitor and its switches.
 The next physical checks are column admittance, row feedthrough, native radix
 matching, full reset/share noise, and post-programming settling at fixed
 geometry and operating conditions. No system noise credit is taken here.
-`,dg=`# Shared sign-routing capacitor-bank review
+`,sg=`# Shared sign-routing capacitor-bank review
 
 Status: **Topology/accounting review and completed deterministic fixture checks**.
 \`tb_imc_programmable_cap.py\` remains owned by the parent; this review does not
@@ -22002,7 +21063,7 @@ equal for4 bits. Extra diffusion, OFF capacitance, sign-and-bit decoding and
 control routing may erase that advantage. This is an explicit area/delay
 candidate, not an assumed winner or a free sign operation. The parent is running
 one matched3-bit control rather than a broad sizing sweep.
-`,ug=`# Analog IMC research campaign
+`,og=`# Analog IMC research campaign
 
 Active research objective: derive and test the strongest area, delay, power and
 throughput architecture supported by the whole repository and current primary
@@ -22119,7 +21180,7 @@ reveals a stronger mechanism; do not spend the deadline polishing a weak one.
   allocated to complete physical signal paths, programmable weight storage,
   mismatch/PVT, physical area and fresh workloads; the original acceptance
   gates and retained failures remain unchanged.
-`,hg=`# Native-holder readout: falsification and FIA baseline
+`,cg=`# Native-holder readout: falsification and FIA baseline
 
 Status: analytical bounds verified where stated; no new physical receiver yet passes 20 µV. This round complements \`CAP_STACK.md\` and \`PREAMP_SIZING_BOUND.md\`.
 
@@ -22208,7 +21269,7 @@ Before interpreting its trajectory as a sizing result, export individual port cu
 ### Fresh comparator-noise correction
 
 The independently audited fresh 256-seed-per-input cohort now gives 395.927 µV for the 4-fF latch, with approximate 95% profile interval 365.280–429.145 µV. The historical 329 µV assumption in this report's hybrid bound is therefore optimistic and must not be treated as the current noise estimate. Default/16-fF results are 403.432/386.802 µV; paired comparisons do not demonstrate a significant capacitance benefit. Existing hybrid bound results above remain historical conditional calculations and do not establish a passing receiver under the stronger fresh estimate. See \`DECISION_NOISE.md\` and \`LATCH_GMID.md\`.
-`,pg=`# Reset-noise correction and activation-radix limits
+`,lg=`# Reset-noise correction and activation-radix limits
 
 Status: **STRONGLY SUPPORTED analytical model; physical and full-quality qualification pending.**
 
@@ -22216,7 +21277,7 @@ The completed balanced16 grids used sharing-only thermal variance. The radix9
 grids stopped after 34/72 Cu4 cases and 33/72 Cu8 cases; those partial files are
 preserved. Neither incomplete grid proves a two-passage survivor.
 
-A new [frozen control](../../../../../build/campaign/reset_noise_precision/protocol.json)
+A new frozen control
 uses the original/radix9 calibration choices, both Cu4 and Cu8, all three matched
 architectures, the minimum-error policy, and the same two exposed 512-token
 passages and seeds 60001/60002. Quantization-only cases remain controls. The
@@ -22317,7 +21378,7 @@ apples-to-apples balanced-ternary accuracy comparison.
 
 ## Physical precision targets from the frozen calibration
 
-The [hardware budget extract](../../../../../build/campaign/reset_noise_precision/frozen_hardware_budget.json)
+The hardware budget extract
 retains all 420 MVM/bank settings per architecture. Cu4 radix9 separate uses
 12 bits in 372 settings, 13 in 34, 11 in 11, and 10 in 3. Its common spans are
 0.25 V (224 settings) and 0.5 V (165), giving charge quanta 0.05859375 and
@@ -22335,7 +21396,7 @@ counts and resources; average ADC depth alone is not a throughput result.
 
 ## Measured unsigned programming-bank sensitivity
 
-A separate [frozen experiment](../../../../../build/campaign/programmable_loading_precision/protocol.json)
+A separate frozen experiment
 uses the measured 1-kHz code-dependent port capacitance from the full-geometry
 Cu4 bypass bank. The [runner](../../../../../scripts/compiler/metrics/imc_programmable_loading_campaign.py)
 replaces each digit's ideal active capacitance by C(code), retains the exact ideal
@@ -22354,13 +21415,13 @@ fast internal-mode noise can survive even when low-frequency port C is small.
 Reference, row and state-driver noise remain unpriced. A passing quality result
 would support only this bounded loading sensitivity, not a programmable IMC.
 
-The earlier [activation-radix numerical audit](../../../../../build/campaign/weight_digits/activation_radix_check.json) already verifies these ideal identities with 200,000 Gaussian trials per stage and 128 independent slice-sizing inequalities. Its fixed±511 balanced-ternary comparison requires \`1.5*(2187/1024)^2 = 6.8421\` times the binary single-holder capacitance at matched product noise, under full±0.45 row drive. This recovered evidence is preserved; the present derivation is a cross-check, not a new discovery.
+The earlier activation-radix numerical audit already verifies these ideal identities with 200,000 Gaussian trials per stage and 128 independent slice-sizing inequalities. Its fixed±511 balanced-ternary comparison requires \`1.5*(2187/1024)^2 = 6.8421\` times the binary single-holder capacitance at matched product noise, under full±0.45 row drive. This recovered evidence is preserved; the present derivation is a cross-check, not a new discovery.
 
 ## Completed corrected-reset control, 2026-09-11 12:50 UTC
 
 Both36-case Cu grids completed and all recorded source fingerprints were
 independently rechecked. The immutable
-[summary](../../../../../build/campaign/reset_noise_precision/summary.json) records result
+summary records result
 hashes. Each row below requires both passages and both noise seeds, plus both
 quantization-only controls. Noise is20µV additive read plus the corrected ideal
 kT/C reset/share variance.
@@ -22392,7 +21453,7 @@ must not be transferred to it.
 
 The separate36-case Cu4 programming-load control completed, with18/36 individual
 passes and all source hashes rechecked. **No architecture passes all six cases.**
-The [immutable summary](../../../../../build/campaign/programmable_loading_precision/summary.json)
+The immutable summary
 retains the result hash and complete negative evidence.
 
 | Format / architecture | Cases passing | Worst KL | Worst PPL ratio | Connected C, µF |
@@ -22405,7 +21466,7 @@ retains the result hash and complete negative evidence.
 | Balanced9 / A10 pooled | 2/6 | .0164348 | 1.0153487 | 7.3515 |
 
 These failures use unchanged ADC calibration choices. The new
-[programmable-digit protocol](../../../../../build/campaign/programmable_digit_precision/protocol.json)
+programmable-digit protocol
 recalibrates depth/span on the same old128-token calibration segment with the
 measured loading and corrected thermal model. It also includes ordinary signed
 radix8 and saturated-carry balanced8. For observed−127…127, ordinary radix8 has
@@ -22434,8 +21495,8 @@ The72-case nominal programmable-loading grid completed with45 individual passes;
 | saturated_balanced8 | common_A11_separate | 6/6 | 0.0091631 | 1.0089262 |
 | saturated_balanced8 | common_A10_pooled | 2/6 | 0.0142523 | 1.0146596 |
 
-[Complete summary](../../../../../build/campaign/programmable_digit_precision/summary.json). Ordinary signed8 improves this noise/format tradeoff, while saturated balanced8 does not uniformly dominate it. Neither is a new number system. All pooled rows fail; converter-service savings do not compensate the measured-loading noise penalty in these cases. Subsequent fixed-cap mismatch runs invalidate any claim that these nominal passes establish a robust physical core.
-`,mg=`# Physical reset/share covariance check
+Complete summary. Ordinary signed8 improves this noise/format tradeoff, while saturated balanced8 does not uniformly dominate it. Neither is a new number system. All pooled rows fail; converter-service savings do not compensate the measured-loading noise penalty in these cases. Subsequent fixed-cap mismatch runs invalidate any claim that these nominal passes establish a robust physical core.
+`,dg=`# Physical reset/share covariance check
 
 Status: statistical characterization in progress; no full-core noise qualification.
 
@@ -22455,7 +21516,7 @@ The 64-cycle zero-noise control passes unchanged trace gates: r = 0.49999982855,
 
 One preliminary 128-cycle noise run at 2 GHz upper cutoff and 10 ps maximum timestep completed. Normalized variances were array-before 1.03682, holder-before 0.77937, holder-after 0.79258; share residual 0.37743, with holder lag-one correlation 0.43552. These estimates remain statistically and numerically unqualified. Finite noise bandwidth can suppress the expected equilibrium variance; fresh 512-cycle seeds and paired 5 ps/2 GHz versus 5 ps/8 GHz controls are in progress. No lower-capacitance sizing claim uses this preliminary reduction.
 
-Generator: [tb_imc_reset_share_noise.py](../../../../../analog/testbenches/tb_imc_reset_share_noise.py). Evidence: \`build/campaign/reset_share_noise/\`. Every new configuration uses a fresh directory, source snapshot and qualified model export. Failed and interrupted earlier runs are retained.
+Generator: tb_imc_reset_share_noise.py. Evidence: \`build/campaign/reset_share_noise/\`. Every new configuration uses a fresh directory, source snapshot and qualified model export. Failed and interrupted earlier runs are retained.
 
 
 ## Completed finite-bandwidth controls
@@ -22495,7 +21556,7 @@ The TNOIMOD=0 option-control changes only that noise-model selector in the froze
 
 
 This equilibrium expectation also appears in the primary [UC Berkeley BSIM4.8.0 manual, §10.2, printed pp.90–92](https://ngspice.sourceforge.io/external-documents/models/BSIM480_Manual.pdf): its newer TNOIMOD=2 formulation approaches normalized channel-noise factor unity at low VDS. That is a reference check, not validation of a substituted model for these Sky1304.5 cards. The campaign retains its original model and exposes this limitation.
-`,gg=`# Comparator decision noise versus final ADC noise
+`,ug=`# Comparator decision noise versus final ADC noise
 
 **VERIFIED mathematical model; physical SAR/noise integration unverified.**
 The [frozen experiment](../../../../../scripts/compiler/metrics/imc_sar_noise_transfer.py) separates
@@ -22504,10 +21565,10 @@ earlier full-model charge/noise studies use the first kind. Root's approximately
 445-µV comparator estimate is a conditional physical input decision-noise
 estimate and cannot automatically replace that parameter.
 
-The [protocol](../../../../../build/campaign/sar_noise_mapping/protocol.json) has SHA-256
+The protocol has SHA-256
 \`f36bae65308049fdc3ad7408650a9fe21a70c739549fe5bb8cbf2f075bd33191\`.
 Its source snapshot, exact probability controls and all 90 scored cases are
-in [results.json](../../../../../build/campaign/sar_noise_mapping/results.json).
+in results.json.
 No model corpus, calibration, or active guard experiment was changed.
 
 ## First-principles model and checks
@@ -22611,15 +21672,15 @@ The examples above remain frozen arithmetic examples. Later matched full-diffusi
 64-seed-per-input component screens give a default estimate455.260 µV
 (95% interval387.51–538.79), versus328.851 µV (279.91–392.05) with4-fF
 internal-node capacitors and315.815 µV (268.82–376.51) with16-fF capacitors.
-See the [default](../../../../../build/campaign/decision_noise/tt_iw3p5_geom_n64/result.json),
-[4-fF](../../../../../build/campaign/decision_noise/tt_iw3p5_geom_ci4_n64/result.json), and
-[16-fF](../../../../../build/campaign/decision_noise/tt_iw3p5_geom_ci16_n64/result.json)
+See the default,
+4-fF, and
+16-fF
 component artifacts. The earlier≈366-µV estimate used fewer trials and is
 not an established superior default. Internal capacitance also changes energy,
 loading and regeneration; the older crossed-stack gain cannot automatically
 be combined with either new noise estimate. Actual loaded gain, retention,
 coarse-decision behavior and interdecision noise statistics remain required.
-`,fg=`# Frozen scale alignment and conversion-service experiment
+`,hg=`# Frozen scale alignment and conversion-service experiment
 
 2026-09-10. Development study using the existing full-depth SmolLM2-135M
 evaluator. Source: [imc_scale_alignment_campaign.py](../../../../../scripts/compiler/metrics/imc_scale_alignment_campaign.py).
@@ -22642,7 +21703,7 @@ scale, or by explicitly aligned power-of-two scales, without losing model
 quality? If so, does combining original held charges save ADC service after
 accounting for extra input planes, alignment and required readout precision?
 
-The [protocol](../../../../../build/campaign/system_audit/scale_alignment_protocol.json)
+The protocol
 was written before any selected corpus evaluation. The two sources are the
 largest Digital Design Markdown files by byte count outside \`paper/\`, selected
 using filenames/sizes only: *Floating-Point Exception Handling* and *Dual-Clock
@@ -22855,9 +21916,9 @@ it is not a physical or reserved-data pass. A12 does not monotonically improve
 the strict observed PPL gate. Input, weight and converter perturbations can
 interact, and retaining only the best mean metric would hide this behavior.
 
-The [ideal results](../../../../../build/campaign/scale_alignment/ideal.json),
-[physical results](../../../../../build/campaign/scale_alignment/physical.json) and
-[aggregate summary](../../../../../build/campaign/scale_alignment/summary.json) retain
+The ideal results,
+physical results and
+aggregate summary retain
 each case. No reserved slice has been evaluated. An independent circuit agent
 reviewed the implemented charge invariant, extra-cycle noise recurrence and
 unequal-significance ADC budget and found no algebraic error under their stated
@@ -22885,7 +21946,7 @@ in force for area, service, storage, integration and complete energy claims.
 The fixed-voltage failure motivates a separately frozen hypothesis, implemented
 in [imc_fixed_charge_campaign.py](../../../../../scripts/compiler/metrics/imc_fixed_charge_campaign.py).
 It preserves the preceding experiment and all failures. Its
-[protocol](../../../../../build/campaign/fixed_charge/protocol.json) was written before
+protocol was written before
 any charge-range calibration or evaluation. Execution began only after the
 complete preceding grid finished and passed its integrity checks.
 
@@ -22942,7 +22003,7 @@ and ultimately extracted layout; a pre-junction fixture pass is not sufficient.
 ### Frozen range calibration and clipping falsifier
 
 Range calibration is complete and fingerprinted in
-[calibration.json](../../../../../build/campaign/fixed_charge/calibration.json). Across all
+calibration.json. Across all
 210 MVMs, maximum calibration charge is 1142.50 fC for local A9 separate,
 936.04 fC for common A10 separate, and **2015.74 fC** for common A10 pooled.
 At the largest 1-V reference span, N12 supports approximately ±480 fC. Its
@@ -22983,7 +22044,7 @@ about **22.3 ppm**, yet these tails dominate its final KL error. Removing the
 code limit recovers both strict development gates. The same benefit is available
 to the common A10 separate baseline, whose unbounded results also pass both
 cases. Local A9 unbounded improves KL but fails Exception PPL at 1.0107592; that
-negative result is retained in the [complete oracle output](../../../../../build/campaign/charge_range_oracle/results.json).
+negative result is retained in the complete oracle output.
 
 **VERIFIED diagnostic conclusion:** finite charge range is a major failure
 mechanism in this model. **SPECULATIVE circuit opportunity:** use idle native
@@ -22994,7 +22055,7 @@ control, retained analog state and actual service remain unverified. Generic
 coarse/fine conversion and charge balancing are existing principles; this result
 does not establish architectural novelty.
 
-The static [capacitance-fit audit](../../../../../build/campaign/system_audit/charge_extension_fit.json)
+The static capacitance-fit audit
 finds that a 3.84-pF N14 DAC fits **99.65%** of pooled first low-slice holders;
 distributing coarse plates over all joined original holders raises the capacity
 bound to **99.99%**. By contrast, N14 fits no first high-slice holders and only
@@ -23017,7 +22078,7 @@ The separately frozen [noise oracle](../../../../../scripts/compiler/metrics/imc
 keeps the exact N12 host capacitances and padding, charge quantum and independent
 stage/read-noise calculation, but removes code limits. Its seeded nonclipping
 control reproduces the original noisy implementation. All source/restoration
-checks pass. The complete [results](../../../../../build/campaign/charge_noise_oracle/results.json)
+checks pass. The complete results
 give these individual-case counts:
 
 | Unbounded-code accuracy target | Thermal only | Thermal + read20 | Thermal + read50 |
@@ -23038,7 +22099,7 @@ noise and correlations remain outside this model.
 
 A new [finite guard model](../../../../../scripts/compiler/metrics/imc_charge_guard_campaign.py)
 uses **14 low-slice bits and 13 high-slice bits**, with both first-host and
-distributed original-capacitor policies. Its [protocol](../../../../../build/campaign/charge_guard/protocol.json)
+distributed original-capacitor policies. Its protocol
 was frozen before calibration/evaluation. Each architecture independently
 minimizes old calibration slice MSE over the expanded reference-span grid
 \`{0.0625,0.125,0.25,0.5,1,1.25} V\`. Host and distributed versions use the same
@@ -23086,7 +22147,7 @@ constant; comparator compliance/noise must be verified over that actual range.
 Fixed interleaved local groups \`{0,2}\` versus \`{1,3}\` handle ragged matrices more
 efficiently than contiguous halves. In 576 input rows, interleaving gives
 320 versus 256 rows; contiguous grouping gives 512 versus 64. The separately
-fingerprinted [static audit](../../../../../build/campaign/system_audit/differential_fit_guarded.json)
+fingerprinted static audit
 compares both against the ordinary distributed guarded pool, including the
 latter's own ADC-fit padding:
 
@@ -23120,8 +22181,8 @@ and physical realizability of that smaller unit require new verification.
 
 ### Completed finite low14/high13 result at Cu4
 
-Both [first-host](../../../../../build/campaign/charge_guard/host_Cu4.json) and
-[distributed](../../../../../build/campaign/charge_guard/distributed_Cu4.json) runs
+Both first-host and
+distributed runs
 completed all42 cases with source, model, calibration and protocol integrity
 checks passing. Each has23 individual quality passes. **No candidate passes
 all read-noise cases at Cu4.** Reserved corpus portions remain untouched.
@@ -23173,7 +22234,7 @@ does not by itself establish a resident-chip advantage over Mythic.
 
 ### Completed finite low14/high13 result at Cu8
 
-The [Cu8 distributed grid](../../../../../build/campaign/charge_guard/distributed_Cu8.json)
+The Cu8 distributed grid
 completed all42 cases with integrity checks passing:30 individual cases pass.
 It keeps the frozen range choices and doubles the scalable native/DAC units,
 while charging actual fixed overhead and fit padding. No ideal stack gain is
@@ -23207,7 +22268,7 @@ and12-bit escalation counts are unchanged from Cu4 because scalable signal
 charge and DAC step both doubled. The larger capacitor reduces the thermal
 contribution; it does not justify using20 µV as an achieved physical read
 noise. The separate and pooled50-µV failures preserve that important boundary.
-`,yg=`# Initial session results versus current evidence
+`,pg=`# Initial session results versus current evidence
 
 Checkpoint: 2026-09-11, approximately 13:35 UTC. Research continues.
 **No complete architecture has demonstrated superiority to Mythic or SoTA.**
@@ -23325,7 +22386,7 @@ the initial sparse 4.50 fJ/MAC reference excludes complete storage/readout.
 Next tests challenge physical SAR decision boundaries and independently
 check capacitor orientation. The current optimization frontier remains
 conditional on precision, storage, noise, sign routing and conversion cost.
-`,vg=`# Shared arithmetic: calibration access and paid scheduling
+`,mg=`# Shared arithmetic: calibration access and paid scheduling
 
 **SPECULATIVE architecture; VERIFIED coefficient and covariance calculations.**
 Sharing a physical capacitor reduces the number of independent mismatch
@@ -23413,7 +22474,7 @@ redundant programming result. Sharing saves calibration parameter count but
 does not itself reduce coefficient RMS. Around 30% of codes change and active
 capacitance rises. A noiseless calibration is also retained as an optimistic
 bound. No calibration accuracy, PVT margin, yield or inference-quality pass is
-claimed. [Complete fixed-die results](../../../../../build/campaign/shared_cap_calibration/result.json).
+claimed. Complete fixed-die results.
 
 For common site gain error e_g, the output error is
 δy=Σ_g e_g Σ_{i∈g}x_iw_i. Independent site gains give
@@ -23446,8 +22507,8 @@ quantization error grows. For C0=3000fF and Cf=120fF, variance relative to S1 is
 
 This is a useful tradeoff, not an unconditional precision gain. ADC padding,
 range selection, input-dependent active capacitance and holder-radix errors
-must enter a full implementation. [Arithmetic and count audit](../../../../../build/campaign/shared_cap_calibration/counts_and_noise_audit.json).
-The initial count file uses nine planes, corresponding to A10; the matched A11 schedule above needs ten magnitude planes. [A11 count correction](../../../../../build/campaign/shared_cap_calibration/a11_count_audit.json).
+must enter a full implementation. Arithmetic and count audit.
+The initial count file uses nine planes, corresponding to A10; the matched A11 schedule above needs ten magnitude planes. A11 count correction.
 That audit also corrects a naming error in the first result file: its
 \`conservative_matched_holder_fF_per_weight\` field is an ideal 22-unit count plus
 column floors, not a conservative physical bound. The audit uses measured
@@ -23501,19 +22562,19 @@ Both six-case Cu8 runs completed with unchanged source fingerprints. **VERIFIED 
 | 2 | 8fF | fixed_mismatch_only | 1/2 | 0.0058114 | 1.0121398 |
 | 2 | 8fF | fixed_mismatch_read20 | 4/4 | 0.0075913 | 1.0081706 |
 
-The active connected capacitance, installed-cap cost and conversion counts are retained in the [paired summary](../../../../../build/campaign/cu8_mismatch_control/summary.json). This is a paid brute-force sizing control; its initial two-seed improvement must be considered together with the later eight-seed failures. Sharing should be compared with matched complete controls rather than a selected favorable subset. Two dies and two exposed passages are not a yield or unseen-workload qualification.
+The active connected capacitance, installed-cap cost and conversion counts are retained in the paired summary. This is a paid brute-force sizing control; its initial two-seed improvement must be considered together with the later eight-seed failures. Sharing should be compared with matched complete controls rather than a selected favorable subset. Two dies and two exposed passages are not a yield or unseen-workload qualification.
 
 ## Frozen capacitance and noise-seed extension
 
 The follow-up protocol tests Cu6 with the same two noise seeds and mismatch-only diagnostics, and Cu8 with declared seeds60001–60008 on both existing passages and fixed dies. Cu6 uses an explicit midpoint interpolation of measured Cu4/Cu8 code-dependent loading. The Cu8 endpoint differs from Cu4+4·code by less than1.01e−8fF at1kHz, supporting that interpolation for this AC fixture only. Dynamic Cu6 timing remains unverified. All ADC settings and physical standard-normal draws are held fixed. [Runner](../../../../../scripts/compiler/metrics/imc_capacitance_robustness.py).
 
-The exact weight-histogram numerator-error RMS is .26021/.20909/.17936 weight units at Cu4/6/8. Without column-floor and ADC padding, the weighted thermal-variance ratios are1/.56337/.38380; a dense-column mean-loading approximation gives read-variance ratios1/.71447/.58969. Larger Cu also amortizes switch loading, so the fixed-voltage read error is not Cu-independent in this physical loading model. [Static scaling details](../../../../../build/campaign/capacitance_robustness/static_scaling.json).
+The exact weight-histogram numerator-error RMS is .26021/.20909/.17936 weight units at Cu4/6/8. Without column-floor and ADC padding, the weighted thermal-variance ratios are1/.56337/.38380; a dense-column mean-loading approximation gives read-variance ratios1/.71447/.58969. Larger Cu also amortizes switch loading, so the fixed-voltage read error is not Cu-independent in this physical loading model. Static scaling details.
 
 Eight noise seeds improve the falsification test but cannot establish rare-failure reliability. Even zero failures in eight independent draws for one fixed die/passage permits a one-sided95% binomial upper failure probability of1−.05^(1/8)=31.2%. Outcomes across passages and fixed dies are not silently pooled into an identically distributed silicon-yield sample. The unchanged ideal quantization control already has PPL ratio1.008374 on the first passage, leaving limited margin to the1.01 gate before additional analog errors.
 
 The earlier CAP-RAM is an especially direct storage-sharing baseline: eight6T SRAM cells share one MAC circuit. Its silicon calibration fits per-slice gain/offset and then optionally a shared nonlinear correction curve. That corrects observable slice transfer behavior; it does not establish arbitrary per-weight mismatch removal. Its reported peak throughput is for4-bit inputs with binary/ternary weights, and its CIFAR-10 experiment uses quantization-aware training. Those precisions and workload adaptations must remain explicit in comparisons with this unmodified W8 transformer. [Author paper, Sections IV-A and IV-C](https://arxiv.org/pdf/2107.02388).
 
-The Cu6 midpoint runs completed with unchanged sources. Die1 passes3/4 noisy cases and die2 passes4/4; each passes1/2 mismatch-only diagnostics. Cu6 therefore fails the original two-die physical-noise gate. Active connected C is10.79496µF versus13.33161µF for Cu8, with unchanged ADC settings. [Cu6 result summary](../../../../../build/campaign/capacitance_robustness/Cu6/summary.json). The expanded Cu8 run has already produced additional-seed failures; the original two-seed Cu8 result is not a robustness qualification. Final eight-seed statistics remain pending.
+The Cu6 midpoint runs completed with unchanged sources. Die1 passes3/4 noisy cases and die2 passes4/4; each passes1/2 mismatch-only diagnostics. Cu6 therefore fails the original two-die physical-noise gate. Active connected C is10.79496µF versus13.33161µF for Cu8, with unchanged ADC settings. Cu6 result summary. The expanded Cu8 run has already produced additional-seed failures; the original two-seed Cu8 result is not a robustness qualification. Final eight-seed statistics remain pending.
 
 ## Completed Cu8 eight-seed robustness and ideal-ADC ceiling
 
@@ -23526,12 +22587,12 @@ The Cu6 midpoint runs completed with unchanged sources. Die1 passes3/4 noisy cas
 | 2 | Floating-Point Exception Handling.md | 4/8 | 0.0072934 | 1.0105496 | 0.0035476 | 1.0171362 |
 | 2 | Dual-Clock Asynchronous FIFO.md | 8/8 | 0.0075913 | 1.0013516 | 0.0020788 | 1.0044116 |
 
-[Complete robustness summary](../../../../../build/campaign/capacitance_robustness/Cu8/summary.json). No minimal robust Cu follows from these tested points.
+Complete robustness summary. No minimal robust Cu follows from these tested points.
 
-The exact-ADC diagnostic retains W8 and common A11 but removes all ADC rounding/clipping, mismatch, thermal/read noise and hardware loading. It gives KL.00478016/PPL1.00756344 on passage1 and KL.00473169/PPL.99620885 on passage2. Finite clean ADC values are .00486290/1.00837435 and .00494363/.99755070. Thus the clean ADC penalty is small compared with the combined weight/input quantization floor, and the critical passage retains little hardware margin even with mathematically exact readout. This diagnostic claims no implementable converter or PPA. [Frozen diagnostic](../../../../../build/campaign/ideal_adc_ceiling/result.json).
+The exact-ADC diagnostic retains W8 and common A11 but removes all ADC rounding/clipping, mismatch, thermal/read noise and hardware loading. It gives KL.00478016/PPL1.00756344 on passage1 and KL.00473169/PPL.99620885 on passage2. Finite clean ADC values are .00486290/1.00837435 and .00494363/.99755070. Thus the clean ADC penalty is small compared with the combined weight/input quantization floor, and the critical passage retains little hardware margin even with mathematically exact readout. This diagnostic claims no implementable converter or PPA. Frozen diagnostic.
 
-The paid extra-ADC-bit control also completed. The actual engine defines charge quantum by span, so +1bit alone would only increase range; this experiment uses +1bit and span/2 to halve quantum at unchanged range. All source hashes pass. **FAILED robust acceptance:** die1 and die2 still fail multiple first-passage noise seeds. [Full result and paid costs](../../../../../build/campaign/extra_adc_precision/summary.json). More ADC precision does not remove the dominant W8 recompilation floor.
-`,bg=`# Charge-sharing mismatch and group-model interface audit
+The paid extra-ADC-bit control also completed. The actual engine defines charge quantum by span, so +1bit alone would only increase range; this experiment uses +1bit and span/2 to halve quantum at unchanged range. All source hashes pass. **FAILED robust acceptance:** die1 and die2 still fail multiple first-passage noise seeds. Full result and paid costs. More ADC precision does not remove the dominant W8 recompilation floor.
+`,gg=`# Charge-sharing mismatch and group-model interface audit
 
 Status: **VERIFIED algebra and actual-code loading calculations; conditional
 mismatch sensitivity, not physical yield or end-to-end quality**.
@@ -23719,7 +22780,7 @@ that relative LSB/MSB distortion must not be presented as absolute MAC error.
 The large deterministic r=0.56967 fixed-holder case still gives approximately
 7.27% FS residual after scalar gain correction. These are code-oracle results,
 not a physical matching implementation or inference validation.
-`,wg=`# Four-row physically connected signed grounded IMC
+`,fg=`# Four-row physically connected signed grounded IMC
 
 This test closes the programmable bank into a real floating array/holder pair.
 It is deliberately small and deterministic; no full-model quality or noise
@@ -23911,7 +22972,7 @@ with an ngspice timestep2.5e−23 failure at vshb. This is **INCOMPLETE**, not a
 physical accuracy pass or fail. Its complete partial trace is losslessly gzip-
 archived with decompressed SHA verification in failure.json. A matching 10 ps
 retry preserves all chronological stimuli without copying simulation state.
-`,Tg=`# Analog IMC campaign: evidence and novelty constraints
+`,vg=`# Analog IMC campaign: evidence and novelty constraints
 
 Research cut-off: 2026-09-10. Independent literature branch of the campaign ending 2026-09-11 08:37:37 UTC. This is a comparison and experiment-selection artifact, not a claim that AnalogIOC beats these designs. Existing competitor, architecture, discovery, and log-pipeline reports were consulted before fresh searches of publisher pages, author manuscripts, institutional repositories, official conference material, and patents.
 
@@ -24070,7 +23131,7 @@ Next retrieval order: Cherukuri current-domain full paper; CF-SAR full circuit/t
 ## 9. Campaign update: August2026 capacitor-reuse preprint
 
 [Charge-CIM / You Only Charge Once2.0](https://arxiv.org/html/2608.11116v1) is a close new architecture baseline:28nm post-layout circuit simulation plus architecture modeling, with unified capacitor reuse and differential partial-sum merging. Its claimed20ns VMM and36.19dB SNR require that process, accuracy definition and model boundary; they are not measured-chip results. See the [compact-cell report's novelty boundary](COMPACT_WEIGHT_CELLS.md#narrow-novelty-boundary-for-the-parallel-accumulatorsar-branch) for the circuit collision and area-table caveat.
-`,_g=`# Split-DAC radix error does not by itself reject the architecture
+`,yg=`# Split-DAC radix error does not by itself reject the architecture
 
 Status: **VERIFIED conditional arithmetic counterexample; physical ADC
 unverified**. The native circuit measures bit0 and bit3 charge-step slopes.
@@ -24357,7 +23418,7 @@ paid warmup/reset protocol is essential. No frozen coefficients should be fit to
 these new points. Full code coverage, opposite carry directions, repeated
 stochastic trials, PVT/mismatch and physically integrated coarse conversion
 remain separate requirements.
-`,Cg=`# Resident storage and shared arithmetic capacitance
+`,bg=`# Resident storage and shared arithmetic capacitance
 
 **The present replicated capacitor banks do not support an area win over Mythic.**
 The most useful new branch is dense resident storage feeding a smaller number of
@@ -24383,7 +23444,7 @@ bypassing unused units must not be substituted for physically installedC.
 Likewise capacitor and SRAM footprints cannot simply be added if a legal layout
 can overlap them. A substrate layout is needed to resolve that overlap.
 The nominal2fF/µm² value is the existing local
-[SKY130 technology parameter](../../../../../analog/schematics/library/pdks/sky130.py).
+SKY130 technology parameter.
 
 For comparison, the primary OpenRAM SKY130 paper gives foundry single-port
 bitcell area1.896µm² and dual-port area6.162µm². The W8 single-port **bare-cell**
@@ -24450,7 +23511,7 @@ quality, power and DAG utilization are known. There is no evidence-based unique
 optimum before those measurements.
 
 The [reproducible bound sweep](../../../../../scripts/compiler/metrics/imc_storage_sharing_bounds.py)
-and [results](../../../../../build/campaign/storage_sharing_bounds/result.json) enumerate
+and results enumerate
 S=1,2,4,8,9,16,32,64; hypothetical paid service intervals250/500/1000ns; and vector
 reuse1/8/32. They assert the expected area/delay tradeoff and retain both ideal
 metal-overlap and disjoint footprint envelopes. No service time is promoted to
@@ -24545,7 +23606,7 @@ and converter cadence must replace the simple count. The useful search must
 therefore distinguish **bits per arithmetic capacitor within one weight** from
 **resident weights per arithmetic site S**. Sharing either one must not be
 credited twice for the same hardware or time reduction.
-`,Ag=`# Switch conductance and terminal-capacitance sizing
+`,wg=`# Switch conductance and terminal-capacitance sizing
 
 **VERIFIED within the stated small-signal PDK fixture:** full terminal-current
 extraction atTT27 andSS85 shows body/junction coupling dominates the off-state
@@ -24554,7 +23615,7 @@ capacitance only about5–7% when the opposite channel terminal and bodies are
 AC stiff. A complete floating-clock stack is **SPECULATIVE** and low priority;
 clock isolation, retention, safe bias and added capacitance have not been built.
 
-Source: [\`tb_imc_switch_admittance.py\`](../../../../../analog/testbenches/tb_imc_switch_admittance.py).
+Source: \`tb_imc_switch_admittance.py\`.
 The60 configurations per corner spanW=.42/.84/1.68/3.36/13.44µm,L=.15µm,
 terminalA=.85/.9/.95V withB=.9V, on/off gates, and zero versus explicit
 rectangular.29µm diffusion. NMOS andPMOS share the same width. The geometry
@@ -24649,7 +23710,7 @@ charge-injection/time-constant product),18v1 (incremental physical controls),
 andgm/ID note16w1 (include intrinsic, overlap and junction terms). Their
 ideal width-scaling equations are explanatory approximations; the table
 above uses the actual PDK at each width and bias.
-`,Sg=`# System evidence and campaign acceptance contract
+`,Tg=`# System evidence and campaign acceptance contract
 
 2026-09-10. Independent workload/compiler/system audit for the ten-hour research
 campaign. This is an evidence map and experiment contract, not a chip result.
@@ -24670,7 +23731,7 @@ close the throughput gap.
 
 ## Evidence scope and authority
 
-The [archive manifest](../../../../../build/campaign/system_audit/archive_manifest.json)
+The archive manifest
 fingerprints all **100 Markdown/Python files, 29,855 lines**, in \`project_docs\`,
 \`scripts/compiler/metrics\`, and \`golden\`, excluding new campaign reports. It records
 document headings and Python definitions, plus git HEAD and working-tree state.
@@ -24694,21 +23755,21 @@ does not silently change the production interface.
 | Evidence family | What was checked and what survives |
 |---|---|
 | \`CONTRACT\`, \`INTERFACES\`, \`THE_COMPILER_STRUCTURE\`, \`STATUS\`, \`METRICS\`, \`RESULTS*\` | Numerical rails, actual integration surface, chronological results, and distinction between a small replicated block and a full model |
-| \`ERROR_IMPACT\`, \`OT_IMPACT\`, \`DEPTH_BUDGET\`, \`CSNR_HOLDOUT\` | Earlier one-block adequacy and one-point calibration claims are superseded by full-depth and held-out failures |
+| \`ERROR_IMPACT\`, \`DEPTH_BUDGET\`, \`CSNR_HOLDOUT\` | Earlier one-block adequacy and one-point calibration claims are superseded by full-depth and held-out failures |
 | \`IMC_PRECISION_EXPERIMENT\`, \`IMC_GROUPED_WEIGHTS\`, \`IMC_RADIX_FULL_MODEL\`, \`IMC_SMOOTH_RADIX\` | Strongest workload evidence; exact format, calibration, reference and per-case gates |
 | \`IMC_MAPPING_EXPERIMENT\`, \`IMC_OUTLIER_PLANES\`, \`IMC_CAPACITOR_SIZING\` | Conditional input-range and precise-path opportunities; physical capacitance, metadata and weight-access costs |
 | \`IMC_SYSTEM_BENCHMARK\`, \`IMC_ARCHITECTURE_SEARCH\`, \`IMC_ARCHITECTURE_RESEARCH\`, \`IMC_CIRCUIT_TARGETS\` | Equal-resource schedule, total work, area/residency and service constraints; assumptions remain distinct from measured blocks |
 | \`ARCH_THROUGHPUT\`, \`THROUGHPUT_CEILING\`, \`PDK_PROJECTIONS\`, \`CONVTIME_SENSITIVITY\`, \`COARSE_EARLYEXIT\`, \`GATING_VALUE\` | Useful scheduling identities; several historic throughput/energy headlines depend on invalid quality, area or bandwidth assumptions |
 | \`CASCADE\`, \`COMPOSED_RESULTS\`, \`OPTIMIZATION_RESULTS\`, \`SERVO_EG\`, \`NEXT_SESSION\` | Preserve physical failures and partial repairs; old gains are not multiplicative credits for a new topology |
 | \`FLASH_LESSONS\`, \`MYTHIC_ARCH\`, \`NULLSEEK\`, competitor/prior-art reports | Converter sharing and hierarchical reduction matter; patent topology is not a verified product netlist; old nulling rejection is topology-specific |
-| \`KV_FEASIBILITY\`, \`CHIP2_SPEC\`, \`PTAT_SCORE\`, \`ANALOG_LUT_STUDY\`, \`MOE_MAPPING\`, \`VERTICAL_3D\`, \`SOHU_VERIFIED\` | Dynamic attention, retention, nonlinear accuracy, routing and capacity are separate paid resources; no complete attention-chip or Sohu energy victory follows |
+| \`MOE_MAPPING\`, \`VERTICAL_3D\`, \`SOHU_VERIFIED\` | Routing and capacity are separate paid resources; no Sohu energy victory follows |
 | Remaining IMC circuit/storage/noise/log/SAR reports and all metric modules | Structurally indexed and connected to system consequences; physical details cross-reference the independent circuit campaign map |
 | \`scripts/golden/model.py\`, \`scripts/golden/test_golden.py\` | Bit-true arithmetic reference and tests for the implemented old path, not validation of the newer W8/A9 physical proposal |
 
 Fresh read-only verification in this audit: system-benchmark self-check **PASS**;
 eight cached-evidence-adapter adversarial tests **PASS**; all fifteen golden
 checks **PASS**. A fresh benchmark run is saved separately in
-[build/campaign/system_audit](../../../../../build/campaign/system_audit/results.md).
+build/campaign/system_audit.
 Its ADC development gate passes; its reserved regression gate fails; memory is
 unknown; both TT and SS full-system results remain **NOT VALIDATED**. A successful
 Python exit is not a successful circuit or quality gate.
@@ -25018,7 +24079,7 @@ energy/time boundary; area/storage and service requirements.
 
 New isolated module proposal: \`scripts/compiler/metrics/imc_scale_alignment_campaign.py\`.
 Do not overwrite existing SmoothQuant, radix or frozen result files. The
-[predeclared protocol](../../../../../build/campaign/system_audit/scale_alignment_protocol.json)
+predeclared protocol
 was written before evaluating any selected corpus slice. It fingerprints the
 frozen smoothing NPZ (\`71cacf62925d8a0f3d4959bf6c2c15cd26be9a804136126fe534f8d8827b3836\`)
 and two new Digital Design notes selected solely as the two largest Markdown
@@ -25177,7 +24238,7 @@ small physical switched two-C noise experiment is required to qualify the
 phase model. Old grid sources/results remain immutable and explicitly
 optimistic; the next separately frozen original/radix9 comparison must price
 array reset and initial holder reset before claiming thermal-qualified quality.
-`,xg=`# Native coarse SAR followed by one FIA residue conversion
+`,Cg=`# Native coarse SAR followed by one FIA residue conversion
 
 Status: **SPECULATIVE architecture; bounded deterministic component evidence**.
 This is a feasibility study, not a complete converter, noise qualification,
@@ -25411,7 +24472,7 @@ initial charge is not implicit in the equations. The complete reset/isolation
 covariance, references, fine switching energy, leakage, mismatch and all carry
 transitions remain required checks. Generic split CDACs are established prior
 art; the proposal is a bounded loading remedy, not a novel circuit claim.
-`,kg=`# Identical-unit current-divider IMC investigation
+`,Ag=`# Identical-unit current-divider IMC investigation
 
 Campaign branch, 2026-09-11. Status: **amplitude-coded timing failure; fixed-current PWM preserves a conditional full-scale charge-accuracy candidate; physical receiver and supply costs unresolved**. This is an alternative baseline following the wide-input failure of the analog gate-programmed weight cell in [COMPACT_WEIGHT_CELLS.md](COMPACT_WEIGHT_CELLS.md). It is not a novel multiplier claim or a demonstrated improvement over Mythic.
 
@@ -25454,7 +24515,7 @@ Common drain motion is largely rejected; different column motion is not. A weigh
 
 ## 3. Simulation boundary and reproducibility
 
-Generator: [tb_imc_unit_current_divider.py](../../../../../analog/testbenches/tb_imc_unit_current_divider.py). Every configuration saves its generator, shared-helper snapshot, frozen calibration, exact generated-deck hash, data hash and complete 511-code responses under \`build/research/imc_unit_current_divider/\`. The first development command is:
+Generator: tb_imc_unit_current_divider.py. Every configuration saves its generator, shared-helper snapshot, frozen calibration, exact generated-deck hash, data hash and complete 511-code responses under \`build/research/imc_unit_current_divider/\`. The first development command is:
 
 \`\`\`sh
 /nix/store/lmam35qlyl43gaw4x19128gqhymcgkgr-python3-3.13.13-env/bin/python3 analog/testbenches/tb_imc_unit_current_divider.py --lengths .15 --units-na 10 --out build/research/imc_unit_current_divider/development_tt_L015_I10
@@ -25756,7 +24817,7 @@ Yang et al., [A Reconfigurable Computing In-Memory Macro with Charge-sharing-bas
 Two numerical claims require independent checking before using their noise/timing model. Section IV-B assigns 20 µV sampling noise to 50 fF; directly evaluating sqrt(kT/C) at 300 K instead gives 288 µV before topology covariance. Section III-D's 50 ps settling for a 62 MHz buffer is close to 4.8 mV divided by its reported 88 V/µs slew rate; a slew-time quotient alone does not establish linear settling. These caveats do not remove the architecture's prior-art relevance.
 
 This dated literature append follows the frozen physical-result manifest; the archived report hash in that manifest describes the earlier report snapshot.
-`,Ig=`# Quiet virtual-column feasibility against the passive core
+`,_g=`# Quiet virtual-column feasibility against the passive core
 
 **STRONGLY SUPPORTED negative feasibility result for the existing OTA, not a
 proof against all active architectures.** Reinstating the repository's legacy
@@ -25876,14 +24937,14 @@ at the initial timepoint (\`legacy_ota_tau_r1/failure.json\`). Its OP-only trace
 is not a measured pole or settling result. No fitted time constant is claimed
 from it; the analytical screen and separately identified archived fixtures
 above remain the relevant timing evidence.
-`,Mg=`# Exact W8 digit choices: capacitance versus reconstructed noise
+`,Sg=`# Exact W8 digit choices: capacitance versus reconstructed noise
 
 **VERIFIED identities and static workload counts; system quality and physical
 PPA unverified.** The [bounded experiment](../../../../../scripts/compiler/metrics/imc_weight_digit_campaign.py)
 audits all106,168,320 frozen projection weights, without changing their W8
 values or any calibration/quality corpus. Protocol SHA-256 is
 \`b259a97d58287cee6e5fa808958fb6d7f75b4b5deef5626773904962ec171f75\`;
-complete data are in [results.json](../../../../../build/campaign/weight_digits/results.json).
+complete data are in results.json.
 Independent circuit-branch review found no algebraic error in the digit,
 geometry, common-B noise or charge equations.
 
@@ -25994,7 +25055,7 @@ become a physically nonzero low digit in this offset representation.
 ## Matched physical fixtures
 
 New exports are under
-[physical_fixture_balanced](../../../../../build/campaign/system_audit/physical_fixture_balanced).
+physical_fixture_balanced.
 The p50/p95 labels refer to the original signed-magnitude selection. No columns
 or activation words were reselected for balanced weights. Parent hashes,
 calibration/development provenance and exact preserved fields are recorded
@@ -26055,7 +25116,7 @@ not silently changed to that later variant.
 ## Frozen matched representation/precision experiment
 
 The new [checker](../../../../../scripts/compiler/metrics/imc_balanced_precision_campaign.py)
-and [protocol](../../../../../build/campaign/balanced_precision/protocol.json) were frozen
+and protocol were frozen
 before independent calibration and quality evaluation. Protocol SHA256 is
 \`0cc82515ab53d9fc2c9fec919ec0a170991900a32674538e92a2428712428b6c\`.
 The original and canonical-balanced representations each receive the same
@@ -26137,11 +25198,11 @@ case. Radix9 avoids that endpoint cost. Reconstruction adds one post-alignment
 addition per complete MVM output relative to shift-only high significance16;
 its actual arithmetic width, control and energy still require implementation.
 
-The [static screen](../../../../../build/campaign/weight_digits/radix_screen.py) enumerates
+The static screen enumerates
 radices8…32, original signed magnitude, canonical balanced, and tie-toward-zero
 balanced rules. All106,168,320 actual weights and the complete signed8-bit
 integer range are checked. The compiler's observed support is−127…127.
-The [corrected result](../../../../../build/campaign/weight_digits/radix_screen.json)
+The corrected result
 has frozen source/model/protocol hashes. Native C includes the120-fF local
 overhead and both array/holder replicas, but omits ADC fit padding:
 
@@ -26180,7 +25241,7 @@ For the actual symmetric quantizer, balanced9 has no installed-binary-capacity
 advantage over the strongest original baseline. Activated capacitance savings
 also assume unused capacitors can be disconnected without unmodeled load/noise.
 
-The [p50/p95 physical fixtures](../../../../../build/campaign/system_audit/physical_fixture_balanced9)
+The p50/p95 physical fixtures
 preserve the original column selection, exact q/x, scales, smoothing, full dot
 products and byte-identical activation archives. P50 low capacitances are
 2300/2460/2288/2380/2404/2412/2484/2400 fF and high capacitances
@@ -26197,7 +25258,7 @@ The corrected balanced9 total is4.11080 µF, replacing the initial4.11239 µF
 loading value. Frozen histogram-level formulas were already wide and unchanged.
 
 The independent [quality checker](../../../../../scripts/compiler/metrics/imc_radix9_precision_campaign.py)
-and [protocol](../../../../../build/campaign/radix9_precision/protocol.json) were frozen
+and protocol were frozen
 before new calibration. Protocol SHA256 is
 \`760f2d3dad25b38576a202ad1838dc770170f65168552b45b793b293d181941b\`.
 It compares balanced9 with original16 at both Cu4/Cu8, all three architectures,
@@ -26226,7 +25287,7 @@ intervals, hence R≤2A+1. Therefore, for s=A+B,
 The minimum integer s is15. A=7,B=8,R=15 attains it exactly over−127…127.
 Physical capacitor bases [1,2,4] and [1,3,4], each with independently programmed
 coefficients−1/0/+1, cover every low digit−7…7 and high digit−8…8. The
-[exact subset check](../../../../../build/campaign/weight_digits/installed_radix15_bound.json)
+exact subset check
 verifies those ranges and the complete255-value weight coverage. These six
 capacitors total15 units before the matched holder. Full symmetric support
 through magnitude128 instead needs16 units under the same assumptions.
@@ -26242,10 +25303,10 @@ topology control; the active radix9 and balanced16 grids remain unchanged.
 
 ## Completed balanced16 quality grid
 
-Both [Cu4](../../../../../build/campaign/balanced_precision/quality_Cu4.json) and
-[Cu8](../../../../../build/campaign/balanced_precision/quality_Cu8.json) complete all72
+Both Cu4 and
+Cu8 complete all72
 cases with final source/model/calibration integrity checks passing. The
-[summary](../../../../../build/campaign/balanced_precision/summary.json) retains all24
+summary retains all24
 configurations and their full paid service/capacitance counters. Every entry
 below requires both passages, quantization-only and both noise seeds:6/6 is
 the gate; five successful cases do not qualify a configuration.
@@ -26290,7 +25351,7 @@ initial holder reset, measured ADC correlation, installed programmable storage,
 weight switches, real references and complete PPA remain unqualified. The
 new reset-noise control may invalidate these survivors. Reserved corpus slices
 remain untouched. The separate radix9 grid is still running.
-`,Eg=`# The clean error floor is chiefly W8 recompilation
+`,xg=`# The clean error floor is chiefly W8 recompilation
 
 **VERIFIED diagnostics, not a hardware improvement.** On the first exposed
 passage, keeping the campaign's W8 weights but removing activation and ADC
@@ -26307,7 +25368,7 @@ requantization in this pipeline, not the finite ADC.
 | W8 + A11 | .00478016 / 1.00756344 | .00473169 / .99620885 |
 | W8 + A11 + finite clean ADC | .00486290 / 1.00837435 | .00494363 / .99755070 |
 
-[Frozen decomposition and exact control audit](../../../../../build/campaign/quantization_floor/result.json).
+Frozen decomposition and exact control audit.
 These components are not additive in a nonlinear network. PPL is measured on
 actual next-token labels, whereas KL uses the reference probability
 distribution; they need not move together. For fixed logit perturbation δz,
@@ -26356,7 +25417,7 @@ Even a power-of-two ratio does not disappear without an actual shift/gain path.
 | Original group32 codes and scales | exactly zero extra weight error |
 
 These are unweighted matrix moments; activation sensitivity can change their
-ordering. [All-tensor audit](../../../../../build/campaign/q8_storage_audit/result.json).
+ordering. All-tensor audit.
 
 ## Paying for original group scales
 
@@ -26383,7 +25444,7 @@ quantization. The256-row group-scale storage in this table is also a distinct
 architecture from the current whole-output-column scale storage above.
 Counts include ragged576-row matrices, so the aggregate32-row ratio is6.4×,
 while an individual full256-row tile still needs eight subgroup reads.
-[Shape-exact count ledger](../../../../../build/campaign/q8_storage_audit/partial_sum_counts.json).
+Shape-exact count ledger.
 
 FP16 scale multiplication can be implemented through a mantissa multiply and
 exponent shift; it is not necessarily a full floating-point unit. Its precision,
@@ -26424,7 +25485,7 @@ The ordinary GPTQ run passed source and exact RTN-control reproduction checks. I
 | Unsmoothed RTN | .0033959 / 1.0065618 | .0031859 / .9976910 |
 | Smoothed fixed-grid GPTQ | .0049302 / 1.0090479 | .0049382 / 1.0096533 |
 
-[Compiler results and calibration](../../../../../build/campaign/w8_compiler_baselines/result.json). The unsmoothed RTN control improves the clean error somewhat but retains a substantial recompilation floor.
+Compiler results and calibration. The unsmoothed RTN control improves the clean error somewhat but retains a substantial recompilation floor.
 
 Preserving original group32 codes/scales gives much more margin:
 
@@ -26433,7 +25494,7 @@ Preserving original group32 codes/scales gives much more margin:
 | No smoothing | .00045808 / 1.00064384 | .00048068 / .99906889 |
 | Group-constant power-of-two smoothing | .00044274 / .99952633 | .00046777 / 1.00222358 |
 
-The power-of-two group scale is derived only from the existing frozen smoothing scales, so no new evaluation fitting occurs. Original integer weights are unchanged; a digital exponent is applied to each group result. [Frozen original-group diagnostic](../../../../../build/campaign/original_q8_groups/result.json). These are clean arithmetic results, with the6.4× conversion and scale-multiply costs still to be paid.
+The power-of-two group scale is derived only from the existing frozen smoothing scales, so no new evaluation fitting occurs. Original integer weights are unchanged; a digital exponent is applied to each group result. Frozen original-group diagnostic. These are clean arithmetic results, with the6.4× conversion and scale-multiply costs still to be paid.
 
 A new physical-budget calibration is now running at Cu4 and40µV additional read noise. It uses actual unsigned C(code), per-group120fF floors, distributed-CDAC host allocation, stationary kT/C and original FP16 scales. The model keeps resident group32 sections separate from reused32-row sites with correlated fixed errors. Phase-dependent holder matching remains an explicit unverified requirement. [Frozen model and self-checks](../../../../../scripts/compiler/metrics/imc_raw32_precision.py).
 
@@ -26468,7 +25529,7 @@ A separately frozen exact-readout control recompiles unsmoothed W8 per64/128 row
 | 64 | .00111822 / 1.00179665 | .00107756 / 1.00144584 | 3,317,760 |
 | 128 | .00191481 / 1.00366724 | .00187560 / 1.00288867 | 1,797,120 |
 
-[Corrected frozen result](../../../../../build/campaign/group_size_ceiling_v2/result.json) passes the independent1536-row dense-product oracle and final source audit. Both retain substantially more clean quality margin than the old whole-column compiler, with less service cost than group32. Their noise, finite ADC and physical mismatch are untested. The first implementation incorrectly applied only the first1024-row activation scale after merging a1536-row MVM; its70-row test missed that error. The rejected source/results and explanation remain in \`build/campaign/group_size_ceiling/\`. Those rejected values are implementation failures and are not evidence against group64/128.
+Corrected frozen result passes the independent1536-row dense-product oracle and final source audit. Both retain substantially more clean quality margin than the old whole-column compiler, with less service cost than group32. Their noise, finite ADC and physical mismatch are untested. The first implementation incorrectly applied only the first1024-row activation scale after merging a1536-row MVM; its70-row test missed that error. The rejected source/results and explanation remain in \`build/campaign/group_size_ceiling/\`. Those rejected values are implementation failures and are not evidence against group64/128.
 
 ### Group128 differential-readout control
 
@@ -26478,7 +25539,7 @@ The model counts connected actual rows only: the576-row matrices end with64 acti
 
 The existing connected-C counter includes one computational array plus its matched signal holder (2C) and fine-DAC excess. The additional reference-holder counter adds C, giving3C plus fine excess for the paired-reference interpretation. This does not duplicate the computational array. Reference reset energy, generation and switching must be paid. The physical matching, reference isolation and covariance assumptions remain unverified.
 
-The reuse2 group128 control is not the smallest arithmetic implementation. For fixed rectangular128-row physical sections shared among S=8 logical groups, shape accounting gives22,118,400 physical sites and172,800 two-bank physical group outputs; average useful reuse is4.8 because of ragged matrices. Minimal22-unit Cu4 magnitude capacitance is1.9464192µF before holder/reference/CDAC/sign/periphery, compared with1.4598144µF for group32/reuse8. Group128 still needs only1,797,120 bank reads/token versus6,635,520 for group32. This potential area/service tradeoff is **SPECULATIVE** until its distinct site correlations, programming schedule and reference/holder behavior are tested. The current reuse2 mismatch results do not qualify reuse8. [Shape-only reuse ledger](../../../../../build/campaign/group128_precision_r50/reuse_count_ledger.json) records G=32/64/128 and S=1/2/4/8/16, including unused rectangular sites and FP16 metadata. Group128 storage is8.1354167 bits per actual weight because ragged scale groups exceed the ideal8.125-bit limit.
+The reuse2 group128 control is not the smallest arithmetic implementation. For fixed rectangular128-row physical sections shared among S=8 logical groups, shape accounting gives22,118,400 physical sites and172,800 two-bank physical group outputs; average useful reuse is4.8 because of ragged matrices. Minimal22-unit Cu4 magnitude capacitance is1.9464192µF before holder/reference/CDAC/sign/periphery, compared with1.4598144µF for group32/reuse8. Group128 still needs only1,797,120 bank reads/token versus6,635,520 for group32. This potential area/service tradeoff is **SPECULATIVE** until its distinct site correlations, programming schedule and reference/holder behavior are tested. The current reuse2 mismatch results do not qualify reuse8. Shape-only reuse ledger records G=32/64/128 and S=1/2/4/8/16, including unused rectangular sites and FP16 metadata. Group128 storage is8.1354167 bits per actual weight because ragged scale groups exceed the ideal8.125-bit limit.
 
 ### Constant-total grounded-bank remedy: costed boundary
 
@@ -26492,7 +25553,7 @@ Grounding unselected capacitor bottom plates can keep the signal-array total con
 
 Constant total removes code-dependent phase loading in the ideal network. It does not remove fixed array/holder mismatch: each physical section still needs verified matching or a static trim/calibration loop. Grounded unused rows remain capacitive loads, including ragged groups. Transient switch parasitics, coupling and PVT may spoil ideal code independence.
 
-For group32/reuse8, installed magnitude capacitance is1.4598144µF and matched signal and reference holders each add1.5842304µF. Including a120fF computational-array floor gives a3C sum4.7526912µF before CDAC/sign/trim/periphery. Group128/reuse8 has1.9464192µF installed magnitude C and1.9878912µF each signal/reference holder, with3C sum5.9636736µF. These are capacitance ledgers, not extracted area or an energy measurement. Smaller voltage kT/C is not a quality benefit by itself: at fixed charge gain the differential output charge variance grows as2kTC+σ_read²C². [Grounded22-unit ledger](../../../../../build/campaign/grounded_22unit_count_ledger.json).
+For group32/reuse8, installed magnitude capacitance is1.4598144µF and matched signal and reference holders each add1.5842304µF. Including a120fF computational-array floor gives a3C sum4.7526912µF before CDAC/sign/trim/periphery. Group128/reuse8 has1.9464192µF installed magnitude C and1.9878912µF each signal/reference holder, with3C sum5.9636736µF. These are capacitance ledgers, not extracted area or an energy measurement. Smaller voltage kT/C is not a quality benefit by itself: at fixed charge gain the differential output charge variance grows as2kTC+σ_read²C². Grounded22-unit ledger.
 
 All current bypass physical-budget campaigns still use the TT W=.42 measurement. Later SS amplitude tests required a larger or asymmetric switch, changing off-code loading. These runs therefore do not qualify a PVT-capable bank; the actual selected-width C(code) table must replace them in a separately frozen matched control.
 
@@ -26512,11 +25573,11 @@ The simple grounded group32 implementation exposes its poor cost. With original 
 
 The group128 frozen calibration grid supports a lower-cost candidate without blanket depth truncation. For each MVM/bank, retain settings whose deterministic calibration MSE plus declared2kT/C+50µV variance is at most1.05× that bank's frozen minimum. Pareto-filter by ADC decisions and connected computational-plus-reference capacitance, then choose minimum decisions, minimum C and finally minimum calibration proxy. This preserves rare13/14-bit range requirements.
 
-The candidate changes412/420 bank settings. Decisions fall22.754688M→19.910016M/token (12.50%); connected-plus-reference C falls14.755925→14.613655µF (0.964%). The sum of per-bank proxies rises2.956%, with maximum individual rise4.985%. Most reads become11-bit/span.5; minimum native LSB increases4.727→18.956µV. Calibration clipping rises2112→145654 bank events, so this is an offline **SPECULATIVE** cost candidate, not a quality pass. A5% per-bank proxy bound is not a5% network KL/PPL bound. Reference generation, span-dependent switching energy and physical DAC granularity still require pricing. [Frozen-grid candidate and assertions](../../../../../build/campaign/group128_precision_r50/adc_tolerance_1p05.json). Current full-model runs retain their original choices.
+The candidate changes412/420 bank settings. Decisions fall22.754688M→19.910016M/token (12.50%); connected-plus-reference C falls14.755925→14.613655µF (0.964%). The sum of per-bank proxies rises2.956%, with maximum individual rise4.985%. Most reads become11-bit/span.5; minimum native LSB increases4.727→18.956µV. Calibration clipping rises2112→145654 bank events, so this is an offline **SPECULATIVE** cost candidate, not a quality pass. A5% per-bank proxy bound is not a5% network KL/PPL bound. Reference generation, span-dependent switching energy and physical DAC granularity still require pricing. Frozen-grid candidate and assertions. Current full-model runs retain their original choices.
 
 ### Completed group128 physical result: FAILED
 
-Both fixed-die runs completed with source audits passing. All16 primary2kT/C+50µV cases fail the KL≤.01 gate; worst KL=.0166854 and worst PPL ratio=1.0313277. This includes both passages and resident/reuse2 schedules. Mismatch-only finite-ADC diagnostics pass7/8, with reuse2/die1/passage1 failing PPL=1.0116202. Thus good ideal group128 quality does not survive this physical-noise budget. [Completed summary](../../../../../build/campaign/group128_precision_r50/summary.json).
+Both fixed-die runs completed with source audits passing. All16 primary2kT/C+50µV cases fail the KL≤.01 gate; worst KL=.0166854 and worst PPL ratio=1.0313277. This includes both passages and resident/reuse2 schedules. Mismatch-only finite-ADC diagnostics pass7/8, with reuse2/die1/passage1 failing PPL=1.0116202. Thus good ideal group128 quality does not survive this physical-noise budget. Completed summary.
 
 The next frozen bracket uses group64,2kT/C+50µV, and the actual N.50/P.70 TT bank loading. It keeps unsmoothed FP16 group scales and uses resident/reuse4 sites per256-row tile. This source change is explicit: comparing against prior group128 also changes switch loading, so it is not an isolated group-size experiment. Calibration uses only the old128 clean tokens; original raw32 and group128 artifacts remain unchanged.
 
@@ -26530,7 +25591,7 @@ At an88fF/site budget, the unconstrained solution CuL=.693fF is below the availa
 
 Fewer ADC decisions can cost more reference energy. For the split DAC, a conditional switched-capacitance proxy is \`Csw=[2^(n−4)−1+16]·3.75fF\`; actual SAR activity and driver losses are unmeasured. The unguarded5%-proxy candidate increases summed Csw·span² by1.981× for group128 and1.646× for group64 because lower depth often doubles the reference span. A separate offline candidate constrains this proxy not to increase for any bank. It saves group1282.28% decisions and13.24% reference CV² proxy, with calibration proxy+0.999%; group64 saves.911% decisions and5.98% CV² proxy, with calibration proxy+1.268%. These are conditional cost frontiers, not measured power or quality improvements. The corresponding \`adc_tolerance_reference_CV2.json\` and \`adc_tolerance_1p05_CV2_guard.json\` live in each group campaign directory.
 
-Including the120fF floor and50µV read term reduces the attractive unequal-Cu thermal-only gains. A one-dimensional convex search at fixed installed capacitance and minimum Cu=2.77fF selects low2.77/high4.574fF at88fF/site and low2.77/high10.441fF at176fF/site. Total modeled thermal-plus-read variance improves8.41%/10.79% atG32,6.07%/7.04% atG64, and3.94%/4.15% atG128. [Conditional numerical sizing ledger](../../../../../build/campaign/grounded_unequal_cu_ledger.json). Matching, CDAC, actual capacitance geometry and whole-model quality are not included.
+Including the120fF floor and50µV read term reduces the attractive unequal-Cu thermal-only gains. A one-dimensional convex search at fixed installed capacitance and minimum Cu=2.77fF selects low2.77/high4.574fF at88fF/site and low2.77/high10.441fF at176fF/site. Total modeled thermal-plus-read variance improves8.41%/10.79% atG32,6.07%/7.04% atG64, and3.94%/4.15% atG128. Conditional numerical sizing ledger. Matching, CDAC, actual capacitance geometry and whole-model quality are not included.
 
 Early group64 differential results do not yet establish a robust point: first-passage resident seed61001 passes both dies, but seed61002/die1 fails PPL=1.017326 although KL=.008812 passes. The second die passes that same seed. Complete paired controls continue; a single seed's pass is not an architecture qualification.
 
@@ -26538,11 +25599,11 @@ The actual N.50/P.70 three-bit TT coupon now provides bypass C0=9.980125fF/C7=30
 
 Shared readout also changes noise covariance. Current50µV draws are independent per group conversion. If a shared converter instead has a perfectly common residual voltage offset or low-frequency component e across phases, group reconstruction gives variance \`σe²(Σg γg Cg)²\`, compared with \`σe²Σg(γg Cg)²\` for independent draws. The FP16 scales and charge-recovery multipliers γg are positive, so coherent accumulation can be severe. A real time-shared implementation must specify residual offset calibration, chopping or measured covariance; the independent-noise model is not automatically a model of a reused FIA.
 
-A fixed-radix mismatch must be judged by absolute product error as well as relative LSB/MSB distortion. Enumerating all1024 input codes in the ideal recurrence \`S(r,q)=Σj bj r^(10−j)\`, with fixed fractional pole error±.0498%, gives worst fullscale error≈.0991%. One noiseless fullscale scalar gain calibration reduces residual worst-code error to.02466%FS; at three times that pole error, residual is.07397%FS. This does not make the transfer perfectly binary, but suggests a grounded constant-total array may tolerate small fixed matching error with a paid per-section gain calibration. By contrast, r=.56967 from code-dependent loading still leaves7.2746%FS after scalar correction. [Exact finite-code bound](../../../../../build/campaign/radix_scalar_gain_bound.json). Finite calibration noise, reference accuracy, FP16 gain storage, numerator mismatch and transistor nonlinearity are excluded; no physical pass follows from this bound.
+A fixed-radix mismatch must be judged by absolute product error as well as relative LSB/MSB distortion. Enumerating all1024 input codes in the ideal recurrence \`S(r,q)=Σj bj r^(10−j)\`, with fixed fractional pole error±.0498%, gives worst fullscale error≈.0991%. One noiseless fullscale scalar gain calibration reduces residual worst-code error to.02466%FS; at three times that pole error, residual is.07397%FS. This does not make the transfer perfectly binary, but suggests a grounded constant-total array may tolerate small fixed matching error with a paid per-section gain calibration. By contrast, r=.56967 from code-dependent loading still leaves7.2746%FS after scalar correction. Exact finite-code bound. Finite calibration noise, reference accuracy, FP16 gain storage, numerator mismatch and transistor nonlinearity are excluded; no physical pass follows from this bound.
 
 ### Completed group64 physical result: no robust winner
 
-The selected-width group64 runs completed with both source audits passing. All16 physical cases pass KL≤.01, but only12/16 meet the joint PPL gate. Die1 resident passes1/4 and reuse4 passes3/4; die2 passes4/4 for each. Worst PPL ratio is1.01732595 for resident and1.01177894 for reuse4. Mismatch-only8/8 pass. [Completed conditional result](../../../../../build/campaign/group64_precision_r50/summary.json). These results improve the group128 noise failure without establishing a robust physical point.
+The selected-width group64 runs completed with both source audits passing. All16 physical cases pass KL≤.01, but only12/16 meet the joint PPL gate. Die1 resident passes1/4 and reuse4 passes3/4; die2 passes4/4 for each. Worst PPL ratio is1.01732595 for resident and1.01177894 for reuse4. Mismatch-only8/8 pass. Completed conditional result. These results improve the group128 noise failure without establishing a robust physical point.
 
 The authorized grounded group32 optimistic control now calibrates original Q8_0 weights with constant low28/high60fF per row,2kT/C and50µV additional read RMS. It validates those constants against actual unsigned AC records, preserves the old raw32 fixed numerator-error draws, and pays signal/reference holders and CDAC padding. It intentionally omits the unresolved signed topology, measured covariance and fixed-radix mismatch, so it is an optimistic quality test of the increased-capacitance cost rather than a complete hardware model.
 
@@ -26602,4 +25663,4 @@ A conditional unequal-cap loading budget is in \`grounded_unequal_extra_loading_
 This counterexample shows why a transistor comparator/FIA RMS cannot simply be relabeled as complete-ADC output RMS without its temporal covariance and decision schedule. It does NOT justify reducing the frozen50µV noise target or substituting these uniform-input factors into network quality. Actual white, flicker, reset, reference and sampling contributions may have different correlations; decision-dependent gain/settling and clipping also matter. All current quality campaigns keep their declared one-sample equivalent-read-noise model. **VERIFIED numerical ideal-tree diagnostic; physical interpretation unqualified.**
 
 The exact original Q8_0 code histogram also supports a conditional mismatch-moment improvement with the unequal coupons. Mean low/high magnitudes are3.5502373/4.9057470. PDK typical-RC parameters givewc=w−.025µm andσ_nominal=.028/wc; because the random term applies the nominal MIM model capacitance, keeping extracted added mutual deterministic gives effective signalσ=.028/wc*Cmodel/Cmutual. Equal/low/high effectiveσ are2.21964%/2.79448%/2.05713%. With independent replicated unit errors, expected coefficient variance isσ_L²E[low]+64σ_H²E[high]. The unequal/equal variance ratio is0.86704867 (RMS ratio0.93115448). \`grounded_unequal_coupon_fixed_mismatch_moment.json\` records the histogram, coupon and exact PDK parameter-file hashes. This is a fixed-coefficient population moment, not redrawn-perMVM noise, physical yield, scale-aware task loss, or full-model validation. Correlated mismatch, denominator, holder, SAR and extracted-parasitic variation remain absent.
-`,Rg=Object.assign({"../content/Template/Environment/Cheatsheet.ts":qh,"../content/Template/Environment/Setup.ts":zh,"../content/Template/Environment/Troubleshooting.ts":Wh,"../content/Template/Flows/Analog.ts":Kh,"../content/Template/Flows/CI.ts":Qh,"../content/Template/Flows/Digital.ts":Xh,"../content/Template/Flows/Mixed-Signal.ts":np,"../content/Template/Flows/Quick-Start.ts":ip,"../content/Template/Getting-Started/Introduction.ts":op,"../content/Template/Getting-Started/Template-Project.ts":dp,"../content/Template/TinyTapeout/Create-Package.ts":pp,"../content/Template/TinyTapeout/Overview.ts":fp,"../content/Template/TinyTapeout/Submit-Package.ts":bp,"../content/Template/Updating-Docs/Build-Deploy.ts":_p,"../content/Template/Updating-Docs/Markdown-Syntax.ts":Sp}),Ng=Object.assign({"../content/Project/ANALOG_LUT_STUDY.md":xp,"../content/Project/CASCADE.md":kp,"../content/Project/CHIP2_SPEC.md":Ip,"../content/Project/COMPOSED_RESULTS.md":Mp,"../content/Project/CONTRACT.md":Ep,"../content/Project/ERROR_IMPACT.md":Rp,"../content/Project/FLASH_LESSONS.md":Np,"../content/Project/IMC_ANALOG_PIPELINE_ROUND.md":Dp,"../content/Project/IMC_ANALOG_STORAGE_HANDOFF.md":Vp,"../content/Project/IMC_ARCHITECTURE_RESEARCH.md":Pp,"../content/Project/IMC_ARCHITECTURE_SEARCH.md":Fp,"../content/Project/IMC_BSIM_NOISE_AUDIT.md":qp,"../content/Project/IMC_CAPACITOR_SIZING.md":Lp,"../content/Project/IMC_CHARGE_AVERAGE_EXPERIMENT.md":Op,"../content/Project/IMC_CIRCUIT_CONVERGENCE.md":zp,"../content/Project/IMC_CIRCUIT_RESEARCH.md":Bp,"../content/Project/IMC_CIRCUIT_TARGETS.md":jp,"../content/Project/IMC_COMPETITOR_RESEARCH.md":Wp,"../content/Project/IMC_DISCOVERY.md":Up,"../content/Project/IMC_DISCOVERY_CIRCUITS.md":Gp,"../content/Project/IMC_DISCOVERY_CRITIC.md":Kp,"../content/Project/IMC_DISCOVERY_PRIOR_ART.md":Hp,"../content/Project/IMC_GMID_PRODUCT_SIZING.md":Jp,"../content/Project/IMC_GROUPED_WEIGHTS.md":Qp,"../content/Project/IMC_HOLD_RETENTION.md":Yp,"../content/Project/IMC_ITERATION_SPEED.md":$p,"../content/Project/IMC_LOG_GMID_ROUND.md":Xp,"../content/Project/IMC_LOG_PIPELINE_CRITIC.md":Zp,"../content/Project/IMC_LOG_PIPELINE_PRIOR_ART.md":em,"../content/Project/IMC_MAPPING_EXPERIMENT.md":nm,"../content/Project/IMC_MYTHIC_NULLING.md":tm,"../content/Project/IMC_NULL_READOUT_OPTIONS.md":am,"../content/Project/IMC_NULL_SAR.md":im,"../content/Project/IMC_NULL_SAR_REVIEW.md":rm,"../content/Project/IMC_OPTIMIZATION_RESEARCH.md":sm,"../content/Project/IMC_OUTLIER_PLANES.md":om,"../content/Project/IMC_PRECISION_EXPERIMENT.md":cm,"../content/Project/IMC_RADIX_FULL_MODEL.md":lm,"../content/Project/IMC_SIZING_RESEARCH.md":dm,"../content/Project/IMC_SMOOTH_RADIX.md":um,"../content/Project/IMC_SYSTEM_BENCHMARK.md":hm,"../content/Project/IMC_TRANSIENT_NOISE_PATH.md":pm,"../content/Project/INTERFACES.md":mm,"../content/Project/KV_FEASIBILITY.md":gm,"../content/Project/LAYOUT_REQUIREMENTS.md":fm,"../content/Project/METRICS.md":ym,"../content/Project/MOE_MAPPING.md":vm,"../content/Project/MYTHIC_ARCH.md":bm,"../content/Project/NEXT_SESSION.md":wm,"../content/Project/NULLSEEK.md":Tm,"../content/Project/OPTIMIZATION_RESULTS.md":_m,"../content/Project/OT_IMPACT.md":Cm,"../content/Project/PTAT_SCORE.md":Am,"../content/Project/RESULTS.md":Sm,"../content/Project/RESULTS2.md":xm,"../content/Project/RESULTS3.md":km,"../content/Project/SERVO_EG.md":Im,"../content/Project/SOHU_VERIFIED.md":Mm,"../content/Project/STATUS.md":Em,"../content/Project/THE_COMPILER_STRUCTURE.md":Rm,"../content/Project/VERTICAL_3D.md":Nm,"../content/Project/campaign/CAPACITOR_LAYOUT.md":Dm,"../content/Project/campaign/CAP_STACK.md":Vm,"../content/Project/campaign/CIRCUIT_EVIDENCE.md":Pm,"../content/Project/campaign/COMPACT_WEIGHT_CELLS.md":Fm,"../content/Project/campaign/CONNECTED_CHARGE_CORE.md":qm,"../content/Project/campaign/DECISION_NOISE.md":Lm,"../content/Project/campaign/DENSE_CORE.md":Om,"../content/Project/campaign/DYNAMIC_PREAMP.md":zm,"../content/Project/campaign/FIA_CHARACTERIZATION.md":Bm,"../content/Project/campaign/FIA_CONNECTED_STACK.md":jm,"../content/Project/campaign/FIA_DAC_ALL_WEIGHTS.md":Wm,"../content/Project/campaign/FIA_FINE_SAR.md":Um,"../content/Project/campaign/FIA_INDEPENDENT_AUDIT.md":Gm,"../content/Project/campaign/FIA_NOISE_AUDIT.md":Km,"../content/Project/campaign/FIA_OUTPUT_DAC.md":Hm,"../content/Project/campaign/FIA_OUTPUT_HOLD.md":Jm,"../content/Project/campaign/FIA_PASSIVE_HYBRID_BOUND.md":Qm,"../content/Project/campaign/FIA_PIPELINED_PRIOR_ART.md":Ym,"../content/Project/campaign/FIA_STACK_INDEPENDENT_AUDIT.md":$m,"../content/Project/campaign/FIXED_CAP_MISMATCH.md":Xm,"../content/Project/campaign/LATCH_CORRELATION.md":Zm,"../content/Project/campaign/LATCH_GMID.md":eg,"../content/Project/campaign/LOW_RANK_CORRECTION.md":ng,"../content/Project/campaign/NATIVE_PIPELINE.md":tg,"../content/Project/campaign/NONBINARY_ACTIVATIONS.md":ag,"../content/Project/campaign/OPTIMIZATION_TARGETS.md":ig,"../content/Project/campaign/PIPELINE_INDEPENDENT_AUDIT.md":rg,"../content/Project/campaign/POPULATION.md":sg,"../content/Project/campaign/PREAMP_SIZING_BOUND.md":og,"../content/Project/campaign/PROGRAMMABLE_CAP_CHARACTERIZATION.md":cg,"../content/Project/campaign/PROGRAMMABLE_CAP_MATH.md":lg,"../content/Project/campaign/PROGRAMMABLE_SIGN_INDEPENDENT_AUDIT.md":dg,"../content/Project/campaign/README.md":ug,"../content/Project/campaign/READOUT_ARCHITECTURE_ROUND.md":hg,"../content/Project/campaign/RESET_NOISE_PRECISION.md":pg,"../content/Project/campaign/RESET_SHARE_NOISE.md":mg,"../content/Project/campaign/SAR_NOISE_MAPPING.md":gg,"../content/Project/campaign/SCALE_ALIGNMENT.md":fg,"../content/Project/campaign/SESSION_COMPARISON.md":yg,"../content/Project/campaign/SHARED_CALIBRATABLE_ARITHMETIC.md":vg,"../content/Project/campaign/SHARE_RADIX_MISMATCH_AUDIT.md":bg,"../content/Project/campaign/SIGNED_GROUNDED_CORE.md":wg,"../content/Project/campaign/SOTA_EVIDENCE.md":Tg,"../content/Project/campaign/SPLIT_DAC_CODE_CRITIC.md":_g,"../content/Project/campaign/STORAGE_SHARING.md":Cg,"../content/Project/campaign/SWITCH_ADMITTANCE.md":Ag,"../content/Project/campaign/SYSTEM_EVIDENCE.md":Sg,"../content/Project/campaign/TWO_STEP_SAR_FEASIBILITY.md":xg,"../content/Project/campaign/UNIT_CURRENT_DIVIDER.md":kg,"../content/Project/campaign/VIRTUAL_COLUMN_FEASIBILITY.md":Ig,"../content/Project/campaign/WEIGHT_DIGITS.md":Mg,"../content/Project/campaign/WEIGHT_REPRESENTATION.md":Eg}),Ns={};for(const[e,n]of Object.entries(Rg))Ns[e]=n;var Uo;for(const[e,n]of Object.entries(Ng)){const t=n,a=((Uo=t.match(/^#\s+(.+)$/m))==null?void 0:Uo[1])??e.split("/").pop().replace(/\.md$/,"");Ns[e]={metadata:{title:a,order:e.endsWith("/README.md")?-1:0},content:t}}function Dg(){const e=new Map;for(const[t,a]of Object.entries(Ns)){const i=t.match(/\/content\/(.+)\/([^/]+)\.(ts|md)$/);if(!i)continue;const[,r,s]=i;e.has(r)||e.set(r,{id:r,title:r.split("/").map(c=>c.split("-").map(d=>d.charAt(0).toUpperCase()+d.slice(1)).join(" ")).join(" / "),pages:[]}),e.get(r).pages.push({id:s,path:`${r}/${s}`,metadata:a.metadata,content:a.content})}e.forEach(t=>{t.pages.sort((a,i)=>a.metadata.order-i.metadata.order||a.metadata.title.localeCompare(i.metadata.title))});const n=t=>t.startsWith("Template")?1:0;return Array.from(e.values()).sort((t,a)=>n(t.id)!==n(a.id)?n(t.id)-n(a.id):t.id.endsWith("Getting-Started")?-1:a.id.endsWith("Getting-Started")?1:t.id.localeCompare(a.id))}function Vg(){const[e]=en.useState(()=>Dg()),[n,t]=en.useState(""),[a,i]=en.useState(null);en.useEffect(()=>{if(e.length>0&&!n){const s=e[0].pages[0];s&&(t(s.path),i(s))}},[e,n]);const r=s=>{const o=s.startsWith("/")?s.slice(1):s;t(o);for(const c of e){const d=c.pages.find(g=>g.path===o);if(d){i(d);break}}};return I.jsxs("div",{className:"app",children:[I.jsx(Nh,{sections:e,currentPath:n,onNavigate:r}),I.jsx("main",{className:"content",children:a?I.jsx("article",{className:"article",children:I.jsx(Vh,{content:a.content,onNavigate:r,path:a.path})}):I.jsx("div",{className:"empty-state",children:I.jsx("p",{children:"Select a page from the sidebar to get started"})})})]})}Gi.createRoot(document.getElementById("root")).render(I.jsx(wd.StrictMode,{children:I.jsx(Vg,{})}));
+`,kg=Object.assign({"../content/Template/Environment/Cheatsheet.ts":Vh,"../content/Template/Environment/Setup.ts":zh,"../content/Template/Environment/Troubleshooting.ts":Wh,"../content/Template/Flows/Analog.ts":Kh,"../content/Template/Flows/CI.ts":Qh,"../content/Template/Flows/Digital.ts":Xh,"../content/Template/Flows/Mixed-Signal.ts":np,"../content/Template/Flows/Quick-Start.ts":ip,"../content/Template/Getting-Started/Introduction.ts":op,"../content/Template/Getting-Started/Template-Project.ts":dp,"../content/Template/TinyTapeout/Create-Package.ts":pp,"../content/Template/TinyTapeout/Overview.ts":fp,"../content/Template/TinyTapeout/Submit-Package.ts":bp,"../content/Template/Updating-Docs/Build-Deploy.ts":Cp,"../content/Template/Updating-Docs/Markdown-Syntax.ts":Sp}),Ig=Object.assign({"../content/Project/APPLICATION_ATTENTION.md":xp,"../content/Project/CASCADE.md":kp,"../content/Project/COMPOSED_RESULTS.md":Ip,"../content/Project/CONTRACT.md":Mp,"../content/Project/ERROR_IMPACT.md":Ep,"../content/Project/FLASH_LESSONS.md":Rp,"../content/Project/IMC_ANALOG_PIPELINE_ROUND.md":Dp,"../content/Project/IMC_ANALOG_STORAGE_HANDOFF.md":Np,"../content/Project/IMC_ARCHITECTURE_RESEARCH.md":Fp,"../content/Project/IMC_ARCHITECTURE_SEARCH.md":Pp,"../content/Project/IMC_BSIM_NOISE_AUDIT.md":qp,"../content/Project/IMC_CAPACITOR_SIZING.md":Vp,"../content/Project/IMC_CHARGE_AVERAGE_EXPERIMENT.md":Op,"../content/Project/IMC_CIRCUIT_CONVERGENCE.md":Lp,"../content/Project/IMC_CIRCUIT_RESEARCH.md":zp,"../content/Project/IMC_CIRCUIT_TARGETS.md":Bp,"../content/Project/IMC_COMPETITOR_RESEARCH.md":jp,"../content/Project/IMC_DISCOVERY.md":Wp,"../content/Project/IMC_DISCOVERY_CIRCUITS.md":Gp,"../content/Project/IMC_DISCOVERY_CRITIC.md":Up,"../content/Project/IMC_DISCOVERY_PRIOR_ART.md":Kp,"../content/Project/IMC_GMID_PRODUCT_SIZING.md":Hp,"../content/Project/IMC_GROUPED_WEIGHTS.md":Jp,"../content/Project/IMC_HOLD_RETENTION.md":Qp,"../content/Project/IMC_ITERATION_SPEED.md":Yp,"../content/Project/IMC_LOG_GMID_ROUND.md":$p,"../content/Project/IMC_LOG_PIPELINE_CRITIC.md":Xp,"../content/Project/IMC_LOG_PIPELINE_PRIOR_ART.md":Zp,"../content/Project/IMC_MAPPING_EXPERIMENT.md":em,"../content/Project/IMC_MYTHIC_NULLING.md":nm,"../content/Project/IMC_NULL_READOUT_OPTIONS.md":tm,"../content/Project/IMC_NULL_SAR.md":am,"../content/Project/IMC_NULL_SAR_REVIEW.md":im,"../content/Project/IMC_OPTIMIZATION_RESEARCH.md":rm,"../content/Project/IMC_OUTLIER_PLANES.md":sm,"../content/Project/IMC_PRECISION_EXPERIMENT.md":om,"../content/Project/IMC_RADIX_FULL_MODEL.md":cm,"../content/Project/IMC_SIZING_RESEARCH.md":lm,"../content/Project/IMC_SMOOTH_RADIX.md":dm,"../content/Project/IMC_SYSTEM_BENCHMARK.md":um,"../content/Project/IMC_TRANSIENT_NOISE_PATH.md":hm,"../content/Project/INTERFACES.md":pm,"../content/Project/LAYOUT_REQUIREMENTS.md":mm,"../content/Project/METRICS.md":gm,"../content/Project/MOE_MAPPING.md":fm,"../content/Project/MYTHIC_ARCH.md":vm,"../content/Project/NEXT_SESSION.md":ym,"../content/Project/NULLSEEK.md":bm,"../content/Project/OPTIMIZATION_RESULTS.md":wm,"../content/Project/RESULTS.md":Tm,"../content/Project/RESULTS2.md":Cm,"../content/Project/RESULTS3.md":Am,"../content/Project/SERVO_EG.md":_m,"../content/Project/SOHU_VERIFIED.md":Sm,"../content/Project/STATUS.md":xm,"../content/Project/THE_COMPILER_STRUCTURE.md":km,"../content/Project/VERTICAL_3D.md":Im,"../content/Project/campaign/CAPACITOR_LAYOUT.md":Mm,"../content/Project/campaign/CAP_STACK.md":Em,"../content/Project/campaign/CIRCUIT_EVIDENCE.md":Rm,"../content/Project/campaign/COMPACT_WEIGHT_CELLS.md":Dm,"../content/Project/campaign/CONNECTED_CHARGE_CORE.md":Nm,"../content/Project/campaign/DECISION_NOISE.md":Fm,"../content/Project/campaign/DENSE_CORE.md":Pm,"../content/Project/campaign/DYNAMIC_PREAMP.md":qm,"../content/Project/campaign/FIA_CHARACTERIZATION.md":Vm,"../content/Project/campaign/FIA_CONNECTED_STACK.md":Om,"../content/Project/campaign/FIA_DAC_ALL_WEIGHTS.md":Lm,"../content/Project/campaign/FIA_FINE_SAR.md":zm,"../content/Project/campaign/FIA_INDEPENDENT_AUDIT.md":Bm,"../content/Project/campaign/FIA_NOISE_AUDIT.md":jm,"../content/Project/campaign/FIA_OUTPUT_DAC.md":Wm,"../content/Project/campaign/FIA_OUTPUT_HOLD.md":Gm,"../content/Project/campaign/FIA_PASSIVE_HYBRID_BOUND.md":Um,"../content/Project/campaign/FIA_PIPELINED_PRIOR_ART.md":Km,"../content/Project/campaign/FIA_STACK_INDEPENDENT_AUDIT.md":Hm,"../content/Project/campaign/FIXED_CAP_MISMATCH.md":Jm,"../content/Project/campaign/LATCH_CORRELATION.md":Qm,"../content/Project/campaign/LATCH_GMID.md":Ym,"../content/Project/campaign/LOW_RANK_CORRECTION.md":$m,"../content/Project/campaign/NATIVE_PIPELINE.md":Xm,"../content/Project/campaign/NONBINARY_ACTIVATIONS.md":Zm,"../content/Project/campaign/OPTIMIZATION_TARGETS.md":eg,"../content/Project/campaign/PIPELINE_INDEPENDENT_AUDIT.md":ng,"../content/Project/campaign/POPULATION.md":tg,"../content/Project/campaign/PREAMP_SIZING_BOUND.md":ag,"../content/Project/campaign/PROGRAMMABLE_CAP_CHARACTERIZATION.md":ig,"../content/Project/campaign/PROGRAMMABLE_CAP_MATH.md":rg,"../content/Project/campaign/PROGRAMMABLE_SIGN_INDEPENDENT_AUDIT.md":sg,"../content/Project/campaign/README.md":og,"../content/Project/campaign/READOUT_ARCHITECTURE_ROUND.md":cg,"../content/Project/campaign/RESET_NOISE_PRECISION.md":lg,"../content/Project/campaign/RESET_SHARE_NOISE.md":dg,"../content/Project/campaign/SAR_NOISE_MAPPING.md":ug,"../content/Project/campaign/SCALE_ALIGNMENT.md":hg,"../content/Project/campaign/SESSION_COMPARISON.md":pg,"../content/Project/campaign/SHARED_CALIBRATABLE_ARITHMETIC.md":mg,"../content/Project/campaign/SHARE_RADIX_MISMATCH_AUDIT.md":gg,"../content/Project/campaign/SIGNED_GROUNDED_CORE.md":fg,"../content/Project/campaign/SOTA_EVIDENCE.md":vg,"../content/Project/campaign/SPLIT_DAC_CODE_CRITIC.md":yg,"../content/Project/campaign/STORAGE_SHARING.md":bg,"../content/Project/campaign/SWITCH_ADMITTANCE.md":wg,"../content/Project/campaign/SYSTEM_EVIDENCE.md":Tg,"../content/Project/campaign/TWO_STEP_SAR_FEASIBILITY.md":Cg,"../content/Project/campaign/UNIT_CURRENT_DIVIDER.md":Ag,"../content/Project/campaign/VIRTUAL_COLUMN_FEASIBILITY.md":_g,"../content/Project/campaign/WEIGHT_DIGITS.md":Sg,"../content/Project/campaign/WEIGHT_REPRESENTATION.md":xg}),Ds={};for(const[e,n]of Object.entries(kg))Ds[e]=n;var Go;for(const[e,n]of Object.entries(Ig)){const t=n,a=((Go=t.match(/^#\s+(.+)$/m))==null?void 0:Go[1])??e.split("/").pop().replace(/\.md$/,"");Ds[e]={metadata:{title:a,order:e.endsWith("/README.md")?-1:0},content:t}}function Mg(){const e=new Map;for(const[t,a]of Object.entries(Ds)){const i=t.match(/\/content\/(.+)\/([^/]+)\.(ts|md)$/);if(!i)continue;const[,r,s]=i;e.has(r)||e.set(r,{id:r,title:r.split("/").map(c=>c.split("-").map(d=>d.charAt(0).toUpperCase()+d.slice(1)).join(" ")).join(" / "),pages:[]}),e.get(r).pages.push({id:s,path:`${r}/${s}`,metadata:a.metadata,content:a.content})}e.forEach(t=>{t.pages.sort((a,i)=>a.metadata.order-i.metadata.order||a.metadata.title.localeCompare(i.metadata.title))});const n=t=>t.startsWith("Template")?1:0;return Array.from(e.values()).sort((t,a)=>n(t.id)!==n(a.id)?n(t.id)-n(a.id):t.id.endsWith("Getting-Started")?-1:a.id.endsWith("Getting-Started")?1:t.id.localeCompare(a.id))}function Eg(){const[e]=en.useState(()=>Mg()),[n,t]=en.useState(""),[a,i]=en.useState(null);en.useEffect(()=>{if(e.length>0&&!n){const s=e[0].pages[0];s&&(t(s.path),i(s))}},[e,n]);const r=s=>{const o=s.startsWith("/")?s.slice(1):s;t(o);for(const c of e){const d=c.pages.find(g=>g.path===o);if(d){i(d);break}}};return I.jsxs("div",{className:"app",children:[I.jsx(Dh,{sections:e,currentPath:n,onNavigate:r}),I.jsx("main",{className:"content",children:a?I.jsx("article",{className:"article",children:I.jsx(Fh,{content:a.content,onNavigate:r,path:a.path})}):I.jsx("div",{className:"empty-state",children:I.jsx("p",{children:"Select a page from the sidebar to get started"})})})]})}Ui.createRoot(document.getElementById("root")).render(I.jsx(wd.StrictMode,{children:I.jsx(Eg,{})}));

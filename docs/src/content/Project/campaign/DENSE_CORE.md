@@ -87,9 +87,9 @@ and array reset, so shortening recovery cannot hide those disturbances.
 
 ## Reproduction and scope
 
-- [Dense workload testbench](../../../../../analog/testbenches/tb_imc_dense_core.py)
-- [Preserved numerical controls](../../../../../analog/testbenches/tb_imc_dense_convergence.py)
-- [Explicit geometry and waveform transformations](../../../../../analog/testbenches/imc_research_geometry.py)
+- Dense workload testbench
+- Preserved numerical controls
+- Explicit geometry and waveform transformations
 - Evidence: `build/campaign/dense_core/`, including exact decks, source/fixture
   hashes, logs and incomplete traces.
 

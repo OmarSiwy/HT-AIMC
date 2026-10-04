@@ -1,6 +1,6 @@
 # Concrete passive-MAC sizing experiment
 
-Date: 2026-09-07. Research testbench: [tb_imc_sizing_research.py](../../../../analog/testbenches/tb_imc_sizing_research.py). Artifacts: [imc_sizing_research.json](../../../../build/sim/imc_sizing_research.json). This supplements [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md) and [IMC_CHARGE_AVERAGE_EXPERIMENT.md](IMC_CHARGE_AVERAGE_EXPERIMENT.md); it changes no operational circuit.
+Date: 2026-09-07. Research testbench: tb_imc_sizing_research.py. Artifacts: imc_sizing_research.json. This supplements [IMC_CIRCUIT_RESEARCH.md](IMC_CIRCUIT_RESEARCH.md) and [IMC_CHARGE_AVERAGE_EXPERIMENT.md](IMC_CHARGE_AVERAGE_EXPERIMENT.md); it changes no operational circuit.
 
 **The most complete tested candidate is a 128-row × 8-column signed passive macro with physical bit-significance accumulation.** On three saved FFN-down input words, a variable seven/six/five-plane schedule with a 15.6-ns sharing aperture achieves 70.13-dB deterministic transfer at TT/27°C and 62.47 dB at SS/85°C; both pass the original full-word error screen. Mean A8 word time is 366 ns, and ideal-port positive delivery is 4.4998/4.5872 fJ/MAC, before ADC, memory-control and regulator costs. It uses four-fF unit capacitors, 0.42-µm hybrid row switches, 3.36-µm matched reset switches and 6.72-µm sharing TGs. The faster 318-ns schedule passes TT but fails SS. This is a schematic-level W4 result with ideal capacitors and incomplete parasitics; it does not establish 100 or 250 TOPS/W for a chip.
 
@@ -8,7 +8,7 @@ The concrete improvements are physically shared row drivers, legal charge accumu
 
 ## Candidate circuit and physical boundary
 
-The present [weight_tile.py](../../../../analog/schematics/components/weight_tile/weight_tile.py) repeatedly transfers charge through a biased OTA, uses a nominal 0.15-fF unit, 4-fF ballast per populated bank, and a 500-fF column ballast. Its compile-time capacitor selection is not a programmable memory implementation. The initial sizing experiment instead directly connects the tops of sixteen weighted capacitor banks to a passive output node. Each bottom plate selects common mode, a high reference, or a low reference through a **real complementary Sky130 transmission gate**. The column reset also uses a real TG. There is no per-weight top ballast or standing OTA bias.
+The present weight_tile.py repeatedly transfers charge through a biased OTA, uses a nominal 0.15-fF unit, 4-fF ballast per populated bank, and a 500-fF column ballast. Its compile-time capacitor selection is not a programmable memory implementation. The initial sizing experiment instead directly connects the tops of sixteen weighted capacitor banks to a passive output node. Each bottom plate selects common mode, a high reference, or a low reference through a **real complementary Sky130 transmission gate**. The column reset also uses a real TG. There is no per-weight top ballast or standing OTA bias.
 
 The initial weight vector is `[1,2,3,4,5,6,7,8]` repeated twice: sixteen **fixed unsigned 4-bit weights**. Inputs are signed ternary activation slices, `x_i ∈ {-1,0,+1}`. A zero-input bank stays clamped to common mode during evaluation, rather than floating and changing the denominator. The 4-bit banks are nominal lumped equivalents of binary-weighted unit-cap combinations. This initial fixture does not contain SRAM, programmable coefficient switches, or signed-weight routing. The later distinct-column matrix experiment described below adds complementary row buses and fixed signed-weight routing, with their energy included. Runtime programmable storage remains missing throughout.
 
@@ -110,7 +110,7 @@ This includes the perturbation of the denominator. It avoids asserting a univers
 
 ## gm/ID decision
 
-The actual [sizing lookup](../../../../analog/schematics/sizing/lookup.py) tables are real nominal Sky130 sweeps at VDS=0.9 V and 27°C. For an NMOS input device at L=0.3 µm and fixed gm=72 µS:
+The actual sizing lookup tables are real nominal Sky130 sweeps at VDS=0.9 V and 27°C. For an NMOS input device at L=0.3 µm and fixed gm=72 µS:
 
 | gm/ID (V⁻¹) | ID (µA) | W (µm) | VGS (V) | Intrinsic gm/gds |
 |---:|---:|---:|---:|---:|
@@ -129,7 +129,7 @@ An identical-column loading test multiplies signal/load capacitance by sixteen a
 
 The first lumped-reset deck exceeded the PDK's device-width bins; it was corrected to one real reset TG per column. A 32-column extreme subsequently hit a ngspice startup timestep failure and is **not a result**. The script now rejects incomplete transients explicitly even if ngspice's batch process returns exit code zero. These solver failures are not silicon failures, and neither should be silently converted into performance points.
 
-The real [StrongARM generator](../../../../analog/schematics/components/strongarm/strongarm.py) was also tested against a held 696-fF input capacitor, matched 8-kΩ/60-fF input filters, and 10-fF loads on both latch outputs. A real TG acquires the held input. A separate zero-input acquisition calibrates its deterministic injection offset; the following tests start at approximately ±0.977 mV, half an LSB for a nine-bit, one-volt quantizer. Nine repeated decisions at the **same threshold** expose cumulative kickback. This is not a SAR conversion, since no changing CDAC or bit decisions are implemented.
+The real StrongARM generator was also tested against a held 696-fF input capacitor, matched 8-kΩ/60-fF input filters, and 10-fF loads on both latch outputs. A real TG acquires the held input. A separate zero-input acquisition calibrates its deterministic injection offset; the following tests start at approximately ±0.977 mV, half an LSB for a nine-bit, one-volt quantizer. Nine repeated decisions at the **same threshold** expose cumulative kickback. This is not a SAR conversion, since no changing CDAC or bit decisions are implemented.
 
 | Latch input-pair width | Corner / clock edge | Initial differential | Nine decisions | Held-node drift | Positive energy per decision |
 |---|---|---:|---|---:|---:|

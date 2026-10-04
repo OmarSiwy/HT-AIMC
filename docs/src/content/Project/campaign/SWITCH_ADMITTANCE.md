@@ -7,7 +7,7 @@ capacitance only about5–7% when the opposite channel terminal and bodies are
 AC stiff. A complete floating-clock stack is **SPECULATIVE** and low priority;
 clock isolation, retention, safe bias and added capacitance have not been built.
 
-Source: [`tb_imc_switch_admittance.py`](../../../../../analog/testbenches/tb_imc_switch_admittance.py).
+Source: `tb_imc_switch_admittance.py`.
 The60 configurations per corner spanW=.42/.84/1.68/3.36/13.44µm,L=.15µm,
 terminalA=.85/.9/.95V withB=.9V, on/off gates, and zero versus explicit
 rectangular.29µm diffusion. NMOS andPMOS share the same width. The geometry

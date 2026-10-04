@@ -1,25 +1,25 @@
 # MoE mapping onto AnalogIOC (#19 "support any model")
 
 Analysis + energy projection, **not** an implementation. It answers how a
-Mixture-of-Experts (MoE) model maps onto the two-chip architecture, quantifies
+Mixture-of-Experts (MoE) model maps onto the IMC tiles, quantifies
 the token/J advantage, names what blocks a full analog MoE, and states honest
 scope. No SPICE, no compiler lowering — the compiler MoE path is deferred (§4).
 
 Source labels: [compiler doc Bn/Part IV] = THE_COMPILER_STRUCTURE.md;
-[CHIP2 §n] = CHIP2_SPEC.md; [27l6] = the MoE-economics note; [projected] =
+[27l6] = the MoE-economics note; [projected] =
 law-scaled, no sim. specs.py is imported read-only for the energy numbers.
 
 ---
 
-## 1. How MoE maps to the two chips
+## 1. How MoE maps to the chip
 
 MoE is not a new operator surface. THE_COMPILER_STRUCTURE.md already places
 every piece of it; this section just reads them off.
 
-**Expert weights → Chip 1 analog tiles (already weight-stationary).**
+**Expert weights → analog IMC tiles (already weight-stationary).**
 An expert FFN is `W_down·(SiLU(W_gate·x) ⊙ W_up·x)` — the same
 `activation × weight` position-local GEMM as the dense MLP (steps 10–11), and
-Chip 1 is built for exactly that: mostly-fixed analog in-memory tiles whose
+the chip is built for exactly that: mostly-fixed analog in-memory tiles whose
 weights are stationary [compiler doc Part IV / B1 S1]. An expert is just a set
 of weight tiles. The array cannot time-multiplex, so each expert occupies
 crosspoints permanently and area is charged for all `E` experts (§2) [27l6].
@@ -30,28 +30,9 @@ The router is a top-k over a learned gate: `logits = W_g·x` (fp32), then
 the ONLY dynamic-shape residue in the whole model — binding stage **S5b**
 [compiler doc B1]. It is small, control-flow-adjacent, and **not** analog
 (router logits are fp32 by mandate: low-precision ties cause routing thrash
-[compiler doc precision table]). It lives in Chip 1's small digital
+[compiler doc precision table]). It lives in the chip's small digital
 dispatch island — the programmable escape hatch that B1 licenses, not a sea of
 cores [compiler doc Part IV].
-
-**Decode-FFN → Chip 2 with one CFG bit.**
-The paper's load-bearing insight: MoE **decode** expert-FFN has the *same*
-broadcast-stream-reduce geometry as attention — tiny activation broadcast in,
-huge expert weight matrix streamed locally from the banks, tiny result out
-[compiler doc B3 "the MoE row is the one people miss"]. So Chip 2 offloads it
-with **no netlist change**: `CFG.MODE ∈ {ATTN, FFN}` swaps bank contents
-(K,V → expert weight tiles), the broadcast operand (q → activation x), and
-bypasses the WTA/exp/rescale softmax path; the fp32 combine island degrades
-to a plain long-axis accumulate (expert accumulator fp32) [CHIP2 §8].
-Expert-slice swap cost is ~0.25 nJ / ~38 us for a 128×256 slice, fine against
-ms-class routing cadence [CHIP2 §8, projected]. Routing and the SiLU
-nonlinearity stay on Chip 1 (S5b / position-local).
-
-> Prefill vs decode split (unchanged from the dense case, §4 of compiler doc):
-> at high batch the expert FFN is compute-bound and wants Chip 1's big array;
-> at low-batch decode it is bandwidth-bound with weight-reuse ≈ 1 (different
-> tokens pick different experts [compiler doc B2]) and wants Chip 2's
-> stream-at-the-weights geometry.
 
 ### What the compiler must emit for S5b
 
@@ -64,7 +45,7 @@ the entire dynamic-shape surface, and it is small:
 | **top-k indices** (per token) | top-k over expert axis (A4) | dispatch |
 | **per-expert group sizes** (runtime shapes) | histogram / bincount over expert axis (A4) | grouped-GEMM scheduler |
 | Expert **offsets** (prefix over group sizes) | cumsum (A4) | gather |
-| **gather** (dispatch): tokens → expert order | gather by index vector (A5) | Chip 1 tiles / Chip 2 banks |
+| **gather** (dispatch): tokens → expert order | gather by index vector (A5) | expert tiles |
 | **grouped GEMM**, per-group shapes | A1 "the one that hurts" | expert tiles |
 | **scatter-accumulate** (combine): expert order → token order | scatter-with-accumulate (A5) | residual stream |
 | Capacity / drop policy (padding to a static cap, or ragged) | histogram + clamp | scheduler |
@@ -154,10 +135,10 @@ gated on the front-end being charge-domain.
 Yes, structurally. This is the one load-bearing analog requirement, and
 AnalogIOC's tiles already meet it:
 
-- Chip 2 accumulates column charge on virtual-ground integrators (no TIA
-  standing bias in the read path) [CHIP2 §1/§8, B2/B6].
-- Tile phis are **clock-gated outside the window** (A8 FIX v2 discipline)
-  [CHIP2 §2.2], and the S4 bias-gating duty is already modeled (`DUTY_SQ`
+- The tiles accumulate column charge on virtual-ground integrators (no TIA
+  standing bias in the read path).
+- Tile phis are **clock-gated outside the window** (A8 FIX v2 discipline),
+  and the S4 bias-gating duty is already modeled (`DUTY_SQ`
   in pdk_projections) — the mechanism that makes an idle expert's periphery
   draw ~0 during the token window.
 
@@ -200,9 +181,6 @@ This is a **mapping + energy analysis, not an implementation.**
   (`moe_energy`, PROJECTION-grade), consistent with the E/k economics and the
   measured charge-domain / static-power anchors, but the MoE many-idle-expert
   gating case has **not been run on an array** [27l6: nothing has].
-- Chip 2's `MODE=FFN` path is specified (CHIP2 §8) with acceptance test
-  `T8 tb_moe_ffn_mode` — but that verifies the *mode switch is CFG-only*, not
-  a full MoE decode.
 
 Deliverable now: the mapping (§1), the E/k energy projection (§2, with the
 additive `moe_energy` function), the block-by-block coverage (§3). Deferred:
@@ -212,11 +190,9 @@ compiler lowering + validation, gated on a real MoE GGUF.
 
 ## One-paragraph summary
 
-MoE adds no new operator surface to AnalogIOC: expert weights sit on Chip 1's
-weight-stationary analog tiles, the router is the S5b digital dispatch island
-(fp32 top-k — the only dynamic-shape residue), and decode expert-FFN offloads
-to Chip 2 by one CFG bit because it has attention's broadcast-stream-reduce
-geometry. The compiler must emit top-k, per-expert group sizes (dynamic
+MoE adds no new operator surface to AnalogIOC: expert weights sit on the
+weight-stationary analog tiles, and the router is the S5b digital dispatch island
+(fp32 top-k — the only dynamic-shape residue). The compiler must emit top-k, per-expert group sizes (dynamic
 shapes), gather/scatter, grouped GEMM, and a histogram/cumsum for offsets —
 its only dynamic-scheduling branch. The token/J win is the **E/k** factor
 (**32×** for DeepSeek-class E=256/k=8, **4×** for Mixtral), real *iff* the

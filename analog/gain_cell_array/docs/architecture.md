@@ -1,10 +1,8 @@
-# gain_cell_array — 8×8 2T gain-cell KV array
+# gain_cell_array — 8×8 2T gain-cell array
 
-Attention memory. One array holds 8 tokens × d_head = 8 values; AnalogIOC instantiates
-a K array and a V array per bank (`analogioc`, `chip2_attention` B1/B2/B6) and
-`lora_sidecar` reuses the single cell (`gain_cell_subckt`). Written by `write_dac` (4b,
-0…V_W); read as a charge-domain dot product onto the column integrators. See
-`analog/docs/architecture.md` §Attention.
+LoRA A/B weight storage: `lora_sidecar` reuses the single cell (`gain_cell_subckt`).
+Written by `write_dac` (4b, 0…V_W); read as a charge-domain dot product onto the column
+integrators. See `analog/docs/architecture.md` §Signal chain.
 
 ## Interface
 

@@ -32,15 +32,9 @@ Paper reference: `/home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circui
   (MVM `strongarm.py` as starting point). Output: 8b code + `done` event.
 - **Threshold/references**: non-uniform-capable R-string ladder + tap mux
   (monotonic by construction). Write DACs for gain cells: 4b R-string + mux.
-- **Gain-cell KV array**: 8x8 two-transistor gain cells (nfet write switch,
-  storage MOM cap ~20-50 fF, nfet read device), per-token column write,
-  non-destructive PWM read. One K-array + one V-array, d_head = 8.
 - **LoRA sidecar (training target)**: rank-1 — gain-cell vectors A (16) and
   B (16); y += B*(A·x) summed IN CHARGE onto the tile's column integrators.
   Training = outer-product update: write A,B increments from digital.
-- **Translinear softmax**: 8-input subthreshold shared-source bank + tail
-  current source; outputs = normalized currents. Verify sum(I_i) = I_b (KCL
-  checksum) and softmax accuracy vs golden at 3 temperatures (27/55/85 C).
 - **Timebase**: delay-chain/replica-based self-timed sequencer in the MVM
   `async_ctrl` idiom generating t_q grid + non-overlapping integrate/convert
   phases. No global clock in the analog domain (GALS).
@@ -62,8 +56,8 @@ Paper reference: `/home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circui
 
 1. `tb_tile_mvm`: random INT8 x INT4 MVMs on the 16x16 tile vs golden —
    all output codes within +-1 LSB. Checksum residual within budget.
-2. `tb_attention_e2e`: 8 tokens streamed: per-token KV write -> qK^T ->
-   softmax (analog) -> A·V -> codes vs golden.
+2. `tb_attention_e2e`: 8 tokens streamed: Q/K/V projections on the tiles;
+   KV cache, qK^T, softmax and A·V on the digital rail -> codes vs golden.
 3. `tb_ffn_e2e`: FFN layer (16->16, ReLU, sign-early-exit active) vs golden.
 4. `tb_training_step`: one LoRA SGD step — compute error on toy target,
    outer-product update written to sidecar gain cells, re-run inference,
@@ -93,19 +87,19 @@ Paper reference: `/home/omare/Documents/Projects/OmarSiwy.github.io/Notes/Circui
 - No file outside your assigned directories except appending a status line to
   `STATUS.md`. Read but never edit other agents' dirs.
 - Ownership: A1=library+sizing, A2=components(tile path)+their tbs,
-  A3=components(attention/sidecar/softmax)+their tbs, A4=digital/,
+  A3=components(sidecar)+their tbs, A4=digital/,
   A5=scripts/compiler/+scripts/golden/+e2e tbs.
 
 ## Metrics mandate (A6 + all)
 
 The functional simulation is a PERFORMANCE instrument, not just a checker:
 - Analog energy: every SPICE tb integrates supply current (V*I) per phase;
-  report pJ per MVM per block (tile, converter coarse/fine, softmax, KV
-  write/read, sidecar) and the E_conv-vs-|code| histogram.
+  report pJ per MVM per block (tile, converter coarse/fine,
+  sidecar) and the E_conv-vs-|code| histogram.
 - Digital energy: yosys-synthesized netlist cell counts x liberty
   cap/activity estimate (document method); report pJ/op per rail block.
 - Timing: measured per-phase latencies from SPICE (PWM window, conversion
-  done-time distribution, softmax settle) + digital cycle counts.
+  done-time distribution) + digital cycle counts.
 - scripts/metrics/report.py assembles METRICS.md: tokens/s and tokens/J for
   the mini chip (1 attention head + 1 FFN layer, 8-token stream, measured),
   PLUS law-scaled projection to full AnalogIOC (7B, per the paper's eval

@@ -1,6 +1,6 @@
 # weight_tile — charge-domain capacitive crossbar
 
-The MVM array of Chip 1: 16 rows × (16 + 1 ABFT checksum) columns of differential 4b
+The MVM array of AnalogIOC: 16 rows × (16 + 1 ABFT checksum) columns of differential 4b
 cap banks. Row `i` is driven by its own `pwm_driver` from the PWM nibble on
 `xin_p_r<i>` / `xin_n_r<i>`; column `j` dumps charge onto `col<j>`, the virtual ground
 of `integrator_conv` `j` (see `analog/docs/architecture.md` §Signal chain). AnalogIOC

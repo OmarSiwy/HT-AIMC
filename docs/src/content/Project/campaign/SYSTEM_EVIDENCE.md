@@ -19,7 +19,7 @@ close the throughput gap.
 
 ## Evidence scope and authority
 
-The [archive manifest](../../../../../build/campaign/system_audit/archive_manifest.json)
+The archive manifest
 fingerprints all **100 Markdown/Python files, 29,855 lines**, in `project_docs`,
 `scripts/compiler/metrics`, and `golden`, excluding new campaign reports. It records
 document headings and Python definitions, plus git HEAD and working-tree state.
@@ -43,21 +43,21 @@ does not silently change the production interface.
 | Evidence family | What was checked and what survives |
 |---|---|
 | `CONTRACT`, `INTERFACES`, `THE_COMPILER_STRUCTURE`, `STATUS`, `METRICS`, `RESULTS*` | Numerical rails, actual integration surface, chronological results, and distinction between a small replicated block and a full model |
-| `ERROR_IMPACT`, `OT_IMPACT`, `DEPTH_BUDGET`, `CSNR_HOLDOUT` | Earlier one-block adequacy and one-point calibration claims are superseded by full-depth and held-out failures |
+| `ERROR_IMPACT`, `DEPTH_BUDGET`, `CSNR_HOLDOUT` | Earlier one-block adequacy and one-point calibration claims are superseded by full-depth and held-out failures |
 | `IMC_PRECISION_EXPERIMENT`, `IMC_GROUPED_WEIGHTS`, `IMC_RADIX_FULL_MODEL`, `IMC_SMOOTH_RADIX` | Strongest workload evidence; exact format, calibration, reference and per-case gates |
 | `IMC_MAPPING_EXPERIMENT`, `IMC_OUTLIER_PLANES`, `IMC_CAPACITOR_SIZING` | Conditional input-range and precise-path opportunities; physical capacitance, metadata and weight-access costs |
 | `IMC_SYSTEM_BENCHMARK`, `IMC_ARCHITECTURE_SEARCH`, `IMC_ARCHITECTURE_RESEARCH`, `IMC_CIRCUIT_TARGETS` | Equal-resource schedule, total work, area/residency and service constraints; assumptions remain distinct from measured blocks |
 | `ARCH_THROUGHPUT`, `THROUGHPUT_CEILING`, `PDK_PROJECTIONS`, `CONVTIME_SENSITIVITY`, `COARSE_EARLYEXIT`, `GATING_VALUE` | Useful scheduling identities; several historic throughput/energy headlines depend on invalid quality, area or bandwidth assumptions |
 | `CASCADE`, `COMPOSED_RESULTS`, `OPTIMIZATION_RESULTS`, `SERVO_EG`, `NEXT_SESSION` | Preserve physical failures and partial repairs; old gains are not multiplicative credits for a new topology |
 | `FLASH_LESSONS`, `MYTHIC_ARCH`, `NULLSEEK`, competitor/prior-art reports | Converter sharing and hierarchical reduction matter; patent topology is not a verified product netlist; old nulling rejection is topology-specific |
-| `KV_FEASIBILITY`, `CHIP2_SPEC`, `PTAT_SCORE`, `ANALOG_LUT_STUDY`, `MOE_MAPPING`, `VERTICAL_3D`, `SOHU_VERIFIED` | Dynamic attention, retention, nonlinear accuracy, routing and capacity are separate paid resources; no complete attention-chip or Sohu energy victory follows |
+| `MOE_MAPPING`, `VERTICAL_3D`, `SOHU_VERIFIED` | Routing and capacity are separate paid resources; no Sohu energy victory follows |
 | Remaining IMC circuit/storage/noise/log/SAR reports and all metric modules | Structurally indexed and connected to system consequences; physical details cross-reference the independent circuit campaign map |
 | `scripts/golden/model.py`, `scripts/golden/test_golden.py` | Bit-true arithmetic reference and tests for the implemented old path, not validation of the newer W8/A9 physical proposal |
 
 Fresh read-only verification in this audit: system-benchmark self-check **PASS**;
 eight cached-evidence-adapter adversarial tests **PASS**; all fifteen golden
 checks **PASS**. A fresh benchmark run is saved separately in
-[build/campaign/system_audit](../../../../../build/campaign/system_audit/results.md).
+build/campaign/system_audit.
 Its ADC development gate passes; its reserved regression gate fails; memory is
 unknown; both TT and SS full-system results remain **NOT VALIDATED**. A successful
 Python exit is not a successful circuit or quality gate.
@@ -367,7 +367,7 @@ energy/time boundary; area/storage and service requirements.
 
 New isolated module proposal: `scripts/compiler/metrics/imc_scale_alignment_campaign.py`.
 Do not overwrite existing SmoothQuant, radix or frozen result files. The
-[predeclared protocol](../../../../../build/campaign/system_audit/scale_alignment_protocol.json)
+predeclared protocol
 was written before evaluating any selected corpus slice. It fingerprints the
 frozen smoothing NPZ (`71cacf62925d8a0f3d4959bf6c2c15cd26be9a804136126fe534f8d8827b3836`)
 and two new Digital Design notes selected solely as the two largest Markdown

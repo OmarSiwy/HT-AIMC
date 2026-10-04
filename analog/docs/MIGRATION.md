@@ -18,7 +18,7 @@ through the full `analog-design-flow` ladder. Status column: `—` not started,
 | `analog/common/pex.py` | new (Philis `extracted_pex.spice` → simulatable) | strongarm |
 | `analog/docs/pdk_char.py` + `pdk_char/*.json` | new: measured Vth/uCox/SS/MIM/poly R+tc/t_inv per PDK | sky130, gf180mcu |
 | `analog/docs/pdk_models/` | new: per-PDK/corner model wrappers (incl. mismatch) from `pdk_specs` | sky130, gf180mcu |
-| `analog/docs/mismatch.py` + `mismatch_cache/` | new: measured sigma(VGS) per (device, W, L, I) — Pelgrom fails at short L on sky130 | strongarm, rescale |
+| `analog/docs/mismatch.py` + `mismatch_cache/` | new: measured sigma(VGS) per (device, W, L, I) — Pelgrom fails at short L on sky130 | strongarm |
 | `analog/common/hotswap.py` | new: every block + gmid + specs re-derive on every installed PDK | 7/8 wave-1 blocks PASS on gf180 |
 
 Fixed on the way: `specs.cal()` falls back to `pdk.cal_proj`, so projection PDKs evaluate
@@ -43,20 +43,14 @@ Leaves first; a block starts once everything in its DEPENDS reached `sch`.
 | ota | — | library/ota.py (ota_spice, bias_spice) | tb_ota, tb_ota_swing, tb_o_charge | wip |
 | pwm_driver | — | components/pwm_driver | tb_pwm_driver | mc (all rungs; Philis DRC 2 LI.3, ~10 h/seed) |
 | async_ctrl | — | components/async_ctrl | tb_async_ctrl | corners+mc pass; Philis running (cap-free deck workaround) |
-| ptat_bias | — | components/ptat_bias | none (new) | mc (all rungs but Philis: DRC 6 poly min_extension, false LVS mismatch; MC 19.9 % vs 20 % set by the softmax tail) |
-| rescale | — | components/rescale | none (new) | mc (all rungs; Philis DRC 8 poly min_extension on L=9.6 pfets, LVS match) |
-| softmax_combine | — | components/softmax_combine | tb_combine_tree | — |
-| translinear_softmax | — | components/translinear_softmax | tb_softmax | — |
-| wta | — | components/wta | tb_wta | mc (all rungs; Philis DRC 0, LVS match, advanced 4/6) |
 | gain_cell_array | cmos_switch | components/gain_cell_array | tb_gain_cell | — |
 | write_dac | cmos_switch | components/write_dac | tb_write_dac | — |
 | rstring_ladder | cmos_switch | components/rstring_ladder | tb_rstring | — |
 | weight_tile | cmos_switch pwm_driver | components/weight_tile | tb_weight_tile, tb_cascade, tb_csnr, diag_countinl, a10_closure_driver | — |
 | integrator_conv | cmos_switch ota pwm_driver strongarm | components/integrator_conv (AnalogIOC subckt `int_conv` → renamed `integrator_conv`), testbenches/_conv_common.py | tb_integrator_conv, diag_fine15, diag_pingpong, diag_a8b, diag_cascade_gain, diag_multibank, diag_park | — |
 | lora_sidecar | cmos_switch gain_cell_array ota write_dac | components/lora_sidecar | tb_lora_sidecar | — |
-| chip2_attention | gain_cell_array ptat_bias rescale softmax_combine translinear_softmax wta | top/chip2_attention.py | tb_attention_chip2_e2e, tb_online_softmax_analog | — |
 | chip_supertile | integrator_conv | top/chip_supertile.py | tb_supertile | — |
-| analogioc | async_ctrl gain_cell_array integrator_conv lora_sidecar ota rstring_ladder translinear_softmax weight_tile write_dac | top/analogioc_top.py, top/harness.py, top/diag_op.py | tb_tile_mvm, tb_attention_e2e, tb_training_step, tb_ffn_e2e, tb_audit, tb_eventrate, tb_adaptive_range, test_gain_servo, diag_a8 | — |
+| analogioc | async_ctrl gain_cell_array integrator_conv lora_sidecar ota rstring_ladder weight_tile write_dac | top/analogioc_top.py, top/harness.py, top/diag_op.py | tb_tile_mvm, tb_attention_e2e, tb_training_step, tb_ffn_e2e, tb_audit, tb_eventrate, tb_adaptive_range, test_gain_servo, diag_a8 | — |
 
 `library/cap_array.py` is referenced by nothing but its own `__main__` — not migrated.
 
@@ -73,9 +67,6 @@ Leaves first; a block starts once everything in its DEPENDS reached `sch`.
 
 ## Open follow-ups
 
-- **Softmax gm/ID expressed two ways:** ptat_bias/wta use `specs.GMID_SOFTMAX = 25` (absolute),
-  rescale uses `TL_FRAC = 0.91` of the PDK's weak-inversion gm/ID ceiling (more PDK-agnostic).
-  Unify on the fraction in `specs.py` when those layouts are next redone (sky130 moves 25 → 24.9).
 - **OTA headroom:** ota reports NMOS-input headroom failures at VCM = 0.9 V on slow-N/cold
   corners; may need a `specs.OTA_COORDS` change (awaiting numbers).
 - **gf180 poly-resistor mismatch unknown:** `pdk_specs.GF180MCU.res_poly_a_r` is 0.0 — the

@@ -7,7 +7,7 @@ switched-capacitor principle. The first fixture uses external physical
 acquisition, not an array or complete converter. Prior-art checking is
 separate; no novelty is claimed.
 
-The source is [tb_imc_cap_stack.py](../../../../../analog/testbenches/tb_imc_cap_stack.py).
+The source is tb_imc_cap_stack.py.
 It has two matched stacks, real Sky130 transmission gates, an actual
 acquisition phase, explicit output load/reset, series connection, and return
 to parallel storage. Optional sensing uses the actual balanced StrongARM from
@@ -857,7 +857,7 @@ Neither remedy has passed a physical full-converter test.
 ### Physical selected-cap and coarse-guard tests: failures retained
 
 The new source is
-[`tb_imc_guard_stack.py`](../../../../../analog/testbenches/tb_imc_guard_stack.py).
+`tb_imc_guard_stack.py`.
 It acquires two real15.5pF banks through TGs. Each has1920fF and960fF guard
 capacitors,12.62pF selected state, and a real8+4 split12-bit fineCDAC in
 its lowest section. UF=3.053225806fF makes its nominal seen capacitance

@@ -13,12 +13,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 
 
-def retention_s(tau_s, bits, lsb_budget=1.0):
-    """Exponential, full-scale decay only; no read disturb or PVT margin."""
-    assert tau_s > 0 and bits > 0 and 0 < lsb_budget < 2**bits
-    return -tau_s * math.log1p(-lsb_budget / 2**bits)
-
-
 def energy_bound(macs_per_token, tops_per_w):
     """2 operations/MAC; compute-only at the stated operation precision."""
     assert macs_per_token > 0 and tops_per_w > 0
@@ -35,14 +29,10 @@ def resident_dies(weights, weights_per_tile, tile_mm2, usable_mm2):
 
 
 def self_check():
-    # Physical identities catch the energy-unit, refresh-cadence and capacity
+    # Physical identities catch the energy-unit, and capacity
     # mistakes found in the research. These do not validate the input models.
     assert math.isclose(energy_bound(7e9, 8)["joules_per_token"], 0.00175)
     assert math.isclose(energy_bound(7e9, 8)["tokens_per_joule"], 571.4285714285714)
-    assert math.isclose(524288 * 7.5e-15, 3.93216e-9)
-    tr = retention_s(0.027, 4)
-    assert math.isclose(1 - math.exp(-tr / 0.027), 1 / 16)
-    assert retention_s(0.027, 4, 0.5) < tr < 0.027 / 2
     assert resident_dies(1001, 10, 1, 100)["minimum_dies"] == 2
     # Four independently digitized partials require four conversions.
     partials = [19, 18, 23, 15]
@@ -93,19 +83,6 @@ def audit():
             "bytes_at_64_sessions": kv_bytes * 64,
             "attention_MACs_per_token": attn_macs,
             "external_KV_TB_per_s_at_62500_tokens_per_s": kv_bytes * 62500 / 1e12,
-            "shadow_refresh_GB_per_s_64_sessions_1LSB": kv_bytes * 64 / retention_s(0.027, 4) / 1e9,
-        }
-    # KV_FEASIBILITY.md: extrapolated tau=27ms, 2048 entries x 128 dims x K,V.
-    # Time assumes all row subbanks and K/V arrays write concurrently.
-    cells, write_slot_s = 2 * 2048 * 128, 150e-9
-    result["refresh_per_head"] = {}
-    for lsb in (1.0, 0.5):
-        period = retention_s(0.027, 4, lsb)
-        result["refresh_per_head"][str(lsb)] = {
-            "period_s": period,
-            "cell_write_energy_J": cells * 7.5e-15,
-            "cell_write_only_power_W": cells * 7.5e-15 / period,
-            "minimum_busy_fraction": 2048 * write_slot_s / period,
         }
     # Operation-equivalent targets; all are compute-only, with precision and
     # boundary matching still required. They are NOT competitor token rates.

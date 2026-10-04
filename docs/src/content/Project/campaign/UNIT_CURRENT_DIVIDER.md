@@ -41,7 +41,7 @@ Common drain motion is largely rejected; different column motion is not. A weigh
 
 ## 3. Simulation boundary and reproducibility
 
-Generator: [tb_imc_unit_current_divider.py](../../../../../analog/testbenches/tb_imc_unit_current_divider.py). Every configuration saves its generator, shared-helper snapshot, frozen calibration, exact generated-deck hash, data hash and complete 511-code responses under `build/research/imc_unit_current_divider/`. The first development command is:
+Generator: tb_imc_unit_current_divider.py. Every configuration saves its generator, shared-helper snapshot, frozen calibration, exact generated-deck hash, data hash and complete 511-code responses under `build/research/imc_unit_current_divider/`. The first development command is:
 
 ```sh
 /nix/store/lmam35qlyl43gaw4x19128gqhymcgkgr-python3-3.13.13-env/bin/python3 analog/testbenches/tb_imc_unit_current_divider.py --lengths .15 --units-na 10 --out build/research/imc_unit_current_divider/development_tt_L015_I10

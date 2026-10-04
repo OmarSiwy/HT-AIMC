@@ -1,9 +1,8 @@
 # AnalogIOC
 
-Analog in-memory-compute transformer accelerator on sky130. Charge-domain capacitive
-MVM tiles, event-rate + SAR column converters, gain-cell KV arrays, a LoRA sidecar and a
-translinear softmax/attention engine, plus a digital rail and a GGUF -> hardware compiler
-with bit-exact golden models.
+Analog in-memory-compute (IMC) transformer accelerator on sky130. Charge-domain
+capacitive MVM tiles, event-rate + SAR column converters and a gain-cell LoRA sidecar,
+plus a digital rail and a GGUF -> hardware compiler with bit-exact golden models.
 
 | Dir | What |
 |---|---|
@@ -13,7 +12,7 @@ with bit-exact golden models.
 | [`docs/`](./docs) | Docs site: research docs (`src/content/Project/`) + template flow docs |
 
 Spec: [`CONTRACT.md`](./docs/src/content/Project/CONTRACT.md). Status: [`STATUS.md`](./docs/src/content/Project/STATUS.md).
-Agents: [`AGENTS.md`](./AGENTS.md).
+Agents: [`AGENTS.md`](./AGENTS.md). Missing tools: [`REQUIRED_TOOLING.md`](./REQUIRED_TOOLING.md).
 
 ## Quick start
 

@@ -1,8 +1,8 @@
 # Analog sample/hold pipeline: bounded circuit round
 
 Date: 2026-09-10. Circuit:
-[tb_imc_analog_pipeline.py](../../../../analog/testbenches/tb_imc_analog_pipeline.py).
-Artifacts: [imc_analog_pipeline.json](../../../../build/sim/imc_analog_pipeline.json).
+tb_imc_analog_pipeline.py.
+Artifacts: imc_analog_pipeline.json.
 
 **The two-bank fixture can overlap acquisition with a retained output, but
 accurate capture fails.** Raw capture error reaches 10.75 mV at TT27 and

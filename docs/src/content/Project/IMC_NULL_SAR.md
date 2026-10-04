@@ -61,7 +61,7 @@ remains unqualified despite passing the larger development regression.
 
 ## Circuit and arithmetic
 
-The fixture in [tb_imc_null_sar.py](../../../../analog/testbenches/tb_imc_null_sar.py) uses
+The fixture in tb_imc_null_sar.py uses
 real Sky130 transmission gates, the existing StrongARM comparator, and real
 minimum CMOS output receivers and DAC mux logic. Ideal capacitors, voltage
 references, stimulus and timing are explicit. XSPICE flip-flops retain the

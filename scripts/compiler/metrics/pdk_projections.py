@@ -240,7 +240,7 @@ def l_stack_table(passes_per_token=10944, K=1):
 #   gated   : E_token ~ P_act = (k/E)*P_tot  -> E/k advantage
 #   TIA-bias: E_token -> P_tot               -> advantage collapses to ~1
 # AnalogIOC's tiles ARE charge-domain (column charge on virtual-ground
-# integrators, CHIP2_SPEC B2/B6; tile phis clock-gated outside the window,
+# integrators; tile phis clock-gated outside the window,
 # A8 FIX v2), so the gated branch is the design point — this function prices
 # the gap so the claim is falsifiable, not asserted.
 # ---------------------------------------------------------------------------

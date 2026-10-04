@@ -26,9 +26,6 @@ prominently as the wins.
   ±1) on real multi-bank passes; the model tolerates ±8 LSB (100% argmax) — so
   it's fine. The strict ±1 gate was a converter-ENOB target, not a model
   requirement.
-- **Chip 2 (analog attention engine) is functionally PROVEN end-to-end**
-  (o_t cos 0.998, KV-in-analog, no HBM) — the decode-compute-bound
-  differentiator Sohu structurally cannot match from HBM.
 
 ## 2. Silicon-proven (measured SPICE)
 
@@ -40,13 +37,6 @@ prominently as the wins.
 | Per-column measured gain | col1 −48 → exact (removes cell-pattern scatter) | bff2b15 |
 | mac+15 fine-SAR fix | tb_integrator_conv 5/5 ±1 LSB (fine_ref_trim) | 30022ce |
 | Tile accuracy model-adequate | ±3 LSB measured; model tolerant to ±8 (argmax 100%) | cd44e48/ee8e810 |
-| WTA running-max (Chip 2) | shift-invariance 0.14% (vs 14% forked); 28/28 tb | 77e1de4 |
-| Analog online-softmax monoid | associativity 1e-12; single-bank l 0–1.15% | fd61806 |
-| Combine tree (G=16 holds) | group o/l 1.80% < 2.5%; 103 mV < 120 mV window | 1e4a4a9 |
-| Long-stream rescale → fp32 | analog charge-rescale marginal/compounds (confirms spec §4) | 1e4a4a9 |
-| Chip 2 e2e attention | o_t cos 0.998; qK 0.21%; 29.6 pJ/tok, 2.17 µs/tok; model-adequate | 366e612/da4119a |
-| PTAT softmax bias | I_b +22.4% (vs +281% fixed); + compiler score-prescale → drift −13%→−1.4% | ca7643d/e9f49fd |
-| KV gain-cell feasibility | non-destructive read −4.3 µV/read; τ 27 ms → 1.7 ms refresh-free | 254fd5d |
 | Parallel super-tile | gain error K-INDEPENDENT (flat 0.44% K=1/2/4 vs series 0.44→1.13%); 1.20× Sohu; charge-bus lossy→INT8 digital sum | 84410e6 |
 
 ## 3. Projected (labeled, lower confidence)
@@ -87,28 +77,19 @@ prominently as the wins.
   analog edge lives). tok/s comparison is thus cross-regime.
 - Sohu **tok/J is UNPUBLISHED**; the 35–60 band is inferred. Our ">5× tok/J"
   is our projection vs an inferred denominator.
-- Where AnalogIOC has a *structural* edge Sohu can't copy: **decode attention
-  is compute-bound** (KV in analog, no HBM) — Chip 2. Sohu pulls KV through
-  HBM and stays memory-bound in decode.
 
 ## 6. Remaining work (ranked, not blocking the above)
 
 - **#22 parallel super-tile** — SPICE verification in flight; projected ~1.2×
   tok/s (gain K-independent). Modest; optional.
-- **#27 Chip 2 system integration** — RTL fp32 island + GALS die-link +
-  long-context CAM + batch mapping. Large digital/interface effort; the
-  analog datapath is already proven.
-- **Reduce exp+A·V translinear error** for Chip 2 margin (PTAT co-scale helps);
-  not a correctness blocker (#26).
 
 ## 7. The one-paragraph verdict
 
 AnalogIOC is a **defensible energy-efficient analog accelerator, not a raw-speed
-killer**. Its silicon-proven strengths are the cascade amortization, KV
-residency (decode compute-bound), and model-adequate charge-domain accuracy;
+killer**. Its silicon-proven strengths are the cascade amortization and model-adequate charge-domain accuracy;
 its honest position is **tok/s parity** with a 4 nm production ASIC (projected)
 and a **tok/J advantage that is real in the laws but projection-contingent** on
 the amortized converter, compared against a Sohu energy number that isn't even
 published. The campaign's value is the *map*: every lever measured or refuted,
-every claim labeled, the wins (cascade, Chip 2, KV) separated cleanly from the
+every claim labeled, the wins (cascade) separated cleanly from the
 mirages (2× tok/s, −33% CSD, DPS-48, adaptive range).

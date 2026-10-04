@@ -9,8 +9,8 @@ before table construction. These are not measured device distributions.
 
 Protocol SHA-256 is
 `9a015c5595d654cfb0a4dbeaab0098fd4fb81c6d8cbff9bf87a8b3fa70be7d0a`.
-The [results](../../../../../build/campaign/nonbinary_activation/results.json),
-[tables](../../../../../build/campaign/nonbinary_activation/frozen_tables.npz), source
+The results,
+tables, source
 snapshot and66 independent unpruned checks are retained in that build directory.
 Circuit-branch code review found no algebraic error within the declared model.
 
@@ -125,8 +125,8 @@ a cheaper differently sized cell would need its own measured interval.
 
 ## Exact continuous-interval certificate
 
-A separate [checker](../../../../../build/campaign/nonbinary_activation/certify_interval.py)
-and [result](../../../../../build/campaign/nonbinary_activation/interval_certificate.json)
+A separate checker
+and result
 close the gap between grid points without modifying the frozen tables or
 selection algorithm. For one code x, let N(r)=Σd_j*r^j and D(r)=Σj=0…8*r^j.
 D is strictly positive on both intervals. Proving

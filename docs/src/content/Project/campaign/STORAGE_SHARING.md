@@ -24,7 +24,7 @@ bypassing unused units must not be substituted for physically installedC.
 Likewise capacitor and SRAM footprints cannot simply be added if a legal layout
 can overlap them. A substrate layout is needed to resolve that overlap.
 The nominal2fF/µm² value is the existing local
-[SKY130 technology parameter](../../../../../analog/schematics/library/pdks/sky130.py).
+SKY130 technology parameter.
 
 For comparison, the primary OpenRAM SKY130 paper gives foundry single-port
 bitcell area1.896µm² and dual-port area6.162µm². The W8 single-port **bare-cell**
@@ -91,7 +91,7 @@ quality, power and DAG utilization are known. There is no evidence-based unique
 optimum before those measurements.
 
 The [reproducible bound sweep](../../../../../scripts/compiler/metrics/imc_storage_sharing_bounds.py)
-and [results](../../../../../build/campaign/storage_sharing_bounds/result.json) enumerate
+and results enumerate
 S=1,2,4,8,9,16,32,64; hypothetical paid service intervals250/500/1000ns; and vector
 reuse1/8/32. They assert the expected area/delay tradeoff and retain both ideal
 metal-overlap and disjoint footprint envelopes. No service time is promoted to

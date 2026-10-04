@@ -51,7 +51,7 @@ additional factor two relative to a single pooled holder's charge coefficient,
 while retaining both native noise contributions. Neither operation removes
 switching, mismatch, reference or headroom constraints.
 
-Source: [decision-noise testbench](../../../../../analog/testbenches/tb_imc_decision_noise.py).
+Source: decision-noise testbench.
 Protocol, per-seed outcomes, source/model hashes and fit are in
 `build/campaign/decision_noise/tt_sde30_step2_initial/`; individual physical
 decks and raw traces are retained under `build/sim/campaign_decision_noise_*`.

@@ -33,13 +33,13 @@ The present 16×16 weight engine uses capacitor-coded weights, repeated two-phas
 | Local fine references | Two 5-pF reservoirs per converter | References dwarf the nominal CDAC and need physical area/energy accounting |
 | Reference and control implementation | External ideal reference rails and XSPICE control models remain | A closed physical chip requires reference generation, distribution and real control timing |
 
-Sources: [weight_tile.py](../../../../analog/schematics/components/weight_tile/weight_tile.py), [integrator_conv.py](../../../../analog/schematics/components/integrator_conv/integrator_conv.py), [rstring_ladder.py](../../../../analog/schematics/components/rstring_ladder/rstring_ladder.py), [analogioc_top.py](../../../../analog/schematics/top/analogioc_top.py), and [SIZING.md](../../../../analog/schematics/sizing/SIZING.md). These are code observations, not new measurements.
+Sources: weight_tile.py, integrator_conv.py, rstring_ladder.py, analogioc_top.py, and SIZING.md. These are code observations, not new measurements.
 
 ## 2. Two architectural errors to remove before choosing circuits
 
 ### Capacitive compute does not inherently consume its weight
 
-The present weight is the **selected capacitance**, not the instantaneous stored charge. `weight_tile.generate()` chooses binary capacitor elements from `Cp` and `Cn`; a multiply moves charge through those same elements repeatedly. Neither charging nor discharging changes their nominal capacitance. Thus the assertion in [KV_FEASIBILITY.md](KV_FEASIBILITY.md) that the weight engine's consuming read forces HBM backing confuses coefficient storage with operand charge.
+The present weight is the **selected capacitance**, not the instantaneous stored charge. `weight_tile.generate()` chooses binary capacitor elements from `Cp` and `Cn`; a multiply moves charge through those same elements repeatedly. Neither charging nor discharging changes their nominal capacitance. Thus an earlier assertion that the weight engine's consuming read forces HBM backing confuses coefficient storage with operand charge.
 
 This does not mean the existing netlist is a complete programmable memory: weight selections are applied at **netlist-generation time**. A reusable accelerator needs SRAM/latches or another appropriate physical control store plus programming switches. A model-specific mask-programmed engine is a different capacity/flexibility choice. Resident weights still require enough physical cells, configuration bits, routing, and practical model-loading time.
 
@@ -49,11 +49,11 @@ There is direct silicon precedent for SRAM retaining the weight while capacitors
 
 ### A digital sum does not eliminate preceding ADCs
 
-[tb_supertile.py](../../../../analog/testbenches/tb_supertile.py) calls `_cal_1col_window` once for every partial. Each call integrates and digitizes that partial. `parallel_output()` then sums those values. Its later “amortization” check merely compares two functions that use the same timing formula. The code therefore performs **K conversions for K digitized partials**, although the model credits one conversion per K windows.
+tb_supertile.py calls `_cal_1col_window` once for every partial. Each call integrates and digitizes that partial. `parallel_output()` then sums those values. Its later “amortization” check merely compares two functions that use the same timing formula. The code therefore performs **K conversions for K digitized partials**, although the model credits one conversion per K windows.
 
 The claimed gain independence also comes from an explicitly injected Python gain model. `series_output()` implements `(s + p) * (1 + eg)`; `parallel_output()` applies `(1 + eg)` once per partial. This checks the chosen recurrence. It does not show that held charge on one physical integrator is multiplied by this gain at every new charge injection.
 
-[tb_cascade.py](../../../../analog/testbenches/tb_cascade.py) does demonstrate a different, narrower operation in SPICE: K windows on the **same W and same integration capacitor**, followed by one conversion of `sum_k(W @ x_k)` with scale `K * D`. Its input generator rejects windows until every running column sum stays below its headroom guard. Consequently:
+tb_cascade.py does demonstrate a different, narrower operation in SPICE: K windows on the **same W and same integration capacitor**, followed by one conversion of `sum_k(W @ x_k)` with scale `K * D`. Its input generator rejects windows until every running column sum stays below its headroom guard. Consequently:
 
 - The reduced conversion count applies only when those partials belong to one required reduction. K independently required token outputs cannot be replaced by their sum.
 - The test relaxes the output LSB by K. Its ±1-LSB tolerance is K times wider in original arithmetic units.
@@ -72,13 +72,12 @@ The claimed gain independence also comes from an explicitly injected Python gain
 | P2 | Binary or segmented activation encoding with charge-domain shift/add | Replace repeated unary PWM transfers with fewer weighted operations | Savings after extra conversion, capacitor and reference costs |
 | P2 | Shared ratiometric capacitor/reference structure | Reduce duplicated capacitors and calibration drift | Real distribution loading, coupling and extracted layout |
 | P2 | Precision and placement driven by model sensitivity | Protect a small sensitive subset while retaining a cheaper bulk path | Held-out full-depth model accuracy with measured error shapes |
-| P3 | IGZO/BEOL gain-cell KV substrate | Longer retention and denser cache could reduce refresh and data traffic | Access to a real process and a complete array/readout demonstration |
 
 These are experiments, not multiplicative gains already earned.
 
 ### 3.1 Make capacitor matching a first-class design variable
 
-[tb_cap_mismatch.py](../../../../analog/testbenches/tb_cap_mismatch.py) explicitly states that nominal `tt` runs omit device mismatch and that weight capacitors are ideal elements. Its injected capacitor model, anchored against limited transistor simulations, estimates about **23.4 dB combined CSNR** for its Sky130-derived mismatch assumption. The approximately **25.0 dB mismatch-only result** shows why perfecting the existing converter is insufficient in that model. This is an extrapolated statistical model, not a fabricated-capacitor yield measurement.
+tb_cap_mismatch.py explicitly states that nominal `tt` runs omit device mismatch and that weight capacitors are ideal elements. Its injected capacitor model, anchored against limited transistor simulations, estimates about **23.4 dB combined CSNR** for its Sky130-derived mismatch assumption. The approximately **25.0 dB mismatch-only result** shows why perfecting the existing converter is insufficient in that model. This is an extrapolated statistical model, not a fabricated-capacitor yield measurement.
 
 The test uses `A_C≈2.8 %·µm` from the PDK and infers area from a nominal capacitor density. The 0.15-fF cell is below the standard drawable MiM device assumed by that area model; a custom MOM structure cannot automatically inherit MiM density, matching and minimum geometry. The [official Sky130 capacitor model](https://foss-eda-tools.googlesource.com/skywater-pdk/libs/sky130_fd_pr/+/refs/tags/v0.10.1/cells/cap_mim_m3/sky130_fd_pr__cap_mim_m3_1.model.spice) is a useful statistical anchor, not a substitute for an actual selected layout.
 
@@ -90,7 +89,7 @@ The later [DEPTH_BUDGET.md](../../../../scripts/compiler/metrics/DEPTH_BUDGET.md
 
 ### 3.2 Reopen charge averaging with the correct success criterion
 
-[chip_supertile.py](../../../../analog/schematics/top/chip_supertile.py) computes the correct passive divider:
+chip_supertile.py computes the correct passive divider:
 
 `V_bus = sum(V_k) / (K + C_bus/C_int)`.
 
@@ -114,7 +113,7 @@ Shared reference generation is plausible prior art: [Mythic patent US10255205B1]
 
 ### 3.4 Replace unary work where conversions no longer dominate
 
-[pwm_driver.py](../../../../analog/schematics/components/pwm_driver/pwm_driver.py) correctly explains why a flat pulse across a capacitor does not implement multiplication by duration: its two edges transfer opposite charges. AnalogIOC avoids that error by performing one switched-capacitor transfer per active timing quantum. PWM here is repeated physical work.
+pwm_driver.py correctly explains why a flat pulse across a capacitor does not implement multiplication by duration: its two edges transfer opposite charges. AnalogIOC avoids that error by performing one switched-capacitor transfer per active timing quantum. PWM here is repeated physical work.
 
 For `x = x_lo + 16*x_hi`, a duration-weighted scheme can require `x_lo + 16*x_hi` unit transfers. If two ordinary 0–15 windows are separately digitized and shifted digitally, the arithmetic requires at most 30 active unit transfers for two unsigned four-bit digits instead of 255. The trade is a second conversion and its noise. This is an encoding-level ceiling, not a 8.5× system-speed prediction; signed range, actual activation distribution, guards, settle time and array load change the useful number.
 
@@ -130,24 +129,7 @@ The most useful silicon reference is [PICO-RAM](https://arxiv.org/html/2407.1282
 
 A further **derived design hypothesis** is to allocate capacitor area using sensitivity. If the local loss proxy is `sum_i(a_i/A_i)` because mismatch variance scales as `1/A_i`, and total area is fixed, minimization gives `A_i ∝ sqrt(a_i)`. Thus uniform cell enlargement is generally not the optimum under nonuniform sensitivity. Practical implementation would use a few tile precision classes and calibrated scales. This expression assumes a diagonal positive sensitivity approximation and independent errors; correlated parasitics, different energy per area and fixed pitches require a more complete optimization. It is a proposal for AnalogIOC, not a demonstrated published speedup.
 
-## 4. KV retention: promising device mechanism, incomplete feasibility gate
-
-The 2T gain-cell mechanism is sound: the read transistor senses the stored voltage at its gate, so read current is not intentionally drawn from the storage capacitor. Real leakage and capacitive read disturb remain. [tb_gain_cell.py](../../../../analog/testbenches/tb_gain_cell.py) observes short-term behavior under ideal column clamps; it does not establish long-session accuracy across process and temperature.
-
-[KV_FEASIBILITY.md](KV_FEASIBILITY.md) contains two important numerical errors:
-
-1. It estimates `tau≈27 ms`, derives a roughly **1.7-ms one-LSB retention interval**, then proposes refreshing every `tau/2≈13.5 ms`. Under its own exponential model, a half-time-constant interval changes a stored voltage by about 39%. At 780 mV that is roughly **307 mV, or five 60-mV write-DAC LSBs**. That cadence does not close four-bit retention.
-2. Its stated `524,288 cells × 7.5 fJ/write` is **3.93 nJ**, not 3.9 µJ. With a 1.7-ms cadence, the stated cell-write term is about **2.31 µW/head**, before shadow-memory, DAC, wire, reference and scheduling overhead. The document's quoted milliwatt-scale calculation is off by 1000× in this multiplication.
-
-The timing burden is more material: `2048 columns × 150 ns = 307.2 µs` per array sweep. Relative to 1.7 ms, that is **18.1% write occupancy**, or about 36% at a nominal half-LSB interval of 0.85 ms. These figures assume K and V arrays can refresh in parallel and ignore hot/corner tightening; serialized shared resources can be worse. They are recomputations of the document's assumptions, not new device predictions.
-
-Moreover, `tau` came from a few-microsecond voltage slope, not a millisecond retention curve. Different stored codes can leak in different directions. Acceptance should be based on the **read-current/MAC error** after temperature-dependent residency, not only stored-voltage drift. A nonlinear read transistor can amplify a small voltage error. Read-disturb must be measured jointly with leakage and refresh.
-
-The directly relevant external attention work, [Leroux et al.](https://arxiv.org/html/2409.19315v2), combines SPICE with hardware-aware model evaluation; its proposed 65-ns attention pipeline and gain-cell retention should not be labeled silicon measurements. High token cadence also does not determine the lifetime of a KV entry when a session pauses or its context remains resident.
-
-The material technology opportunity is real: [imec's IGZO gain-cell work](https://www.imec-int.com/en/articles/igzo-based-dram-energy-and-area-efficient-analog-memory-computing) reports multilevel storage and small 2×2/4×2 MAC demonstrations, with much longer retention than the present silicon-CMOS assumption. This is evidence for a future substrate, not a large LLM cache or Sky130-compatible process. Preserve silicon-CMOS refresh as the implementable baseline until the production process is chosen.
-
-## 5. Corrections to the local research laws
+## 4. Corrections to the local research laws
 
 These matter because the notes are used as premises in subsequent projections.
 
@@ -162,14 +144,13 @@ These matter because the notes are used as premises in subsequent projections.
 
 Primary context for the precision/energy limits: [Gonugondla et al., Fundamental Limits on Energy-Delay-Accuracy](https://experts.illinois.edu/en/publications/fundamental-limits-on-energy-delay-accuracy-of-in-memory-architec/). Local note corrections above are algebraic checks of the supplied research, not additional experimental findings.
 
-## 6. Concrete next acceptance sequence
+## 5. Concrete next acceptance sequence
 
 1. **Physical and statistical baseline:** one extracted representative capacitor bank, loaded column and references; characterize gain, INL, noise and mismatch over supply/temperature. Freeze this error model before optimizing its scalar CSNR.
 2. **Same-result readout comparison:** unary+fine versus binary-coarse+fine versus passive-charge/readout options. Count conversions and report total reference/driver/control/OTA energy at matched final accuracy.
 3. **Legal reduction experiment:** use actual distinct model reduction blocks, include all intermediate running sums and an overflow fallback, and compare one analog-final conversion with K digital partials.
 4. **Encoding experiment:** compare repeated-PWM, two ordinary nibble windows, bit serial and in-array shift/add under the same weight storage, capacitance, accuracy and throughput budget.
 5. **Full-model accuracy:** replay frozen physical weight errors and temporal converter errors on held-out prompts. Evaluate perplexity and task behavior; report error tails and layer sensitivity, not merely one-head cosine or a few argmax matches.
-6. **KV refresh closure:** all stored codes, hot/cold corners, actual read cadence and pauses, real write references, mandatory refresh scheduling and shadow traffic.
-7. **Physical area and power closure:** include SRAM weight controls, reference reservoirs, clock distribution, interconnect, layout parasitics and idle leakage. Only then translate per-operation results to tok/s and tok/J.
+6. **Physical area and power closure:** include SRAM weight controls, reference reservoirs, clock distribution, interconnect, layout parasitics and idle leakage. Only then translate per-operation results to tok/s and tok/J.
 
 The most attractive transferable mechanisms are programmable capacitor-ratio weight stationarity, shared capacitors/references, fewer **real** conversions, and model-sensitive precision. The present research does not support multiplying the older cascade, lattice, gain-servo, duty-factor and supertile gains together, and it does not yet support a claim of superiority to a commercial chip.

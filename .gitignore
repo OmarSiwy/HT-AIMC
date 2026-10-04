@@ -25,3 +25,6 @@ analog/docs/pdk_models/
 
 # Docs site
 docs/node_modules/
+
+# Agent worktrees
+.claude/worktrees/

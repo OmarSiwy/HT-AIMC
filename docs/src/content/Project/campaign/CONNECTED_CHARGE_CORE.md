@@ -109,7 +109,7 @@ this is 60.25 fF per column before any duplicate pipeline bank.
 
 ## Initial experiments
 
-[tb_imc_connected_core.py](../../../../../analog/testbenches/tb_imc_connected_core.py)
+tb_imc_connected_core.py
 reuses the archived 128×8 physical row network and analysis. Only Cacc0 is
 replaced; the other seven loaded columns serve as controls. The generated
 original and modified decks, imported source snapshots, simulator identity,
