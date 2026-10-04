@@ -28,3 +28,8 @@ docs/node_modules/
 
 # Agent worktrees
 .claude/worktrees/
+
+# LibreLane runs and smoke-test outputs
+**/build/librelane/runs/
+**/build/librelane/smoke/build/
+digital/*/output/

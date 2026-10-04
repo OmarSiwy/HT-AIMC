@@ -1,0 +1,20 @@
+# Smoke test macro declaration: same schema as ../../macros.toml.in. Views are
+# overridden because the dummy macro lives here, not under analog/<block>/.
+[[macro]]
+block = "dummy_macro"
+halo = [10, 10]
+pg = [{ pins = ["VPWR", "VGND"], nets = ["VPWR", "VGND"] }]
+analog_supplies = ["VDDA", "VSSA"]
+analog_nets = ["ana"]
+
+[macro.instances.u_macro]
+location = [70, 60]
+orientation = "N"
+
+[macro.views]
+gds = "build/gds/dummy_macro.gds"   # written by gen_dummy_macro.py
+lef = "build/lef/dummy_macro.lef"
+lib = "dummy_macro.lib"
+blackbox = "dummy_macro.v"
+behavioural = "dummy_macro_beh.v"
+subckt = "dummy_macro.spice"

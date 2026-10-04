@@ -29,7 +29,7 @@ help:
 	@echo ""
 	@echo "Module Addition:"
 	@echo "  AddAnalogBlock BLOCK_NAME=name [DEPENDS=\"blk1 blk2\"]"
-	@echo "  AddDigitalModule MODULE_NAME=name"
+	@echo "  AddDigitalModule MODULE_NAME=name [MACRO=analog_block]"
 	@echo ""
 	@echo "TinyTapeout Caravel Integration:"
 	@echo "  CreateCaravel PROJECT_NAME=name"
@@ -164,11 +164,20 @@ _create_digital_structure:
 	@mkdir -p $(DIGITAL_DIR)/$(MODULE_NAME)/build $(DIGITAL_DIR)/$(MODULE_NAME)/src $(DIGITAL_DIR)/$(MODULE_NAME)/test
 	@sed 's/@MODULE_NAME@/$(MODULE_NAME)/g' digital/build/config.mk.template > $(DIGITAL_DIR)/$(MODULE_NAME)/build/config.mk
 	@cd $(DIGITAL_DIR)/$(MODULE_NAME)/build && \
-		mkdir -p des_tb lint synthesis verification && \
+		mkdir -p des_tb lint synthesis verification librelane && \
 		cp -r ../../../.flows/digital/build/des_tb/* ./des_tb/ 2>/dev/null || true && \
 		cp -r ../../../.flows/digital/build/lint/* ./lint/ 2>/dev/null || true && \
 		cp -r ../../../.flows/digital/build/synthesis/* ./synthesis/ 2>/dev/null || true && \
-		cp -r ../../../.flows/digital/build/verification/* ./verification/ 2>/dev/null || true
+		cp -r ../../../.flows/digital/build/verification/* ./verification/ 2>/dev/null || true && \
+		cp -r ../../../.flows/digital/build/librelane/* ./librelane/ 2>/dev/null || true && \
+		rm -rf ./librelane/runs ./librelane/smoke/build
+	@# Analog macros: declared once in build/macros.toml (MACRO defaults to the analog
+	@# block of the same name, marked TODO until its views exist), used by harden and sims.
+	@cp digital/build/macros.py $(DIGITAL_DIR)/$(MODULE_NAME)/build/
+	@sed -e 's/@MODULE_NAME@/$(MODULE_NAME)/g' -e 's/@MACRO@/$(or $(MACRO),$(MODULE_NAME))/g' \
+		digital/build/macros.toml.in > $(DIGITAL_DIR)/$(MODULE_NAME)/build/macros.toml
+	@sed -e 's/@MODULE_NAME@/$(MODULE_NAME)/g' -e 's|@VERILOG_FILES@|dir::../../src/*.v|g' \
+		digital/build/librelane/config.yaml.in > $(DIGITAL_DIR)/$(MODULE_NAME)/build/librelane/config.yaml
 	@printf '%s\n' \
 		'`default_nettype none' \
 		'module $(MODULE_NAME)(' \

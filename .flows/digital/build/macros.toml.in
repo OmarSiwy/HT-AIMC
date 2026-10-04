@@ -1,0 +1,25 @@
+# Analog hard macros instantiated by the digital top @MODULE_NAME@. Declared once here:
+#   - harden (build/librelane, `make config`) takes gds + lef + lib + blackbox
+#   - simulation (build/verification, build/des_tb) takes the behavioural model
+#   - `python3 macros.py check macros.toml` fails if the blackbox, the behavioural
+#     model and the .subckt disagree on ports
+#
+# Default views of block <b>, relative to analog_root:
+#   <b>/output/gds/<b>.gds   <b>/output/lef/<b>.lef   <b>/output/lib/<b>.lib (optional, gap 2)
+#   <b>/output/verilog/<b>.v (* blackbox *), no power pins
+#   <b>/va/<b>_beh.v         behavioural Verilog, same module name and ports
+#   <b>/netlist/<b>.spice    .subckt <b>: signal ports + every supply pin
+# Override any of them under [macro.views], relative to this file.
+analog_root = "../../../analog"
+
+[[macro]]
+block = "@MACRO@"
+todo = "no gds/lef/lib/blackbox/behavioural views yet; delete this line once they exist"
+halo = [10, 10]                       # um (x, y) keep-out: no rows, no core PDN straps
+pg = [{ pins = ["VPWR", "VGND"], nets = ["VPWR", "VGND"] }]  # digital supply pins -> top nets
+analog_supplies = ["vdd", "vss"]      # macro supply pins kept OFF the digital PDN
+analog_nets = ["ua\\[[0-9]+\\]"]      # regexes of top nets never buffered/resized
+
+[macro.instances.u_@MACRO@]           # instance name as in the RTL
+location = [70, 60]                   # um, lower-left
+orientation = "N"

@@ -11,8 +11,29 @@ workarounds, are listed in [`analog/docs/TOOL_ISSUES.md`](analog/docs/TOOL_ISSUE
 | 3 | cktImg: hierarchy, rendered output | block diagrams, top-level schematics | cktImg |
 | 4 | SpiceRack: upstream local fixes, `X()` params, more backends | every testbench | SpiceRack |
 | 5 | GmIDVisualizer: export cgg (for `gmid.ft`) | `gating_value.py` | GmIDVisualizer |
+| 6 | Behavioural Verilog from the Verilog-A golden models | digital sims with the analog macro in place (1) | VerA |
 
 ## 1. LibreLane integration: analog macros in harden and digital sim
+
+**Status:** implemented in `worktree-agent-a0203882ac947a57c`. LibreLane 3.0.14 now comes from
+its flake (`shell.nix`). Macros are declared once in `digital/<module>/build/macros.toml`, and
+`build/macros.py` turns that into the LibreLane `MACROS`/PDN/halo/don't-touch block, the
+behavioural models for sims, a port check (blackbox = behavioural = `.subckt`) and a post-run
+signoff check. `build/librelane/make harden-smoke` passes end to end (sim + harden, DRC/LVS/XOR 0).
+**Remaining:**
+- PDK: LibreLane needs sky130 `8afc8346`. The `shell.nix` pin (`fa87f8f4`) is too old for it, so
+  LibreLane fetches its own copy into `~/.ciel`. Bump `PDK_VERSION` and re-check the analog side
+  so both use one PDK.
+- Analog supply pins are left unconnected for chip-level routing, and the disconnected-pin check
+  skips the macro (`macros.py signoff` checks it instead). Special-net routing of the supplies to
+  TT analog pins is still missing.
+- Hierarchical signoff: macro LVS on its own, and STA with a real `.lib` (gap 2).
+- `digital/analogioc`: its `macros.toml` entry is `todo` because there are no views yet, and its top
+  is still the TT stub.
+- CI: no `harden-smoke` job yet. `gds.yaml` still uses the TT action. To switch, add a nix job
+  that runs `make -C digital/<top>/build/librelane harden` and copies `output/{gds,lef}` plus
+  `src/project.v` into `caravel/`.
+- Behavioural models are hand-written (gap 6). For gate-level sims they need `USE_POWER_PINS` ports.
 
 **Today:** the digital flow is the original TinyTapeout template. It runs yosys
 synthesis per module (`digital/<module>/build/`), uses OpenLane 2.3.10 from `pip`
@@ -128,3 +149,17 @@ LUTs carry no gate capacitance, so `scripts/compiler/metrics/gating_value.py` st
 
 **Want:** GmIDVisualizer also sweeps `cgg` (ngspice `@m[cgg]`, or `cgs + cgd + cgb`) into
 the LUT, so `ft = gm / (2π·cgg)` can be interpolated like `J_D`.
+
+## 6. Behavioural Verilog from the Verilog-A golden models
+
+**Today:** a digital top simulates with each analog macro's behavioural model
+(`analog/<block>/va/<block>_beh.v`, declared in `digital/<module>/build/macros.toml`, gap 1).
+Those models are hand-written, so they can drift from the Verilog-A golden model
+(`analog/<block>/va/<block>.va`) that the analog side is verified against.
+`build/macros.py check` only keeps their **ports** equal to the blackbox and `.subckt`.
+
+**Want:** VerA emits the behavioural Verilog from the `.va`: same module name and ports,
+digital pins as logic, the self-timed handshakes (`go -> done`) as delays taken from the
+model (or the gap 2 `.lib`), analog pins kept as undriven `inout`, plus an `ifdef USE_POWER_PINS`
+port list so the same model works in gate-level sims. **Test:** a model generated for a known
+block passes the digital tb that the hand-written one passes.

@@ -65,8 +65,8 @@ why flakes have to be enabled.
   (VLSI, from the flake), cktImg (`cktimg-json`), SpiceRack (on `PYTHONPATH`),
   Philis, OpenVAF (as `openvaf`), VerA, and a Rust toolchain + protobuf for
   substrate2 layout generators.
-- `.flows/env/Digital.nix`: yosys, verilator, gtkwave, cocotb, openroad, openlane
-  (pip). It has no iverilog, so the digital tbs use `nix-shell -p iverilog yosys`.
+- `.flows/env/Digital.nix`: yosys, verilator, iverilog, gtkwave, cocotb, openroad.
+  LibreLane comes from its own flake in `shell.nix` and is used as-is.
 - The shell hook sets `PDK=sky130A`, `PDK_ROOT=~/.volare`, enables the pinned
   PDK with volare, creates `.venv/`, and prints which tools resolved.
 
@@ -108,6 +108,7 @@ upstream the fix and re-copy it.
 | Shared analog python (this repo only) | `analog/common/` |
 | System specs / design math | `analog/docs/specs.py`, `analog/docs/architecture.md` |
 | RTL / digital tbs | `digital/analogioc/src/`, `digital/analogioc/test/` |
+| Analog macro used by a digital top (harden + sim) | declare it once in `digital/<module>/build/macros.toml`; `build/macros.py check` keeps the blackbox, behavioural model and `.subckt` ports equal |
 | Compiler, metrics campaigns | `scripts/compiler/`, `scripts/compiler/metrics/` |
 | Golden models | `scripts/golden/` |
 | Test weights | `scripts/models/` (gitignored, never committed) |
