@@ -61,7 +61,11 @@ elif [ "$OS" = "Linux" ]; then
         fi
     fi
 
-    nix-shell .flows/env/shell.nix $TYPE_ARG --extra-experimental-features flakes
+    # LibreLane's binary cache (prebuilt openroad/opensta/yosys plugins). Needs the user
+    # to be a trusted-user, otherwise nix ignores it and builds them locally.
+    nix-shell .flows/env/shell.nix $TYPE_ARG --extra-experimental-features flakes \
+        --option extra-substituters https://nix-cache.fossi-foundation.org \
+        --option extra-trusted-public-keys nix-cache.fossi-foundation.org:3+K59iFwXqKsL7BNu6Guy0v+uTlwsxYQxjspXzqLYQs=
 else
     echo "❌ Unsupported OS: $OS"
     exit 1

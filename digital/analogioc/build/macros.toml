@@ -1,0 +1,28 @@
+# Analog hard macros instantiated by the digital top analogioc. Declared once here:
+#   - harden (build/librelane, `make config`) takes gds + lef + lib + blackbox
+#   - simulation (build/verification, build/des_tb) takes the behavioural model
+#   - `python3 macros.py check macros.toml` fails if the blackbox, the behavioural
+#     model and the .subckt disagree on ports
+#
+# Default views of block <b>, relative to analog_root:
+#   <b>/output/gds/<b>.gds   <b>/output/lef/<b>.lef   <b>/output/lib/<b>.lib (optional, gap 2)
+#   <b>/output/verilog/<b>.v (* blackbox *), no power pins
+#   <b>/va/<b>_beh.v         behavioural Verilog, same module name and ports
+#   <b>/netlist/<b>.spice    .subckt <b>: signal ports + every supply pin
+# Override any of them under [macro.views], relative to this file.
+analog_root = "../../../analog"
+
+[[macro]]
+block = "analogioc"
+# TODO: analog/analogioc has no layout, LEF, .lib, blackbox, behavioural model or
+# top .subckt yet, and src/analogioc.v does not instantiate it. Delete this line
+# once those exist; fix pg/analog_supplies/analog_nets/instances to the real pins.
+todo = "analog/analogioc has no gds/lef/lib/blackbox/behavioural/.subckt views yet"
+halo = [10, 10]
+pg = [{ pins = ["VPWR", "VGND"], nets = ["VPWR", "VGND"] }]  # TODO: its digital supply pins, if any
+analog_supplies = ["vdd_ota", "vdd_cmp", "vdd_pkt", "vdd", "vss"]  # kept OFF the digital PDN
+analog_nets = ["col\\[[0-9]+\\]", "vcm", "ua\\[[0-9]+\\]"]  # never buffered/resized; TODO: bias lines
+
+[macro.instances.u_analogioc]
+location = [70, 60]   # TODO: real placement in the TT tile
+orientation = "N"

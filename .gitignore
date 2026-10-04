@@ -25,3 +25,8 @@ analog/docs/pdk_models/
 
 # Docs site
 docs/node_modules/
+
+# LibreLane runs and smoke-test outputs
+**/build/librelane/runs/
+**/build/librelane/smoke/build/
+digital/*/output/

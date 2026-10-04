@@ -2,6 +2,8 @@ include ../config.mk
 
 # Tool
 VERILATOR = verilator
+# Behavioural models of the analog macros declared in ../macros.toml
+MACRO_SIM_FILES := $(shell python3 ../macros.py sim ../macros.toml)
 
 # Enforce Nix Shell
 ifndef IN_NIX_SHELL
@@ -18,7 +20,7 @@ test-rtl:
 	@$(foreach tb,$(TB_FILES), \
 		tb_name=$$(basename $(tb) .v); \
 		printf "$(BLUE)[DIGITAL]$(NC) Running simulation with $(tb)\n"; \
-		$(IVERILOG)  -g2012 -o simulations/$${tb_name}.vvp $(RTL_FILES) $(tb); \
+		$(IVERILOG)  -g2012 -o simulations/$${tb_name}.vvp $(RTL_FILES) $(MACRO_SIM_FILES) $(tb); \
 		if [ $$? -eq 0 ]; then \
 			cd simulations && $(VVP) $${tb_name}.vvp && cd ..; \
 			if [ $$? -eq 0 ]; then \

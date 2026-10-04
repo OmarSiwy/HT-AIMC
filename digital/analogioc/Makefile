@@ -1,6 +1,8 @@
 # AnalogIOC-mini near-tile digital rail (A4)
 # Tools come from nix: nix-shell -p iverilog yosys --run 'make test synth'
 RTL     := $(wildcard src/*.v)
+# + behavioural models of the analog macros declared in build/macros.toml
+RTL     += $(shell python3 build/macros.py sim build/macros.toml)
 TB_SRCS := $(wildcard test/tb_*.v)
 TESTS   := $(patsubst test/%.v,%,$(TB_SRCS))
 LIB     := $(HOME)/.volare/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib

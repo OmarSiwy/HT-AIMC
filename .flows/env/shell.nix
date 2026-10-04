@@ -10,8 +10,14 @@ let
   # (re-exported from nix-eda — `pkgs.netgen` is an unrelated 3D mesh generator).
   # Run `cachix use omarsiwy` first, or these compile locally.
   eda = builtins.getFlake "github:OmarSiwy/EDA-Packaged";
+  # LibreLane: not in nixpkgs 25.11. Pinned to a release tag; its binary cache is
+  # https://nix-cache.fossi-foundation.org (env.sh passes it), else openroad builds locally.
+  # LibreLane 3.0.14 needs the sky130 it pins (8afc8346); PDK_VERSION below is too old
+  # for it, so build/librelane/Makefile lets it fetch its pin into ~/.ciel.
+  # TODO: move PDK_VERSION to 8afc8346 so analog and digital share one PDK.
+  librelane = builtins.getFlake "github:librelane/librelane/3.0.14";
   analog = import ./Analog.nix { inherit pkgs eda; };
-  digital = import ./Digital.nix { inherit pkgs; };
+  digital = import ./Digital.nix { inherit pkgs librelane; };
 
   useAnalog = type == "analog" || type == "mixed";
   useDigital = type == "digital" || type == "mixed";
@@ -130,7 +136,7 @@ pkgs.mkShell {
       echo "  - yosys: $(yosys -V 2>/dev/null | head -1 || echo 'not found')"
       echo "  - verilator: $(verilator --version 2>/dev/null | head -1 || echo 'not found')"
       echo "  - openroad: $(openroad -version 2>/dev/null | head -1 || echo 'not found')"
-      echo "  - openlane: $(openlane --version 2>/dev/null || echo 'not found')"
+      echo "  - librelane: $(librelane --version 2>/dev/null || echo 'not found')"
     fi
 
     echo "  - PDK: $PDK in $PDK_ROOT"

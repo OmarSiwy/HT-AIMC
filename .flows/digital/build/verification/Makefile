@@ -30,12 +30,14 @@ SRC_DIR         := $(shell readlink -f $(BUILD_DIR)/../../src)
 RTL_FILES_ABS   := $(shell find $(SRC_DIR) -name "*.v" -o -name "*.sv")
 RTL_FILES_H_ABS := $(shell find $(SRC_DIR) -name "*.vh" -o -name "*.svh")
 TB_FILES_ABS    := $(shell find $(TEST_DIR) -name "*_tb.v" -o -name "tb_*.v")
+# Behavioural models of the analog macros declared in ../macros.toml
+MACRO_SIM_FILES := $(shell python3 ../macros.py sim ../macros.toml)
 
 # ============================================================================
 # Build Configuration
 # ============================================================================
 
-VERILOG_SOURCES := $(TB_FILES_ABS)
+VERILOG_SOURCES := $(TB_FILES_ABS) $(MACRO_SIM_FILES)
 
 ifneq ($(GATES),yes)
     # RTL Simulation
