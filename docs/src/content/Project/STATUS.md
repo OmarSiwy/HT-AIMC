@@ -404,4 +404,4 @@ TOP-column bank Wn.56/Wp.70 repairs initial1ps chargefailure but costs2.40%
 more fixtureenergy than the passingBOTTOM Wn.50/Wp.70 point; finercontrol live.
 Added independently configurable columnDC bias and launched±250mV column
 controls to expose voltage-dependentloading outside the original.9V clamp.
-2026-10-04: analog attention engine dropped. Blocks chip2_attention, wta, rescale, softmax_combine, ptat_bias, translinear_softmax deleted; attention scores/softmax/A·V moved to the digital rail; gain_cell_array kept for LoRA weights only. See docs/src/content/Project/APPLICATION_ATTENTION.md.
+2026-10-04: analog attention engine dropped. Blocks wta, rescale, softmax_combine, ptat_bias, translinear_softmax and their assembly deleted; attention scores/softmax/A·V moved to the digital rail; gain_cell_array kept for LoRA weights only. See docs/src/content/Project/APPLICATION_ATTENTION.md.
