@@ -151,4 +151,11 @@ until the per-gate load fits `c_load_delay`:
 
 ### Results (wrapper cells)
 
-WRAPPER_RESULTS
+`DUT=sch`, tt 27 °C. Verilog-A stand-ins around the cells (`test/*.va`, event-driven):
+
+| Testbench | Result | Notes |
+|-----------|--------|-------|
+| `tb_conv_seq` | **PASS** on ESPice and on ngspice | every I0/I6/C0-C4/F1-F5 row; sign strobe 0.21 ns after phi1; cb_cross settled 4.4 ns before cb_req; pacing 59.8 ns (≥ 40); packet = pkt_d cycles (1 and 3), edges at the gap start; acq 118.5 / 16.7 ns (≥ 80 / 14); hold 20.2 ns (≥ 15); clk_f edges 3.3 ns (≥ 2), high 6.6 ns (≥ 4); cmp_result 9.4 ns before cmp_ack; fine codes exact |
+| `tb_tile_seq` | **not re-run after the last fixes** | last ESPice run (before 89d5591): I0, I2 (75.5 ns), I3 cycle counts (LO 16 × 9.38 ns, HI 8 × 15.0 t_q), every row's m_i, I4 park 0.15 ns PASS; FAILED: envelope edges outside the gap (31/14/15 edges), I7 (join tree powered up high: integ_ack 7 ns before the last sdone), I5 checked in TQ_SIM instead of the ring's 9.38 ns. Fixed in 89d5591 (reset C-element join, envelope latch enabled by ck & !phi2, I5 in measured t_q), unverified |
+| `tb_async_ctrl` | PASS on ESPice, numbers identical to ngspice | rst 21.47 ns, settle 48.20 ns, t_q 7.25 / 9.70 / 9.75 / 9.70 ns |
+| corners / MC of the wrapper cells | not run | delay elements are sized for the fast corner (T_FAST = 0.72) but unverified there |

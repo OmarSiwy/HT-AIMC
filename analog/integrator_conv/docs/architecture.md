@@ -72,4 +72,35 @@ vcm ± 15.5·D·u_cal, sar vcm ± 16·D·u_cal·trim) through real `rstring_ladd
 
 ## Results
 
-RESULTS
+Pre-layout, `DUT=sch`, tt 27 °C. ESPice is the backend (main 1b2b91e); ngspice numbers
+are from before the switch, same decks.
+
+| Testbench | ESPice | ngspice | AnalogIOC origin |
+|-----------|--------|---------|------------------|
+| `tb_integrator_conv` (A1) | **PASS**: mac 0/15/16/−50/165 → −1/15/16/−51/127, worst 1; decisions 1/1/2/4/11 = golden n_eval; E(0)/E(165) = 1.43/10.48 pJ = 0.14 | 0/15/16/−50 → −1/15/15/−51 (165 not run); E within 1.2 % of ESPice | 0/15/16/−51/127, worst 1; E(0)/E(165) = 0.48/4.83 = 0.10 |
+| `tb_eventrate` (A2) | **FAIL**: 7 points, monotone (PASS); E(code 0)/mean = 1.43/3.87 = **0.37** (bar 0.30) | not run | 0.27 |
+| E_conv vs \|code\| | 0: 1.43 (0.50 + 0.94) · 15: 1.45 · 16: 2.36 · 31 (mac 32): 2.33 · 51: 4.01 · 79 (mac 80): 5.03 · 127: 10.48 pJ | | 0.48 / 0.47 / 0.91 / 1.35 / 1.79 / 2.65 / 4.83 pJ |
+| conversion time from sgo | 724 ns (code 0) … 2224 ns (165) | 734 ns (code 0) | fixed schedule |
+| `tb_integrator_conv_mc` | not run (written; ESPice runs were stopped) | not run | — |
+| corners | not run | not run | — |
+| `DUT=va` | model lints (VerA); not simulated on ESPice | — | — |
+
+Deviations from the origin:
+
+1. **E(code 0)/mean = 0.37 > 0.30 (A2 fails).** The comparators set the floor: the migrated
+   `strongarm` (MC-sized input pair 21.8/0.60 µm for a 10 mV 3σ offset) costs **0.29 pJ
+   per strobe** at any clock edge rate (measured on ESPice at 0.1/1/3.3 ns edges); the
+   origin's was ≈ 0.07 pJ (its 0.27 pJ fine phase over 4 strobes). Fine phase 0.94 pJ
+   (4 SA2 strobes) vs 0.27; code-0 coarse floor 0.50 pJ (sign + one no-cross) vs 0.20;
+   0.90 pJ per crossing vs 0.56 (one SA1 strobe + the packet + idle packet chop during the
+   slower handshake cadence). Early termination itself works (E(0)/E(165) = 0.14). Closing
+   the bar needs a lower-energy comparator (a smaller pair, with offset removed by the
+   zero-point), which is a strongarm sizing decision, not made here.
+2. **Codes at exact multiples of 16 read −1** (mac 32 → 31, 80 → 79 on ESPice, 16 → 15 on
+   ngspice): the last crossing sits 0.5 unit (0.67 mV) above thr; the SAR then saturates at
+   15. Within ±1 (A1); the origin read 16 and 32 exactly. mac 0 reads −1 (origin 0).
+3. **Kick symmetry** (topology change, see `netlist/integrator_conv.py`): both comparators'
+   reference inputs are replicas of their signal inputs. Against hard vcm the migrated
+   strongarm kicked the floating CDAC top −48 mV (origin −3.7 mV) and every SAR trial read
+   "keep" (mac 16 → 31 before the fix).
+4. vref reservoir 8.2 pF (derived) vs 5 pF; SA2 filter R 7.33 kΩ (RC_KICK/C_FILT_MIN) vs 8 kΩ.

@@ -422,3 +422,21 @@ JITTER 0 and 0.5 × 3 seeds (exposed write 0 ns after the first pass); relu fixt
 11 passes; A8 on pass_04 (only a checksum-column LSB can flag there: clean 127 + data
 |Δ| ≤ 17 < 199); E2E attn_o all 36 column tiles × 4 row tiles (144 passes) acc/residual/q
 = golden proj. 10 iverilog tbs + `make synth` still pass; analogioc_top synthesizes with 0 latches.
+
+### 2026-10-05 — phase 1a: integrator_conv migrated, conv_seq/tile_seq built (ESPice)
+
+`integrator_conv` migrated to the INTERFACE.md §5 ports (35 pins, raw dual-rail comparator
+outputs, no XSPICE state, bias as ports); `conv_seq` and `tile_seq` added to the async_ctrl
+deck (static CMOS from that deck's cells). Converter change from AnalogIOC: both StrongARMs'
+reference inputs are replicas of their signal inputs (the migrated, MC-sized strongarm
+kicked the CDAC top −48 mV against hard vcm).
+Run on ESPice (tt 27 °C, DUT=sch): tb_integrator_conv (A1) PASS, codes 0/15/16/−50/165 →
+−1/15/16/−51/127, decisions = n_eval, E(0)/E(165) 0.14; tb_eventrate (A2) **FAIL**,
+E(code 0)/mean 0.37 > 0.30: StrongARM 0.29 pJ/strobe vs origin ≈ 0.07 (fine phase 0.94 vs
+0.27 pJ); tb_conv_seq PASS; tb_async_ctrl PASS (identical to ngspice). ESPice vs ngspice on
+the converter: energies within 1.2 %, mac 16 reads 16 vs 15 (packet boundary, both ±1).
+**Not yet run on ESPice** (simulation stopped by request; benches are wired and runnable):
+tb_tile_seq after the join-reset / envelope-gap fixes (89d5591), tb_integrator_conv_mc,
+all corners (integrator_conv, conv_seq, tile_seq), DUT=va for integrator_conv. See
+analog/integrator_conv/docs/architecture.md and analog/async_ctrl/docs/architecture.md.
+
