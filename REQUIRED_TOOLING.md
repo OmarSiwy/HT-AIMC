@@ -10,6 +10,9 @@ tools that already work, with their workarounds, are listed in
 | 2 | SpiceRack: EGSpice backend | the successor simulator | SpiceRack, EGSpice |
 | 3 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
 | 4 | VerA `.v` device: > 256 pins, output-variable ports on part-selects, task-enable panic | `make cosim` (A9, A12 co-sim) | VerA (ESPice picks it up) |
+| 5 | Hierarchical layout assembly of the analogioc top | `make -C analog/analogioc/build/layout views` | substrate2 generator (ours) |
+| 6 | GPurify in the nix shell, and a simulator it can drive | `make -C analog/analogioc/build/lib lib` | EDA-Packaged, GPurify |
+| 7 | Liberty characterization that scales to a whole-chip macro | `ACCURACY=spice` on analogioc | GPurify |
 
 ## 1. cktImg: grouping hints
 
@@ -89,3 +92,43 @@ espice `w9fhfbmb…-espice-1.0.0`.
 (`include/espice.h`) advances whole analyses and cannot pause a transient at time t to
 change a source. That would need a new stepping API plus a VPI bridge, which is far more
 new code than items 1 to 3.
+## 5. Hierarchical layout assembly of the analogioc top
+
+**Decision (2026-10-05):** the analogioc macro is laid out hierarchically. Each block in its
+`DEPENDS` gets its own verified layout and macro views (`make -C analog/<block>/build/layout
+views`), then a top generator places and routes them. Flat Philis is ruled out: the flattened
+top has more than 20k devices (the 2176 6T bitcells alone are 13k FETs), and Philis costs
+45–60 min per iteration above 30 FETs. Philis `--hier` is ruled out too: it cannot take
+`--interface`, so the ports come out as `n<id>`, and it writes pin text on 236/0.
+
+**Needed:**
+- `analog/analogioc/layout/analogioc.rs`, a `[[bin]]` of `analog/common/layout`. It places the
+  blocks' `output/gds/<block>.gds` and routes the block pins to each other and to the
+  519 boundary pins (`pins::place` with an `analogioc` interface.json). Not written.
+- substrate2/atoll: confirm it can instance an imported GDS (a raw cell with its pin stubs)
+  inside a `Tile` and route to it. If it cannot, assemble the top in KLayout Python and
+  route the top-level nets with another tool.
+- A substrate2 generator for every leaf. Philis GDS cannot become macro views until its pins
+  are on a metal (TOOL_ISSUES.md). Generators exist for cmos_switch and strongarm only.
+
+## 6. GPurify in the nix shell, and a simulator it can drive
+
+`gpurify lib` produces analogioc's Liberty. Today it is a local build
+(`~/Documents/Projects/Rust/GPurify`), so `make lib` takes `GPURIFY=` and `GPURIFY_DECK=`.
+
+**Needed:** package the `gpurify` CLI and its `pdks/*.deck` in EDA-Packaged, and add it to
+`Analog.nix` (exporting `GPURIFY_DECK`). Above `interface` accuracy it runs `ngspice -p`, but
+the analog shell has only ESPice. So either add ngspice to the shell for this one step, or
+give ESPice ngspice's pipe-mode interface (`-p`, `source`, `RES` lines).
+
+## 7. Liberty characterization that scales to a whole-chip macro
+
+`ACCURACY=spice` simulates the whole extracted analogioc macro (>20k devices plus RC) once
+per arc × slew × load × corner. That is 53 arcs × 2 × 2 tables × 3 corners, each a
+transient of several hundred ns. It is days of runtime, and the field solve is quadratic
+in panel count.
+
+**Want:** characterize per sub-block or on a reduced netlist (only the handshake logic in
+`tile_seq`/`conv_seq` drives the pins), then compose the results. Until then, `make
+lib-interface` (pins, supplies, area) is enough to floorplan and harden. The arcs matter
+little here, because the rail samples every macro output through 2FF synchronizers.

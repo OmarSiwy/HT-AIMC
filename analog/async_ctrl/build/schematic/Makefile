@@ -117,7 +117,7 @@ deps:
 	@if [ -z "$(DEPENDS)" ]; then echo "$(BLOCK): no dependencies"; exit 0; fi
 	@for d in $(DEPENDS); do \
 		echo "=== building dependency: $$d ==="; \
-		$(MAKE) -C ../../../$$d/build/va va || exit 1; \
+		$(MAKE) -C ../../../$$d/build/va lint || exit 1; \
 		$(MAKE) -C ../../../$$d/build/schematic netlist || exit 1; \
 	done
 	@echo "$(BLOCK): dependencies built"

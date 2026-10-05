@@ -39,7 +39,7 @@ def load(toml_path):
         views = {
             "gds": out / "gds" / f"{b}.gds",
             "lef": out / "lef" / f"{b}.lef",
-            "lib": out / "lib" / f"{b}.lib",
+            "lib": out / "lib",  # gpurify's <b>__<corner>.lib, or one .lib file (override)
             "blackbox": out / "verilog" / f"{b}.v",
             "behavioural": root / b / "va" / f"{b}_beh.v",
             "subckt": root / b / "netlist" / f"{b}.spice",
@@ -136,8 +136,9 @@ def config_block(macros, cfg_dir):
             "vh": [rel(need(m, "blackbox"))],
             "instances": m["instances"],
         }
-        if v["lib"].exists():
-            e["lib"] = {"*": [rel(v["lib"])]}
+        libs = corner_libs(v["lib"], m["block"])
+        if libs:
+            e["lib"] = {k: [rel(p) for p in ps] for k, ps in libs.items()}
         else:
             print(f"macros.py: {m['block']}: no .lib, STA sees a black box", file=sys.stderr)
         entries[m["block"]] = e
@@ -166,6 +167,16 @@ def config_block(macros, cfg_dir):
         m["block"] for m in macros if m.get("analog_supplies")
     ]
     return [f"{k}: {json.dumps(v)}" for k, v in out.items()]
+
+
+def corner_libs(lib, block):
+    """LibreLane `lib` map {timing-corner glob: [.lib]}. A directory holds `gpurify lib`'s
+    <block>__<corner>.lib, one per PVT corner, keyed `*_<corner>` so nom_/min_/max_tt_025C_1v80
+    all take the tt file. Its min/ best-case twins are left out: LibreLane takes one lib
+    per macro per corner. A single file serves every corner."""
+    if lib.is_file():
+        return {"*": [lib]}
+    return {f"*_{f.stem.split('__', 1)[1]}": [f] for f in sorted(lib.glob(f"{block}__*.lib"))}
 
 
 def analog_rx(macros):

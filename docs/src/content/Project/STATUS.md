@@ -517,4 +517,65 @@ make cosim-smoke                    # bridge sanity, seconds
 make cosim-elab                     # must write out/cosim_dut.zig with no error
 make cosim                          # A9: pass_05 (TSTOP = 12u per pass; set TSTOP=... on timeout)
 make cosim PASSES="00 05 09"        # A12 co-sim: back to back
+
+### 2026-10-05 — Phase 4: harden path wired (not run)
+
+Nothing was simulated, laid out or hardened. The analog blocks → analogioc macro →
+analogioc_top path is wired as make targets, and every cheap step was checked.
+- **Layout route: hierarchical.** Each block in analogioc's `DEPENDS` gets its own verified
+  layout and macro views, then `analog/analogioc/layout/analogioc.rs` (substrate2, **not
+  written yet**) places them.
+  - Flat Philis is out: the top has more than 20k devices flattened, against 45–60 min per
+    iteration above 30 FETs.
+  - Philis `--hier` is out: it cannot take `--interface`, and it writes pin text on 236/0.
+  - `LAYOUT_ROUTE = gen` in `analog/analogioc/build/config.mk`, so `make pnr` there refuses.
+- **Block layout Makefile** (template + all 13 copies): new targets `pnr-verify` (PDK klayout
+  DRC + magic/netgen LVS on a Philis run), `views` and `deps`.
+  - `views` writes `output/gds,lef/<b>.*` through `analog/common/layout/macro_views.py`. It
+    renames bus bits `<i>` → `[i]`, checks every port has a metal pin and writes a bbox-OBS LEF.
+  - `deps` runs `views` on every block in `DEPENDS`, deepest first.
+  - Fixed in the schematic Makefile: `deps` called a `va` target that does not exist; it now calls `lint`.
+- **Liberty:** `analog/analogioc/build/lib` (`make spec | lib | lib-interface`, `ACCURACY=spice` default).
+  - `layout/liberty.py` builds the GPurify spec from `analogioc.ports` and writes it to
+    `output/lib/liberty.json`. It is not committed: 0.8 MB, with a machine path.
+  - Spec contents: 519 pins (415 in / 86 out / 13 analog biased at §2 values / 5 supplies,
+    `vss` substrate) and no clock. 53 combinational handshake arcs: integ_req→integ_ack
+    rise/fall, cmp_req[j]→cmp_ack[j] rise (dac 0 and 15) and fall, cb_ack[j]→cb_req[j].
+    Corners tt_025C_1v80 / ss_100C_1v60 / ff_n40C_1v95, with the model path from `$PDK_ROOT`
+    (GPurify expands no environment variables).
+- **macros.py** (+ the .flows template): `lib` is now the `output/lib/` directory, mapped as
+  `{"*_<corner>": [<b>__<corner>.lib]}`. A single file still maps to `"*"` (smoke unchanged).
+  `min/` is skipped.
+- **macros.toml:** explicit views, and the TODO is gone. `pg = []`, all 5 supplies in
+  `analog_supplies`. The placement is a PLACEHOLDER (100, 100).
+- **config.yaml:** the DIE_AREA is a PLACEHOLDER of 1500×1500. CLOCK_PERIOD = T_CLK_MAX = 20 ns.
+- **Orchestration:** `make -C digital/analogioc flow` runs steps 1–5. `flow-package` is blocked (Q3).
+
+Checked:
+- `macros.py check`: ports agree, 37 signal ports and 5 supplies.
+- The full chain ran on a fake 519-pin analogioc GDS: `macro_views.py` (519 pins, LEF), then
+  `make lib-interface` (GPurify 0.1.0 accepts the spec; layout labels, LEF and reference
+  ports all match; 3 corner libs), then `make config`. LibreLane 3.0.14's own config loader
+  then accepted the result: it instantiated the Classic flow on the real `config.yaml` without
+  running it. Every STA corner, nom/min/max × tt/ss/ff, picks the matching `analogioc__<corner>.lib`.
+- The fake views were deleted and the generated block was left empty.
+
+Open:
+- `layout/analogioc.rs` is not written, and neither is the analogioc `interface.json`.
+- Leaf generators exist for cmos_switch and strongarm only. A Philis GDS can't become views,
+  because its pins are on 236/0.
+- `gpurify` is not in the nix shell, and it needs ngspice.
+- `spice` accuracy on the whole macro is days of runtime (REQUIRED_TOOLING §4–6).
+- OpenSTA has to group the `x_mag[0]`-style scalar Liberty pins into buses. Check this at the
+  first harden.
+
+Run later, from `./env.sh mixed`:
+```
+make -C digital/analogioc flow-netlists     # VerA lint + netlists (deps, then analogioc)
+make -C digital/analogioc flow-blocks       # = make -C analog/analogioc/build/layout deps
+make -C digital/analogioc flow-top          # = make -C analog/analogioc/build/layout views
+nix-shell -p ngspice --run 'make -C analog/analogioc/build/lib lib GPURIFY=... GPURIFY_DECK=.../pdks/sky130.deck'
+#   (or lib-interface first: no simulation)
+# set DIE_AREA (config.yaml) + location (macros.toml) from output/lef/analogioc.lef SIZE
+make -C digital/analogioc flow-harden       # config + LibreLane harden + macros.py signoff
 ```

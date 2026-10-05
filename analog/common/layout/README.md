@@ -20,6 +20,9 @@ placement and routing, and the crates come from the `substrate` registry
 | `gen-drc` | klayout `sky130A_mr.drc` (feol+beol+offgrid) plus magic's full DRC count. Fails on any klayout violation |
 | `gen-lvs` | magic flat extraction, then netgen with the PDK setup against `netlist/<block>.spice` |
 | `gen-pex` | magic extraction with parasitic C into `output/gen/<block>_pex.spice`: same subckt name and port order as the deck, run with `DUT=pex PEX_FROM=gen` |
+| `pnr-verify` | the same klayout DRC + magic/netgen LVS on a Philis GDS (`RUN=seedN`) |
+| `views` | the macro views a parent or a digital top places: `output/gds/<block>.gds` + `output/lef/<block>.lef` (`macro_views.py`: bus bits `name[i]`, pins checked against `netlist/<block>.ports` or the `.subckt`, bbox OBS on li1..met4). Runs `gen gen-drc gen-lvs` first, or `pnr-verify` with `VIEW_FROM=pnr` |
+| `deps` | `views` of every block in `DEPENDS`, deepest first; existing views are kept (`FORCE=1` rebuilds) |
 
 `verify.py` does the checking. It also takes a GDS path (`verify.py drc <block> x.gds`), so
 you can run it on a Philis GDS for comparison. Tools: `klayout`, `magic`, `netgen` and

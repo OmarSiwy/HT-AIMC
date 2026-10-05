@@ -22,6 +22,16 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Budget data point: tiny decks converge by themselves (cmos_switch, 2 FETs: stops at 14–21 iterations, identical result at 100); large decks (30–90 FETs) do not stop early | cmos_switch vs async_ctrl; pwm_driver (34 FETs) 100-iteration runs found their best at iterations 40 and 57 | budget 100 ≤ 30 FETs, 60 above | early-stop schedule |
 | **Pin text on a non-conductor layer:** every top-level text (pins *and* instance names Xtail, Xinp, …) is written on 236/0, which is not a sky130 layer, so no net binds to it. GPurify, magic/KLayout LVS and any LEF abstract can't find the pins | GPurify session, 2026-10-04 (strongarm if_seed1, cmos_switch seed12, ota if_seed1) | use `output/gen/*.gds` (substrate2, pins on met1/met2 .pin + .label) for anything that needs pins | emit each pin as `<metal>.pin` (e.g. met2 69/16) + `<metal>.label` (69/5) on the conductor reaching the boundary; keep instance names off conductor layers |
 | Only `sky130.json` / `generic_finfet.json` rule decks packaged | — | layout rung is sky130-only | package gf180/ihp decks |
+| `--hier` shares one config and one `-o` dir across blocks, so it cannot take `--interface`: hierarchical P&R loses port names | phase 4 harden wiring (analogioc top), 2026-10-05 | analogioc top: hierarchical assembly by a substrate2 generator (REQUIRED_TOOLING §4) | per-block interface files under `--hier` |
+
+## GPurify (`gpurify lib`, local build 0.1.0) — found wiring analogioc's Liberty, 2026-10-05
+
+| Issue | Workaround here | Upstream fix |
+|---|---|---|
+| A corner's `models` line goes into the ngspice deck verbatim, with no environment expansion, so a spec with `$PDK_ROOT` cannot be committed | `analog/analogioc/layout/liberty.py` writes the spec at `make lib` time, into `output/lib/liberty.json` | expand `$VAR` / `~` in `models` |
+| Every arc case's first vector must drive every digital input. For analogioc (415 inputs, 70 cases) the spec is 0.8 MB | generated, not committed | default unnamed inputs to a `defaults` vector |
+| Spec, LEF and reference pins are compared by exact name, so a `.subckt` with `x<0>` never matches a LEF/Verilog `x[0]` | `make lib` writes `output/lib/analogioc_ref.spice` with `<i>` → `[i]`; `macro_views.py` renames GDS labels | a bus-bit spelling option |
+| Drives `ngspice -p` only; the analog shell has ESPice | `nix-shell -p ngspice` for `make lib` | REQUIRED_TOOLING §5 |
 
 ## cktImg (OmarSiwy/cktImg `298fee1`, EDA-Packaged `4b6c5be`)
 
