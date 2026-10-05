@@ -26,7 +26,7 @@ that trades 10x TOPS/W for tok/s is documented even when it is not the pick.
 | Workload | **Llama-3-8B layer shapes**: 32 layers, d=4096, FFN 14336 (SwiGLU), 32 Q heads, 8 KV heads, d_head 128, vocab 128256. Model size is otherwise free: the architecture must run any transformer's GEMM and GEMV. |
 | Request | 512-token prompt (prefill, GEMM) + 128 generated tokens (decode, GEMV). |
 | tok/s per die | Steady-state processed tokens (prompt + generated) per second of the whole system, divided by the number of iso-area dies the system uses. Generated-only tok/s is reported alongside. Concurrency is free (throughput-optimal) but bounded by KV capacity and a per-stream decode floor of **>= 20 tok/s** (knob). |
-| Weight memory | Resident across N dies **or** streamed from external DRAM and rewritten into the arrays (or a hybrid). This is a decision in the tree, not an assumption. Default external memory if streamed: one HBM3-class stack per die, 819 GB/s, 24 GB, 4 pJ/bit (knob). Die-to-die: 2 TB/s per die at 0.5 pJ/bit (knob). |
+| Weight memory | **Streamed** (user decision, 2026-10-05): weights come from external memory and are written into the tile just ahead of the activations that use them; activations stream too. Default: one HBM3-class stack per die, 819 GB/s, 24 GB, 4 pJ/bit (knob); the KV cache shares it. Die-to-die: 2 TB/s per die at 0.5 pJ/bit (knob). |
 | TOPS/W | 2 x useful model MACs/s (the workload's MACs, including QK^T and A·V; excluding padding, checksum columns, bit-slice replicas and redundancy) over **die power** (everything on the die: arrays, converters, drivers, digital rail, SRAM, PHY). Excludes the DRAM device. Measured at the peak-tok/s operating point. The precision-normalized value (27n1) is reported alongside. |
 | tok/W | tok/s per die divided by (die power + that die's external memory access power), at the **peak-tok/s operating point**. Not gameable by slowing down. |
 | tok/J | Best tokens per joule over **any** operating point (VDD in [0.45, 0.7] V, any clock, any concurrency). Gameable by running slow, which is why it ranks last. |
@@ -40,6 +40,24 @@ Verilog-A behavioural model (VerA/ESPice) proves the architecture is sound, then
 transistor-level SPICE circuit. Post-layout is out of scope.
 
 ## Design direction (user, 2026-10-05)
+
+**Dataflow (user decision): everything streams.** Weights arrive from HBM and are written
+into the tile before the activations that need them; the multiply fires the moment an
+activation arrives, by charge sharing with the waiting weight. The goal is a high-throughput
+streaming architecture. Consequences the search must work out and price:
+
+- Throughput comes from reuse. A written weight is worth one HBM fetch plus one write; it pays
+  off over every activation that meets it before it is replaced (the 512 prompt tokens, and
+  concurrent decode streams). With no reuse, decode tok/s is capped at HBM bandwidth / model
+  bytes. KV-cache traffic competes for the same bandwidth.
+- Charge sharing is destructive: after sharing, the weight capacitor no longer holds the
+  weight. Reuse needs a non-destructive read (weight on a gate, a sampled copy per use, a weight
+  capacitor much larger than the activation's, or re-writing), and each option has a cost.
+- Writing a weight is a conversion (digital code to stored analog value) per element. It is
+  pre-processing to make nearly free: the write path's energy and time per weight are first-
+  order terms, not overhead.
+- Double-buffering (write the next weights while the current ones compute) hides write time
+  only if the write rate keeps up with the compute rate.
 
 These steer the search. The first three are constraints; the rest is the leading hypothesis,
 which the search must test honestly against SOTA and the alternatives, not assume.
