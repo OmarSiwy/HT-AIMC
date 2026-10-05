@@ -405,3 +405,20 @@ more fixtureenergy than the passingBOTTOM Wn.50/Wp.70 point; finercontrol live.
 Added independently configurable columnDC bias and launched±250mV column
 controls to expose voltage-dependentloading outside the original.9V clamp.
 2026-10-04: analog attention engine dropped. Blocks wta, rescale, softmax_combine, ptat_bias, translinear_softmax and their assembly deleted; attention scores/softmax/A·V moved to the digital rail; gain_cell_array kept for LoRA weights only. See docs/src/content/Project/APPLICATION_ATTENTION.md.
+
+### 2026-10-04 — AnalogIOC phase 1c: digital top + behavioural macro + cocotb vs golden
+
+`digital/analogioc/src/analogioc_top.v` (INTERFACE.md §7.4/§8): 17 tile_fsm joined by a
+registered C-element, 17 datapath slices, abft_check, 16 requant, HI→LO pass sequencer,
+LoRA writer, and the weight-load controller (wt_* row stream → w_wl/w_data, 2 clk/row,
+overlapped with the previous pass's LO conversion). TT stub `src/analogioc.v` deleted.
+tile_fsm: ota_en high in S_FINE, new col_exit. `analog/analogioc/va/analogioc_beh.v`
+(bit-true to golden: stores what is written, eventrate_convert codes, protocol asserts,
+JITTER) + blackbox `va/analogioc.v` + ports-only STUB `netlist/analogioc.spice`;
+`macros.py check` → ports agree (37 signal ports, 5 supply pins).
+cocotb (`build/verification`, `make`), all exact vs golden.model: A0; A11 96 passes
+(272 cells × 6 patterns) + both assertions; A7/A12 the 11 compiler passes back to back,
+JITTER 0 and 0.5 × 3 seeds (exposed write 0 ns after the first pass); relu fixture on all
+11 passes; A8 on pass_04 (only a checksum-column LSB can flag there: clean 127 + data
+|Δ| ≤ 17 < 199); E2E attn_o all 36 column tiles × 4 row tiles (144 passes) acc/residual/q
+= golden proj. 10 iverilog tbs + `make synth` still pass; analogioc_top synthesizes with 0 latches.

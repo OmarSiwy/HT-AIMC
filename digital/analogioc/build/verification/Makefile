@@ -41,19 +41,23 @@ VERILOG_SOURCES := $(TB_FILES_ABS) $(MACRO_SIM_FILES)
 
 ifneq ($(GATES),yes)
     # RTL Simulation
-    SIM_BUILD := $(TEST_DIR)/sim_build/rtl
+    SIM_BUILD := $(BUILD_DIR)/sim_build/rtl
     VERILOG_SOURCES += $(RTL_FILES_ABS) $(RTL_FILES_H_ABS)
 else
     # Gate-Level Simulation
-    SIM_BUILD := $(TEST_DIR)/sim_build/gl
+    SIM_BUILD := $(BUILD_DIR)/sim_build/gl
     COMPILE_ARGS += -DGL_TEST -DFUNCTIONAL -DUSE_POWER_PINS -DSIM
     VERILOG_SOURCES += $(PDK_ROOT)/sky130A/libs.ref/sky130_fd_sc_hd/verilog/primitives.v
     VERILOG_SOURCES += $(PDK_ROOT)/sky130A/libs.ref/sky130_fd_sc_hd/verilog/sky130_fd_sc_hd.v
     VERILOG_SOURCES += $(TEST_DIR)/gate_level_netlist.v
 endif
 
-COMPILE_ARGS += -I$(SRC_DIR) --timing
+COMPILE_ARGS += -I$(SRC_DIR)
+ifeq ($(SIM),verilator)
+    COMPILE_ARGS += --timing
+endif
 
+export COCOTB_RESULTS_FILE := $(BUILD_DIR)/results.xml
 export COMPILE_ARGS
 export VERILOG_SOURCES
 export SIM
@@ -86,5 +90,5 @@ verification:
 # Clean build artifacts
 clean_all:
 	@echo "Cleaning..."
-	@rm -rf $(TEST_DIR)/sim_build $(TEST_DIR)/__pycache__
-	@rm -f $(TEST_DIR)/*.vcd $(TEST_DIR)/results.xml
+	@rm -rf $(BUILD_DIR)/sim_build $(TEST_DIR)/__pycache__
+	@rm -f $(TEST_DIR)/*.vcd $(BUILD_DIR)/results.xml
