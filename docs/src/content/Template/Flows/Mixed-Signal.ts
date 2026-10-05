@@ -35,4 +35,22 @@ TinyTapeout expects a top-level wrapper.
 *   **Digital Top**: Instantiate analog macros as blackboxes in Verilog.
 *   **Analog Top**: Use the analog wrapper and place digital blocks as macros.
 *   **Pins**: Define your pinout in \`info.yaml\`. Ensure analog pins are correctly mapped.
+
+## 5. Co-Simulation (RTL + SPICE)
+The digital top runs as Verilog **inside** ESPice, so both domains share one transient.
+
+*   **Mechanism**: ESPice loads the RTL with \`.hdl "design.v"\` and instantiates it with an \`N\` card. VerA's event engine runs it as one device.
+*   **Bridge**: each device input is an A2D at \`vth\` (VDD/2). Each output is a D2A Thevenin driver (\`rout\`) with \`trise\`/\`tfall\` ramps (150 ps, sky130 std-cell class). All on the macro's \`vdd\` (1.8 V).
+*   **Wiring** (\`cosim.py\`): one device pin per macro bit, in \`analogioc.ports\` order. A shell module with the macro's Verilog ports replaces the behavioural model.
+*   **Results**: a device has no \`$display\`, so codes leave on observation pins (\`obs_d[7:0]\`, \`obs_v\`). \`cosim.py check\` decodes them from the rawfile and gates them against \`pass_vectors.py\` with ±CODE_TOL (8 LSB).
+
+\`\`\`bash
+cd digital/analogioc/build/cosim
+make cosim-smoke                  # toy macro, seconds: the bridge end to end
+make cosim-elab                   # generate + VerA elaboration only
+make cosim                        # A9: pass_05 through the SPICE macro (long)
+make cosim PASSES="00 05 09"      # A12: back to back (long)
+\`\`\`
+
+Run it inside \`./env.sh mixed\`. \`make cosim\` needs the real \`analog/analogioc/netlist/analogioc.spice\` and \`scripts/compiler/out\`. It also needs the VerA gaps in \`REQUIRED_TOOLING.md\` §4 closed: more than 256 pins, and \`output reg\` ports on part-selects.
 `

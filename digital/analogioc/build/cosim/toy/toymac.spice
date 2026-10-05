@@ -1,0 +1,16 @@
+* Toy macro for the co-sim smoke (no PDK, a few elements). Pins in toymac.ports order.
+* Inputs are high-impedance RC loads (100 k, tau = 1 ns) like CMOS gates behind a wire;
+* outputs are smooth tanh comparators of internal analog nodes:
+*   integ_ack = integ_req delayed by the RC          (handshake through analog)
+*   col_sign<k> = 1 iff vin_k < vcm, vin_k = vcm + 0.2 - 0.4 v(x_neg<k>)/vdd
+.subckt toymac integ_req integ_ack x_neg<0> x_neg<1> col_sign<0> col_sign<1> vcm vdd vss
+Rr integ_req nr 100k
+Cr nr vss 10f
+Back integ_ack vss V=v(vdd)*0.5*(1+tanh(40*(v(nr)-0.5*v(vdd))))
+R0 x_neg<0> n0 100k
+C0 n0 vss 10f
+R1 x_neg<1> n1 100k
+C1 n1 vss 10f
+Bs0 col_sign<0> vss V=v(vdd)*0.5*(1+tanh(40*(v(vcm)-(v(vcm)+0.2-0.4*v(n0)/v(vdd)))))
+Bs1 col_sign<1> vss V=v(vdd)*0.5*(1+tanh(40*(v(vcm)-(v(vcm)+0.2-0.4*v(n1)/v(vdd)))))
+.ends toymac
