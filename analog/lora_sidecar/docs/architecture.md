@@ -43,7 +43,7 @@ the 16 xrd TG drivers (INTERFACE §3), which are no longer needed.
 |---|---|---|
 | A cells source-switched by xrd (0.9→0 V pulse) | cells always on (source at vss), drain **steered** colp / coln / vcm-dump by logic | the cell must carry ≤ I_SIDE/16 = 375 nA at full scale in strong inversion (matching), i.e. W/L = 0.43/19.2 µm; its 60 fF gate is the store, so a switched source bootstraps the floating gate and the cell turns itself off |
 | unsigned \|x\| | Ap/An cell pair per row, swapped by xneg; two integrators (P, N): Q_P − Q_N = A·x | golden uses signed x and signed A (`lora_quant`) |
-| one ramp + one comparator, B window = ramp_en..crossing (eps = 18 ns offset, needs an x=0 baseline pass) | both integrators ramp to vth = vcm − V_PED; B window = XOR of the two crossings, polarity = which side is later | the window is \|Q_P − Q_N\|/I_ramp; comparator delays cancel: **x = 0 reads 0.000 code with no baseline** |
+| one ramp + one comparator, B window = ramp_en..crossing (eps = 18 ns offset, needs an x=0 baseline pass) | both integrators ramp to vth = vcm − V_PED; B window = XOR of the two crossings, polarity = which side is later; each crossing latched until ramp_en falls | the window is \|Q_P − Q_N\|/I_ramp; comparator delays cancel: **x = 0 reads 0.000 code with no baseline**. The latch: a ramp step moves vax by I_ramp/gm_OTA (~70 mV at tt, 180 mV at fs/125 °C) — the same on both sides at the start, but when a ramp stops it lifts vax back over vth; unlatched, the window chattered and left −10 code of switch charge per column |
 | B cells sink only | per column: direct cells sink (+), mirrored cells source (−) through a PMOS mirror; pos window: bpd + bnm, neg window: bnd + bpm | signed B × signed A·x needs both polarities on each column |
 | — | each mirror carries a standing bias I_MB = I_cell/8 (NMOS on vb_tail), taken back off its output | an unbiased mirror on ≤ 291 nA slews its 0.6 pF gate for µs after a write |
 | x pulses unchopped in both windows | HI window integrates one t_q per chop cycle | the tile delivers one transfer per chop cycle in both windows, so golden uses one rho for both; an unchopped HI pulse integrates 16× the charge |
@@ -72,12 +72,12 @@ TOL_REL = 5 % (system architecture §4: outer-product column error ≤ 5 %).
 | x → −x negates every column | | | TOL_ABS | code | `tb_lora_sidecar` |
 | x = 0, no baseline pass | | | 0.5 | code | `tb_lora_sidecar` |
 | Storage non-destructive (reference pass repeated after 5 passes) | | | 0.5 | % | `tb_lora_sidecar` |
-| A integrator swing | | | `specs.V_SWING` (+5 %) | V | `tb_lora_sidecar` |
+| A integrator swing (budget set at the nominal cell current; fast corners carry ~1.2× — the compiler's per-chip budget uses the calibrated I_7) | | | 1.5 × `specs.V_SWING` (inside the OTA's ±370 mV) | V | `tb_lora_sidecar` |
 | Level table strictly monotone; level 0 | | | 1 | % of level 7 | `tb_lora_rho` |
 | rho fit vs physical rho (ΔV_ax·I_B7/(49·Σm·slope·q_unit)) | | | 5 | % | `tb_lora_rho` |
-| Window pedestal \|c0\| | | | TOL_ABS | code | `tb_lora_rho` |
+| Window pedestal \|c0\| (calibrated out) | | | 2 TOL_ABS | code | `tb_lora_rho` |
 | Mirror path error \|km − 1\|·level | | | 2 | % FS | `tb_lora_rho` |
-| Delta mac linear in A·x (1..4 reference rows) | | | TOL_ABS | code | `tb_lora_rho` |
+| Delta mac linear in A·x (1..4 reference rows, residual from a line through 0) | | | TOL_ABS / 2 | code | `tb_lora_rho` |
 | SGD step: L1 < L0; updated columns golden sign and \|Δy − pred\| ≤ TOL; others ≤ TOL_ABS | | | | | `tb_lora_update` |
 | Yield, every column within TOL after per-chip calibration + x = 0 zero point (tt_mm, 30 samples) | 90 | | | % | `tb_lora_sidecar_mc` |
 | Energy per LO op, per write slot | | report | | pJ | `tb_lora_sidecar` |
@@ -104,8 +104,11 @@ values for `specs.lora_cal()`.
 | mirror bias NMOS (×4/col) | gate vb_tail (tail VGS), I_cell/8, L stepped until min_w carries it, σ ≤ 10 % | 0.52 / 28.8 µm |
 | V_PED | 3σ of (integrator − comparator) OTA offset: 3·√2·pair σ(in 0.54/0.3) | 57 mV |
 | vth divider | vcm → vss at I_SIDE; R_top/R_bot from V_PED; decap = C_int | 9.5 k / 140.5 k, 0.9 pF |
-| steering TGs | R_on·I ≤ 20 mV (square-law estimate) | min 0.42/0.15 both |
-| reset TG (×2) | measured R_on(vcm) every corner × temp ≤ T_RST / (C_int ln(2 V_SWING/V_PED)) | n 3.36, p 10.08 / 0.15 µm |
+| TGs at vcm | R_on(vcm) **measured** per width on every corner × temp (`tg_vcm`, `netlist/char/<pdk>.json`; a min TG reads 30 kΩ at tt, 788 kΩ at ss/−40 °C), PMOS min | |
+| cell / mirror steering TG | R_on·I_cell ≤ 0.3 V (keeps cell and mirror saturated; wider → more charge per window, c0) | n 0.42, p 0.42 / 0.15 µm |
+| ramp steering TG (×4) | R_on·I_ramp ≤ 20 mV (a min TG at ss/−40 °C would collapse the ramp source) | n 13.44, p 0.42 / 0.15 µm |
+| reset TG (×2) | R_on ≤ T_RST / (C_int ln(2 V_SWING/V_PED)) | n 3.36, p 0.42 / 0.15 µm |
+| comparator latch | NOR SR latch per side, set by the crossing, cleared by ramp_en low | logic sizes |
 | logic | min N, equal-drive P at Lmin; window buffers fan-out 4 | 0.42 / 1.16 / 0.15 µm |
 | OTAs (×4: 2 integrators, 2 comparators) | `ota` block as is | |
 

@@ -26,7 +26,8 @@ the floating gate and the cell turns itself off). Unused current goes to the `vc
               a standing bias (taken back off the output) so they never idle.
   write       per side one write_dac (vref = vcm, the cell write ceiling) driven by the
               magnitude m: code = 8 + m (m > 0) or 0, i.e. b2..b0 = m, b3 = OR(m); the sign
-              bit routes the level to the + or - cell bus and grounds the other.
+              bit routes the level to the + or - cell bus and grounds the other; with no
+              select high both buses park at vcm (retention, see wbus()).
 
 Ports: xen0..15 xneg0..15 colb0..15 wa_sel0..15 wb_sel0..15 da0..3 db0..3
        rst ramp_en vaxp vaxn vcm vb_ramp vb_nc vb_pc vb_tail vdd vss
@@ -253,7 +254,7 @@ class Logic:
         self._p(f"{n}_p", out, a, "vdd", k)
 
     def nand(self, n, out, *ins):
-        """NAND of 2-3 inputs; N stack widened by its height (equal pull-down)."""
+        """NAND of 2-4 inputs; N stack widened by its height (equal pull-down)."""
         h = len(ins)
         prev = "vss"
         for k, a in enumerate(ins):
@@ -263,7 +264,7 @@ class Logic:
             self._p(f"{n}_p{k}", out, a, "vdd")
 
     def nor(self, n, out, *ins):
-        """NOR of 2-3 inputs; P stack widened by its height."""
+        """NOR of 2-4 inputs; P stack widened by its height."""
         h = len(ins)
         prev = "vdd"
         for k, a in enumerate(ins):
@@ -348,20 +349,37 @@ def bcol(name, sz, pdk):
 
 
 def wbus(name, sz, pdk):
-    """`<name>_wbus d0 d1 d2 d3 wdp wdn vref vdd vss`: write DAC + sign routing."""
-    s = ps.Subcircuit(f"{name}_wbus", ["d0", "d1", "d2", "d3", "wdp", "wdn", "vref", "vdd",
-                                       "vss"])
+    """`<name>_wbus d0 d1 d2 d3 s0..s15 wdp wdn vref vdd vss`: write DAC + sign routing.
+    While a select s<i> is high the bus the sign picks carries the DAC level and the other
+    is grounded (a zero cell). With no select high both buses park at vref (= vcm, the
+    write ceiling): every off write switch then has its source on the store side at
+    Vgs = -V_store, so a nonzero store does not leak away (sky130 sf/125 C: 4 mV in 5 us
+    with the bus at 0 V, 0.08 mV parked at vcm); a zero cell creeps up only until its own
+    Vgs shuts the leak, far below the read threshold."""
+    sels = [f"s{i}" for i in range(N)]
+    s = ps.Subcircuit(f"{name}_wbus", ["d0", "d1", "d2", "d3", *sels, "wdp", "wdn", "vref",
+                                       "vdd", "vss"])
     g = Logic(s, sz, pdk)
+    for k in range(N // 4):
+        g.nor(f"ns{k}", f"no{k}", *sels[4 * k: 4 * k + 4])
+    g.nand("wact", "wact", *[f"no{k}" for k in range(N // 4)])    # any select high
+    g.inv("iwa", "wact_b", "wact")
     g.nor("nor3", "nz_b", "d0", "d1", "d2")
     g.inv("inz", "nz", "nz_b")                # b3 = m != 0  ->  code 8 + m
     g.inv("isg", "d3_b", "d3")
+    g.nor("enp", "en_p", "wact_b", "d3")      # write + bus
+    g.nor("enn", "en_n", "wact_b", "d3_b")    # write - bus
+    g.inv("ienp", "en_p_b", "en_p")
+    g.inv("ienn", "en_n_b", "en_n")
     s.X("dac", f"{name}_dac", "d0", "d1", "d2", "nz", "dac", "vref", "vdd", "vss")
     wsw = f"{name}_wsw"
-    s.X("tp", wsw, "dac", "wdp", "d3_b", "d3", "vdd", "vss")
-    s.X("tn", wsw, "dac", "wdn", "d3", "d3_b", "vdd", "vss")
+    s.X("tp", wsw, "dac", "wdp", "en_p", "en_p_b", "vdd", "vss")
+    s.X("tn", wsw, "dac", "wdn", "en_n", "en_n_b", "vdd", "vss")
+    s.X("kp", wsw, "vref", "wdp", "wact_b", "wact", "vdd", "vss")
+    s.X("kn", wsw, "vref", "wdn", "wact_b", "wact", "vdd", "vss")
     wn = sz["logic"][0]
-    fet(s, "gp", "wdp", "d3", "vss", "vss", "nfet", wn, pdk.min_l, pdk=pdk)
-    fet(s, "gn", "wdn", "d3_b", "vss", "vss", "nfet", wn, pdk.min_l, pdk=pdk)
+    fet(s, "gp", "wdp", "en_n", "vss", "vss", "nfet", wn, pdk.min_l, pdk=pdk)
+    fet(s, "gn", "wdn", "en_p", "vss", "vss", "nfet", wn, pdk.min_l, pdk=pdk)
     return s
 
 
@@ -417,8 +435,10 @@ def build(name="lora_sidecar", pdk=None):
     for j in range(N):
         s.X(f"b{j}", f"{name}_bcol", f"wb_sel{j}", "wdbp", "wdbn", f"colb{j}", "pos", "pos_b",
             "neg", "neg_b", "vcm", "vb_tail", "vdd", "vss")
-    s.X("wa", f"{name}_wbus", "da0", "da1", "da2", "da3", "wdap", "wdan", "vcm", "vdd", "vss")
-    s.X("wb", f"{name}_wbus", "db0", "db1", "db2", "db3", "wdbp", "wdbn", "vcm", "vdd", "vss")
+    s.X("wa", f"{name}_wbus", "da0", "da1", "da2", "da3", *[f"wa_sel{i}" for i in range(N)],
+        "wdap", "wdan", "vcm", "vdd", "vss")
+    s.X("wb", f"{name}_wbus", "db0", "db1", "db2", "db3", *[f"wb_sel{j}" for j in range(N)],
+        "wdbp", "wdbn", "vcm", "vdd", "vss")
     s.X("vt", f"{name}_vt", "colp", "coln", "rst", "ramp_en", "vaxp", "vaxn", "pos", "pos_b",
         "neg", "neg_b", "vcm", "vb_ramp", "vb_nc", "vb_pc", "vb_tail", "vdd", "vss")
     return s
