@@ -1,145 +1,49 @@
 # Required tooling
 
-Tools and features AnalogIOC needs that do not exist yet or are not good enough.
-Each section says what we want and why. Bugs in tools that already work, with their
-workarounds, are listed in [`analog/docs/TOOL_ISSUES.md`](analog/docs/TOOL_ISSUES.md).
+Tools and features AnalogIOC still needs. Each section says what we want and why. Bugs in
+tools that already work, with their workarounds, are listed in
+[`analog/docs/TOOL_ISSUES.md`](analog/docs/TOOL_ISSUES.md).
 
 | # | Gap | Blocks | Owner |
 |---|---|---|---|
-| 1 | LibreLane integration in the template: analog macros in harden + digital sim | chip integration, tape-out | `.flows/` template (LibreLane itself is used as-is) |
-| 2 | Analog macro `.lib` generator | 1 (timing-closed digital around the IMC macro) | new tool |
-| 3 | cktImg: hierarchy, rendered output | block diagrams, top-level schematics | cktImg |
-| 4 | SpiceRack: upstream local fixes, `X()` params, more backends | every testbench | SpiceRack |
-| 5 | GmIDVisualizer: export cgg (for `gmid.ft`) | `gating_value.py` | GmIDVisualizer |
-| 6 | Behavioural Verilog from the Verilog-A golden models | digital sims with the analog macro in place (1) | VerA |
-| 7 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
+| 1 | cktImg: land the hierarchy/SVG branch in the env | block diagrams, top-level schematics | cktImg, EDA-Packaged, `.flows/tools` |
+| 2 | SpiceRack: ESPice / EGSpice backends | Verilog-A models with events, without the OpenVAF detour | SpiceRack |
+| 3 | GmIDVisualizer: export cgg (for `gmid.ft`) | `gating_value.py` | GmIDVisualizer |
+| 4 | Behavioural Verilog from the Verilog-A golden models | digital sims with the analog macro in place | VerA |
+| 5 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
 
-## 1. LibreLane integration: analog macros in harden and digital sim
+## 1. cktImg: land the hierarchy/SVG branch
 
-**Status:** implemented in `worktree-agent-a0203882ac947a57c`. LibreLane 3.0.14 now comes from
-its flake (`shell.nix`). Macros are declared once in `digital/<module>/build/macros.toml`, and
-`build/macros.py` turns that into the LibreLane `MACROS`/PDN/halo/don't-touch block, the
-behavioural models for sims, a port check (blackbox = behavioural = `.subckt`) and a post-run
-signoff check. `build/librelane/make harden-smoke` passes end to end (sim + harden, DRC/LVS/XOR 0).
-**Remaining:**
-- PDK: LibreLane needs sky130 `8afc8346`. The `shell.nix` pin (`fa87f8f4`) is too old for it, so
-  LibreLane fetches its own copy into `~/.ciel`. Bump `PDK_VERSION` and re-check the analog side
-  so both use one PDK.
-- Analog supply pins are left unconnected for chip-level routing, and the disconnected-pin check
-  skips the macro (`macros.py signoff` checks it instead). Special-net routing of the supplies to
-  TT analog pins is still missing.
-- Hierarchical signoff: macro LVS on its own, and STA with a real `.lib` (gap 2).
-- `digital/analogioc`: its `macros.toml` entry is `todo` because there are no views yet, and its top
-  is still the TT stub.
-- CI: no `harden-smoke` job yet. `gds.yaml` still uses the TT action. To switch, add a nix job
-  that runs `make -C digital/<top>/build/librelane harden` and copies `output/{gds,lef}` plus
-  `src/project.v` into `caravel/`.
-- Behavioural models are hand-written (gap 6). For gate-level sims they need `USE_POWER_PINS` ports.
+**Done on branch `analogioc/hierarchy-render`** (OmarSiwy/cktImg): `X` subcircuit instances
+are placed as `block:<name>` boxes, there is headless `--svg` output, and the MOS bulk net
+is a `bulk` field.
 
-**Today:** the digital flow is the original TinyTapeout template. It runs yosys
-synthesis per module (`digital/<module>/build/`), uses OpenLane 2.3.10 from `pip`
-inside `Digital.nix`, and leaves hardening and GDS to the TinyTapeout GitHub
-action. The analog side produces a separate GDS. Nothing puts the analog IMC macro
-and the digital rail into one hardened top level.
+**Still needed:**
+- **Engine bugs:** layout time blows up when many blocks share a net, and the strongarm
+  latch's `outp`/`outn` come out in disconnected pieces. Both are being fixed; the branch
+  is pushed once they pass.
+- **EDA-Packaged:** bump the cktImg pin from `1cbffa9` to the pushed branch.
+- **`.flows/tools/cktimg_to_xschem.py` and the manifest:**
+  - read `devices[].bulk`
+  - accept named rails (`_vdd9`)
+  - add `ipin`/`opin` and `block:<name>` (or `box`) classes
+  - retune `units.scale` for the new grid
+  - drop `.pdk` from `cktimg_sky130.zon`
+  - treat several rail/port symbols on one net as one node
+- **Grouping hints** (keep a diff pair or current mirror together in placement): not started.
 
-**Want:** to integrate [LibreLane](https://github.com/librelane/librelane), the OpenLane 2
-successor, into the `.flows/digital` template. LibreLane itself stays unmodified; only the
-template changes. Declare each analog macro **once**, then use that declaration both to
-harden the top level containing the macro and to run the digital simulations with the macro
-in place:
+## 2. SpiceRack: ESPice / EGSpice backends
 
-- **Macro declaration:** one file per digital top (e.g. `digital/<top>/build/macros.yaml`)
-  lists each analog macro and its views: GDS, LEF, `.lib`, Verilog blackbox (for harden),
-  and a Verilog behavioural model (for simulation). It also gives placement and the pg pin
-  mapping. The LibreLane `MACROS` config is generated from this file.
-- **Simulation:** cocotb/iverilog/verilator tbs compile the behavioural model, and harden
-  uses the blackbox. A check confirms that the behavioural model, the blackbox and the
-  `.subckt` all have identical port lists.
+Everything else from this gap is done and pushed (SpiceRack `cdba3b9`): the local fixes
+went upstream, `X(**params)`, characterization recipes and `run_corners`.
 
-- **Packaging:** LibreLane comes from nix (EDA-Packaged or nixpkgs) and is pinned
-  together with the PDK version that `shell.nix` enables. No `pip install` in a shell hook.
-- **Config:** one `config.yaml`/`config.json` per top level (`digital/<top>/build/librelane/`).
-  It is generated by `make CreateProject` / `AddDigitalModule` like the rest of the template.
-- **Macro input:** the analog block is placed as a hard macro (`MACROS` with GDS + LEF +
-  `.lib` + Verilog blackbox), and its location, orientation and halo come from config.
-- **Power:** analog supplies (`vdd_ota`, `vdd_cmp`, `vdd_pkt`, `vdd`, `vss`) are kept
-  separate from the digital `VPWR/VGND` in the PDN. Analog pins get no automatic PDN
-  hookup, but the macro's digital ports do get one.
-- **Routing:** analog nets (`col<j>`, `vcm`, bias lines) are routed as special nets or
-  kept inside the macro. The flow must not buffer or resize them.
-- **Signoff:** full-chip DRC (magic + klayout), LVS with the macro as a black box plus a
-  separate macro LVS, STA with the macro `.lib` (gap 2).
-- **Output:** TinyTapeout-compatible `gds/`, `lef/` and `src/project.v`, so `.github/workflows/gds.yaml`
-  keeps working or is replaced by a LibreLane job.
-- **Test:** a self-checking smoke run on a trivial top level with a dummy macro, wired into CI.
+**Want:** ESPice (ARPice) and EGSpice backends, so Verilog-A golden models compiled by VerA
+run with `@(cross)`/`transition()` (OpenVAF -> ngspice has neither). The SpiceRack README
+"Not yet a backend" section lists the integration points. EGSpice is blocked: its current
+build rejects even a resistor. Also: Spectre still drops `raw_spice`, which needs a
+`simulator lang=spice` wrapper and a Spectre install to test.
 
-## 2. Analog macro `.lib` generator
-
-**Want:** a tool that writes a Liberty (`.lib`) timing/power model for an analog
-macro, so LibreLane's STA can time the digital logic around the IMC macro.
-
-- **Input:** the block's `.subckt` (or Philis `extracted_pex.spice`), plus a small pin spec
-  that marks each port as analog, digital input, digital output or supply, and names the
-  related clock/handshake (for example `go -> done`, `clk_c`, `col_code[7:0]`).
-- **Characterization:** SpiceRack testbenches over the corners already in `analog/common/corners.py`:
-  - digital input pin capacitance
-  - setup/hold of control inputs against their strobe
-  - output delay and transition vs load
-  - for self-timed outputs, the request-to-done delay (`go -> done`) as a combinational
-    arc with min/max over corners
-  - leakage and dynamic energy per operation
-- **Output:** one `.lib` per PVT corner, named like the sky130 libs (`tt_025C_1v80` etc.).
-  Analog pins appear with `direction` and capacitance only, no timing arcs.
-- **Also emits:** the Verilog blackbox (`(* blackbox *)` module with the same ports)
-  and a LEF pin check against the Philis/magic LEF, so the netlist, LEF and `.lib`
-  cannot drift apart.
-- **Make target:** `make lib` in `analog/<block>/build/`. It runs after `make pnr-verify`
-  so the numbers come from the extracted layout.
-- **Test:** regenerate for a known block (`strongarm`) and assert that the arcs match a
-  hand-run SpiceRack measurement within tolerance.
-
-## 3. cktImg
-
-**Today:** `cktimg-json` places primitives (MOS, R, C, sources) and writes geometry JSON.
-`.flows/tools/cktimg_to_xschem.py` turns that into an xschem `.sch`.
-
-**Want:**
-
-- **Subcircuit instances.** `X` cards are currently dropped ("1 card(s) ignored"). A
-  hierarchical deck should place each `X` instance as a box with its `.subckt` ports as
-  pins, and route the nets between boxes. This is what `analog/README.md` needed. Its
-  diagrams are hand-written Mermaid because cktImg could not draw them.
-- **A `class` for subckt boxes in the target manifest.** Then `xschem_sky130.json` can
-  map an instance to the block's own `.sym`, and a top-level `.sch` can be generated
-  from `analog/<top>/netlist/*.spice`.
-- **Rendered output.** Add `--svg` / `--png` beside the JSON, so docs and READMEs can
-  embed a schematic without going through the xschem GUI, which needs a display.
-- **4-terminal MOS.** Bulk is not modelled today, and `cktimg_to_xschem.py` re-reads it
-  from the deck. cktImg should carry the bulk net itself.
-- **Grouping hints.** A comment or attribute that keeps named groups (for example a diff
-  pair, a current mirror, or a block's devices) together in placement.
-
-## 4. SpiceRack
-
-**Today:** the `spicerack` skill is a vendored copy with local fixes (`.step`, source
-signatures, backends, Monte Carlo). `analog/common/devices.py` works around missing
-features with `raw_spice`.
-
-**Want:**
-
-- **Upstream the local fixes.** Get the skill's local changes into
-  [OmarSiwy/SpiceRack](https://github.com/OmarSiwy/SpiceRack) `skills/spicerack`, then
-  re-vendor it, so the skill and the library cannot disagree.
-- **`X(...)` takes parameters** (`**params` -> `name=value` on the card), which removes the
-  `raw_spice` workaround in `devices.py`.
-- **More backends:** ESPice (ARPice) and EGSpice, so Verilog-A golden models compiled by
-  VerA run without the OpenVAF -> ngspice detour, which has no `@(cross)` or `transition()`.
-- **Characterization helpers for gap 2:** pin capacitance, setup/hold search and delay
-  vs load sweeps as built-in recipes next to gain, bandwidth and phase margin.
-- **A corner/Monte-Carlo runner** that returns per-corner metric tables in one call. Today
-  `analog/common/corners.py` loops by hand.
-
-## 5. GmIDVisualizer: export cgg
+## 3. GmIDVisualizer: export cgg
 
 **Done (2026-10-04):** GmIDVisualizer is packaged in EDA-Packaged (`gmidvisualizer`),
 included in `Analog.nix`, and `GMID_LIB` is exported. The PMOS `abs()` and relative
@@ -151,21 +55,21 @@ LUTs carry no gate capacitance, so `scripts/compiler/metrics/gating_value.py` st
 **Want:** GmIDVisualizer also sweeps `cgg` (ngspice `@m[cgg]`, or `cgs + cgd + cgb`) into
 the LUT, so `ft = gm / (2π·cgg)` can be interpolated like `J_D`.
 
-## 6. Behavioural Verilog from the Verilog-A golden models
+## 4. Behavioural Verilog from the Verilog-A golden models
 
 **Today:** a digital top simulates with each analog macro's behavioural model
-(`analog/<block>/va/<block>_beh.v`, declared in `digital/<module>/build/macros.toml`, gap 1).
+(`analog/<block>/va/<block>_beh.v`, declared in `digital/<module>/build/macros.toml`).
 Those models are hand-written, so they can drift from the Verilog-A golden model
 (`analog/<block>/va/<block>.va`) that the analog side is verified against.
 `build/macros.py check` only keeps their **ports** equal to the blackbox and `.subckt`.
 
 **Want:** VerA emits the behavioural Verilog from the `.va`: same module name and ports,
 digital pins as logic, the self-timed handshakes (`go -> done`) as delays taken from the
-model (or the gap 2 `.lib`), analog pins kept as undriven `inout`, plus an `ifdef USE_POWER_PINS`
+model (or the macro's `gpurify lib` `.lib`), analog pins kept as undriven `inout`, plus an `ifdef USE_POWER_PINS`
 port list so the same model works in gate-level sims. **Test:** a model generated for a known
 block passes the digital tb that the hand-written one passes.
 
-## 7. Port to ASAP7 (after sky130 is finished)
+## 5. Port to ASAP7 (after sky130 is finished)
 
 **Decision (2026-10-04):** finish and verify the full IMC on sky130 first, then port
 everything to ASAP7 (7 nm FinFET, predictive, not fabricable) and drop sky130.

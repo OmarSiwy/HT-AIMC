@@ -5,7 +5,7 @@
 #     model and the .subckt disagree on ports
 #
 # Default views of block <b>, relative to analog_root:
-#   <b>/output/gds/<b>.gds   <b>/output/lef/<b>.lef   <b>/output/lib/<b>.lib (optional, gap 2)
+#   <b>/output/gds/<b>.gds   <b>/output/lef/<b>.lef   <b>/output/lib/<b>.lib (optional; from `gpurify lib`)
 #   <b>/output/verilog/<b>.v (* blackbox *), no power pins
 #   <b>/va/<b>_beh.v         behavioural Verilog, same module name and ports
 #   <b>/netlist/<b>.spice    .subckt <b>: signal ports + every supply pin
