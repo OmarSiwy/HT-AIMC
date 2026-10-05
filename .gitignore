@@ -38,3 +38,5 @@ docs/dist/
 digital/*/build/*.vvp
 digital/*/build/synth.log
 digital/*/build/*_syn.v
+
+digital/analogioc/build/cosim/out/

@@ -9,6 +9,7 @@ tools that already work, with their workarounds, are listed in
 | 1 | cktImg: grouping hints | readable schematics of matched structures | cktImg |
 | 2 | SpiceRack: EGSpice backend | the successor simulator | SpiceRack, EGSpice |
 | 3 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
+| 4 | VerA `.v` device: > 256 pins, output-variable ports on part-selects, task-enable panic | `make cosim` (A9, A12 co-sim) | VerA (ESPice picks it up) |
 
 ## 1. cktImg: grouping hints
 
@@ -47,3 +48,44 @@ everything to ASAP7 (7 nm FinFET, predictive, not fabricable) and drop sky130.
 **Design changes the port forces:** 0.7 V supply (the telescopic-cascode OTA doesn't fit),
 MOM instead of MIM caps, fin-quantized widths and near-fixed L, and re-measured calibration
 constants (`K_CAL`, `c_ota_self`, fine trim).
+
+## 4. VerA `.v` device: wide designs (blocks the analogioc co-sim)
+
+**Mechanism in use (2026-10-05):** the co-sim runs `analogioc_top` as an ESPice `.v`
+device (`.hdl "cosim_dut.v"` + `N` card): VerA's event engine inside ESPice, each input pin
+an A2D bridge at `vth`, each output pin a D2A Thevenin driver with `trise`/`tfall` ramps
+(ESPice `docs/devices/verilog-digital.md`). The harness is
+`digital/analogioc/build/cosim/` (`make cosim-smoke` passes on a toy macro;
+`make cosim-elab` stops on the items below). Checked with `vera --emit-zig`/`--check`, vera 1.0.0
+(`/nix/store/865al4jp…-vera-1.0.0`, the env's `VERA_CONTRACT` build). The smoke ran on
+espice `w9fhfbmb…-espice-1.0.0`.
+
+**Needed, in order:**
+
+1. **More than 256 pins per device.** The digital top crosses the macro boundary on 501
+   bits (415 macro inputs, 86 outputs, `analogioc.ports`), plus 10 observation pins:
+   511. VerA refuses at 256 (`E1103 "more than 256 pins"`, `src/sim/digital/emit.zig`
+   and the pin index in `src/sim/rt/device.zig`). Want: at least 1024 pins. Only pins
+   some process is sensitive to cost A2D work, so wide static buses (`w_data`,
+   `dac_code`, `x_mag`) should cost little.
+2. **An `output reg` port connected to a part-select of a parent net.** VerA refuses
+   it (`E1100 "an output variable port connects to one whole net"`,
+   `src/sim/digital/elab.zig` `PortBind.send` on a variable port). It is legal IEEE 1364
+   (§12.3.9.2) and is how `analogioc_top` wires its 17 `tile_fsm`/`bacc_accum` slices
+   (`.col_code(col_code[8*j +: 8])`, `.acc(acc_flat[20*j +: 20])`). With the ports
+   rewritten as `output wire` + an internal `reg` (a scratch copy, not committed), the
+   whole RTL elaborates and `vera --check` passes once the pin count is under 256.
+   The RTL stays as it is; the fix belongs in VerA.
+3. **Panic on a user task enable.** `vera --emit-zig` aborts (index out of bounds
+   0xAAAAAAAA in `digital.compile.infer` via `checkArgs`/`compileEnable`) when a module
+   calls a task and the design also contains `abft_check.v` or `bacc_accum.v`. The same
+   task works without them. Workaround in use: `cosim.py` inlines the task.
+4. **Nice to have: a device transcript.** A hosted device drops `$display`
+   (`src/sim/rt/device.zig` `open()`: `quiet`, a discarding sink), because a rejected
+   step would replay it. Results now leave through pins (`obs_d[7:0]`/`obs_v`). An
+   accepted-time-only transcript would make debugging easier.
+
+**Not chosen:** a lockstep bridge between cocotb/iverilog and ESPice. ESPice's C ABI
+(`include/espice.h`) advances whole analyses and cannot pause a transient at time t to
+change a source. That would need a new stepping API plus a VPI bridge, which is far more
+new code than items 1 to 3.

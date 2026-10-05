@@ -483,3 +483,38 @@ tb_tile_seq after the join-reset / envelope-gap fixes (89d5591), tb_integrator_c
 all corners (integrator_conv, conv_seq, tile_seq), DUT=va for integrator_conv. See
 analog/integrator_conv/docs/architecture.md and analog/async_ctrl/docs/architecture.md.
 
+
+### 2026-10-05 — Phase 3: mixed-signal co-sim wired (not run)
+
+`digital/analogioc/build/cosim/` runs `analogioc_top` inside ESPice as a VerA `.v` device
+(`.hdl` + `N` card) next to the `analogioc` SPICE macro. This needs the least new code:
+ESPice already provides the A2D (threshold `vth` = VDD/2) and the D2A (Thevenin `rout`
+= 200 Ω, 150 ps ramps), and the two simulators share one transient. cocotb cannot drive
+a device, and ESPice's C ABI cannot pause a transient to change a source. So the cocotb
+Bench (weights streamed on `wt_*` ahead of the passes, cfg applied while idle) is
+regenerated as Verilog from `pass_vectors.py`. Results come back out through
+`obs_d[7:0]`/`obs_v` pins, and `cosim.py check` gates codes with ±CODE_TOL (8), the
+residual ≤ budget, and prints the codes outside ±1. Ladder rails are B-sources of
+`pkt_d` (span ∝ D, `specs.u_cal`/`fine_ref_trim`), biases are the contract origin values,
+and `analog/analogioc/test/refs.json` overrides them when it exists.
+
+- `make cosim-smoke`: **PASS**, 0.2 s (8 s on the first device build). A toy macro (RC +
+  tanh comparators, no PDK) with 4 integ handshakes: col_sign == x_neg in every cycle,
+  D2A 10–90 % 120 ps, and the req fall starts at v(integ_ack) = 0.95 V (vth 0.9).
+- `make cosim-elab`: generates the 511-pin device and deck, then **stops in VerA**:
+  E1100 (an `output reg` port on a part-select, in `tile_fsm`/`bacc_accum`). In a
+  scratch copy with that rewritten, the only error left is E1103 (more than 256 pins).
+  Under 256 pins the whole RTL passes `vera --check`. Filed as REQUIRED_TOOLING.md §4,
+  together with a VerA panic on task enables, which `cosim.py` works around.
+- Not covered by `check` yet: A9's "exactly 17 col_valid per window" and "RTL code ==
+  codes decoded from the analog decisions". No beh protocol assertions exist on the SPICE
+  side.
+
+Run later, inside `./env.sh mixed`, once the real `analogioc.spice` lands and VerA §4.1–4.2 are closed:
+```sh
+cd digital/analogioc/build/cosim
+make cosim-smoke                    # bridge sanity, seconds
+make cosim-elab                     # must write out/cosim_dut.zig with no error
+make cosim                          # A9: pass_05 (TSTOP = 12u per pass; set TSTOP=... on timeout)
+make cosim PASSES="00 05 09"        # A12 co-sim: back to back
+```
