@@ -441,7 +441,7 @@ Measured on ESPice (ngspice agreed before the switch):
 - Q13 write energy: 13.2 pJ/row with every bit toggling; 109 pJ/pass on random data (7.5 % of pass_energy_pj).
 - t_q_floor: specs.c_row() is 101 fF (was 53), row RC 16 ps, so the floor stays 200 ps (jitter-bound). The measured row edge is 127 ps, which means pwm_driver's C_ROW = 100 fF has no margin left.
 - k_cal was re-measured: 0.9747 (was 0.9906). The code-independent top costs 1.6 %.
-- tb_weight_tile, csnr, cascade and the DUT=va suite all pass.
+- The DUT=va suite passes on ESPice (cascade included). On DUT=sch, tb_weight_tile and csnr pass on ESPice (one transient espice FileNotFound, which passed on rerun). The DUT=sch tb_cascade was **not run**: two attempts were killed, and the final rerun of cascade/weight_tile/csnr was stopped by request because the circuits are about to change. Everything is wired up and runnable via `make -C analog/weight_tile/build/sim test`.
 - tb_weight_tile_mc null still fails, as it did before this change: σ 22 LSB, and the old deck gave 15. The cause is OTA offset, not the tile.
 ### 2026-10-05 — Phase 1b: lora_sidecar migrated; INTERFACE Q6 resolved
 

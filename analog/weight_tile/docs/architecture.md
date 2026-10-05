@@ -194,7 +194,7 @@ null MC σ 22.0 vs 20.6 LSB — different RNG, same spread).
 | | `tb_weight_write_disturb` (A11b, Q10) | PASS: 0.004 LSB peak (5.7 µV), 0.000 at end; busiest pass_05 column (13, mac −89) |
 | | `tb_weight_write` | PASS: margin 774 mV (≥ 89), 9.1 pA/bit (0.036 µW tile), row write 628 ps at 1.62 V / 512 ps at 1.8 V, row edge 127 ps, 13.2 pJ/row all toggling, 109 pJ/pass |
 | | `tb_csnr` | PASS: kT/C 50.3 / 54.8 dB; ideal-VG delivery ≥ 1.02; busy-column nominal 0.92 |
-| | `tb_cascade` | CASCADE |
+| | `tb_cascade` | **not run on DUT=sch** (two attempts killed: machine load, then stopped by request); DUT=va PASS. Expect the known CASCADE.md base-tile multi-bank deficit (~0.84–0.92 busy-column delivery, absorbed by the per-column gain this bench fits) |
 | corners (`tb_weight_write`, 5 corners × −40/27/125 °C) | `corners.py` | PASS 15/15 (table below) |
 | Monte Carlo | `tb_weight_write_mc` (200 seeds, tt_mm) | PASS: 200/200 write; margin 772 ± 19.4 mV (Pelgrom estimate 18 mV), min 712; mean − 4.91σ = 677 mV |
 | | `tb_weight_tile_mc` (30 seeds) | **FAIL, pre-existing**: null mean −3.8, σ 22.0 LSB. The fixed-code deck it replaces fails the same way (10 seeds, ngspice: mean +9.5, σ 15.4); with an ideal OTA σ falls to 5.5 LSB, so the integrator's input offset × the switched bank capacitance dominates, not the tile. Owner: ota / integrator_conv (offset sampling or chopping); the 1.5 LSB gate was never met post-migration. |
