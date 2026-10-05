@@ -312,13 +312,13 @@ Xlora_sidecar_sw_p in_ ctrl_b out vdd sky130_fd_pr__pfet_01v8 W=0.42 L=0.15
 .ends lora_sidecar_sw
 
 .subckt lora_sidecar_rsw in_ out ctrl ctrl_b vdd vss
-Xlora_sidecar_rsw_n in_ ctrl out vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xlora_sidecar_rsw_n in_ ctrl out vss sky130_fd_pr__nfet_01v8 W=13.44 L=0.15
 Xlora_sidecar_rsw_p in_ ctrl_b out vdd sky130_fd_pr__pfet_01v8 W=0.42 L=0.15
 .ends lora_sidecar_rsw
 
 .subckt lora_sidecar_rstsw in_ out ctrl ctrl_b vdd vss
 Xlora_sidecar_rstsw_n in_ ctrl out vss sky130_fd_pr__nfet_01v8 W=3.36 L=0.15
-Xlora_sidecar_rstsw_p in_ ctrl_b out vdd sky130_fd_pr__pfet_01v8 W=10.08 L=0.15
+Xlora_sidecar_rstsw_p in_ ctrl_b out vdd sky130_fd_pr__pfet_01v8 W=0.42 L=0.15
 .ends lora_sidecar_rstsw
 
 .subckt lora_sidecar_arow xen xneg wsel wdp wdn colp coln vcm vdd vss
@@ -398,11 +398,21 @@ Xrcn rn coln renn renn_b vdd vss lora_sidecar_rsw
 Xrdn rn vcm renn_b renn vdd vss lora_sidecar_rsw
 Xirst_n rst_b rst vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
 Xirst_p rst_b rst vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
+Xiren_n ramp_en_b ramp_en vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xiren_p ramp_en_b ramp_en vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
 Xcintp colp vaxp sky130_fd_pr__cap_mim_m3_1 W=21.04 L=21.04
-Xic1p_n cpb cop vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
-Xic1p_p cpb cop vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
-Xic2p_n cp cpb vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
-Xic2p_p cp cpb vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
+Xic1p_n copb cop vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xic1p_p copb cop vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
+Xic2p_n crp copb vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xic2p_p crp copb vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
+Xlqp_p0 lqp_m0 ramp_en_b vdd vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlqp_n0 cp ramp_en_b vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xlqp_p1 cp cpb lqp_m0 vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlqp_n1 cp cpb vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xlbp_p0 lbp_m0 crp vdd vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlbp_n0 cpb crp vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xlbp_p1 cpb cp lbp_m0 vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlbp_n1 cpb cp vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
 Xrampp rp vb_ramp vdd vdd sky130_fd_pr__pfet_01v8 W=7.02 L=7.2
 Xnrp_n0 nrp_m0 ramp_en vss vss sky130_fd_pr__nfet_01v8 W=0.84 L=0.15
 Xnrp_p0 renp_b ramp_en vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
@@ -411,10 +421,18 @@ Xnrp_p1 renp_b cpb vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
 Xirp_n renp renp_b vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
 Xirp_p renp renp_b vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
 Xcintn coln vaxn sky130_fd_pr__cap_mim_m3_1 W=21.04 L=21.04
-Xic1n_n cnb con vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
-Xic1n_p cnb con vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
-Xic2n_n cn cnb vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
-Xic2n_p cn cnb vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
+Xic1n_n conb con vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xic1n_p conb con vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
+Xic2n_n crn conb vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xic2n_p crn conb vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15
+Xlqn_p0 lqn_m0 ramp_en_b vdd vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlqn_n0 cn ramp_en_b vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xlqn_p1 cn cnb lqn_m0 vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlqn_n1 cn cnb vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xlbn_p0 lbn_m0 crn vdd vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlbn_n0 cnb crn vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
+Xlbn_p1 cnb cn lbn_m0 vdd sky130_fd_pr__pfet_01v8 W=2.32 L=0.15
+Xlbn_n1 cnb cn vss vss sky130_fd_pr__nfet_01v8 W=0.42 L=0.15
 Xrampn rn vb_ramp vdd vdd sky130_fd_pr__pfet_01v8 W=7.02 L=7.2
 Xnrn_n0 nrn_m0 ramp_en vss vss sky130_fd_pr__nfet_01v8 W=0.84 L=0.15
 Xnrn_p0 renn_b ramp_en vdd vdd sky130_fd_pr__pfet_01v8 W=1.16 L=0.15

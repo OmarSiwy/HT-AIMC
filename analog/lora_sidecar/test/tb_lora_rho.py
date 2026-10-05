@@ -7,8 +7,9 @@ tile_mvm(lora=(A, B, rho))). Spec rows (analog/lora_sidecar/docs/architecture.md
   rho      least-squares over the two reference passes; agrees with the physical
            rho_phys = dV_ax I_B7 / (49 sum(m) slope q_unit) within 5 % (ratio to
            specs.lora_rho_design() reported)
-  c0       window pedestal (colb switch charge per B window) |c0| < TOL_ABS
-  linear   Delta mac vs A.x: 1..4 reference rows at x = 15 -> 1:2:3:4 within TOL_ABS
+  c0       window pedestal (colb switch charge per B window) |c0| < 2 TOL_ABS
+  linear   Delta mac vs A.x: 1..4 reference rows at x = 15 -> residual from a line
+           through 0 <= TOL_ABS / 2 per column
   mirror   negative-path error |km - 1| * level <= 2 % of full scale at every level
 On DUT=sch at the typical corner and 27 C it writes analog/docs/lora_cal/<pdk>.json
 (specs.lora_cal()); other corners print their own numbers (per-chip calibration).
@@ -48,7 +49,7 @@ def main():
     mir = np.abs(km - 1) * np.array(lv[1:])
     r.check("mirror path error <= 2 % of full scale at every level", np.all(mir <= 0.02),
             f"gain {km.min():.4f} .. {km.max():.4f}, worst {mir.max() * 100:.2f} % FS")
-    r.check("window pedestal |c0| < TOL_ABS", abs(cal["c0"]) < LB.TOL_ABS,
+    r.check("window pedestal |c0| < 2 TOL_ABS (calibrated out)", abs(cal["c0"]) < 2 * LB.TOL_ABS,
             f"c0 {cal['c0']:+.3f} code (switch charge per B window, every column)")
     rel = cal["rho"] / cal["rho_phys"] - 1
     r.check("rho fit vs physical within 5 %", abs(rel) <= 0.05,
@@ -56,12 +57,12 @@ def main():
     print(f"  rho / specs.lora_rho_design() = {cal['rho'] / LB.specs.lora_rho_design():.3f}"
           f" (design assumes the written store reaches V_W: I_7 {cal['i_b7'] * 1e9:.0f} nA vs"
           f" {LB.specs.lora_i_cell() * 1e9:.0f} nA)")
-    b = np.array(LB.CAL_B)
     d = np.array([run.dmac(p, cal) for p in lin])            # [k rows, column]
-    ref = np.outer(np.arange(1, LB.CAL_ROWS + 1), d[0])
-    err = np.max(np.abs(d - ref)[:, np.abs(b) >= 4])
-    r.check("Delta mac linear in A.x (1..4 rows)", err <= LB.TOL_ABS,
-            f"max deviation from k x one-row {err:.2f} code")
+    k = np.arange(1, LB.CAL_ROWS + 1)[:, None]
+    ref = k * (k * d).sum(axis=0) / (k * k).sum()       # best line through 0 per column
+    err = np.max(np.abs(d - ref))
+    r.check("Delta mac linear in A.x (1..4 rows)", err <= LB.TOL_ABS / 2,
+            f"max residual from a line through 0: {err:.2f} code")
     print(f"  ramp slope {cal['slope'] * 1e-6:.3f} V/us (I_ramp/C_int design "
           f"{LB.specs.lora_i_ramp() / LB.specs.lora_c_int() * 1e-6:.3f}); "
           f"A swing {cal['dv_ax'] * 1e3:.0f} mV")

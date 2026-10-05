@@ -5,7 +5,8 @@
 //   A rows   xen & !xneg: Ap -> colp, An -> coln; xen & xneg: swapped; else -> vcm dump
 //   A.x      ideal integrators (high-gain VCVS + C_int) on colp / coln, reset by rst
 //   V -> T   equal ramps iramp pull vaxp / vaxn to vth = vcm - vped; first-order
-//            comparator delay tc on each side; pos = ramp_en.cn./cp, neg = ramp_en.cp./cn
+//            comparator delay tc on each side, latched until ramp_en falls;
+//            pos = ramp_en.cn./cp, neg = ramp_en.cp./cn
 //   B cols   pos: bpd sinks colb, bnm sources it (mirror gain km); neg: bpm sources,
 //            bnd sinks; otherwise the currents go to the vcm dump
 //   write    bus level = vcm * code / 15, code = 8 + m (m > 0) else 0, m = d2..d0; d3
@@ -166,13 +167,14 @@ module lora_sidecar(
 
         // V -> T: comparator states (delayed), ramps, windows
         vth = V(vcm, vss) - vped;
-        I(cpq, vss) <+ V(cpq, vss) - 0.5 * (1.0 + tanh((vth - V(vaxp, vss)) / vcs))
-            + tc * ddt(V(cpq, vss));
-        I(cnq, vss) <+ V(cnq, vss) - 0.5 * (1.0 + tanh((vth - V(vaxn, vss)) / vcs))
-            + tc * ddt(V(cnq, vss));
+        // latched: target = ramp_en & (crossed | already crossed), cleared by ramp_en low
+        ren = lg(V(ramp_en, vss), V(vdd, vss));
         cp = 0.5 * (1.0 + tanh((V(cpq, vss) - 0.5) / 0.05));
         cn = 0.5 * (1.0 + tanh((V(cnq, vss) - 0.5) / 0.05));
-        ren = lg(V(ramp_en, vss), V(vdd, vss));
+        e = 0.5 * (1.0 + tanh((vth - V(vaxp, vss)) / vcs));
+        I(cpq, vss) <+ V(cpq, vss) - ren * (e + cp - e * cp) + tc * ddt(V(cpq, vss));
+        e = 0.5 * (1.0 + tanh((vth - V(vaxn, vss)) / vcs));
+        I(cnq, vss) <+ V(cnq, vss) - ren * (e + cn - e * cn) + tc * ddt(V(cnq, vss));
         pos = ren * cn * (1.0 - cp);
         neg = ren * cp * (1.0 - cn);
         I(vdd, colp) <+ iramp * ren * (1.0 - cp);

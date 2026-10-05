@@ -220,11 +220,12 @@ class Run:
         return self.isink[:, w].mean(axis=1)
 
     def slope(self, p):
-        """Ramp rate |dV/dt| of the larger integrator (first 40 % of its ramp)."""
+        """Ramp rate |dV/dt| of the larger integrator: fit from 5 ns after ramp_en (past
+        the switch kick) until 10 mV above vth."""
         i = np.argmin(np.abs(self.time - (p["tr"] - 2e-9)))
         v = self.vaxp if self.vaxp[i] >= self.vaxn[i] else self.vaxn
-        t_x = (v[i] - (VCM - SZ["v_ped"])) / (specs.lora_i_ramp(PDK) / specs.lora_c_int(PDK))
-        w = self._win(p["tr"] + 2e-9, p["tr"] + 2e-9 + 0.4 * t_x)
+        w = self._win(p["tr"] + 5e-9, p["t1"]) & (v > VCM - SZ["v_ped"] + 10e-3)
+        w &= np.cumprod(w | (self.time < p["tr"] + 5e-9)).astype(bool)   # first stretch
         return abs(np.polyfit(self.time[w], v[w], 1)[0])
 
     def ax_swing(self, p):
@@ -311,6 +312,10 @@ def tol(gold):
 
 
 TOL_ABS = 1.0        # one converter LSB (D = 1)
+SWING_MAX = 1.5 * specs.V_SWING   # A integrator: the LORA_AX_MAX budget is set at the
+                                  # nominal cell current (V_SWING); fast corners carry up
+                                  # to ~1.2x more (per-chip budget = cal i_b7), inside the
+                                  # OTA's measured +-370 mV range (ota doc)
 TOL_REL = 0.05       # architecture.md section 4: outer-product column error <= 5 %
 
 

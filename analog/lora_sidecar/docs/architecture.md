@@ -1,0 +1,144 @@
+# lora_sidecar — rank-1 signed LoRA sidecar
+
+Adds the `golden.tile_mvm(lora=(A, B, rho))` term in charge onto tile columns 0..15:
+
+    Delta mac_j = rho * B_j * sum_i A_i * s_i * m_i        (code units, per nibble window)
+
+A (16) and B (16) are signed 4b weights held in 2T gain cells (`gain_cell_array`),
+written through two `write_dac`s; `s_i * m_i` is row i's signed PWM nibble. `colb<j>`
+ties to column j's integrator virtual ground (INTERFACE.md §3). Depends on
+`cmos_switch`, `gain_cell_array`, `ota`, `write_dac`. AnalogIOC origin:
+`components/lora_sidecar` (unsigned |x|, LO window only, rho never measured — INTERFACE
+Q6). This block resolves Q6; the changes and the reasons are in §Design.
+
+## Interface
+
+`.subckt lora_sidecar xen0..15 xneg0..15 colb0..15 wa_sel0..15 wb_sel0..15 da0..3 db0..3
+rst ramp_en vaxp vaxn vcm vb_ramp vb_nc vb_pc vb_tail vdd vss`
+
+| Port | Dir | Meaning |
+|------|-----|---------|
+| xen<i> | in, logic | row i's A-integrate gate: LO window high for m_i·t_q from the window start; HI window high for the **first t_q of each** 16·t_q chop cycle k < m_i |
+| xneg<i> | in, logic | row i's sign (`x_neg`), static over the pass |
+| colb<j> | inout | column j virtual ground (≈ vcm). Charge sunk from it = +Delta mac |
+| wa_sel<i>, wb_sel<j> | in, logic | one-hot write select of A row i / B column j (both cells of the element) |
+| da3..0, db3..0 | in, logic | sign-magnitude code: d3 = sign, d2..d0 = magnitude m (0..7) = golden W_MAX grid |
+| rst | in, logic | integrator reset (macro `lrst`): high T_RST before the window |
+| ramp_en | in, logic | V→T phase (macro `ramp_en`) |
+| vaxp, vaxn | out | A integrator outputs (monitor only) |
+| vcm | ref | virtual ground / write ceiling / current dump |
+| vb_ramp | bias | ramp PMOS gate: diode replica of the ramp device carrying `specs.lora_i_ramp()` (4.854 µA; 0.375 V at tt) |
+| vb_nc vb_pc vb_tail | bias | OTA biases (`ota` contract); vb_tail also biases the B-mirror standing current |
+| vdd, vss | supply | |
+
+Changes against the origin port list (`analog/docs/architecture.md` §2 row, now
+updated): `xrd<i>` (a vss/vcm source line) is replaced by logic `xen<i>`; `xneg<i>` is
+new; `vax` became `vaxp vaxn`. The macro port list (`analogioc.ports`) is unchanged:
+`x_neg` is already a macro input; `tile_seq` must route it, and drive `xen` instead of
+the 16 xrd TG drivers (INTERFACE §3), which are no longer needed.
+
+## Design (what changed from the origin, and why)
+
+| Origin | Here | Why |
+|---|---|---|
+| A cells source-switched by xrd (0.9→0 V pulse) | cells always on (source at vss), drain **steered** colp / coln / vcm-dump by logic | the cell must carry ≤ I_SIDE/16 = 375 nA at full scale in strong inversion (matching), i.e. W/L = 0.43/19.2 µm; its 60 fF gate is the store, so a switched source bootstraps the floating gate and the cell turns itself off |
+| unsigned \|x\| | Ap/An cell pair per row, swapped by xneg; two integrators (P, N): Q_P − Q_N = A·x | golden uses signed x and signed A (`lora_quant`) |
+| one ramp + one comparator, B window = ramp_en..crossing (eps = 18 ns offset, needs an x=0 baseline pass) | both integrators ramp to vth = vcm − V_PED; B window = XOR of the two crossings, polarity = which side is later | the window is \|Q_P − Q_N\|/I_ramp; comparator delays cancel: **x = 0 reads 0.000 code with no baseline** |
+| B cells sink only | per column: direct cells sink (+), mirrored cells source (−) through a PMOS mirror; pos window: bpd + bnm, neg window: bnd + bpm | signed B × signed A·x needs both polarities on each column |
+| — | each mirror carries a standing bias I_MB = I_cell/8 (NMOS on vb_tail), taken back off its output | an unbiased mirror on ≤ 291 nA slews its 0.6 pF gate for µs after a write |
+| x pulses unchopped in both windows | HI window integrates one t_q per chop cycle | the tile delivers one transfer per chop cycle in both windows, so golden uses one rho for both; an unchopped HI pulse integrates 16× the charge |
+| write code = level | sign-magnitude; DAC code = 8 + m (m > 0), 0 for m = 0; the sign picks the cell, the other cell gets 0 V | 1 + 3 bits = golden W_MAX = 7; the top half of the DAC is where the cell conducts |
+
+Window pedestal c0: every time a B window opens and closes, the colb steering switch
+leaves a fixed charge on the column (−0.35 code on sky130 tt, the same on every column
+and independent of B). It is calibrated with rho (`lora_bench.calibrate`) and removed
+like a zero point.
+
+**Level table (not linear).** The read current is a square-law-ish function of the
+stored level: measured I_m/I_7 = 0, .0141, .0474, .1261, .2638, .4595, .7065, 1 for
+m = 0..7. Seven current levels linear in m would need ~25 mV write steps near the top;
+`write_dac`'s LSB is 60 mV, and the level map moves with Vt over corners. So the
+hardware's effective weight of code (s, m) is (−1)^s · 7 · levels[m] — a companded
+4b format — and golden must quantize onto it (§Golden).
+
+## Specs
+
+TOL(gold) = max(TOL_ABS, TOL_REL·|gold|), TOL_ABS = 1 code (converter LSB at D = 1),
+TOL_REL = 5 % (system architecture §4: outer-product column error ≤ 5 %).
+
+| Metric | Min | Typ | Max | Unit | Testbench |
+|--------|-----|-----|-----|------|-----------|
+| LoRA term vs golden `tile_mvm(lora)`, LO and HI, random and coherent signed x, all 16 columns | | | TOL | code | `tb_lora_sidecar` |
+| x → −x negates every column | | | TOL_ABS | code | `tb_lora_sidecar` |
+| x = 0, no baseline pass | | | 0.5 | code | `tb_lora_sidecar` |
+| Storage non-destructive (reference pass repeated after 5 passes) | | | 0.5 | % | `tb_lora_sidecar` |
+| A integrator swing | | | `specs.V_SWING` (+5 %) | V | `tb_lora_sidecar` |
+| Level table strictly monotone; level 0 | | | 1 | % of level 7 | `tb_lora_rho` |
+| rho fit vs physical rho (ΔV_ax·I_B7/(49·Σm·slope·q_unit)) | | | 5 | % | `tb_lora_rho` |
+| Window pedestal \|c0\| | | | TOL_ABS | code | `tb_lora_rho` |
+| Mirror path error \|km − 1\|·level | | | 2 | % FS | `tb_lora_rho` |
+| Delta mac linear in A·x (1..4 reference rows) | | | TOL_ABS | code | `tb_lora_rho` |
+| SGD step: L1 < L0; updated columns golden sign and \|Δy − pred\| ≤ TOL; others ≤ TOL_ABS | | | | | `tb_lora_update` |
+| Yield, every column within TOL after per-chip calibration + x = 0 zero point (tt_mm, 30 samples) | 90 | | | % | `tb_lora_sidecar_mc` |
+| Energy per LO op, per write slot | | report | | pJ | `tb_lora_sidecar` |
+
+Calibration knob: rho, levels, c0 are measured per run (the per-chip calibration:
+two reference passes on rows 0..3 = +7, x = ±15). `tb_lora_rho` records the typical
+values for `specs.lora_cal()`.
+
+## Sizing
+
+`netlist/lora_sidecar.py`; design laws in `specs.py` (`lora_*`).
+
+| Quantity | Derivation | sky130 |
+|---|---|---|
+| full-scale cell current | `lora_i_cell` = I_SIDE / N_ROWS (16 rows on one integrator stay inside the class-A sink) | 375 nA (measured 291 nA: write pedestal) |
+| C_int (×2) | `lora_c_int` = LORA_AX_MAX · I_cell · t_q / V_SWING; LORA_AX_MAX = 60 (compiler budget per side, worst case 240) | 0.90 pF |
+| LoRA full scale | `lora_mac_max` = MAC_MAX − CODE_MAX (headroom above the 4σ code ceiling) | 65 code |
+| longest B window | `lora_t_b_max` = lora_mac_max · q_unit / I_cell | 46.3 ns |
+| ramp current | `lora_i_ramp` = C_int · V_SWING / t_b_max | 4.854 µA |
+| cell read device | VGS = V_W carries I_cell; L stepped (Lmin multiples) until W ≥ min_w and measured σ(I)/I ≤ 1 % | 0.43 / 19.2 µm (σ(VGS) 1.40 mV, 0.76 %) |
+| cell write switch | `gain_cell_array.write_size()` | 0.54 / 0.30 µm |
+| ramp PMOS (×2) | gm/ID 5; L stepped until measured P/N pair σ ≤ 0.5 code / lora_mac_max | 7.02 / 7.2 µm (σ(VGS) 0.85 mV → 0.60 %) |
+| B mirror PMOS (×4/col) | gm/ID 10 (diode node 0.59 V keeps the cell saturated) at 1.125·I_cell; σ ≤ 2 % | 3.65 / 9.6 µm (1.6 %) |
+| mirror bias NMOS (×4/col) | gate vb_tail (tail VGS), I_cell/8, L stepped until min_w carries it, σ ≤ 10 % | 0.52 / 28.8 µm |
+| V_PED | 3σ of (integrator − comparator) OTA offset: 3·√2·pair σ(in 0.54/0.3) | 57 mV |
+| vth divider | vcm → vss at I_SIDE; R_top/R_bot from V_PED; decap = C_int | 9.5 k / 140.5 k, 0.9 pF |
+| steering TGs | R_on·I ≤ 20 mV (square-law estimate) | min 0.42/0.15 both |
+| reset TG (×2) | measured R_on(vcm) every corner × temp ≤ T_RST / (C_int ln(2 V_SWING/V_PED)) | n 3.36, p 10.08 / 0.15 µm |
+| logic | min N, equal-drive P at Lmin; window buffers fan-out 4 | 0.42 / 1.16 / 0.15 µm |
+| OTAs (×4: 2 integrators, 2 comparators) | `ota` block as is | |
+
+## Golden model
+
+`va/lora_sidecar.va`, one module, ports 1:1 (ngspice 45 instantiates OSDI devices with
+> 18 terminals — checked with a 110-terminal module). Cells: write-switch-gated RC store,
+EKV read law fitted to the DUT=sch level table (is 9.2 nA, vt 0.544 V, nut 31.4 mV,
+within 2 %); ideal integrators; equal ramps; first-order comparator delay; ideal
+mirror. Not modelled: switch injection (c0 = 0), OTA limits/offset, mismatch, DAC settling.
+
+**Golden (`scripts/golden/model.py`) change needed — described, not made.** `tile_mvm`
+needs nothing: it already takes real-valued (A_q, B_q, rho). `lora_quant` must quantize
+onto the hardware grid instead of integers:
+
+```python
+def lora_quant(A, B, dw_cols, levels=None, rho=None):
+    # levels: specs.lora_cal()["levels"] (levels[0] = 0, levels[7] = 1); None = today
+    grid = W_MAX * np.asarray(levels)                 # effective magnitudes
+    def q(v, d):                                      # -> (signed effective, code)
+        m = np.argmin(np.abs(np.abs(v)[:, None] / d - grid[None, :]), axis=1)
+        return np.sign(v) * grid[m], (np.sign(v) < 0) * 8 + m
+    dA = max|A| / W_MAX;  dB0 = (rho / dA) if rho else max|B/dw| / W_MAX
+    ...
+    return A_eff, B_eff, dA * dB0, A_code, B_code
+```
+
+`rho` is the hardware's (`specs.lora_cal()["rho"]`): the product of the two scales is
+fixed by the silicon (rho ∝ 1/I_ramp, i.e. vb_ramp), so dB0 follows from dA instead of
+from max|B| (B saturating at 7 when the requested update is larger). `lora_sgd_step` is
+unchanged. INTERFACE §8's behavioural model correspondingly needs LORA_LEVELS[8] next to
+LORA_RHO, signed x (x_neg) and sign-magnitude codes, and no "unsigned" note.
+
+## Results
+
+RESULTS_PLACEHOLDER

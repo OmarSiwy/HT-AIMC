@@ -15,7 +15,8 @@ the floating gate and the cell turns itself off). Unused current goes to the `vc
               While xen_i: Ap -> colp, An -> coln (x_neg_i swaps them); else -> vcm.
   integrate   two OTA integrators on colp / coln (C_int each): Q_P - Q_N = A.x (signed).
   V -> T      ramp_en: equal ramp currents pull vaxp, vaxn down to vth = vcm - V_PED;
-              comparators cp / cn flag each crossing (each ramp stops at its own).
+              comparators cp / cn flag each crossing, latched until ramp_en falls (each
+              ramp stops at its own).
               pos = ramp_en.cn./cp (P holds more), neg = ramp_en.cp./cn; the window lasts
               |Q_P - Q_N| / I_ramp, and the comparator delays cancel (no x=0 baseline).
   B column j  bpd, bpm hold |B_j| if B_j > 0, bnd, bnm if B_j < 0. Direct cells (d) sink
@@ -46,8 +47,10 @@ Sizing — specs.lora_* laws (full-scale cell current, C_int, ramp current) plus
               vb_tail (L stepped until min_w carries it at the tail's VGS, and MB_SIGMA).
   V_PED       3 sigma of (integrator - comparator) OTA offset: both sides always start
               uncrossed, so an empty side still runs the same pedestal as a full one.
-  switches    steering TGs: R_on * I <= V_STEER (drain stays on its virtual ground);
-              reset TG: measured R_on(vcm) on every corner, see reset_size().
+  switches    all at vcm, sized by tg_vcm() on R_on(vcm) measured on every corner x temp:
+              ramp steering R_on * I <= V_STEER (a min TG at ss/-40 C would drop 3.8 V
+              and collapse the ramp source); cell steering <= V_STEER_CELL; reset: vax
+              from V_SWING to V_PED/2 off vcm in T_RST.
   logic       min-width N, equal-drive P (write_dac rule) at Lmin: window edges matter.
 """
 import json
@@ -87,7 +90,13 @@ SRC_GMID = 5.0                  # ramp PMOS: strong inversion, Vdsat ~ 0.4 V
 MIRROR_GMID = 10.0              # B mirror PMOS: the diode sits VSG below vdd and is the
                                 # mirrored cell's drain; at 10 (sky130 VSG 1.21 V, node
                                 # 0.59 V) the cell (Vdsat ~ 2/5.4 = 0.37 V) stays saturated
-V_STEER = 20e-3                 # max drop across a steering switch
+V_STEER = 20e-3                 # max drop across a ramp steering switch (keeps the ramp
+                                # PMOS saturated and its node on the virtual ground)
+V_STEER_CELL = 0.3              # max drop across a cell / mirror steering switch: the
+                                # switch pair is equal so the node does not step; this only
+                                # keeps the cell (drain >= 0.9 V, Vdsat ~ 0.37 V) and the
+                                # mirror output (VSD 0.6 V, Vdsat ~ 0.2 V) saturated. Wider
+                                # switches leave more charge on colb per window (c0)
 T_RST = 4 * specs.TQ_SIM        # INTERFACE.md section 6.2 I1: integrator reset phase
 FANOUT = 4                      # logic stage effort
 DIV_I = specs.I_SIDE            # vth divider current (from vcm)
@@ -154,15 +163,14 @@ def mbias_size(i, pdk=None):
 CHAR = Path(__file__).resolve().parent / "char"
 
 
-def reset_size(pdk=None):
-    """(w_n, w_p) um of the integrator reset TG at Lmin. The reset must take vax from the
-    far end of its swing (V_SWING) to within V_PED/2 of vcm in T_RST on every corner x
-    temperature: R_on(vcm) <= T_RST / (C_int ln(2 V_SWING / V_PED)). A TG at mid-rail has
-    no closed-form R_on (the NMOS is near threshold, the PMOS barely on), so R_on(vcm) is
-    measured per width on every corner (cmos_switch's dead-zone bench, cached in
-    char/<pdk>.json) and W_n is the narrowest that meets it; W_p = W_n * un/up."""
+def tg_vcm(r_max, pdk=None):
+    """(w_n, w_p) um of a Lmin TG whose R_on at vcm stays <= r_max on every corner x
+    temperature. A TG at mid-rail has no closed-form R_on (the NMOS is near threshold,
+    the PMOS barely on; sky130 min TG: 30 k at tt, 788 k at ss/-40 C), so R_on(vcm) is
+    measured per width on every corner (cmos_switch's dead-zone bench with a min PMOS,
+    cached in char/<pdk>.json); W_n is the narrowest that meets r_max, W_p = min_w as
+    measured (the PMOS barely conducts at mid-rail; width there only adds injection)."""
     pdk = pdk or get_pdk()
-    r_max = T_RST / (specs.lora_c_int(pdk) * math.log(2 * specs.V_SWING / v_ped(pdk)))
     widths = [round(pdk.min_w * 2 ** k, 2) for k in range(8)]
     key = {"widths": widths, "corners": list(pdk.corners), "temps": list(cmos_switch.TEMPS),
            "v": cmos_switch.v_write(pdk)}
@@ -177,8 +185,14 @@ def reset_size(pdk=None):
         path.write_text(json.dumps(got, indent=1) + "\n")
     for k, w in enumerate(widths):
         if max(r[k] for r in got["r_on"].values()) <= r_max:
-            return w, round(w * pdk.un_cox / pdk.up_cox, 2)
-    raise ValueError(f"no reset TG up to {widths[-1]} um meets {r_max:.3g} ohm")
+            return {"w_n": w, "l_n": pdk.min_l, "w_p": pdk.min_w, "l_p": pdk.min_l}
+    raise ValueError(f"no TG up to {widths[-1]} um meets {r_max:.3g} ohm at vcm")
+
+
+def r_reset(pdk=None):
+    """Reset TG budget: vax from V_SWING off vcm to within V_PED/2 of it in T_RST."""
+    pdk = pdk or get_pdk()
+    return T_RST / (specs.lora_c_int(pdk) * math.log(2 * specs.V_SWING / v_ped(pdk)))
 
 
 def v_ped(pdk=None):
@@ -203,9 +217,9 @@ def sizes(pdk=None):
         "ramp": src_size(i_ramp, RAMP_SIGMA, SRC_GMID, pdk),
         "mirror": src_size(i_cell * (1 + MB_FRAC), MIRROR_SIGMA, MIRROR_GMID, pdk),
         "mbias": mbias_size(i_cell * MB_FRAC, pdk),
-        "sw": cmos_switch.sizes(r_on=V_STEER / i_cell, pdk=pdk),
-        "rsw": cmos_switch.sizes(r_on=V_STEER / i_ramp, pdk=pdk),
-        "rst": dict(zip(("w_n", "w_p"), reset_size(pdk)), l_n=pdk.min_l, l_p=pdk.min_l),
+        "sw": tg_vcm(V_STEER_CELL / i_cell, pdk),
+        "rsw": tg_vcm(V_STEER / i_ramp, pdk),
+        "rst": tg_vcm(r_reset(pdk), pdk),
         "c_int": specs.lora_c_int(pdk),
         "v_ped": vped,
         "r_top": r_div * vped / vcm, "r_bot": r_div * (1 - vped / vcm),
@@ -360,16 +374,21 @@ def vt(name, sz, pdk):
     g = Logic(s, sz, pdk)
     o, bias_ = f"{name}_ota", ("vb_nc", "vb_pc", "vb_tail", "vdd", "vss")
     g.inv("irst", "rst_b", "rst")
+    g.inv("iren", "ramp_en_b", "ramp_en")
     wr, lr = sz["ramp"]
     for k in ("p", "n"):
         col, vax = f"col{k}", f"vax{k}"
         s.X(f"int{k}", o, "vcm", col, vax, *bias_)
         mim_cap(s, f"cint{k}", col, vax, sz["c_int"], pdk=pdk)
         s.X(f"rs{k}", f"{name}_rstsw", col, vax, "rst", "rst_b", "vdd", "vss")
-        # comparator: high once vax falls below vth
+        # comparator: high once vax falls below vth, latched until ramp_en falls (when a
+        # ramp stops, the OTA's finite gm lifts vax back by ~I_ramp/gm: an unlatched
+        # comparator would un-cross, restart the ramp and chatter the B window)
         s.X(f"cmp{k}", o, "vth", vax, f"co{k}", *bias_)
-        g.inv(f"ic1{k}", f"c{k}b", f"co{k}")
-        g.inv(f"ic2{k}", f"c{k}", f"c{k}b")
+        g.inv(f"ic1{k}", f"co{k}b", f"co{k}")
+        g.inv(f"ic2{k}", f"cr{k}", f"co{k}b")
+        g.nor(f"lq{k}", f"c{k}", "ramp_en_b", f"c{k}b")
+        g.nor(f"lb{k}", f"c{k}b", f"cr{k}", f"c{k}")
         # ramp: always-on PMOS source, steered into col while ramp_en & not crossed
         fet(s, f"ramp{k}", f"r{k}", "vb_ramp", "vdd", "vdd", "pfet", wr, lr, pdk=pdk)
         g.nand(f"nr{k}", f"ren{k}_b", "ramp_en", f"c{k}b")

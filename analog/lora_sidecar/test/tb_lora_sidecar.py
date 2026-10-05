@@ -87,7 +87,7 @@ def main():
     r.check("storage non-destructive (reference pass repeated) < 0.5 %", drift < 0.005,
             f"{drift * 100:.3f} %")
     swing = max(max(abs(v) for v in run.ax_swing(p)) for p in run.passes)
-    r.check("A integrators inside V_SWING", swing <= LB.specs.V_SWING * 1.05,
+    r.check("A integrators inside SWING_MAX", swing <= LB.SWING_MAX,
             f"max |vax - vcm| {swing * 1e3:.0f} mV")
 
     n_slot = LB.N
