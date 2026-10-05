@@ -1,7 +1,11 @@
 # AGENTS.md
 
 Guide for agents working in **AnalogIOC**, an analog in-memory-compute (IMC)
-transformer accelerator on sky130. Read this before adding anything.
+transformer accelerator. Read this before adding anything.
+
+**Target process: ASAP7** (7 nm FinFET, predictive). The existing blocks were designed and
+measured on sky130; treat that data as the calibrated anchor and port it. New work, scoring
+and comparisons are at ASAP7 (`REQUIRED_TOOLING.md` §3 lists what the port needs).
 
 Scope: one chip, the IMC MVM core. Transformer attention is an *application*: its
 projections run on the tiles, while the KV cache, softmax and A·V run on the digital

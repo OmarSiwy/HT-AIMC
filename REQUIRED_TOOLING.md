@@ -8,7 +8,7 @@ tools that already work, with their workarounds, are listed in
 |---|---|---|---|
 | 1 | cktImg: grouping hints | readable schematics of matched structures | cktImg |
 | 2 | SpiceRack: EGSpice backend | the successor simulator | SpiceRack, EGSpice |
-| 3 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
+| 3 | ASAP7 as the target PDK | the port; all new work | several |
 | 4 | VerA `.v` device: > 256 pins, output-variable ports on part-selects, task-enable panic | `make cosim` (A9, A12 co-sim) | VerA (ESPice picks it up) |
 | 5 | Hierarchical layout assembly of the analogioc top | `make -C analog/analogioc/build/layout views` | substrate2 generator (ours) |
 | 6 | GPurify in the nix shell, and a simulator it can drive | `make -C analog/analogioc/build/lib lib` | EDA-Packaged, GPurify |
@@ -32,10 +32,11 @@ together. Not started.
 a resistor. Also, Spectre still drops `raw_spice`; it needs a `simulator lang=spice` wrapper
 and a Spectre install to test.
 
-## 3. Port to ASAP7 (after sky130 is finished)
+## 3. Port to ASAP7 (the target process)
 
-**Decision (2026-10-04):** finish and verify the full IMC on sky130 first, then port
-everything to ASAP7 (7 nm FinFET, predictive, not fabricable) and drop sky130.
+**Decision (2026-10-05):** ASAP7 (7 nm FinFET, predictive, not fabricable) is the target
+process. New architecture work, scoring and the systolic reference are at ASAP7 now; the
+sky130 blocks are the calibrated anchor and get ported.
 
 **Needed before the port can start:**
 - **Open DRC/LVS for ASAP7:** the official decks are Calibre-only. Need a KLayout (or Magic)
@@ -44,7 +45,7 @@ everything to ASAP7 (7 nm FinFET, predictive, not fabricable) and drop sky130.
   Otherwise use OpenROAD-flow-scripts' asap7 platform with the same `macros.toml`.
 - **Layout generators:** substrate2 has no ASAP7 crate. Write one, or generate layout with
   Philis plus a real ASAP7 rule deck.
-- **Device models:** BSIM-CMG via OpenVAF/OSDI in ngspice; gm/ID tables via GmIDVisualizer.
+- **Device models:** BSIM-CMG compiled by VerA for ESPice (no OSDI/ngspice in the env); gm/ID tables via GmIDVisualizer.
 - **pdk_specs.py:** `asap7_proj` becomes a real PDK, with models, corners, MOM-cap and fin
   parameters.
 
