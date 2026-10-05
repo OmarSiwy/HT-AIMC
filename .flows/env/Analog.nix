@@ -36,6 +36,9 @@ in
     edaPkgs.vera
     # gm/ID lookup library for analog/docs/gmid.py (ctypes via GMID_LIB)
     edaPkgs.gmidvisualizer
+    # ASAP7 PDK root (data only, exported as ASAP7_ROOT below): BSIM-CMG for ESPice/ngspice,
+    # KLayout DRC deck, layer maps, DRM
+    edaPkgs.asap7
 
     # Rust toolchain from nixpkgs (+ protoc: the substrate2 `cache` crate compiles
     # protobufs at build time — analog/common/layout generators need it)
@@ -53,8 +56,13 @@ in
     # contract.zig must come from the same VerA commit as the binary (ABI check)
     export VERA_CONTRACT="${edaPkgs.vera}/share/vera/contract.zig"
 
+    # ASAP7 (target process): analog/docs/pdk_specs.py reads models/espice/asap7.lib here;
+    # DRC: klayout -b -r $ASAP7_ROOT/klayout/asap7.drc -rd in_gds=<abs> -rd report_file=<abs>
+    export ASAP7_ROOT="${edaPkgs.asap7}"
+
     # === Analog Tools Configuration ===
     export KLAYOUT_PATH="$PDK_ROOT/$PDK/libs.tech/klayout"
+    if [ "$PDK" = asap7 ]; then export KLAYOUT_PATH="$ASAP7_ROOT/klayout"; fi
     export XSCHEM_USER_LIBRARY_PATH="$PDK_ROOT/$PDK/libs.tech/xschem"
     export XSCHEM_LIBRARY_PATH="$PDK_ROOT/$PDK/libs.tech/xschem:${pkgs.xschem}/share/xschem/xschem_library"
 

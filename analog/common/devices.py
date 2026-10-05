@@ -20,6 +20,7 @@ _KINDS = ("nfet", "pfet", "nfet_lvt", "pfet_lvt", "pfet_hvt")
 
 def fet(sub, name, d, g, s, b, kind, W, L, nf=1, m=1, pdk=None):
     """One PDK MOSFET. kind in _KINDS; W (per instance) and L in um; m instances.
+    FinFET PDKs (pdk.w_fin) round W to whole fins (NFIN) and carry m as fingers (NF).
 
     A W past the PDK's widest model bin (pdk.w_max) is split into equal parallel
     instances automatically. Multiplicity goes through pdk.mult_card, which scales the
@@ -34,16 +35,21 @@ def fet(sub, name, d, g, s, b, kind, W, L, nf=1, m=1, pdk=None):
     if pdk.w_max and W > pdk.w_max:
         k = math.ceil(W / pdk.w_max)
         W, m = round(W / k, 3), m * k
+    nfin = max(1, round(W / pdk.w_fin)) if pdk.w_fin else 0
+    if pdk.w_fin:                  # FinFET: ESPice VA devices take no m=, fold it into NF
+        nf, m = nf * m, 1
     extra = (f" nf={nf}" if nf > 1 else "") + (pdk.mult_card.format(m=m) if m > 1 else "")
     sub.raw_spice(pdk.fet_card.format(name=name, d=d, g=g, s=s, b=b, model=model,
-                                      w=pdk.um(W), l=pdk.um(L), extra=extra))
+                                      w=pdk.um(W), l=pdk.um(L), nfin=nfin, extra=extra))
 
 
 def mim_cap(sub, name, p, n, C, pdk=None):
     """MIM capacitor of value C [F] as a square PDK device: side s solves
     ca*s^2 + 4*cp*s = C (area + perimeter). A value below the PDK's smallest drawable
     MIM (pdk.mim_min_side) is still emitted at its exact size — simulation is right —
-    but warned about on stderr: it cannot be built as a MIM (use a MOM/fringe cap)."""
+    but warned about on stderr: it cannot be built as a MIM (use a MOM/fringe cap).
+    A PDK without MIM (ASAP7) declares a `C` mim_card: an ideal C of the value, with
+    mim_ff_um2 the MOM density its area is budgeted at."""
     pdk = pdk or get_pdk()
     ca, cp, c_ff = pdk.mim_ff_um2, pdk.mim_ff_um, C * 1e15
     s_um = c_ff / ca if not ca else \
@@ -53,7 +59,8 @@ def mim_cap(sub, name, p, n, C, pdk=None):
               f"{pdk.name}'s {pdk.mim_min_side} um MIM minimum — not buildable as a MIM",
               file=sys.stderr)
     side = pdk.um(round(s_um, 2))
-    sub.raw_spice(pdk.mim_card.format(name=name, p=p, n=n, model=pdk.mim_cap, w=side, l=side))
+    sub.raw_spice(pdk.mim_card.format(name=name, p=p, n=n, model=pdk.mim_cap, w=side, l=side,
+                                      c=f"{C:g}"))
 
 
 def poly_res(sub, name, p, n, R, body, pdk=None, kind="res_poly"):

@@ -11,17 +11,24 @@ API (dev is "nfet" or "pfet", L in um):
     W_for_gm(gm, gm_id, L, dev) width [um] for a target gm [S]
     ft(gm_id, L, dev)           transit frequency gm/(2pi*Cgg) [Hz]
 
-Tables: analog/docs/gmid_tables/<pdk>/<dev>_L<L>.csv, generated on first use from
-GmIDVisualizer (mid-VDS slice, W=10um, typical corner, 27C) and committed, so a PDK
-hotswap regenerates them once. Needs `libGmIDVisualizer.so` via $GMID_LIB (or next to
-`gmid_runner` on PATH) and `ngspice` on PATH only when a table is missing.
+Tables: analog/docs/gmid_tables/<pdk>/<dev>_L<L>.csv, generated on first use and
+committed, so a PDK hotswap regenerates them once (typical corner, 27C):
+  planar PDKs   GmIDVisualizer (mid-VDS slice, W=10um). Needs `libGmIDVisualizer.so` via
+                $GMID_LIB (or next to `gmid_runner` on PATH) and `ngspice` on PATH.
+  FinFET PDKs   (pdk.w_fin) ESPice directly: GmIDVisualizer writes `W=` cards and drives
+                ngspice, and BSIM-CMG takes NFIN and needs OSDI there. One DC sweep gives
+                ID; one AC deck holding a device copy per VGS gives gm, gds and Cgg
+                (= Im(i_gate)/w, BSIM-CMG's terminal charges include the overlaps).
+                10 fins (W = 10*w_fin), VDS = VDD/2. Needs `espice` on PATH.
 
 Self-check: python3 analog/docs/gmid.py
 """
 import ctypes as C
 import os
 import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -77,9 +84,62 @@ def _device_model_file(pdk, dev):
     return model, pdk.model_file(pdk.typical)
 
 
+def _espice(deck: str) -> dict:
+    """Run an ESPice deck, return {column: np.array} (complex columns as complex)."""
+    exe = shutil.which("espice")
+    if not exe:
+        raise FileNotFoundError("espice not on PATH — run ./env.sh analog")
+    with tempfile.TemporaryDirectory() as d:
+        (Path(d) / "c.sp").write_text("* gmid.py\n" + deck + ".end\n")   # line 1 = title
+        r = subprocess.run([exe, "c.sp", "-r", "c.csv", "--format=csv"], cwd=d,
+                           capture_output=True, text=True, timeout=1800)
+        if r.returncode:
+            raise RuntimeError(f"espice failed:\n{r.stderr[-1500:]}")
+        names = (Path(d) / "c.csv").read_text().splitlines()[0].split(",")
+        data = np.loadtxt(Path(d) / "c.csv", delimiter=",", skiprows=1, ndmin=2)
+    cols = {n: data[:, i] for i, n in enumerate(names)}
+    for n in [n for n in names if n.endswith("_re")]:
+        cols[n[:-3]] = cols.pop(n) + 1j * cols.pop(n[:-3] + "_im")
+    return cols
+
+
+def characterise_espice(dev, L, pdk=None, nfin=10, n=141, f=1e6):
+    """FinFET table for (dev, L) from ESPice (see module doc). Returns its path."""
+    pdk = pdk or get_pdk()
+    model = pdk.nfet if dev == "nfet" else pdk.pfet
+    pol = 1.0 if dev == "nfet" else -1.0
+    vds, W = pol * pdk.vdd / 2, nfin * pdk.w_fin
+    card = f"{model} L={pdk.um(L)} NFIN={nfin}"
+    lib = "\n".join(pdk.model_lines(pdk.typical)) + "\n.temp 27\n"
+    vgs = np.linspace(0.0, pdk.vdd, n)
+    dc = _espice(lib + f"vg g 0 0\nvd d 0 {vds}\nM1 d g 0 0 {card}\n"
+                 f".dc vg 0 {pol * pdk.vdd} {pol * pdk.vdd / (n - 1)}\n")
+    i_d = np.abs(dc["i(vd)"])
+    ac = lib + "".join(
+        f"vga{k} ga{k} 0 {pol * v} ac 1\nvda{k} da{k} 0 {vds}\nMa{k} da{k} ga{k} 0 0 {card}\n"
+        f"vgb{k} gb{k} 0 {pol * v}\nvdb{k} db{k} 0 {vds} ac 1\nMb{k} db{k} gb{k} 0 0 {card}\n"
+        for k, v in enumerate(vgs)) + f".ac lin 1 {f:g} {f:g}\n"
+    r = _espice(ac)
+    gm = np.array([abs(r[f"i(vda{k})"][0].real) for k in range(n)])
+    gds = np.array([abs(r[f"i(vdb{k})"][0].real) for k in range(n)])
+    cgg = np.array([abs(r[f"i(vga{k})"][0].imag) / (2 * np.pi * f) for k in range(n)])
+    keep = i_d > 0
+    table = np.column_stack([vgs, gm / np.where(keep, i_d, 1), i_d / W, gm, gds,
+                             gm / np.maximum(gds, 1e-30), cgg])[keep & (vgs > 0)]
+    out = TABLE_ROOT / pdk.name
+    out.mkdir(parents=True, exist_ok=True)
+    path = out / f"{dev}_L{L:g}.csv"
+    hdr = (f"{model} L={L}um NFIN={nfin} (W={W:g}um) VDS={abs(vds):g}V {pdk.typical} 27C "
+           f"(ESPice, gm/gds/cgg from AC at {f:g} Hz)\n" + ", ".join(COLS))
+    np.savetxt(path, table, delimiter=",", header=hdr, fmt="%.6e")
+    return path
+
+
 def characterise(dev, L, pdk=None):
     """Run GmIDVisualizer for (dev, L) and write the table CSV. Returns its path."""
     pdk = pdk or get_pdk()
+    if pdk.w_fin:
+        return characterise_espice(dev, L, pdk)
     model, mfile = _device_model_file(pdk, dev)
     pol = 1.0 if dev == "nfet" else -1.0     # PMOS: sweep VGS/VDS negative
     out = TABLE_ROOT / pdk.name
@@ -209,7 +269,8 @@ def W_for_gm(gm, gm_id, L, dev="nfet", pdk=None):
 
 
 if __name__ == "__main__":
-    L2 = 2 * get_pdk().min_l
+    # ASAP7 has one drawn gate length: check at it rather than a model-only 2*Lmin
+    L2 = get_pdk().min_l if get_pdk().w_fin else 2 * get_pdk().min_l
     for dev in ("nfet", "pfet"):
         j12, v12 = J_D(12.0, L2, dev), VGS(12.0, L2, dev)
         rt = float(gm_ID(v12, L2, dev))

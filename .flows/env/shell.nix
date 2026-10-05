@@ -83,7 +83,8 @@ pkgs.mkShell {
     export CCACHE_DIR="$PROJECT_ROOT/.tools/ccache"
 
     # === PDK Configuration ===
-    export PDK="sky130A"
+    # sky130A by default; `PDK=asap7 ./env.sh` selects ASAP7 (root: $ASAP7_ROOT, Analog.nix)
+    export PDK="''${PDK:-sky130A}"
     export PDK_VERSION="8afc8346a57fe1ab7934ba5a6056ea8b43078e71"  # = LibreLane 3.0.14 pin
     export PDK_ROOT="$HOME/.ciel"
 
