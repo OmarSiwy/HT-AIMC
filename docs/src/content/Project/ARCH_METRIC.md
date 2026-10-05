@@ -92,3 +92,25 @@ which the search must test honestly against SOTA and the alternatives, not assum
    time-domain, capacitive, floating-point CIM), and the strengths and limits of FinFET devices
    at 0.7 V (subthreshold slope, mismatch, leakage, headroom). Be creative: transfer ideas
    across these fields.
+
+## Second condition set: Sohu conditions
+
+Every design and the systolic baseline are also scored under Etched Sohu's published benchmark
+conditions (`arch_eval/cli.py --conditions sohu`): Llama-3-70B, FP8 weights and KV cache,
+2,048 tokens in / 128 out, a fixed batch of 1,000, an 8-chip tensor-parallel group, and
+4.8 TB/s and 144 GB of HBM per chip. Die area stays the iso-area knob. The analog design may
+re-tune its parameters for each condition set; the systolic baseline is the same RTL model,
+parameterized (FP8 weights). The search reports the winner against the baseline under both.
+
+Two extra metrics are reported under both sets (not ranked): **tok/s per mm²** and
+**tok/s per mm² per W** (die power).
+
+**The Sohu target (projected).** Etched publishes no die area or power. Calibrating our systolic
+model at ASAP7 to Sohu's claimed 62,500 tok/s per chip (`cli.py --sohu-target`) gives:
+
+| Die | Die power | tok/s per chip | TOPS/W | tok/W | tok/J | tok/s per mm² | tok/s per mm² per W |
+|---|---|---|---|---|---|---|---|
+| 666 mm² | 537 W (+50 W HBM) | 62.6k | 16.5 | 107 | 225 | 94 | 0.175 |
+
+These are our model's numbers at ASAP7 with literature MAC energies until the sysreference
+synthesis lands, not Etched's (N4). Beat them under the same conditions.
