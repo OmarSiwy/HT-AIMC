@@ -12,6 +12,7 @@ workarounds, are listed in [`analog/docs/TOOL_ISSUES.md`](analog/docs/TOOL_ISSUE
 | 4 | SpiceRack: upstream local fixes, `X()` params, more backends | every testbench | SpiceRack |
 | 5 | GmIDVisualizer: export cgg (for `gmid.ft`) | `gating_value.py` | GmIDVisualizer |
 | 6 | Behavioural Verilog from the Verilog-A golden models | digital sims with the analog macro in place (1) | VerA |
+| 7 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
 
 ## 1. LibreLane integration: analog macros in harden and digital sim
 
@@ -163,3 +164,23 @@ digital pins as logic, the self-timed handshakes (`go -> done`) as delays taken 
 model (or the gap 2 `.lib`), analog pins kept as undriven `inout`, plus an `ifdef USE_POWER_PINS`
 port list so the same model works in gate-level sims. **Test:** a model generated for a known
 block passes the digital tb that the hand-written one passes.
+
+## 7. Port to ASAP7 (after sky130 is finished)
+
+**Decision (2026-10-04):** finish and verify the full IMC on sky130 first, then port
+everything to ASAP7 (7 nm FinFET, predictive, not fabricable) and drop sky130.
+
+**Needed before the port can start:**
+- **Open DRC/LVS for ASAP7:** the official decks are Calibre-only. Need a KLayout (or Magic)
+  deck usable by GPurify/Philis, or a GPurify `asap7.deck`.
+- **Digital flow:** confirm LibreLane can harden ASAP7; ciel ships sky130/gf180/IHP only.
+  Otherwise use OpenROAD-flow-scripts' asap7 platform with the same `macros.toml`.
+- **Layout generators:** substrate2 has no ASAP7 crate. Write one, or generate layout with
+  Philis plus a real ASAP7 rule deck.
+- **Device models:** BSIM-CMG via OpenVAF/OSDI in ngspice; gm/ID tables via GmIDVisualizer.
+- **pdk_specs.py:** `asap7_proj` becomes a real PDK, with models, corners, MOM-cap and fin
+  parameters.
+
+**Design changes the port forces:** 0.7 V supply (the telescopic-cascode OTA doesn't fit),
+MOM instead of MIM caps, fin-quantized widths and near-fixed L, and re-measured calibration
+constants (`K_CAL`, `c_ota_self`, fine trim).
