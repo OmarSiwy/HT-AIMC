@@ -38,3 +38,39 @@ that trades 10x TOPS/W for tok/s is documented even when it is not the pick.
 
 Verilog-A behavioural model (VerA/ESPice) proves the architecture is sound, then the ASAP7
 transistor-level SPICE circuit. Post-layout is out of scope.
+
+## Design direction (user, 2026-10-05)
+
+These steer the search. The first three are constraints; the rest is the leading hypothesis,
+which the search must test honestly against SOTA and the alternatives, not assume.
+
+1. **The tile is the only heavy part, and it should be lightweight too.** Every add-on to the
+   tile (sidecars, extra columns, per-cell extras) must pay for itself on the metric. The
+   rank-1 LoRA sidecar does not count toward inference metrics: drop it unless it is shown to
+   help them.
+2. **No SRAM bitcells in the tile.** Weights are stored as analog quantities (charge or
+   voltage on a capacitor, gain cell, or similar) written by the compiler's flow.
+3. **No PWM inputs by default.** Time-encoding activations costs 2^b time steps per pass;
+   use it only if it wins on tok/s.
+4. **Use numerics to make pre- and post-processing nearly free.** Choose number formats so the
+   tile does the arithmetic and the digital work around it shrinks. Wide fixed-point
+   accumulators, nibble/slice recombination and requantization are costs to remove, not givens.
+5. **Leading hypothesis: a log-domain, float-in/float-out tile.**
+   - The compiler stores weights and streams activations in logarithmic form (LNS, close to a
+     float's exponent + mantissa).
+   - Multiply = adding logs = charge sharing between the weight and activation capacitors.
+   - A MOSFET in subthreshold (or another exponential device) turns the shared voltage back
+     into a linear current or charge, so the column sum is plain charge accumulation (KCL).
+   - Results are read out as floats (exponent + mantissa, or log), avoiding a wide fixed-point
+     conversion. Floats may enter via the write path or the compiler.
+   - Known issues from this repo's sky130 study (`IMC_LOG_PIPELINE_CRITIC.md`,
+     `IMC_LOG_GMID_ROUND.md`): equal-cap sharing averages the logs (√(x·w)) unless the
+     exponential slope matches the log slope; the slope tracks kT/q and needs a live
+     reference; V_th mismatch is exponentiated; signs and zero need explicit handling; a word
+     took 1.8 µs on sky130, which is the tok/s problem to solve at ASAP7's 0.7 V.
+6. **Research method.** Combine digital computer-arithmetic theory (LNS, Mitchell/Gaussian-log
+   tricks, floating-point and block-floating formats, exact accumulators) with SOTA analog
+   IMC theory and analog multiply-accumulate cells (charge sharing, translinear/current-mode,
+   time-domain, capacitive, floating-point CIM), and the strengths and limits of FinFET devices
+   at 0.7 V (subthreshold slope, mismatch, leakage, headroom). Be creative: transfer ideas
+   across these fields.
