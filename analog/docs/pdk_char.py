@@ -10,6 +10,8 @@ Measured (typical corner, 27 C unless noted):
                      C = ca*s^2 + 4*cp*s solved for area ca and perimeter cp
   res_*_ohm_sq, tc1  R of a 10-square poly_res at 27 and 85 C
   t_inv_ps_per_ff    min inverter (Wp = 2*Wn = 2*Wmin): mean tpd slope 50 -> 150 fF
+  cd_n/p_ff_um       |I|/(2 pi f V) into the drain of an off W=10 um min-L FET (gate at
+                     source) biased at VDD/2, 1 MHz: what a switch's drain adds to a net
   a_vt               diode-connected W=L=1 um nfet forced at gm/ID=10, 40 mismatch
                      seeds (<typical><mismatch_suffix>): sigma(VGS) * sqrt(2*W*L)
 
@@ -58,8 +60,24 @@ def elr(dev, L):
     return float(vth), float(2 * L * slope[i] ** 2 * 1e6)
 
 
+def drain_caps(pdk):
+    """{cd_n_ff_um, cd_p_ff_um}: drain cap per um of W of an off min-L FET."""
+    w, vd = 10.0, pdk.vdd / 2
+    lines = [f"* pdk_char {pdk.name} drain cap", pdk.lib_line(), f"Vdd vdd 0 {pdk.vdd}",
+             f"Vn dn 0 DC {vd} AC 1", f"Vp dp 0 DC {vd} AC 1",
+             pdk.fet_card.format(name="n1", d="dn", g="0", s="0", b="0", model=pdk.nfet,
+                                 w=pdk.um(w), l=pdk.um(pdk.min_l), extra=""),
+             pdk.fet_card.format(name="p1", d="dp", g="vdd", s="vdd", b="vdd", model=pdk.pfet,
+                                 w=pdk.um(w), l=pdk.um(pdk.min_l), extra=""),
+             ".control", "ac lin 1 1meg 1meg"]
+    lines += [f"let {k} = abs(i({v}))/(2*3.14159265*1e6)\nprint {k}" for k, v in
+              (("cn", "Vn"), ("cp", "Vp"))]
+    r = ngspice(lines + [".endc"])
+    return {"cd_n_ff_um": r["cn"] * 1e15 / w, "cd_p_ff_um": r["cp"] * 1e15 / w}
+
+
 def characterise(pdk):
-    got = {}
+    got = drain_caps(pdk)
     got["ss_mv_dec"] = 1000 * math.log(10) / float(gmid.load_table("nfet", pdk.min_l)["gm_ID"].max())
     L4 = round(4 * pdk.min_l, 3)
     got["vth_n"], got["un_cox"] = elr("nfet", L4)

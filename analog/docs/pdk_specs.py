@@ -30,7 +30,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 MEASURED = ("vth_n", "vth_p", "un_cox", "up_cox", "ss_mv_dec", "a_vt", "mim_ff_um2", "mim_ff_um",
-            "res_poly_ohm_sq", "res_poly_lotc_ohm_sq", "t_inv_ps_per_ff")
+            "res_poly_ohm_sq", "res_poly_lotc_ohm_sq", "t_inv_ps_per_ff", "cd_n_ff_um",
+            "cd_p_ff_um")
 
 
 def pdk_root() -> Path:
@@ -99,6 +100,8 @@ class PDKConfig:
     res_poly_a_r: float = 0.0
     res_poly_lotc_a_r: float = 0.0
     t_inv_ps_per_ff: float = 0.0  # min-inverter delay slope (ps/fF)
+    cd_n_ff_um: float = 0.0      # off min-L FET drain cap per um of W (junction + overlap,
+    cd_p_ff_um: float = 0.0      #   as the deck's fet_card draws it), drain at VDD/2 (fF/um)
     # -- design target AnalogIOC carried per PDK (specs.py reads it)
     jitter_budget_s: float = 0.0  # PWM edge jitter budget (s)
     # -- projection-only
