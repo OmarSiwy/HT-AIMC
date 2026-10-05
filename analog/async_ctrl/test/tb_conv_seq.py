@@ -1,6 +1,6 @@
 """conv_seq: the per-column handshake translator against INTERFACE.md §6.2 I6, §6.3, §6.4.
 
-conv_seq (transistor level, netlist/async_ctrl.spice) between XSPICE stand-ins: two
+conv_seq (transistor level, netlist/async_ctrl.spice) between Verilog-A stand-ins: two
 dual-rail comparators (rtl_standin.sa1/sa2) on its strobes and the tile_fsm side
 (rtl_standin.rtl). The converter chop is ideal PWL on the §6.1 grid. Two conversions:
   A: sign +, 2 crossings, pkt_d = 1, fine 10      B: sign +, 1 crossing, pkt_d = 3, fine 5
@@ -65,15 +65,12 @@ def run(n_cross, pkt_d, fine, end=2.0e-6, corner="", temp=None):
     top = ps.Subcircuit("tb_conv_seq")
     top.include(str(dut_path("async_ctrl", "sch")))
     top.X("xdut", "conv_seq", *ac.CONV_SEQ_PORTS)
+    rs.rtl(top)
+    rs.sa1(top, n_cross)
+    rs.sa2(top, fine)
     tb = ps.Testbench(top)
     tb.use_pdk(PDK.model_library(corner or os.environ.get("CORNER", "")))
     tb.temperature = float(temp if temp is not None else os.environ.get("SIM_TEMP", 27))
-    for sub, line in ((rs.rtl(), "Xrtl sdone cb_req cb_cross cmp_ack cmp_result coarse_en "
-                                 "cb_ack cmp_req ota_en b3 b2 b1 b0 rtl_done rtl_standin"),
-                      (rs.sa1(n_cross), "Xsa1 clk_c c1p c1n sa1_standin"),
-                      (rs.sa2(fine), "Xsa2 clk_f b3 b2 b1 b0 c2p c2n sa2_standin")):
-        tb.add_subcircuit(sub)
-        tb.extra_line(line)
     tb.V(name="sup", positive="vdd", negative="0", value=VDD)
     tb.V(name="ss", positive="vss", negative="0", value=0.0)
     tb.V(name="rst", positive="rst_n", negative="0", value=VDD)

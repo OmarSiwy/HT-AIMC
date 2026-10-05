@@ -194,8 +194,6 @@ N_RAMP0, N_RAMPW, N_SETTLE_L = 4, 50, 10   # I5a
 # phi1 [t0+0.3, t0+1.9], phi1e to t0+2.1, phi2 [t0+2.5, t0+Tc-0.5], gap from t0-0.5.
 CHOP_UNIT = 0.2e-9                      # delay-line cell; every offset is a multiple
 CHOP_TAPS = {"phi1_on": 4, "phi1_off": 12, "phi1e_off": 13, "phi2_on": 15}
-ENV_UNITS = 2       # envelopes / window flag trail the tile tick by 2 inverter pairs:
-                    # they change after tphi2 falls, inside the 0.8 ns gap
 DLY_PAIRS = 4       # nand/inv pairs per minimum-time element (falling input resets
                     # every pair at once: re-arm in ~1/DLY_PAIRS of the delay)
 # ponytail: calibration knobs (measured):
@@ -425,7 +423,9 @@ def conv_seq(pdk=None, cells=None):
     # C0..C2 coarse decision
     c_got, acked = "c_got", "acked"
     c_gotb = g.inv(c_got)
-    ready = g.and_(c_gotb, g.delay(c_gotb, T_PACE, "pace"))   # T_PACE after cb_ack fall
+    # T_PACE after cb_ack fall, and after the sign strobe (out recovers from its kick)
+    idle = g.and_(c_gotb, "sgd")
+    ready = g.and_(idle, g.delay(idle, T_PACE, "pace"))
     cbab = g.inv("cb_ack")
     cs = g.rsl(g.and_(g.and_(ready, "coarse_en"), g.and_("sgd", cbab)), g.or_(nA, c_got))
     signb = g.inv("sign")
@@ -637,16 +637,17 @@ def tile_seq(pdk=None, cells=None):
         for k in (1, 2, 3):
             lt = g.maj(ctb[k], m[k], lt)
         env = g.dff(g.mux(ten, g.and_(w_d, lt), f"env{i}", tenb), bus, rI, f"env{i}")
-        for _ in range(ENV_UNITS):
-            env = g.inv(g.inv(env))
+        # change only while the tile chop's ck = e(0.8) is high: exactly its gap
+        envb = g.inv(env)
+        env = g.rsl(g.and_(env, "t_ck"), g.or_(g.and_(envb, "t_ck"), rI))
         g.and_(env, g.inv(f"x_neg{i}"), f"xin_p_r{i}")
         g.and_(env, f"x_neg{i}", f"xin_n_r{i}")
         g.and_(env, "lora_en", f"xrd_en{i}")
-    # tile chop from p_tile, parked outside the window (delayed like the envelopes)
+    # tile chop from p_tile, parked outside the window. w2 opens with the first tile phi1
+    # (after the chop's own xor path has settled: no runt tphi2, no tphi1 blip) and
+    # closes with w (the window-end tick, when the chop has just ended tphi2 itself)
     s.X("tchop", "chop_gen", "p_tile", "t_phi1", "t_phi1e", "t_phi2", "t_ck", "vdd", "vss")
-    wdl = w
-    for _ in range(ENV_UNITS):
-        wdl = g.inv(g.inv(wdl))
+    wdl = g.rsl(g.and_(w, "t_phi1"), g.inv(w), "w2")
     wb = g.inv(wdl)
     g.buf(g.or_(wb, "t_phi1"), "tphi1", load=3 * R + 2)
     g.buf(g.or_(wb, "t_phi1e"), "tphi1e", load=2 * R)
