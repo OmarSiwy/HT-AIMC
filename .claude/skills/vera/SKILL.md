@@ -6,26 +6,19 @@ description: Write, lint and unit-test Verilog-A behavioural models with VerA (`
 # VerA
 
 VerA compiles Verilog-A to **Zig source** — a stateless device (`eval`/`jacobian`/`psd`)
-that ESPice compiles into its Newton loop. It does **not** emit `.osdi`. Two routes to a
-simulation, pick by simulator:
+that ESPice compiles into its Newton loop. **ESPice is this repo's only simulator** (SpiceRack
+backend `espice`, `BACKEND ?= espice` in every block). There is no OSDI and no OpenVAF:
+an OSDI card in a deck is an error, and `osdi()` on an ESPice bench raises.
 
-| Simulator | Route | Compiler |
-|---|---|---|
-| ngspice / VACASK | SpiceRack `dut.veriloga("model.va")` → `.osdi` | OpenVAF, not VerA |
-| ESPice (ARPice) | `.hdl "model.va"` card in the deck | VerA, at ESPice runtime |
+| Use | How |
+|---|---|
+| golden model in a SpiceRack bench (`DUT=va`) | `top.veriloga("model.va")` → SpiceRack emits `.hdl "model.va"`; ESPice compiles it through VerA at first use (cache `~/.cache/espice`) |
+| hand-written deck | `.hdl "model.va"` card, `espice deck.sp -r out.raw` |
+| digital sim of a leaf block | `vera model.va --emit-verilog -o model_beh.v` (see below) |
 
-**Default to the ngspice route, and write golden models in the OpenVAF subset:**
-OpenVAF implements no `@(cross)`/`@(above)`/`@(timer)` events (only `initial_step`/
-`final_step`) and no `transition()`. Model switching with `tanh`, delay with an internal
-RC node (`ddt`), outputs as Thevenin sources — continuous behaviour every compiler
-accepts. Lint every model with `vera --lint` too, so it stays ESPice-ready.
-
-**ESPice route (2026-09-29):** use a source build of ESPice (the ARPice repo) `main`
-(`01fa6f93` or later; needs `../Gompute` beside it) via `ESPICE_SRC` — there `.hdl` models
-with `@(cross)` and `transition()` simulate correctly. The GitHub/nix ESPice pins a
-pre-release VerA (`297e97dc`) whose codegen breaks any non-trivial model (`var h` shadows
-`const h`), and its store build cannot cache `.hdl` builds (fix is WIP). Golden models
-that must also run on ngspice stay in the OpenVAF subset (continuous).
+ESPice (EDA-Packaged `espice`) and `vera` share one VerA (1.0.0, `998a3223`), so the
+binaries agree. The full Verilog-A subset below works, including `@(cross)` and
+`transition()`. Keep models continuous where you can anyway: it simulates faster.
 
 ## Write the model
 
@@ -51,9 +44,8 @@ vera model.va --check --contract $VERA_CONTRACT  # type-check generated Zig
 vera model.va --run   --contract $VERA_CONTRACT  # self-checking testbench
 ```
 
-`$VERA_CONTRACT` (exported by the nix shell) = `contract.zig` from the SAME VerA commit
-as the binary — else "generated for a different device ABI". VerA is adding it to the
-package (`share/vera/contract.zig`); until then set `VERA_SRC` to a VerA checkout. Exit 0 = OK (warnings don't fail), 1 = diagnosed error, 2 = bad flags. `vera --explain
+`$VERA_CONTRACT` (exported by the nix shell, from the package's `share/vera/contract.zig`)
+matches the binary, and `--contract` defaults to the built-in copy anyway. Exit 0 = OK (warnings don't fail), 1 = diagnosed error, 2 = bad flags. `vera --explain
 CODE` explains a diagnostic. W0650 (strict float mode) fires on nearly every model and is
 about speed — allow it. `--diagnostics=json` for machine parsing.
 
@@ -67,11 +59,10 @@ analysis print noise acstim reject exit checks` (unknown ones are refused):
 //! print none
 ```
 
-`--run` steps a fixed grid of your `time` points — no truncation-error control, no
-breakpoints, **no inserted crossing points, so `@(cross)` events did not fire** (being
-fixed upstream: a crossing between grid points must fire at the next point) — and ties
-unnamed unknowns to 0 unless `//! solve` is present. It is a unit check for continuous
-models, not a transient simulator; real transients go through ngspice or ESPice.
+`--run` steps a fixed grid of your `time` points, with no truncation-error control and no
+breakpoints. `@(cross)` fires at the next grid point after a crossing (W0750 if late). It
+ties unnamed unknowns to 0 unless `//! solve` is present. It is a unit check, not a
+transient simulator; real transients go through ESPice.
 
 ## Simulate in ESPice
 
@@ -86,26 +77,31 @@ espice deck.sp -r out.raw [--format=ascii|csv|...] [--jobs=N]
 
 * Instance letter must take a variable node count (`N`, `X`, `U`). `R C L V I D B F H W`
   (2), `Q Z J` (3), `E G S M T O` (4) split nodes from the model at the wrong place.
-* ESPice needs `zig` on PATH, its source tree where it was built **and writable** (it
-  compiles `.hdl` models into `<src>/.zig-cache/espice-hdl/`, so the nix-store build
-  fails `AccessDenied` — build ESPice from a source checkout), and a ReleaseFast build
-  (Debug fails `HdlNeedsLlvmHost`). First load compiles, later ones cache.
-* From SpiceRack: `deck = tb.netlist("ngspice")`, add the `.hdl` line, **don't** call
-  `veriloga()` (ESPice ignores `pre_osdi`), run the CLI, parse the raw file yourself.
-  SpiceRack has no ESPice backend.
+* The packaged ESPice runs `.hdl` models straight from the nix store (cache in
+  `~/.cache/espice`); no source build or `zig` on PATH needed.
+* Internal nodes of a Verilog-A instance read as `v(<instance>#<net>)` (ngspice naming).
+* PWL sources longer than 64 points are fine, except with `r=` (refused).
+
+## Behavioural Verilog (`--emit-verilog`)
+
+```bash
+vera model.va --emit-verilog -o model_beh.v [--digital-pins a,b|file] [--power-pins] [--vdd=1.8]
+```
+
+Same module/ports. Each driven net becomes one bit, with RC-derived rise/fall delays
+(overridable `parameter real vera_rise_*`). Mark pins in the model with
+`(* vera_pin = "digital"|"analog"|"power"|"ground" *)` and delays with
+`(* vera_delay = 2n *)`; both attributes must go on the **`inout`** line (they're silently
+ignored on `electrical`). Refused: events/held state, `ddt`/`idt` assigned to variables,
+arrays, more than 20 pins + driven nodes. Good for leaf blocks (strongarm, async_ctrl);
+the `analogioc` macro's model is hand-written.
 
 ## Silent-failure traps
 
-* **Misspelled instance parameter → default used**, no error (ESPice drops unknown keys).
-* **Too few nodes on an instance → missing ports tied to ground**, no error.
 * **Parameter ranges are compile-time only.** `--param tau=-1` is refused (E0361); the
   same value on an ESPice card or a `//! param` runs and gives wrong output. Check ranges
   in the testbench script.
 * **`$strobe`/`$display` vanish in device builds** (W0850). Prints show only under `--run`.
-* **Runtime `.hdl` errors surface as a bare error name.** Always `vera --lint` first.
+* Always `vera --lint` first; it's the fastest place to see a diagnostic.
 * `ln` is the natural-log keyword — not a variable name (E0208).
-* OpenVAF's binary may be installed as `openvaf-r`; SpiceRack calls `openvaf` (alias it).
-* **ESPice pins an older VerA** (`297e97dc`). A HEAD `vera` can accept what `espice`
-  refuses; `zig build vera -- <args>` in the ESPice tree runs the pinned one — use it when
-  they disagree.
 * ESPice ignores `noise_table` output, correlated-noise weights and nodesets.

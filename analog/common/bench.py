@@ -2,7 +2,7 @@
 
 Every testbench runs unchanged on three DUT sources (analog-design-flow skill, stage 3):
 
-    DUT=va   analog/<block>/va/<block>.va         golden model (OpenVAF -> OSDI, ngspice)
+    DUT=va   analog/<block>/va/<block>.va         golden model (VerA -> ESPice, `.hdl`)
     DUT=sch  analog/<block>/netlist/<block>.spice  generated deck (make netlist)
     DUT=pex  analog/<block>/output/$PEX_FROM/<block>_pex.spice   post-layout netlist:
              PEX_FROM=pnr (default) converted Philis extraction (analog/common/pex.py),

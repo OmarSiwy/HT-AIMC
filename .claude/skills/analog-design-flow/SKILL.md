@@ -19,13 +19,11 @@ skills — load the one a stage names before writing its first file:
 
 * **Netlists are build byproducts.** Every `.spice` comes from a Python script via
   SpiceRack; edit the script, re-run, never the deck. `make clean` deletes decks anyway.
-* **SpiceRack builds every deck** and ngspice runs it (`tb.with_backend`); VACASK is the
-  other SpiceRack backend. Two Zig simulators sit beside it, neither a SpiceRack backend:
-  ESPice (the ARPice repo) runs Verilog-A via `.hdl` (see `vera`), and **EGSpice** — a
-  separate successor simulator (`~/Documents/Projects/Zig/EGSpice`) — is the intended
-  target but mid-rewrite: as of 2026-09-29 its build rejects even a resistor ("no device
-  model compiled for kind resistor"). When EGSpice runs decks, it becomes a SpiceRack
-  backend and this rule changes.
+* **SpiceRack builds every deck and ESPice runs it** (backend `espice`, `BACKEND ?= espice`
+  in every block). Golden models go VerA -> ESPice natively (`.hdl`, see `vera`); there is
+  no OSDI, no OpenVAF and no ngspice in the env. ESPice matches ngspice 45 on sky130
+  (DC < 0.05 %, delays < 0.2 %, AC < 0.003 dB) and runs our benches 10-900x faster.
+  **EGSpice** (`~/Documents/Projects/Zig/EGSpice`) is mid-rewrite and not a backend yet.
 * **PDK-agnostic, always.** No process number, device name or hand-picked W/L appears
   in any block script. Everything a design needs from the process flows down one chain:
 
@@ -94,12 +92,11 @@ installed PDK.
 
 One `.va` per block, **1:1 with the netlist subcircuits** — same module name as the
 `.subckt`, same port names and order. Model in-out behaviour only: gain, poles, offset,
-limits, bias current, whatever the spec table measures. Write it in the OpenVAF subset
-(continuous: `tanh` switching, RC + `ddt` delay — see `vera`), so `DUT=va` runs on
-ngspice. `make -C analog/<block>/build/va lint` (VerA) and `va` (OpenVAF → OSDI) on
-every edit — both must pass.
+limits, bias current, whatever the spec table measures. Prefer continuous behaviour
+(`tanh` switching, RC + `ddt` delay) for speed; `@(cross)`/`transition()` also work in
+ESPice. `make -C analog/<block>/build/va lint` (VerA) on every edit.
 
-**Done when:** every block has a `.va` passing `vera --lint` and OpenVAF, ports matching its planned subckt,
+**Done when:** every block has a `.va` passing `vera --lint`, ports matching its planned subckt,
 and the golden model meets its own spec table in the stage-3 testbenches.
 
 ## 3. Testbenches

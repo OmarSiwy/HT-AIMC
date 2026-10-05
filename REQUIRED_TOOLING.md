@@ -7,7 +7,7 @@ tools that already work, with their workarounds, are listed in
 | # | Gap | Blocks | Owner |
 |---|---|---|---|
 | 1 | cktImg: grouping hints | readable schematics of matched structures | cktImg |
-| 2 | SpiceRack: ESPice / EGSpice backends | Verilog-A models with events, without the OpenVAF detour | SpiceRack |
+| 2 | SpiceRack: EGSpice backend | the successor simulator | SpiceRack, EGSpice |
 | 3 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
 
 ## 1. cktImg: grouping hints
@@ -19,16 +19,14 @@ imports and netlists back clean.
 **Still needed:** grouping hints, so placement keeps a diff pair or current mirror
 together. Not started.
 
-## 2. SpiceRack: ESPice / EGSpice backends
+## 2. SpiceRack: EGSpice backend
 
-Everything else from this gap is done and pushed (SpiceRack `cdba3b9`): the local fixes
-went upstream, `X(**params)`, characterization recipes and `run_corners`.
+**Done:** ESPice is SpiceRack's backend for this repo (SpiceRack `21de39b`, ESPice
+`716a502`); ngspice and OpenVAF are gone from the env.
 
-**Want:** ESPice (ARPice) and EGSpice backends, so Verilog-A golden models compiled by VerA
-run with `@(cross)`/`transition()` (OpenVAF -> ngspice has neither). The SpiceRack README
-"Not yet a backend" section lists the integration points. EGSpice is blocked: its current
-build rejects even a resistor. Also: Spectre still drops `raw_spice`, which needs a
-`simulator lang=spice` wrapper and a Spectre install to test.
+**Want:** an EGSpice backend once EGSpice can run decks. Its current build rejects even
+a resistor. Also, Spectre still drops `raw_spice`; it needs a `simulator lang=spice` wrapper
+and a Spectre install to test.
 
 ## 3. Port to ASAP7 (after sky130 is finished)
 

@@ -17,7 +17,6 @@ endif
 # adjust. There is deliberately no target here pretending otherwise.
 
 TEST_DIR = ../../test
-VA_OSDI_DIR = ../va/osdi
 CORNERS = ../../../common/corners.py
 # Which DUT the testbenches drive: va (golden model), sch (netlist), pex (post-layout).
 DUT ?= sch
@@ -31,13 +30,13 @@ all: sim
 sim: test
 
 test:
-	@found=0; for f in $(TEST_DIR)/tb_*.py; do \
+	@found=0; failed=""; for f in $(TEST_DIR)/tb_*.py; do \
 		[ -f "$$f" ] || continue; case "$$f" in *_mc.py) continue;; esac; found=1; \
 		echo "=== $$f (DUT=$(DUT), backend: $(BACKEND)) ==="; \
-		SPICERACK_BACKEND=$(BACKEND) OSDI_DIR=$$(cd $(VA_OSDI_DIR) 2>/dev/null && pwd) \
-			python3 "$$f" || exit 1; \
+		SPICERACK_BACKEND=$(BACKEND) python3 "$$f" || failed="$$failed $$(basename $$f)"; \
 	done; \
-	if [ $$found -eq 0 ]; then echo "No tb_*.py testbenches in $(TEST_DIR)/."; fi
+	if [ $$found -eq 0 ]; then echo "No tb_*.py testbenches in $(TEST_DIR)/."; fi; \
+	if [ -n "$$failed" ]; then echo "FAILED:$$failed"; exit 1; fi
 
 ## corners - every nominal testbench across PDK corners x temperatures
 corners:

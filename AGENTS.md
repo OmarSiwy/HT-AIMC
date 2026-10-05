@@ -61,18 +61,17 @@ What `env.sh` does:
 **`github:OmarSiwy/EDA-Packaged`** with `builtins.getFlake`. That flake is
 why flakes have to be enabled.
 
-- `.flows/env/Analog.nix`: xschem, klayout, magic, ngspice + libngspice, netgen
-  (VLSI, from the flake), cktImg (`cktimg-json`), SpiceRack (on `PYTHONPATH`),
-  Philis, OpenVAF (as `openvaf`), VerA, and a Rust toolchain + protobuf for
-  substrate2 layout generators.
+- `.flows/env/Analog.nix`: ESPice (the simulator), VerA, SpiceRack (on `PYTHONPATH`),
+  xschem, klayout, magic, netgen (VLSI, from the flake), cktImg (`cktimg-json`), Philis,
+  GmIDVisualizer (`GMID_LIB`), and a Rust toolchain + protobuf for substrate2 layout
+  generators. No ngspice and no OpenVAF: golden models go VerA -> ESPice.
 - `.flows/env/Digital.nix`: yosys, verilator, iverilog, gtkwave, cocotb, openroad.
   LibreLane comes from its own flake in `shell.nix` and is used as-is.
 - The shell hook sets `PDK=sky130A`, `PDK_ROOT=~/.ciel`, enables the pinned
   PDK with ciel (the same store LibreLane uses), creates `.venv/`, and prints which tools resolved.
 
 To add a tool, add it to `Analog.nix` or `Digital.nix`. If nixpkgs does not
-carry it, add it to EDA-Packaged. ESPice is the exception: it is not in the
-store, so set `ESPICE_SRC` to a local ESPice checkout (see the `vera` skill).
+carry it, add it to EDA-Packaged.
 
 For one-off commands outside the full shell, use
 `nix-shell -p 'python3.withPackages(p:[p.numpy p.scipy])' --run '...'` or
@@ -86,7 +85,7 @@ first file that uses its tool.
 | Tool | Skill | Upstream | Use for |
 |---|---|---|---|
 | **cktImg** | [`analog-netlist-first`](.claude/skills/analog-netlist-first/SKILL.md) | via `EDA-Packaged` | SPICE netlist -> placed schematic (`cktimg-json`, `.flows/tools/cktimg_to_xschem.py`) |
-| **SpiceRack** | [`spicerack`](.claude/skills/spicerack/SKILL.md) | [OmarSiwy/SpiceRack](https://github.com/OmarSiwy/SpiceRack) (`skills/spicerack`) | Netlists, testbenches, backends (ngspice/LTspice/VACASK/Spectre), metric extraction |
+| **SpiceRack** | [`spicerack`](.claude/skills/spicerack/SKILL.md) | [OmarSiwy/SpiceRack](https://github.com/OmarSiwy/SpiceRack) (`skills/spicerack`) | Netlists, testbenches, metric extraction; this repo uses backend `espice` |
 | **Philis** | [`philis`](.claude/skills/philis/SKILL.md) | [UW-ASIC/Philis](https://github.com/UW-ASIC/Philis) | Automated analog P&R to GDS (`make pnr`). Its DRC/LVS is not signoff: always run `make pnr-verify` |
 | **VerA** | [`vera`](.claude/skills/vera/SKILL.md) | [OmarSiwy/VerA](https://github.com/OmarSiwy/VerA), ESPice: [OmarSiwy/ESPice](https://github.com/OmarSiwy/ESPice) | Verilog-A golden models: lint, unit-test, simulate |
 | **Substrate2** | none yet; see `analog/<block>/build/layout/Makefile` | [ucb-substrate/substrate2](https://github.com/ucb-substrate/substrate2) | Rust layout generators (`analog/common/layout`), sky130 only |

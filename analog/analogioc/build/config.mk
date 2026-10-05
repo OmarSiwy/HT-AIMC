@@ -13,7 +13,6 @@ TOP_LAYOUT = analogioc
 # Set with: make AddAnalogBlock BLOCK_NAME=ota DEPENDS="bandgap diffpair"
 DEPENDS = async_ctrl integrator_conv lora_sidecar ota rstring_ladder weight_tile
 
-# Simulator for `make -C build/sim`. ngspice is the one to trust for anything headed
-# to silicon; vacask is the other SpiceRack backend. ESPice (ARPice) and EGSpice are not
-# SpiceRack backends yet (see the analog-design-flow skill).
-BACKEND ?= ngspice
+# Simulator for `make -C build/sim`: ESPice (VerA golden models run natively, no OSDI).
+# Parity with ngspice 45 on sky130 is checked in ESPice docs/sky130.md.
+BACKEND ?= espice

@@ -116,7 +116,7 @@ Parameters come out as `PARAMS:` on the `.subckt` line.
 
 ## AnalogIOC notes (local, not upstream)
 
-Vendored from github.com/OmarSiwy/SpiceRack `skills/spicerack` @ cdba3b9. Re-copy the
+Vendored from github.com/OmarSiwy/SpiceRack `skills/spicerack` @ 21de39b. This repo runs `BACKEND=espice`. Re-copy the
 four upstream files and keep only this section when updating.
 
 - Load PDK models with `analog/docs/pdk_specs.py`: `get_pdk().model_library(corner)` writes

@@ -16,7 +16,6 @@ Thumbs.db
 scripts/compiler/out/
 scripts/compiler/out_formats/
 analog/*/output/
-analog/*/build/**/osdi/
 
 
 # Generated per machine (absolute PDK paths)

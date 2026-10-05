@@ -119,6 +119,7 @@ pkgs.mkShell {
       echo "  - magic: $(magic --version 2>/dev/null || echo 'from nixpkgs')"
       echo "  - cktimg-json: $(command -v cktimg-json >/dev/null && echo ok || echo 'not found')"
       echo "  - spicerack: $(python -c 'import spicerack' 2>/dev/null && echo ok || echo 'not found')"
+      echo "  - espice: $(command -v espice >/dev/null && echo ok || echo 'not found')"
     fi
 
     if [ "${type}" = "digital" ] || [ "${type}" = "mixed" ]; then

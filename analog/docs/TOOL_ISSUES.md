@@ -42,20 +42,21 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | magic cannot name `_0p35` resistors from GDS | `verify.py` renames `res_high_po w=0.35` → `_0p35` | — |
 | klayout `sky130A_mr.drc` is weak on front-end rules (missed licon.8 that magic caught) | `gen-drc` also prints magic's full DRC count | — |
 
-## VerA / ESPice (OmarSiwy/VerA, OmarSiwy/ESPice) — reported to the vera-ac / arpice-7f sessions 2026-09-29
+## ESPice (OmarSiwy/ESPice `716a502`, EDA-Packaged `8194a27`) — limits found 2026-10-05
 
 | Issue | Workaround | Upstream status |
 |---|---|---|
-| Published ESPice pins VerA `297e97dc` (pre-release, 626 commits before v0.9.0): codegen's `var h: [n]S` shadows `const h = @import("../h.zig")` → `GeneratedDeviceDoesNotCompile` for any non-trivial model | golden models run on ngspice via OpenVAF | **fixed on ESPice (ARPice) local `main` `01fa6f93`** (pins VerA `c964f644`): verified 2026-09-29 — `twotr.va` and an event-driven comparator (`@(cross)` + `transition()`) simulate correctly. The GitHub ESPice (`bcc13b3`) still pins the pre-release `297e97dc`. Build needs `../Gompute` next to the checkout |
-| ESPice writes `.hdl` builds into `<src>/.zig-cache` → `AccessDenied` from the nix store | build ESPice from a source checkout (`ESPICE_SRC`) | wip, untested: ARPice branch `worktree-agent-aa8d73f15dbb06acd`, commit `da324431` — cache → `$ESPICE_CACHE` / `~/.cache/espice/hdl`, runtime sources installed to `share/espice` |
-| ESPice: `.hdl` errors are bare names; misspelled params / missing nodes / `pre_osdi` silently ignored | `vera --lint` first | wip in the same commit: VerA diagnostics printed, `UnknownParameter` / `WrongNodeCount` errors, `pre_osdi` loads the `.va` beside the `.osdi` |
+| A distribution in a top-level `.param` is not redrawn per Monte Carlo seed | put mismatch in the model sections (sky130 `tt_mm`, which works) | documented in ESPice `docs/sky130.md` |
+| Distributions inside behavioural sources stay at nominal (same as ngspice for sky130: resistor mismatch reads 0) | size resistor matching from `pdk_specs` declared values | documented |
+| PWL longer than 64 points with `r=` is refused | split the source | documented |
+| Seed N draws a different mismatch sample than ngspice's seed N (own RNG); only the spread matches (σ(ln Id) 0.269 vs 0.274 over 100 seeds) | compare statistics, not single seeds | by design |
+| **BSIM4 comes from Cogenda VA-BSIM48 (CC-BY-NC 4.0)** compiled by VerA | — | **licence: non-commercial**; check before any commercial use |
 
 ## Others
 
 | Tool | Issue | Workaround | Upstream fix |
 |---|---|---|---|
-| OpenVAF | no `@(cross)`/`@(timer)` events, no `transition()` | golden models use tanh switching + RC/`ddt` delay | — (upstream limitation) |
-| SpiceRack | no ESPice (ARPice) or EGSpice backend | ngspice via SpiceRack | add backends |
+| SpiceRack | no EGSpice backend | ESPice via SpiceRack | add once EGSpice runs decks |
 | EGSpice | separate successor simulator, mid-rewrite: current build rejects a resistor (`no device model compiled for kind resistor`) and a sky130 FET (`UndefinedReference`); devices compiled from Verilog-A at build time only | not in the flow yet | finish the analysis/device migration (STEPS.md step 4) |
 | sky130 models | mismatch does not follow Pelgrom at short L (10.45/0.30: 3.66 mV vs 2.10 predicted) | `analog/docs/mismatch.py` measures per geometry | — (model property) |
 | sky130 models | `m=` alone does not scale mismatch (`sqrt(l*w*mult)`); gf180 uses `par` | `pdk.mult_card` | — |

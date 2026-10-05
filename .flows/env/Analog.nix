@@ -7,16 +7,6 @@ let
   cktimgPkg = edaPkgs.cktimg;
   spicerackPkg = edaPkgs.spicerack;
   philisPkg = edaPkgs.philis;
-  # OpenVAF (Verilog-A -> OSDI for ngspice) installs as `openvaf-r`; SpiceRack's
-  # `veriloga()` and build/va call plain `openvaf`, so expose both names.
-  openvafPkg = pkgs.runCommand "openvaf-alias" { } ''
-    mkdir -p $out/bin
-    ln -s ${edaPkgs.openvaf}/bin/openvaf-r $out/bin/openvaf-r
-    ln -s ${edaPkgs.openvaf}/bin/openvaf-r $out/bin/openvaf
-  '';
-  # The shared-library build of ngspice. The Rust analog crates link against it, which
-  # plain `ngspice` (a binary only) cannot satisfy.
-  ngspiceShared = pkgs.libngspice;
 in
 {
   packages = [
@@ -27,8 +17,6 @@ in
     # ngsolve.org that shares nothing with this but a name — nixpkgs has no VLSI netgen
     # under any attribute, which is why it comes through the EDA-Packaged pin.
     edaPkgs.netgen
-    ngspiceShared
-    pkgs.ngspice
     pkgs.magic-vlsi
 
     # Netlist-first flow. cktimgPkg ships `cktimg-json`, which .flows/tools/
@@ -40,15 +28,11 @@ in
     # Design-flow tools (analog-design-flow skill):
     #  - philis: automated P&R + in-loop DRC/LVS/PEX (layout rung); rule decks under
     #    share/philis/pdks, exported as PHILIS_PDK_DIR below
-    #  - openvaf: golden models (Verilog-A) -> OSDI for ngspice (DUT=va)
-    #  - vera: Verilog-A lint/check. --check/--run need contract.zig from the SAME VerA
-    #    commit: taken from the package (share/vera/, once VerA ships it) or from a
-    #    VerA checkout in VERA_SRC; exported as VERA_CONTRACT below.
-    #  - espice: NOT installed from the store — its `.hdl` loader writes a build cache into
-    #    its own source tree (AccessDenied in /nix/store). Set ESPICE_SRC to a local
-    #    ESPice/ARPice checkout built with `zig build -Doptimize=ReleaseFast`.
+    #  - espice: THE simulator (SpiceRack backend `espice`). Golden models (Verilog-A)
+    #    compile through VerA at first use (`.hdl`, cache in ~/.cache/espice). No OSDI.
+    #  - vera: Verilog-A lint/check/--emit-verilog; ships its contract.zig (VERA_CONTRACT)
     philisPkg
-    openvafPkg
+    edaPkgs.espice
     edaPkgs.vera
     # gm/ID lookup library for analog/docs/gmid.py (ctypes via GMID_LIB)
     edaPkgs.gmidvisualizer
@@ -67,20 +51,9 @@ in
     export PHILIS_PDK_DIR="${philisPkg}/share/philis/pdks"
     export GMID_LIB="${edaPkgs.gmidvisualizer}/lib/libGmIDVisualizer.so"
     # contract.zig must come from the same VerA commit as the binary (ABI check)
-    if [ -f "${edaPkgs.vera}/share/vera/contract.zig" ]; then
-      export VERA_CONTRACT="${edaPkgs.vera}/share/vera/contract.zig"
-    elif [ -n "$VERA_SRC" ] && [ -f "$VERA_SRC/tools/contract.zig" ]; then
-      export VERA_CONTRACT="$VERA_SRC/tools/contract.zig"
-    fi
-    if [ -n "$ESPICE_SRC" ] && [ -x "$ESPICE_SRC/zig-out/bin/espice" ]; then
-      export PATH="$ESPICE_SRC/zig-out/bin:$PATH"
-    fi
+    export VERA_CONTRACT="${edaPkgs.vera}/share/vera/contract.zig"
 
     # === Analog Tools Configuration ===
-    export BINDGEN_EXTRA_CLANG_ARGS="-I${ngspiceShared}/include $BINDGEN_EXTRA_CLANG_ARGS"
-    export CPATH="${ngspiceShared}/include:$CPATH"
-    export NIX_LD_LIBRARY_PATH="${ngspiceShared}/lib:$NIX_LD_LIBRARY_PATH"
-    export PKG_CONFIG_PATH="${ngspiceShared}/lib/pkgconfig:$PKG_CONFIG_PATH"
     export KLAYOUT_PATH="$PDK_ROOT/$PDK/libs.tech/klayout"
     export XSCHEM_USER_LIBRARY_PATH="$PDK_ROOT/$PDK/libs.tech/xschem"
     export XSCHEM_LIBRARY_PATH="$PDK_ROOT/$PDK/libs.tech/xschem:${pkgs.xschem}/share/xschem/xschem_library"
