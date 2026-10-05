@@ -9,8 +9,7 @@ tools that already work, with their workarounds, are listed in
 | 1 | cktImg: land the hierarchy/SVG branch in the env | block diagrams, top-level schematics | cktImg, EDA-Packaged, `.flows/tools` |
 | 2 | SpiceRack: ESPice / EGSpice backends | Verilog-A models with events, without the OpenVAF detour | SpiceRack |
 | 3 | GmIDVisualizer: export cgg (for `gmid.ft`) | `gating_value.py` | GmIDVisualizer |
-| 4 | Behavioural Verilog from the Verilog-A golden models | digital sims with the analog macro in place | VerA |
-| 5 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
+| 4 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
 
 ## 1. cktImg: land the hierarchy/SVG branch
 
@@ -55,21 +54,7 @@ LUTs carry no gate capacitance, so `scripts/compiler/metrics/gating_value.py` st
 **Want:** GmIDVisualizer also sweeps `cgg` (ngspice `@m[cgg]`, or `cgs + cgd + cgb`) into
 the LUT, so `ft = gm / (2π·cgg)` can be interpolated like `J_D`.
 
-## 4. Behavioural Verilog from the Verilog-A golden models
-
-**Today:** a digital top simulates with each analog macro's behavioural model
-(`analog/<block>/va/<block>_beh.v`, declared in `digital/<module>/build/macros.toml`).
-Those models are hand-written, so they can drift from the Verilog-A golden model
-(`analog/<block>/va/<block>.va`) that the analog side is verified against.
-`build/macros.py check` only keeps their **ports** equal to the blackbox and `.subckt`.
-
-**Want:** VerA emits the behavioural Verilog from the `.va`: same module name and ports,
-digital pins as logic, the self-timed handshakes (`go -> done`) as delays taken from the
-model (or the macro's `gpurify lib` `.lib`), analog pins kept as undriven `inout`, plus an `ifdef USE_POWER_PINS`
-port list so the same model works in gate-level sims. **Test:** a model generated for a known
-block passes the digital tb that the hand-written one passes.
-
-## 5. Port to ASAP7 (after sky130 is finished)
+## 4. Port to ASAP7 (after sky130 is finished)
 
 **Decision (2026-10-04):** finish and verify the full IMC on sky130 first, then port
 everything to ASAP7 (7 nm FinFET, predictive, not fabricable) and drop sky130.

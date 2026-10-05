@@ -43,9 +43,6 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Published ESPice pins VerA `297e97dc` (pre-release, 626 commits before v0.9.0): codegen's `var h: [n]S` shadows `const h = @import("../h.zig")` → `GeneratedDeviceDoesNotCompile` for any non-trivial model | golden models run on ngspice via OpenVAF | **fixed on ESPice (ARPice) local `main` `01fa6f93`** (pins VerA `c964f644`): verified 2026-09-29 — `twotr.va` and an event-driven comparator (`@(cross)` + `transition()`) simulate correctly. The GitHub ESPice (`bcc13b3`) still pins the pre-release `297e97dc`. Build needs `../Gompute` next to the checkout |
 | ESPice writes `.hdl` builds into `<src>/.zig-cache` → `AccessDenied` from the nix store | build ESPice from a source checkout (`ESPICE_SRC`) | wip, untested: ARPice branch `worktree-agent-aa8d73f15dbb06acd`, commit `da324431` — cache → `$ESPICE_CACHE` / `~/.cache/espice/hdl`, runtime sources installed to `share/espice` |
 | ESPice: `.hdl` errors are bare names; misspelled params / missing nodes / `pre_osdi` silently ignored | `vera --lint` first | wip in the same commit: VerA diagnostics printed, `UnknownParameter` / `WrongNodeCount` errors, `pre_osdi` loads the `.va` beside the `.osdi` |
-| `vera --run` never fires `@(cross)` (fixed grid, no inserted crossings) | continuous models only | pushed, NOT merged: VerA branch `wave24/tt` (`2dd16b69`) — cross() fires on the `//! time` grid, W0750 for late events; main stays `7310a958` until gated |
-| Nix `vera` ships no `contract.zig`; contract must match the binary's ABI | `VERA_SRC` checkout → `VERA_CONTRACT` | pushed, NOT merged: same branch — `--contract` defaults to `share/vera/contract.zig` |
-| README `--emit-so` example missing required flags | — | in progress (VerA) |
 
 ## Others
 
