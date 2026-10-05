@@ -1,0 +1,78 @@
+HT-AIMC top-level block diagram (sky130 chip as built). Blocks only, no devices.
+* Draw:  cktimg-json --svg blocks.svg blocks.spice > /dev/null
+
+.subckt compiler w o
+*@ bottom w
+*@ right o
+.ends compiler
+
+.subckt async_ctrl t
+*@ bottom t
+.ends async_ctrl
+
+.subckt pwm_x16 i t o
+*@ left i
+*@ top t
+*@ right o
+.ends pwm_x16
+
+.subckt tile_16x17 i w o
+*@ left i
+*@ bottom w
+*@ right o
+.ends tile_16x17
+
+.subckt lora i w o
+*@ left i
+*@ bottom w
+*@ right o
+.ends lora
+
+.subckt ladder_x4 r
+*@ bottom r
+.ends ladder_x4
+
+.subckt integrator_conv_x17 col colb tq ref code ctl
+*@ left col colb
+*@ top tq ref
+*@ right code ctl
+.ends integrator_conv_x17
+
+.subckt sequencer code ctl o
+*@ left code ctl
+*@ right o
+.ends sequencer
+
+.subckt combine i o c
+*@ left i
+*@ right o
+*@ bottom c
+.ends combine
+
+.subckt abft c
+*@ top c
+.ends abft
+
+.subckt requant i o
+*@ left i
+*@ right o
+.ends requant
+
+.subckt attention i w
+*@ left i
+*@ bottom w
+.ends attention
+
+X1 wcode act compiler
+X2 tq async_ctrl
+X3 act tq row pwm_x16
+X4 row wcode col tile_16x17
+X5 row lora_w colb lora
+X6 ref ladder_x4
+X7 col colb tq ref code ctl integrator_conv_x17
+X8 code ctl part sequencer
+X9 part acc chk combine
+X10 chk abft
+X11 acc y requant
+X12 y lora_w attention
+.end

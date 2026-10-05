@@ -159,5 +159,18 @@ repo root.
 - Build artifacts go in `build/` or `output/`, never committed.
 - Every block ships a self-checking testbench that prints PASS/FAIL and asserts numerically.
 - Shell scripts stay POSIX.
-- Theory references: `~/Documents/Projects/OmarSiwy.github.io/Notes/Circuit Design/`
+- Theory references: `~/Documents/Notes/OmarSiwy.github.io/Notes/Circuit Design/`
   (gm/Id sizing, converters, the Analog Compute paper). Check there before inventing anything.
+
+## Local-only docs
+
+Some working docs are kept out of git and exist only in the original checkout
+(`~/Documents/Projects/Trial/ResearchBoutros`), not in clones:
+
+- `docs/src/content/Project/local/`: earlier research reports
+- `docs/src/content/Project/ArchResearch/digest/`: digests of the Circuit Design notes and
+  of this repo's history (`_slices.json` lists the note slices)
+- `docs/src/content/Project/ArchResearch/lit/`: surveys for the architecture search
+
+Read them when relevant. Don't force-add them; put new local-only docs in one of these
+directories.

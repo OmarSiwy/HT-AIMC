@@ -40,3 +40,8 @@ digital/*/build/synth.log
 digital/*/build/*_syn.v
 
 digital/analogioc/build/cosim/out/
+
+# Local-only docs (see AGENTS.md)
+docs/src/content/Project/local/
+docs/src/content/Project/ArchResearch/digest/
+docs/src/content/Project/ArchResearch/lit/
