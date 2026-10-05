@@ -6,10 +6,12 @@ One transient (analog/lora_sidecar/docs/architecture.md spec rows):
      4..15 and a random signed B; reference passes -> levels, rho
   2. pass y0 (LO, random signed x on rows 4..15)
   3. digital step: golden lora_sgd_step on the effective weights (B scaled by rho so
-     y = B (A.x) in code units) toward a target 0.8 x one B level away on four columns
-     (two up, two down), lr sized so the largest B move is one level; the new values are
-     quantized onto the level table, and the predicted Delta y is the golden LoRA term
-     after minus before. Only the cells whose code changed are rewritten.
+     y = B (A.x) in code units) toward a target one B level away on four columns (two
+     up, two down; planned with the typical-corner specs.lora_cal()), lr sized so the
+     largest B move is one level; the new values are quantized onto the level table,
+     and the predicted Delta y is the golden LoRA term after minus before (this run's
+     calibration). Only the cells whose code changed are rewritten. The target is
+     y0 + 0.8 x that prediction on the four columns (origin: 0.8 x the 1-level dy).
   4. pass y1 (same x).
 Asserts: loss L1 < L0; every column whose predicted |Delta y| >= 1.5 has the golden sign
 and |Delta y - pred| <= max(TOL_ABS, TOL_REL |y|); the others move <= TOL_ABS (no write
@@ -92,11 +94,13 @@ def main():
 
     cal = LB.calibrate(run, pp, pn)
     y0, y1 = run.dmac(p0, cal), run.dmac(p1, cal)
-    target = y0 + off                              # the planned offsets from measured y0
+    pred = LB.golden_dmac(a2, b2, x, cal) - LB.golden_dmac(a, b, x, cal)
+    # the target sits 0.8 of the step this chip's code grid can make (its calibration):
+    # the plan above only fixed the direction and the codes
+    target = y0 + 0.8 * np.where(off != 0, pred, 0.0)
     l0, l1 = np.sum((y0 - target) ** 2), np.sum((y1 - target) ** 2)
     print(f"  rho {cal['rho']:.5f}; y0 {np.round(y0, 1)}\n  y1 {np.round(y1, 1)}")
     r.check("loss decreased", l1 < l0, f"L0 {l0:.2f} -> L1 {l1:.2f}")
-    pred = LB.golden_dmac(a2, b2, x, cal) - LB.golden_dmac(a, b, x, cal)
     dy = y1 - y0
     t = LB.tol(LB.golden_dmac(a2, b2, x, cal))
     upd = np.abs(pred) >= 1.5

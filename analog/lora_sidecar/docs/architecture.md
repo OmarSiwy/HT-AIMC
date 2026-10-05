@@ -114,11 +114,16 @@ values for `specs.lora_cal()`.
 
 ## Golden model
 
-`va/lora_sidecar.va`, one module, ports 1:1 (ngspice 45 instantiates OSDI devices with
-> 18 terminals — checked with a 110-terminal module). Cells: write-switch-gated RC store,
-EKV read law fitted to the DUT=sch level table (is 9.2 nA, vt 0.544 V, nut 31.4 mV,
-within 2 %); ideal integrators; equal ramps; first-order comparator delay; ideal
-mirror. Not modelled: switch injection (c0 = 0), OTA limits/offset, mismatch, DAC settling.
+Four modules, 1:1 with the netlist's child subckts: `va/lora_sidecar_arow.va`,
+`_bcol.va`, `_wbus.va`, `_vt.va`. DUT=va wires them with the netlist's own
+`instances()` list (`lora_bench.va_dut`). There is no single `lora_sidecar.va`: ESPice
+compiles a Verilog-A device with at most 64 unknowns (its Jacobian rows are u64 masks;
+`eval.zig` refuses with "shift by negative amount"), and one module for the whole
+sidecar has 201. Cells: write-switch-gated RC store, EKV read law fitted to the DUT=sch
+level table (is 9.2 nA, vt 0.544 V, nut 31.4 mV, within 2 %); ideal integrators; equal
+ramps; first-order latched comparator delay; ideal mirror; write buses park at vref.
+Not modelled: switch injection (c0 = 0), the OTA's finite gm (ramp-start kick), OTA
+limits/offset, mismatch, DAC settling.
 
 **Golden (`scripts/golden/model.py`) change needed — described, not made.** `tile_mvm`
 needs nothing: it already takes real-valued (A_q, B_q, rho). `lora_quant` must quantize
@@ -144,4 +149,43 @@ LORA_RHO, signed x (x_neg) and sign-magnitude codes, and no "unsigned" note.
 
 ## Results
 
-RESULTS_PLACEHOLDER
+Simulator: ESPice (the repo default since 1b2b91e); the same rungs on ngspice 45 before
+the switch are listed for comparison. sky130 tt, 27 °C unless noted.
+
+| Rung | Result | Notes |
+|------|--------|-------|
+| golden model (`DUT=va`, ESPice) | PASS 3/3 | rho 0.01378; vs golden ≤ 0.04 code; ngspice/OSDI (single module, before the split) 0.01377 |
+| pre-layout (`DUT=sch`, ESPice) | PASS 3/3 | see below |
+| pre-layout (`DUT=sch`, ngspice 45) | PASS 3/3 | same numbers to ≤ 0.02 code |
+| corners (5 × −40/27/125 °C), ngspice | CORNERS_NG | |
+| corners, ESPice | CORNERS_ES | |
+| Monte Carlo (tt_mm, 30) | MC_RESULT | |
+| hotswap | not run | gf180 sizing would characterise new gm/ID tables and mismatch points (~30 min each under load); the script derives every size from `pdk_specs`/`specs`/`gmid`/`mismatch` |
+| layout | not this phase | |
+
+Nominal, DUT=sch (ESPice / ngspice):
+
+| Metric | ESPice | ngspice | Origin (AnalogIOC) |
+|---|---|---|---|
+| rho (code / (A_eff·B_eff·x)) | 0.01337 | 0.01337 | never measured |
+| rho physical cross-check | 0.01359 (−1.6 %) | 0.01359 (−1.6 %) | — |
+| level table I_m/I_7, m = 1..7 | .0143 .0480 .1270 .2645 .4598 .7065 1 | .0143 .0481 .1269 .2645 .4599 .7065 1 | levels by I_cal at measured stores |
+| I_7 (full-scale cell) | 291.0 nA | 291.0 nA | — |
+| window pedestal c0 | −0.370 code | −0.381 code | eps = 18 ns (needed an x=0 pass) |
+| mirror path error, worst | 0.54 % FS | 0.54 % FS | — (unsigned) |
+| LO window vs golden, worst column | 0.06 code | 0.05 code | 1.36 % (unsigned, vs I_cal golden) |
+| HI window vs golden, worst | 0.06 code | 0.06 code | not validated |
+| coherent x (A·x at the budget) LO / HI, worst | 0.06 / 0.23 code | 0.06 / 0.22 code | — |
+| x → −x | 0.11 code | 0.09 code | — |
+| x = 0, no baseline | 0.000 code | 0.000 code | — |
+| storage after 6 passes | 0.27 % | 0.17 % | — |
+| SGD step: loss, worst \|Δy − pred\| | 175.6 → 11.5, 0.05 code | 175.6 → 11.5, 0.04 code | 0.93 % post-update |
+| energy per LO op (rst + window + ramp) | 61.6 pJ | 61.6 pJ | 67 pJ |
+| energy per write slot (A row + B column, incl. 160 ns of standing current) | 21.2 pJ | 21.2 pJ | 7.1 pJ per cell write |
+| static (4 OTAs + cells + mirror bias), vdd | ≈ 50 µA | | 2 OTAs |
+
+Corner spread (diagnostic tb_lora_rho runs on the netlist before the comparator latch,
+which does not touch the cells or the ramp; per-chip calibration absorbs it): rho 0.0054
+(fs, 125 °C) … 0.0276 (sf, 27 °C), I_7 185 … 417 nA, A swing 122 … 277 mV at the
+LORA_AX_MAX budget — the cell's full-scale current tracks Vt, so the compiler's A·x budget
+must use the calibrated I_7.

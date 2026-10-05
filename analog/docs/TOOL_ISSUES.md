@@ -49,6 +49,7 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | A distribution in a top-level `.param` is not redrawn per Monte Carlo seed | put mismatch in the model sections (sky130 `tt_mm`, which works) | documented in ESPice `docs/sky130.md` |
 | Distributions inside behavioural sources stay at nominal (same as ngspice for sky130: resistor mismatch reads 0) | size resistor matching from `pdk_specs` declared values | documented |
 | PWL longer than 64 points with `r=` is refused | split the source | documented |
+| A Verilog-A device with more than 64 unknowns (ports + internal nodes) does not compile: `device/eval.zig` keeps each Jacobian row as a `u64` mask ("shift by negative amount", "u6 cannot represent 64", `GeneratedDeviceDoesNotCompile`) | split the model into child modules ≤ 64 unknowns and wire them in the deck (`lora_sidecar`: 4 modules, the whole sidecar has 201) | not reported upstream yet |
 | Seed N draws a different mismatch sample than ngspice's seed N (own RNG); only the spread matches (σ(ln Id) 0.269 vs 0.274 over 100 seeds) | compare statistics, not single seeds | by design |
 | **BSIM4 comes from Cogenda VA-BSIM48 (CC-BY-NC 4.0)** compiled by VerA | — | **licence: non-commercial**; check before any commercial use |
 
