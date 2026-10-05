@@ -8,7 +8,7 @@ tools that already work, with their workarounds, are listed in
 |---|---|---|---|
 | 1 | cktImg: grouping hints | readable schematics of matched structures | cktImg |
 | 2 | SpiceRack: EGSpice backend | the successor simulator | SpiceRack, EGSpice |
-| 3 | ASAP7 as the target PDK | the port; all new work | several |
+| 3 | ASAP7 as the target PDK: models, pdk_specs, gm/ID, KLayout DRC done; P&R/LVS decks, layout crate, ORFS harden, `m=` open | the port; all new work | GPurify, Philis, substrate2 (ours), ESPice, digital flow |
 | 4 | VerA `.v` device: > 256 pins, output-variable ports on part-selects, task-enable panic | `make cosim` (A9, A12 co-sim) | VerA (ESPice picks it up) |
 | 5 | Hierarchical layout assembly of the analogioc top | `make -C analog/analogioc/build/layout views` | substrate2 generator (ours) |
 | 6 | GPurify in the nix shell, and a simulator it can drive | `make -C analog/analogioc/build/lib lib` | EDA-Packaged, GPurify |
@@ -38,20 +38,91 @@ and a Spectre install to test.
 process. New architecture work, scoring and the systolic reference are at ASAP7 now; the
 sky130 blocks are the calibrated anchor and get ported.
 
-**Needed before the port can start:**
-- **Open DRC/LVS for ASAP7:** the official decks are Calibre-only. Need a KLayout (or Magic)
-  deck usable by GPurify/Philis, or a GPurify `asap7.deck`.
-- **Digital flow:** confirm LibreLane can harden ASAP7; ciel ships sky130/gf180/IHP only.
-  Otherwise use OpenROAD-flow-scripts' asap7 platform with the same `macros.toml`.
-- **Layout generators:** substrate2 has no ASAP7 crate. Write one, or generate layout with
-  Philis plus a real ASAP7 rule deck.
-- **Device models:** BSIM-CMG compiled by VerA for ESPice (no OSDI/ngspice in the env); gm/ID tables via GmIDVisualizer.
-- **pdk_specs.py:** `asap7_proj` becomes a real PDK, with models, corners, MOM-cap and fin
-  parameters.
+**Done (2026-10-05):**
+
+- **PDK in the env.** EDA-Packaged `asap7` (`b85d8fb`) is the ASAP7 r1p7 root, exported as
+  `$ASAP7_ROOT` by `Analog.nix`. `PDK=asap7 ./env.sh` selects it.
+  - From the PDK: the HSPICE BSIM-CMG cards, cdslib layer maps and the DRM.
+  - Added by the package:
+    - BSIM-CMG 111.0.0 Verilog-A, 4-terminal, module `bsimcmg`;
+    - the cards rewritten for it;
+    - `models/espice/asap7.lib` (tt/ff/ss);
+    - an ngspice lib with `models/osdi/bsimcmg.osdi`;
+    - `klayout/asap7.drc`, `.lyp` and `.lyt`.
+  - Licences: PDK BSD-3-Clause, BSIM-CMG ECL-2.0, DRC deck BSD-2.
+  - Not included: the Calibre decks (asap.asu.edu download only) and the std cells (ORFS vendors them).
+- **Device models on ESPice.** VerA compiles BSIM-CMG as a user `.hdl` model with no ESPice
+  or VerA change: about 4 min the first time, cached after. `analog/docs/asap7_smoke.py`
+  passes:
+  - Idsat of all 8 devices is 4–9 % under the published table.
+  - The OSDI cross-check with ngspice agrees to 2e-4.
+  - Inverter at 0.7 V: 8 ps into 1 fF.
+
+  Numbers are in STATUS 2026-10-05.
+- **`pdk_specs.Asap7`.** Fin cards, no MIM (an ideal C card at a 2.0 fF/µm² MOM estimate),
+  literature Pelgrom and no `_mm` sections. `devices.fet` handles NFIN/NF. `asap7_proj` is
+  kept for scripts/compiler/metrics.
+- **gm/ID tables.** `gmid.py` characterises FinFET PDKs in ESPice (`gmid_tables/asap7/`).
+- **Open DRC.** `$ASAP7_ROOT/klayout/asap7.drc` comes from ORFS's `asap7.lydrc`, with an S.1
+  spacing bug and three typos fixed. It runs clean on std cells apart from the lone-cell
+  latch-up tap rule.
+
+**Still needed:**
+
+- **GPurify `asap7.deck`** (owned by the GPurify session). Start from its
+  `pdks/generic_finfet.deck`, which already has ASAP7 layers, DRM-named rules and the M1–M9
+  connect/resistance stack. Missing:
+  - MOS device recognisers for the 8 cards (`nmos_/pmos_{rvt,lvt,slvt,sram}` on the channel,
+    with N/PSELECT and the LVT/SLVT/SRAMVT markers), with NFIN as the size, not W;
+  - GATE/LISD/LIG/V0 as conductors (gate–LIG–V0–M1, S/D–LISD–V0–M1), with estimated MOL R;
+  - an NTAP/PTAP `supply_short` rule;
+  - directional and different-net spacing, and tip-to-tip by edge length;
+  - non-zero area and fringe caps for PEX (from ORFS `setRC.tcl`/`rcx_patterns.rules`, or
+    the MOM estimate in pdk_specs);
+  - the name `asap7.deck`.
+
+  Philis needs an `asap7.json` to match.
+- **Open LVS.** None exists. Needs the GPurify deck above, or a KLayout LVS script with
+  BSIM-CMG device extraction (NFIN from fin count).
+- **Layout generators.** substrate2 has no ASAP7 crate. Estimate: 2–4 weeks for one person.
+  - Layer enum: 1 day.
+  - FinFET MOS tile on the 54 nm gate and 27 nm fin pitch, with gcut, SDT/LISD/LIG/V0 and
+    the M1 grid: 1–2 weeks.
+  - Tap tile: 2 days.
+  - MOM finger cap replacing the MIM tile: 2–3 days.
+  - M1–M3 atoll grid at 36 nm: a few days.
+
+  There is no resistor device, so `ResTile` becomes a metal R or goes away. A cheaper start
+  is to use the ASAP7 std cells as fixed primitives.
+- **Digital flow.** LibreLane 3.0.14 has no ASAP7 platform, and ciel ships none either.
+  Harden at ASAP7 with OpenROAD-flow-scripts' `asap7` platform. Selection: `PLATFORM ?= sky130A`
+  in each `digital/<m>/build/config.mk`, and `harden` dispatches to `build/librelane` for
+  sky130/gf180/ihp or to `build/orfs/Makefile` for asap7. That Makefile runs
+  `make -C $ORFS_HOME/flow DESIGN_CONFIG=…`. `macros.py orfs` would write
+  `ADDITIONAL_LEFS/LIBS/GDS` and `MACRO_PLACEMENT_TCL` from `macros.toml`. Needs a pinned ORFS
+  checkout as `$ORFS_HOME`, e.g. an EDA-Packaged source package; the OpenROAD version should
+  match ORFS's pin.
+- **ESPice: `m=` on Verilog-A devices.** `M1 … nmos_rvt NFIN=5 m=2` is refused ("module
+  'bsimcmg' has no parameter 'm'"). The LRM gives every instance `$mfactor`. Want: `m` scales
+  the device's currents, charges and noise as in ngspice, and `$mfactor` reads it.
+  Workaround in use: `devices.fet` folds `m` into BSIM-CMG's `NF`, which matches exactly
+  (`NFIN=10` = `NFIN=5 NF=2`).
+- **Mismatch.** ASAP7 has no statistical models. Wanted: a `tt_mm` section whose per-instance
+  `DELVTRAND = agauss(0, a_vt/sqrt(2·W·L))` is redrawn per instance and per seed in ESPice.
+  Check whether ESPice redraws instance-parameter expressions per instance (sky130's mismatch
+  sections do something similar) before writing it.
+- **GmIDVisualizer.** Its ngspice backend writes `W=…u` cards and has no NFIN and no OSDI
+  load, so it cannot characterise ASAP7. `gmid.py` does FinFET in ESPice instead. Only needed
+  if GmIDVisualizer itself must serve FinFET PDKs: an ESPice backend plus a `nfin` sizing mode.
+- **Design port.**
+  - Tile calibration at ASAP7: `K_CAL`, `c_ota_self` and `fine_ref_trim`; `cal()` lacks
+    `fine_ref_trim` for asap7 and asap7_proj, so `specs.py` asserts.
+  - The block netlist scripts call `pdk.fet_card.format(w=…)` directly and must pass `nfin`.
+  - The telescopic-cascode OTA does not fit 0.7 V.
 
 **Design changes the port forces:** 0.7 V supply (the telescopic-cascode OTA doesn't fit),
-MOM instead of MIM caps, fin-quantized widths and near-fixed L, and re-measured calibration
-constants (`K_CAL`, `c_ota_self`, fine trim).
+MOM instead of MIM caps, fin-quantized widths and one gate length (stack devices for long L),
+and re-measured calibration constants (`K_CAL`, `c_ota_self`, fine trim).
 
 ## 4. VerA `.v` device: wide designs (blocks the analogioc co-sim)
 
