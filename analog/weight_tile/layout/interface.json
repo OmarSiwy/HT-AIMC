@@ -1,14 +1,23 @@
 {
   "die": { "w": 90000, "h": 70000 },
   "pins": [
-    { "net": "vdd",      "side": "north", "frac": 0.3 },
-    { "net": "vcm",      "side": "north", "frac": 0.7 },
+    { "net": "vdd",      "side": "north", "frac": 0.05 },
+    { "net": "vcm",      "side": "north", "frac": 0.95 },
+    { "net": "wd0",      "side": "north", "frac": 0.15 },
+    { "net": "wd1",      "side": "north", "frac": 0.25 },
+    { "net": "wd2",      "side": "north", "frac": 0.35 },
+    { "net": "wd3",      "side": "north", "frac": 0.45 },
+    { "net": "wd4",      "side": "north", "frac": 0.55 },
+    { "net": "wd5",      "side": "north", "frac": 0.65 },
+    { "net": "wd6",      "side": "north", "frac": 0.75 },
+    { "net": "wd7",      "side": "north", "frac": 0.85 },
     { "net": "vss",      "side": "south", "frac": 0.5 },
-    { "net": "xin_p_r0", "side": "west",  "frac": 0.15 },
-    { "net": "xin_n_r0", "side": "west",  "frac": 0.3 },
-    { "net": "phi1",     "side": "west",  "frac": 0.5 },
-    { "net": "phi1e",    "side": "west",  "frac": 0.65 },
-    { "net": "phi2",     "side": "west",  "frac": 0.8 },
+    { "net": "xin_p_r0", "side": "west",  "frac": 0.1 },
+    { "net": "xin_n_r0", "side": "west",  "frac": 0.25 },
+    { "net": "wwl0",     "side": "west",  "frac": 0.4 },
+    { "net": "phi1",     "side": "west",  "frac": 0.55 },
+    { "net": "phi1e",    "side": "west",  "frac": 0.7 },
+    { "net": "phi2",     "side": "west",  "frac": 0.85 },
     { "net": "col0",     "side": "east",  "frac": 0.5 }
   ]
 }
