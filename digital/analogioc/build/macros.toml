@@ -14,15 +14,19 @@ analog_root = "../../../analog"
 
 [[macro]]
 block = "analogioc"
-# TODO: analog/analogioc has no layout, LEF, .lib, blackbox, behavioural model or
-# top .subckt yet, and src/analogioc.v does not instantiate it. Delete this line
-# once those exist; fix pg/analog_supplies/analog_nets/instances to the real pins.
+# Ports: analog/analogioc/netlist/analogioc.ports (contract: analog/analogioc/docs/INTERFACE.md).
+# 35 signal ports (349 bits) + 5 analog supplies. The macro has NO digital supply pins:
+# its sequencer logic runs on its own `vdd`, kept off VPWR/VGND like the other analog rails.
+# TODO: delete this line once these views exist: output/gds, output/lef, output/lib
+# (optional), output/verilog blackbox (generated from analogioc.ports), va/analogioc_beh.v,
+# netlist/analogioc.spice.
 todo = "analog/analogioc has no gds/lef/lib/blackbox/behavioural/.subckt views yet"
 halo = [10, 10]
-pg = [{ pins = ["VPWR", "VGND"], nets = ["VPWR", "VGND"] }]  # TODO: its digital supply pins, if any
-analog_supplies = ["vdd_ota", "vdd_cmp", "vdd_pkt", "vdd", "vss"]  # kept OFF the digital PDN
-analog_nets = ["col\\[[0-9]+\\]", "vcm", "ua\\[[0-9]+\\]"]  # never buffered/resized; TODO: bias lines
+pg = []
+analog_supplies = ["vdd", "vdd_ota", "vdd_cmp", "vdd_pkt", "vss"]  # kept OFF the digital PDN
+# Top-level nets on the macro's analog pins: never buffered/resized.
+analog_nets = ["vcm", "vr[np]_(thrp|thrn|sarp|sarn)", "vb_(nc|pc|tail|ramp)"]
 
 [macro.instances.u_analogioc]
-location = [70, 60]   # TODO: real placement in the TT tile
+location = [70, 60]   # TODO: real placement (non-TT analogioc_top floorplan)
 orientation = "N"
