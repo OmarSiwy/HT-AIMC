@@ -52,14 +52,8 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Tool | Issue | Workaround | Upstream fix |
 |---|---|---|---|
 | OpenVAF | no `@(cross)`/`@(timer)` events, no `transition()` | golden models use tanh switching + RC/`ddt` delay | — (upstream limitation) |
-| OpenVAF (nix) | binary named `openvaf-r`; SpiceRack calls `openvaf` | fixed: `Analog.nix` installs both names | — |
-| GmIDVisualizer | PMOS characterisation returned empty LUTs (`id <= 1e-12` drops negative drain current) | one-line `abs()` patch in the scratchpad clone | apply upstream (src/plots.cpp) |
-| GmIDVisualizer | relative `model_file` crashes (`directory iterator cannot open directory: []`) | pass absolute paths | resolve the path |
-| GmIDVisualizer | not packaged (flake has only a dev shell, which builds Xyce from source) | built with `nix-shell -p cmake ninja gcc15` | add a package output |
-| SpiceRack | `X()` takes no parameters | `devices.py` emits cards via `raw_spice` | accept `**params` |
 | SpiceRack | no ESPice (ARPice) or EGSpice backend | ngspice via SpiceRack | add backends |
 | EGSpice | separate successor simulator, mid-rewrite: current build rejects a resistor (`no device model compiled for kind resistor`) and a sky130 FET (`UndefinedReference`); devices compiled from Verilog-A at build time only | not in the flow yet | finish the analysis/device migration (STEPS.md step 4) |
 | sky130 models | mismatch does not follow Pelgrom at short L (10.45/0.30: 3.66 mV vs 2.10 predicted) | `analog/docs/mismatch.py` measures per geometry | — (model property) |
 | sky130 models | `m=` alone does not scale mismatch (`sqrt(l*w*mult)`); gf180 uses `par` | `pdk.mult_card` | — |
 | ngspice | after a gate overshoot, transient `i(Vdrain)` sits ~15 % above `@m[id]` for > 30 µs | judge startup on node voltages | report upstream |
-| Template `.flows/Makefile` | analog+digital project reported `unknown` state | fixed (110 → mixed) | — |
