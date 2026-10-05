@@ -1,10 +1,10 @@
 """Yosys + ASAP7 (RVT, TT 0.7 V 25C) synthesis sweep of sa_top.
 
-usage: synth_sweep.py <asap7 platform dir> <out dir>
+usage: synth_sweep.py <asap7 liberty dir> <out dir>
 
 Hierarchical synthesis (no flatten): each unique PE variant is mapped once, so the
 128x128 array (16k PEs) synthesizes in minutes; `stat -top` sums the hierarchy.
-Cell area only (no placement utilization, no wires): ORFS P&R gives the real die area.
+Cell area only (no placement utilization, no wires): LibreLane P&R gives the real die area.
 Writes <out>/<name>.json = {name, params, area_um2, cells, flops, area_by_module}.
 """
 import gzip
@@ -25,9 +25,11 @@ CONFIGS["s16_int4w"] = dict(Rows=16, Cols=16, AccDepth=16, WW=4)
 CONFIGS["s32_booth"] = dict(Rows=32, Cols=32, AccDepth=32, _booth=1)
 
 
-def libs(platform, out):
+def libs(lib_root, out):
     """Unzip the TT RVT libs once; return (all libs, sequential lib)."""
-    lib_dir = Path(platform) / "lib" / "NLDM"
+    lib_dir = Path(lib_root) / "lib" / "NLDM"
+    if not lib_dir.is_dir():
+        lib_dir = Path(lib_root)
     paths = []
     for name in ("AO_RVT_TT_nldm_211120", "INVBUF_RVT_TT_nldm_220122",
                  "OA_RVT_TT_nldm_211120", "SIMPLE_RVT_TT_nldm_211120", "SEQ_RVT_TT_nldm_220123"):
@@ -47,7 +49,7 @@ def run(name, params, lib_paths, seq_lib, out, period_ps=400):
     booth = params.pop("_booth", 0)
     chp = " ".join(f"-set {k} {v}" for k, v in params.items())
     libargs = " ".join(f"-liberty {p}" for p in lib_paths)
-    # ponytail: dont-use list mirrors the ORFS asap7 platform (x1p/xp drive strengths, ICG/SDF)
+    # ponytail: dont-use list = the usual asap7 platform list (x1p/xp drive strengths, ICG/SDF)
     dont = "-dont_use *x1p*_ASAP7* -dont_use *xp*_ASAP7* -dont_use SDF* -dont_use ICG*"
     script = f"""
 read_liberty -lib {' '.join(lib_paths)}

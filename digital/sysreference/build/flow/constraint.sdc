@@ -1,5 +1,5 @@
 # sa_top: single clock, IO budgeted at 20% of the period (ASAP7 time unit: ps).
-# Template: ../Makefile substitutes @PERIOD_PS@ (ORFS parses a literal clk_period).
+# Template: the flow substitutes @PERIOD_PS@ (a literal clk_period).
 current_design sa_top
 set clk_period @PERIOD_PS@
 set clk_port [get_ports clk_i]

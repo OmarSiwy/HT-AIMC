@@ -3,7 +3,7 @@
 #   make test    numpy golden -> cycle-exact schedule -> iverilog, bit-exact (+ SmolLM2 GEMM)
 #   make lint    verilator -Wall over every configuration the PPA study uses
 #   make synth   yosys + ASAP7 liberty area/cell sweep  -> build/synth/*.json
-#   make ppa     ORFS asap7 harden + VCD power, then ppa.json (see build/Makefile)
+#   make ppa     LibreLane harden + VCD power -> ppa.json (not wired yet)
 SRC := $(wildcard src/*.sv)
 
 .PHONY: test lint synth ppa clean
@@ -18,8 +18,8 @@ lint:
 	verilator --lint-only -Wall --top-module sa_top -GRows=128 -GCols=128 -GAccDepth=128 $(SRC)
 	@echo "LINT CLEAN"
 
-synth ppa:
+synth:
 	$(MAKE) -C build $@
 
 clean:
-	rm -rf build/test build/power build/out build/orfs/work
+	rm -rf build/test build/power build/out
