@@ -12,7 +12,7 @@ Adapted from AnalogIOC analog/testbenches/tb_weight_tile.py (ngspice batch -> Sp
 """
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -31,7 +31,7 @@ def cancel(half):
 
 def main():
     r = Report("weight_tile")
-    with ThreadPoolExecutor(JOBS) as ex:
+    with ProcessPoolExecutor(JOBS) as ex:
         lin = [ex.submit(excursion, [w], [0], [NIB]) for w in range(16)]
         null = ex.submit(excursion, [8], [8], [NIB])
         sp, sn = ex.submit(excursion, [8], [0], [NIB]), ex.submit(excursion, [8], [0], [-NIB])

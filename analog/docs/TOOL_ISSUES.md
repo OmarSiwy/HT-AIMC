@@ -50,6 +50,7 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Distributions inside behavioural sources stay at nominal (same as ngspice for sky130: resistor mismatch reads 0) | size resistor matching from `pdk_specs` declared values | documented |
 | PWL longer than 64 points with `r=` is refused | split the source | documented |
 | Seed N draws a different mismatch sample than ngspice's seed N (own RNG); only the spread matches (σ(ln Id) 0.269 vs 0.274 over 100 seeds) | compare statistics, not single seeds | by design |
+| Once in ~70 runs under 6 parallel processes, `espice` exited `Error: <tmp>/deck.sp: FileNotFound` for a deck SpiceRack had just written (weight_tile, 2026-10-05); the rerun passed | rerun | not reported yet |
 | **BSIM4 comes from Cogenda VA-BSIM48 (CC-BY-NC 4.0)** compiled by VerA | — | **licence: non-commercial**; check before any commercial use |
 
 ## Others
@@ -57,6 +58,7 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Tool | Issue | Workaround | Upstream fix |
 |---|---|---|---|
 | SpiceRack | no EGSpice backend | ESPice via SpiceRack | add once EGSpice runs decks |
+| SpiceRack | a run holds the GIL for the whole simulation, so a `ThreadPoolExecutor` of benches simulates one at a time (ngspice and espice; seen 2026-10-05: one simulator process under JOBS=8) | `ProcessPoolExecutor` with module-level callables (`analog/weight_tile/test/tb_*.py`) | release the GIL around the backend call |
 | EGSpice | separate successor simulator, mid-rewrite: current build rejects a resistor (`no device model compiled for kind resistor`) and a sky130 FET (`UndefinedReference`); devices compiled from Verilog-A at build time only | not in the flow yet | finish the analysis/device migration (STEPS.md step 4) |
 | sky130 models | mismatch does not follow Pelgrom at short L (10.45/0.30: 3.66 mV vs 2.10 predicted) | `analog/docs/mismatch.py` measures per geometry | — (model property) |
 | sky130 models | `m=` alone does not scale mismatch (`sqrt(l*w*mult)`); gf180 uses `par` | `pdk.mult_card` | — |

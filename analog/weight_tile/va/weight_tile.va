@@ -1,47 +1,79 @@
-// Weight tile — behavioural golden model of one crosspoint, ports 1:1 with the canonical
-// netlist/weight_tile deck (build(): one row, one column).
+// Weight tile — behavioural golden model of one programmable crosspoint, ports 1:1 with
+// the canonical netlist/weight_tile deck (build(): one row, one column).
 //   row driver:  rowa = (xp & phi1e) | (xn & !phi1),  rowb = (xp & !phi1) | (xn & phi1e)
-//   C+ bank (wp*cu) between top tp and rowa, C- bank (wn*cu) between tn and rowb
+//   storage:     8 bits s0..s7 written through the port: while wwl0 is high, bit k
+//                follows wd<k>; the last value before wwl0 falls is held (INTERFACE §7)
+//                s0..s3 = Cp[3:0], s4..s7 = Cn[3:0]
+//   C+ bank: bit cap 2^b*cu between top tp and bottom bp<b>; bp<b> = rowa if s<b> else vss
+//   C- bank: the same on tn / bn<b> / rowb with s<4+b>
 //   each top: ballast cb to vss, switch to vcm while phi1, switch to col0 while phi2
+//   and its bank's code is nonzero (code-zero gate: a zero bank never meets col0)
 //   col0: rail ballast crail to vss
 // Per chop cycle a bank moves code*cu*VDD onto col0 with the sign of W*x — the charge
-// model is physical (ddt on the caps), only the switches and logic are idealised.
+// model is physical (ddt on the caps), only the switches, logic and storage are idealised.
 //
 // Continuous form (OpenVAF subset): tanh logic and switch conductances, an internal RC
 // per row line for the driver delay (the bottom edge lands after the vcm switch opens),
-// a Thevenin row output. A zero code drops its bank's ballast too (AnalogIOC emits no bank).
-// Not modelled: TG channel injection / clock feedthrough, junction leakage, the phi
-// buffers' delay, supply current. Multi-row columns are several instances on one col
-// node with crail on one of them (test/tile.py).
+// a Thevenin row output. Storage is a continuous latch per bit: a node with cap cst that
+// a regenerative conductance 1/rlat pulls to the rail on its own side of VDD/2 (stable at
+// vss and vdd), overpowered by the access conductance 1/rax towards wd<k> while wwl0 is
+// high. Contents after power-up are whatever the DC solution gives: write before use.
+// Not modelled: TG channel injection / clock feedthrough, junction leakage, the phi and
+// write buffers' delay, supply current. Multi-row columns are several instances on one
+// col node (shared wd lines, one wwl each) with crail on one of them (test/tile.py).
 `include "disciplines.vams"
 `include "constants.vams"
 
-module weight_tile(xin_p_r0, xin_n_r0, col0, phi1, phi1e, phi2, vcm, vdd, vss);
-    inout xin_p_r0, xin_n_r0, col0, phi1, phi1e, phi2, vcm, vdd, vss;
-    electrical xin_p_r0, xin_n_r0, col0, phi1, phi1e, phi2, vcm, vdd, vss;
-    electrical fa, fb, rowa, rowb, tp, tn;
+`define LATCH(s, d) \
+        I(s, vss) <+ cst * ddt(V(s, vss)); \
+        I(s, vss) <+ (V(s, vss) - V(vdd, vss) * sig(V(s, vss) - vh, vs)) / rlat; \
+        I(s, vss) <+ wl * (V(s, vss) - V(vdd, vss) * sig(V(d, vss) - vh, vs)) / rax;
 
-    parameter real wp = 15 from [0:15];             // C+ bank code
-    parameter real wn = 15 from [0:15];             // C- bank code
+`define BIT(bot, row, s, top, c) \
+        on = sig(V(s, vss) - vh, vs); \
+        I(bot, row) <+ (on / rsel + goff) * V(bot, row); \
+        I(bot, vss) <+ ((1.0 - on) / rsel + goff) * V(bot, vss); \
+        I(top, bot) <+ c * cu * ddt(V(top, bot));
+
+module weight_tile(xin_p_r0, xin_n_r0, col0, wwl0, wd0, wd1, wd2, wd3, wd4, wd5, wd6, wd7,
+                   phi1, phi1e, phi2, vcm, vdd, vss);
+    inout xin_p_r0, xin_n_r0, col0, wwl0, wd0, wd1, wd2, wd3, wd4, wd5, wd6, wd7,
+          phi1, phi1e, phi2, vcm, vdd, vss;
+    electrical xin_p_r0, xin_n_r0, col0, wwl0, wd0, wd1, wd2, wd3, wd4, wd5, wd6, wd7,
+               phi1, phi1e, phi2, vcm, vdd, vss;
+    electrical fa, fb, rowa, rowb, tp, tn;
+    electrical s0, s1, s2, s3, s4, s5, s6, s7;
+    electrical bp0, bp1, bp2, bp3, bn0, bn1, bn2, bn3;
+
     parameter real cu = 0.15e-15 from (0:inf);      // unit cap (F)
     parameter real cb = 3.75e-15 from [0:inf);      // top-plate ballast (F)
     parameter real crail = 450e-15 from [0:inf);    // column rail ballast (F)
-    parameter real ron = 5e3 from (0:inf);          // switch on resistance (ohm)
+    parameter real ron = 5e3 from (0:inf);          // top-plate switch on resistance (ohm)
+    parameter real rsel = 5e3 from (0:inf);         // bottom-plate selector on resistance
     parameter real goff = 1e-12 from (0:inf);       // switch off conductance (S)
     parameter real rdrv = 300 from (0:inf);         // row driver resistance (ohm)
     parameter real td = 0.25e-9 from (0:inf);       // row driver delay (s)
     parameter real vs = 0.05 from (0:inf);          // logic soft-threshold width (V)
+    parameter real cst = 1e-15 from (0:inf);        // storage node cap (F)
+    parameter real rlat = 100e3 from (0:inf);       // latch hold resistance (ohm)
+    parameter real rax = 10e3 from (0:inf);         // write access resistance (ohm)
 
-    real vh, p, n, c1, ce, s1, s2, a, b, rf, cf, cbp, cbn;
+    real vh, p, n, c1, ce, s1on, p2, enp, enn, a, b, rf, cf, wl, on;
+
+    analog function real sig;
+        input x, w;
+        real x, w;
+        sig = 0.5 * (1.0 + tanh(x / w));
+    endfunction
 
     analog begin
         vh = V(vdd, vss) / 2;
-        p = 0.5 * (1.0 + tanh((V(xin_p_r0, vss) - vh) / vs));
-        n = 0.5 * (1.0 + tanh((V(xin_n_r0, vss) - vh) / vs));
-        c1 = 0.5 * (1.0 + tanh((V(phi1, vss) - vh) / vs));
-        ce = 0.5 * (1.0 + tanh((V(phi1e, vss) - vh) / vs));
-        s1 = c1 / ron + goff;
-        s2 = 0.5 * (1.0 + tanh((V(phi2, vss) - vh) / vs)) / ron + goff;
+        p = sig(V(xin_p_r0, vss) - vh, vs);
+        n = sig(V(xin_n_r0, vss) - vh, vs);
+        c1 = sig(V(phi1, vss) - vh, vs);
+        ce = sig(V(phi1e, vss) - vh, vs);
+        s1on = c1 / ron + goff;
+        p2 = sig(V(phi2, vss) - vh, vs);
         a = p * ce + n * (1.0 - c1) - p * ce * n * (1.0 - c1);   // x | y = x + y - xy
         b = p * (1.0 - c1) + n * ce - p * (1.0 - c1) * n * ce;
         rf = 1e3;
@@ -50,19 +82,38 @@ module weight_tile(xin_p_r0, xin_n_r0, col0, phi1, phi1e, phi2, vcm, vdd, vss);
         I(fa, vss) <+ cf * ddt(V(fa, vss));
         I(fb, vss) <+ (V(fb, vss) - b * V(vdd, vss)) / rf;
         I(fb, vss) <+ cf * ddt(V(fb, vss));
-        I(rowa, vss) <+ (V(rowa, vss) - V(vdd, vss) * 0.5 * (1.0 + tanh((V(fa, vss) - vh) / vs))) / rdrv;
-        I(rowb, vss) <+ (V(rowb, vss) - V(vdd, vss) * 0.5 * (1.0 + tanh((V(fb, vss) - vh) / vs))) / rdrv;
+        I(rowa, vss) <+ (V(rowa, vss) - V(vdd, vss) * sig(V(fa, vss) - vh, vs)) / rdrv;
+        I(rowb, vss) <+ (V(rowb, vss) - V(vdd, vss) * sig(V(fb, vss) - vh, vs)) / rdrv;
 
-        cbp = (wp > 0.5) ? cb : 0.0;
-        cbn = (wn > 0.5) ? cb : 0.0;
-        I(tp, rowa) <+ wp * cu * ddt(V(tp, rowa));
-        I(tp, vss) <+ cbp * ddt(V(tp, vss));
-        I(tp, vcm) <+ s1 * V(tp, vcm);
-        I(tp, col0) <+ s2 * V(tp, col0);
-        I(tn, rowb) <+ wn * cu * ddt(V(tn, rowb));
-        I(tn, vss) <+ cbn * ddt(V(tn, vss));
-        I(tn, vcm) <+ s1 * V(tn, vcm);
-        I(tn, col0) <+ s2 * V(tn, col0);
+        wl = sig(V(wwl0, vss) - vh, vs);
+        `LATCH(s0, wd0)
+        `LATCH(s1, wd1)
+        `LATCH(s2, wd2)
+        `LATCH(s3, wd3)
+        `LATCH(s4, wd4)
+        `LATCH(s5, wd5)
+        `LATCH(s6, wd6)
+        `LATCH(s7, wd7)
+
+        `BIT(bp0, rowa, s0, tp, 1.0)
+        `BIT(bp1, rowa, s1, tp, 2.0)
+        `BIT(bp2, rowa, s2, tp, 4.0)
+        `BIT(bp3, rowa, s3, tp, 8.0)
+        `BIT(bn0, rowb, s4, tn, 1.0)
+        `BIT(bn1, rowb, s5, tn, 2.0)
+        `BIT(bn2, rowb, s6, tn, 4.0)
+        `BIT(bn3, rowb, s7, tn, 8.0)
+
+        enp = 1.0 - (1.0 - sig(V(s0, vss) - vh, vs)) * (1.0 - sig(V(s1, vss) - vh, vs))
+                  * (1.0 - sig(V(s2, vss) - vh, vs)) * (1.0 - sig(V(s3, vss) - vh, vs));
+        enn = 1.0 - (1.0 - sig(V(s4, vss) - vh, vs)) * (1.0 - sig(V(s5, vss) - vh, vs))
+                  * (1.0 - sig(V(s6, vss) - vh, vs)) * (1.0 - sig(V(s7, vss) - vh, vs));
+        I(tp, vss) <+ cb * ddt(V(tp, vss));
+        I(tp, vcm) <+ s1on * V(tp, vcm);
+        I(tp, col0) <+ (enp * p2 / ron + goff) * V(tp, col0);
+        I(tn, vss) <+ cb * ddt(V(tn, vss));
+        I(tn, vcm) <+ s1on * V(tn, vcm);
+        I(tn, col0) <+ (enn * p2 / ron + goff) * V(tn, col0);
         I(col0, vss) <+ crail * ddt(V(col0, vss));
     end
 endmodule

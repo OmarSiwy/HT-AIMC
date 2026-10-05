@@ -422,3 +422,24 @@ JITTER 0 and 0.5 × 3 seeds (exposed write 0 ns after the first pass); relu fixt
 11 passes; A8 on pass_04 (only a checksum-column LSB can flag there: clean 127 + data
 |Δ| ≤ 17 < 199); E2E attn_o all 36 column tiles × 4 row tiles (144 passes) acc/residual/q
 = golden proj. 10 iverilog tbs + `make synth` still pass; analogioc_top synthesizes with 0 latches.
+
+### 2026-10-05 — phase 1d: weight_tile reprogrammable (INTERFACE §7)
+
+weight_tile now stores its weights: every bank keeps all 4 bit caps, and each bit cap's
+bottom plate sits on a selector (TG to the row, pull-down to vss) driven by a write-only 6T
+bitcell. Writes go one row at a time through `wwl0..15`/`wd0..135` (16 WL buffers, 136
+BL/BLB drivers). Ports: `xin_p_r0 xin_n_r0 .. xin_p_r15 xin_n_r15 col0..col16 wwl0..wwl15
+wd0..wd135 phi1 phi1e phi2 vcm vdd vss`. One addition to §7.2: a per-bank code-zero gate
+(st = phi2·(code≠0)). Without it, 32 idle 6 fF tops per column leak the OTA residual (a
+lone W=13 bank read 63 %). Cell sizing: pull-down and access 0.42/0.15, pull-up 0.42/0.30
+(the first step of a measured corner search; worst margin 561 mV vs 89 mV floor).
+Measured on ESPice (ngspice agreed before the switch):
+- write: all 15 corners pass. Worst row write is 986 ps at ss/−40 °C/1.62 V (2 ns budget).
+- MC write yield: 200/200; margin 772 ± 19 mV.
+- A11 readback: worst 1.79 LSB (gate 3).
+- A11b/Q10 disturb: 0.004 LSB, so ping-pong is not needed. Re-check post-layout.
+- Q13 write energy: 13.2 pJ/row with every bit toggling; 109 pJ/pass on random data (7.5 % of pass_energy_pj).
+- t_q_floor: specs.c_row() is 101 fF (was 53), row RC 16 ps, so the floor stays 200 ps (jitter-bound). The measured row edge is 127 ps, which means pwm_driver's C_ROW = 100 fF has no margin left.
+- k_cal was re-measured: 0.9747 (was 0.9906). The code-independent top costs 1.6 %.
+- tb_weight_tile, csnr, cascade and the DUT=va suite all pass.
+- tb_weight_tile_mc null still fails, as it did before this change: σ 22 LSB, and the old deck gave 15. The cause is OTA offset, not the tile.

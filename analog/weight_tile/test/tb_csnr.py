@@ -26,7 +26,7 @@ CSNR >= SNR_S_DB".
 import json
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -141,7 +141,7 @@ def isolate(r, banks="4,11,21"):
     grid = [(int(b), 3 if int(b) <= 16 else 5, 6 if int(b) <= 16 else 5)
             for b in banks.split(",")]
     variants = {"nominal": {}, "idealOTA": {"ideal_ota": True}, "noCRAIL": {"rail": False}}
-    with ThreadPoolExecutor(JOBS) as ex:
+    with ProcessPoolExecutor(JOBS) as ex:
         fut = {(v, nb): ex.submit(eff_point, nb, q, wb, **kw)
                for v, kw in variants.items() for nb, wb, q in grid}
     print(f"    {'variant':<10}{'units':>7}{'mac':>6}{'efficiency':>12}  absorb eff(t after window, ns)")

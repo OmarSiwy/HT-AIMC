@@ -76,7 +76,11 @@ I_SIDE = 6e-6            # A per input-pair side (item S1/3 re-bias; was
 # ---------------------------------------------------------------------------
 _CAL = {
     "sky130": {
-        "k_cal": 267.45e-18 / (0.15e-15 * 1.8),  # A7 measured Q_UNIT/C_U*VDD
+        # A7 measured Q_UNIT/C_U*VDD, tb_weight_tile single-crosspoint slope. Programmable
+        # crosspoint (INTERFACE §7, 2026-10-05): 13.1588 mV/code at nibble 10 on 200 fF
+        # = 263.18 aC (the fixed-code tile measured 267.45 aC: its code-independent top,
+        # 15 C_u + C_BALL, keeps more of each transfer behind)
+        "k_cal": 263.18e-18 / (0.15e-15 * 1.8),
         "beta_int": 0.22,       # integrator feedback factor (measured A2)
         "c_ota_self": 311e-15,  # OTA self/output load at I_SIDE=10uA sizing,
                                 # back-solved from measured tau_absorb=26ns:
@@ -382,14 +386,29 @@ def ladder_area_um2(pdk=None):
 # ---------------------------------------------------------------------------
 # t_q floor (real-silicon grid)
 # ---------------------------------------------------------------------------
-def t_q_floor(pdk=None):
-    """max(row wire transit, jitter budget). Row RC: 16 crosspoints of
-    bank bottom cap on a pitch-scaled met wire. (paper sec_circuits)"""
+XP_PITCH = 15            # crosspoint pitch in signal-wire pitches (generous route)
+C_WIRE = 0.2e-15         # F/um of signal wire
+W_BITS = 4               # weight bits per bank (Cp, Cn: 4b binary-weighted)
+
+
+def c_row(pdk=None):
+    """Worst row-line load [F]: N_COLS banks of one polarity with every bit on (15 C_u
+    of bit caps each) plus the programmable bottom-plate selectors (INTERFACE §7.2):
+    per bit a min-W TG on the row (n + p drain) and, through the on TG, the bottom node
+    (TG n + p, pull-down n) — 3 n + 2 p drains of pdk.min_w — plus the wire."""
     pdk = pdk or get_pdk()
-    row_len = N_COLS * 15 * pdk.wire_pitch          # um, generous route
+    row_len = N_COLS * XP_PITCH * pdk.wire_pitch
+    sel = N_COLS * W_BITS * pdk.min_w * (3 * pdk.cd_n_ff_um + 2 * pdk.cd_p_ff_um) * 1e-15
+    return N_COLS * (2 ** W_BITS - 1) * c_u(pdk) + sel + row_len * C_WIRE
+
+
+def t_q_floor(pdk=None):
+    """max(row wire transit, jitter budget). Row RC: c_row() on a pitch-scaled met
+    wire. (paper sec_circuits)"""
+    pdk = pdk or get_pdk()
+    row_len = N_COLS * XP_PITCH * pdk.wire_pitch    # um
     r_row = pdk.r_sq_wire * row_len / pdk.wire_pitch
-    c_row = 16 * (15 * c_u(pdk)) + row_len * 0.2e-15  # banks + 0.2 fF/um
-    return max(5 * r_row * c_row, pdk.jitter_budget_s)
+    return max(5 * r_row * c_row(pdk), pdk.jitter_budget_s)
 
 
 # ---------------------------------------------------------------------------
@@ -716,7 +735,7 @@ def _selfcheck():
         print(f"  {dev}: {w_spec}/{l_spec} um (AnalogIOC {analogioc_w[dev]})")
     if anchor:
         assert abs(c_u(pdk) - 0.15e-15) / 0.15e-15 < 0.11, c_u(pdk)
-        assert abs(k_cal(pdk) - 0.9906) < 0.001
+        assert abs(k_cal(pdk) - 0.9747) < 0.001
     # TASK A fine-SAR acq-droop trim: fine reference shrinks to the measured
     # ~0.80x OTA loop droop (diag_fine15); fine-only, so <1 and in-band.
     assert 0.70 < fine_ref_trim(pdk) < 1.0, fine_ref_trim(pdk)
@@ -740,6 +759,9 @@ def _selfcheck():
         assert abs(c_tap(pdk) - 29e-12) < 1e-15
     print(f"  r_seg {r_seg(pdk)/1e3:.0f}k, c_tap {c_tap(pdk)*1e12:.0f} pF "
           f"(decap area {ladder_area_um2(pdk):.0f} um2/ladder)")
+    row_len = N_COLS * XP_PITCH * pdk.wire_pitch
+    print(f"  row line {c_row(pdk)*1e15:.0f} fF, row RC "
+          f"{5 * pdk.r_sq_wire * row_len / pdk.wire_pitch * c_row(pdk)*1e12:.1f} ps")
     print(f"  t_q floor {t_q_floor(pdk)*1e12:.0f} ps; pass_time "
           f"{pass_time(pdk)*1e6:.2f} us; OTA static "
           f"{ota_static_w(pdk)*1e6:.0f} uW; ladder static "
