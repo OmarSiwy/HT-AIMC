@@ -1,474 +1,469 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="4752" height="756" viewBox="0 0 4752 756" font-family="Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="4765" height="1342" viewBox="0 0 4765 1342" font-family="Helvetica, Arial, sans-serif">
 <rect width="100%" height="100%" fill="#ffffff"/>
 <g fill="none" stroke="#1d2330" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-<polyline points="152.0,219.2 152.0,267.2 184.0,267.2 "/>
-<polyline points="184.0,315.2 184.0,331.2 "/>
-<polyline points="88.0,459.2 184.0,459.2 "/>
-<polyline points="280.0,315.2 312.0,315.2 "/>
-<polyline points="472.0,315.2 504.0,315.2 "/>
-<polyline points="152.0,571.2 152.0,523.2 184.0,523.2 "/>
-<polyline points="312.0,315.2 1112.0,315.2 "/>
-<polyline points="1880.0,107.2 1880.0,283.2 "/>
-<polyline points="2328.0,107.2 2328.0,283.2 "/>
-<polyline points="3416.0,107.2 3416.0,283.2 "/>
-<polyline points="3480.0,107.2 3480.0,283.2 "/>
-<polyline points="312.0,315.2 312.0,331.2 "/>
-<polyline points="312.0,459.2 1112.0,459.2 "/>
-<polyline points="4184.0,107.2 4184.0,283.2 "/>
-<polyline points="4248.0,107.2 4248.0,283.2 "/>
-<polyline points="4376.0,107.2 4376.0,283.2 "/>
-<polyline points="4440.0,107.2 4440.0,283.2 "/>
-<polyline points="984.0,107.2 984.0,219.2 "/>
-<polyline points="2104.0,107.2 2104.0,283.2 "/>
-<polyline points="2552.0,107.2 2552.0,283.2 "/>
-<polyline points="2872.0,107.2 2872.0,283.2 "/>
-<polyline points="3192.0,107.2 3192.0,283.2 "/>
-<polyline points="536.0,107.2 536.0,283.2 "/>
-<polyline points="1304.0,107.2 1304.0,283.2 "/>
-<polyline points="1624.0,107.2 1624.0,283.2 "/>
-<polyline points="920.0,107.2 920.0,283.2 "/>
-<polyline points="1432.0,107.2 1432.0,283.2 "/>
-<polyline points="1816.0,107.2 1816.0,283.2 "/>
-<polyline points="536.0,107.2 920.0,107.2 "/>
-<polyline points="920.0,107.2 984.0,107.2 "/>
-<polyline points="984.0,107.2 1304.0,107.2 "/>
-<polyline points="1304.0,107.2 1432.0,107.2 "/>
-<polyline points="1432.0,107.2 1624.0,107.2 "/>
-<polyline points="1624.0,107.2 1816.0,107.2 "/>
-<polyline points="1816.0,107.2 2104.0,107.2 "/>
-<polyline points="2104.0,107.2 2552.0,107.2 "/>
-<polyline points="2552.0,107.2 2872.0,107.2 "/>
-<polyline points="2872.0,107.2 3192.0,107.2 "/>
-<polyline points="984.0,219.2 248.0,219.2 "/>
-<polyline points="984.0,571.2 984.0,667.2 "/>
-<polyline points="2104.0,507.2 2104.0,667.2 "/>
-<polyline points="2552.0,507.2 2552.0,667.2 "/>
-<polyline points="2872.0,507.2 2872.0,667.2 "/>
-<polyline points="3192.0,507.2 3192.0,667.2 "/>
-<polyline points="344.0,347.2 344.0,667.2 "/>
-<polyline points="1304.0,427.2 1304.0,667.2 "/>
-<polyline points="1624.0,427.2 1624.0,667.2 "/>
-<polyline points="728.0,347.2 728.0,667.2 "/>
-<polyline points="1432.0,491.2 1432.0,667.2 "/>
-<polyline points="1816.0,427.2 1816.0,667.2 "/>
-<polyline points="3288.0,347.2 3288.0,667.2 "/>
-<polyline points="3672.0,347.2 3672.0,667.2 "/>
-<polyline points="4312.0,427.2 4312.0,667.2 "/>
-<polyline points="344.0,667.2 728.0,667.2 "/>
-<polyline points="728.0,667.2 984.0,667.2 "/>
-<polyline points="984.0,667.2 1304.0,667.2 "/>
-<polyline points="1304.0,667.2 1432.0,667.2 "/>
-<polyline points="1432.0,667.2 1624.0,667.2 "/>
-<polyline points="1624.0,667.2 1816.0,667.2 "/>
-<polyline points="1816.0,667.2 1880.0,667.2 "/>
-<polyline points="1880.0,667.2 2104.0,667.2 "/>
-<polyline points="2104.0,667.2 2552.0,667.2 "/>
-<polyline points="2552.0,667.2 2872.0,667.2 "/>
-<polyline points="2872.0,667.2 3192.0,667.2 "/>
-<polyline points="3192.0,667.2 3288.0,667.2 "/>
-<polyline points="3288.0,667.2 3672.0,667.2 "/>
-<polyline points="3672.0,667.2 4312.0,667.2 "/>
-<polyline points="984.0,571.2 248.0,571.2 "/>
-<polyline points="2008.0,315.2 2040.0,315.2 "/>
-<polyline points="2456.0,315.2 2488.0,315.2 "/>
-<polyline points="3480.0,347.2 3480.0,395.2 "/>
-<polyline points="3416.0,347.2 3416.0,395.2 "/>
-<polyline points="2328.0,347.2 2328.0,395.2 "/>
-<polyline points="1880.0,347.2 1880.0,395.2 "/>
-<polyline points="3672.0,107.2 3672.0,283.2 "/>
-<polyline points="2040.0,315.2 2040.0,331.2 "/>
-<polyline points="2488.0,315.2 2488.0,331.2 "/>
-<polyline points="2168.0,395.2 2200.0,395.2 "/>
-<polyline points="2936.0,395.2 2968.0,395.2 "/>
-<polyline points="1304.0,347.2 1304.0,363.2 "/>
-<polyline points="2008.0,395.2 2040.0,395.2 "/>
-<polyline points="2776.0,395.2 2808.0,395.2 "/>
-<polyline points="1560.0,395.2 1592.0,395.2 "/>
-<polyline points="1560.0,315.2 1592.0,315.2 "/>
-<polyline points="1624.0,347.2 1624.0,363.2 "/>
-<polyline points="2008.0,459.2 2040.0,459.2 "/>
-<polyline points="2776.0,459.2 2808.0,459.2 "/>
-<polyline points="4120.0,347.2 4120.0,363.2 "/>
-<polyline points="4632.0,139.2 4632.0,283.2 "/>
-<polyline points="4632.0,347.2 4632.0,363.2 4664.0,363.2 4664.0,59.2 4632.0,59.2 4632.0,75.2 "/>
-<polyline points="2616.0,395.2 2648.0,395.2 "/>
-<polyline points="3256.0,395.2 3288.0,395.2 "/>
-<polyline points="3288.0,107.2 3288.0,283.2 "/>
-<polyline points="4056.0,107.2 4056.0,283.2 "/>
-<polyline points="4120.0,427.2 4120.0,459.2 "/>
-<polyline points="4056.0,347.2 4120.0,347.2 "/>
-<polyline points="1432.0,347.2 1432.0,427.2 "/>
-<polyline points="2456.0,395.2 2488.0,395.2 "/>
-<polyline points="3096.0,395.2 3128.0,395.2 "/>
-<polyline points="1752.0,395.2 1784.0,395.2 "/>
-<polyline points="1752.0,315.2 1784.0,315.2 "/>
-<polyline points="4056.0,395.2 4088.0,395.2 "/>
-<polyline points="4568.0,315.2 4600.0,315.2 "/>
-<polyline points="1816.0,347.2 1816.0,363.2 "/>
-<polyline points="2456.0,459.2 2488.0,459.2 "/>
-<polyline points="3096.0,459.2 3128.0,459.2 "/>
-<polyline points="3928.0,315.2 4024.0,315.2 "/>
-<polyline points="4568.0,107.2 4600.0,107.2 "/>
-<polyline points="4184.0,347.2 4184.0,363.2 "/>
-<polyline points="4248.0,347.2 4248.0,363.2 "/>
-<polyline points="4376.0,347.2 4376.0,363.2 "/>
-<polyline points="4440.0,347.2 4440.0,363.2 "/>
-<polyline points="2776.0,315.2 2808.0,315.2 "/>
-<polyline points="3096.0,315.2 3128.0,315.2 "/>
-<polyline points="4184.0,363.2 4248.0,363.2 "/>
-<polyline points="4248.0,363.2 4312.0,363.2 "/>
-<polyline points="4312.0,363.2 4376.0,363.2 "/>
-<polyline points="4376.0,363.2 4440.0,363.2 "/>
-<polyline points="2808.0,315.2 2808.0,331.2 "/>
-<polyline points="3128.0,315.2 3128.0,331.2 "/>
-<polyline points="1112.0,395.2 1272.0,395.2 "/>
-<polyline points="344.0,107.2 344.0,283.2 "/>
-<polyline points="536.0,347.2 536.0,395.2 "/>
-<polyline points="1240.0,315.2 1272.0,315.2 "/>
-<polyline points="1368.0,459.2 1400.0,459.2 "/>
-<polyline points="1368.0,315.2 1400.0,315.2 "/>
-<polyline points="1368.0,315.2 1368.0,395.2 "/>
-<polyline points="1368.0,395.2 1368.0,459.2 "/>
-<polyline points="728.0,107.2 728.0,283.2 "/>
-<polyline points="920.0,347.2 920.0,395.2 "/>
-<polyline points="664.0,315.2 696.0,315.2 "/>
-<polyline points="856.0,315.2 888.0,315.2 "/>
-<polyline points="200.0,235.2 296.0,235.2 296.0,555.2 200.0,555.2 200.0,235.2 "/>
-<polyline points="184.0,267.2 200.0,267.2 "/>
-<text x="224.0" y="270.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">inp</text>
-<polyline points="184.0,331.2 200.0,331.2 "/>
-<text x="224.0" y="334.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">inn</text>
-<polyline points="184.0,459.2 200.0,459.2 "/>
-<text x="228.8" y="462.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">phi1</text>
-<polyline points="184.0,523.2 200.0,523.2 "/>
-<text x="233.6" y="526.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">phi1e</text>
-<polyline points="312.0,331.2 296.0,331.2 "/>
-<text x="267.2" y="334.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">outa</text>
-<polyline points="312.0,459.2 296.0,459.2 "/>
-<text x="267.2" y="462.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">outb</text>
-<polyline points="248.0,219.2 248.0,235.2 "/>
-<text x="248.0" y="249.4" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
-<polyline points="248.0,571.2 248.0,555.2 "/>
-<text x="248.0" y="547.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
-<text x="248.0" y="398.2" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">pwm_driver</text>
-<polyline points="2056.0,299.2 2152.0,299.2 2152.0,491.2 2056.0,491.2 2056.0,299.2 "/>
-<polyline points="2040.0,331.2 2056.0,331.2 "/>
-<text x="2080.0" y="334.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
-<polyline points="2040.0,395.2 2056.0,395.2 "/>
-<text x="2084.8" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
-<polyline points="2040.0,459.2 2056.0,459.2 "/>
-<text x="2094.4" y="462.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
-<polyline points="2168.0,395.2 2152.0,395.2 "/>
-<text x="2128.0" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
-<polyline points="2104.0,283.2 2104.0,299.2 "/>
-<text x="2104.0" y="313.4" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
-<polyline points="2104.0,507.2 2104.0,491.2 "/>
-<text x="2104.0" y="483.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
-<text x="2104.0" y="398.2" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
-<polyline points="2504.0,299.2 2600.0,299.2 2600.0,491.2 2504.0,491.2 2504.0,299.2 "/>
-<polyline points="2488.0,331.2 2504.0,331.2 "/>
-<text x="2528.0" y="334.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
-<polyline points="2488.0,395.2 2504.0,395.2 "/>
-<text x="2532.8" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
-<polyline points="2488.0,459.2 2504.0,459.2 "/>
-<text x="2542.4" y="462.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
-<polyline points="2616.0,395.2 2600.0,395.2 "/>
-<text x="2576.0" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
-<polyline points="2552.0,283.2 2552.0,299.2 "/>
-<text x="2552.0" y="313.4" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
-<polyline points="2552.0,507.2 2552.0,491.2 "/>
-<text x="2552.0" y="483.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
-<text x="2552.0" y="398.2" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
-<polyline points="2824.0,299.2 2920.0,299.2 2920.0,491.2 2824.0,491.2 2824.0,299.2 "/>
-<polyline points="2808.0,331.2 2824.0,331.2 "/>
-<text x="2848.0" y="334.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
-<polyline points="2808.0,395.2 2824.0,395.2 "/>
-<text x="2852.8" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
-<polyline points="2808.0,459.2 2824.0,459.2 "/>
-<text x="2862.4" y="462.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
-<polyline points="2936.0,395.2 2920.0,395.2 "/>
-<text x="2896.0" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
-<polyline points="2872.0,283.2 2872.0,299.2 "/>
-<text x="2872.0" y="313.4" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
-<polyline points="2872.0,507.2 2872.0,491.2 "/>
-<text x="2872.0" y="483.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
-<text x="2872.0" y="398.2" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
-<polyline points="3144.0,299.2 3240.0,299.2 3240.0,491.2 3144.0,491.2 3144.0,299.2 "/>
-<polyline points="3128.0,331.2 3144.0,331.2 "/>
-<text x="3168.0" y="334.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
-<polyline points="3128.0,395.2 3144.0,395.2 "/>
-<text x="3172.8" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
-<polyline points="3128.0,459.2 3144.0,459.2 "/>
-<text x="3182.4" y="462.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
-<polyline points="3256.0,395.2 3240.0,395.2 "/>
-<text x="3216.0" y="398.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
-<polyline points="3192.0,283.2 3192.0,299.2 "/>
-<text x="3192.0" y="313.4" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
-<polyline points="3192.0,507.2 3192.0,491.2 "/>
-<text x="3192.0" y="483.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
-<text x="3192.0" y="398.2" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
-<polyline points="344.0,283.2 344.0,302.4 339.2,302.4 "/>
-<polyline points="344.0,347.2 344.0,328.0 339.2,328.0 "/>
-<polyline points="339.2,299.2 339.2,331.2 "/>
-<polyline points="332.8,302.4 332.8,328.0 "/>
-<polyline points="312.0,315.2 332.8,315.2 "/>
-<polyline points="536.0,347.2 536.0,328.0 531.2,328.0 "/>
-<polyline points="536.0,283.2 536.0,302.4 531.2,302.4 "/>
-<polyline points="531.2,331.2 531.2,299.2 "/>
-<polyline points="524.8,328.0 524.8,302.4 "/>
-<circle cx="521.6" cy="315.2" r="3.2" fill="#ffffff"/>
-<polyline points="504.0,315.2 518.4,315.2 "/>
-<polyline points="1304.0,363.2 1304.0,382.4 1299.2,382.4 "/>
-<polyline points="1304.0,427.2 1304.0,408.0 1299.2,408.0 "/>
-<polyline points="1299.2,379.2 1299.2,411.2 "/>
-<polyline points="1292.8,382.4 1292.8,408.0 "/>
-<polyline points="1272.0,395.2 1292.8,395.2 "/>
-<polyline points="1304.0,347.2 1304.0,328.0 1299.2,328.0 "/>
-<polyline points="1304.0,283.2 1304.0,302.4 1299.2,302.4 "/>
-<polyline points="1299.2,331.2 1299.2,299.2 "/>
-<polyline points="1292.8,328.0 1292.8,302.4 "/>
-<circle cx="1289.6" cy="315.2" r="3.2" fill="#ffffff"/>
-<polyline points="1272.0,315.2 1286.4,315.2 "/>
-<polyline points="1624.0,363.2 1624.0,382.4 1619.2,382.4 "/>
-<polyline points="1624.0,427.2 1624.0,408.0 1619.2,408.0 "/>
-<polyline points="1619.2,379.2 1619.2,411.2 "/>
-<polyline points="1612.8,382.4 1612.8,408.0 "/>
-<polyline points="1592.0,395.2 1612.8,395.2 "/>
-<polyline points="1624.0,347.2 1624.0,328.0 1619.2,328.0 "/>
-<polyline points="1624.0,283.2 1624.0,302.4 1619.2,302.4 "/>
-<polyline points="1619.2,331.2 1619.2,299.2 "/>
-<polyline points="1612.8,328.0 1612.8,302.4 "/>
-<circle cx="1609.6" cy="315.2" r="3.2" fill="#ffffff"/>
-<polyline points="1592.0,315.2 1606.4,315.2 "/>
-<polyline points="728.0,283.2 728.0,302.4 723.2,302.4 "/>
-<polyline points="728.0,347.2 728.0,328.0 723.2,328.0 "/>
-<polyline points="723.2,299.2 723.2,331.2 "/>
-<polyline points="716.8,302.4 716.8,328.0 "/>
-<polyline points="696.0,315.2 716.8,315.2 "/>
-<polyline points="920.0,347.2 920.0,328.0 915.2,328.0 "/>
-<polyline points="920.0,283.2 920.0,302.4 915.2,302.4 "/>
-<polyline points="915.2,331.2 915.2,299.2 "/>
-<polyline points="908.8,328.0 908.8,302.4 "/>
-<circle cx="905.6" cy="315.2" r="3.2" fill="#ffffff"/>
-<polyline points="888.0,315.2 902.4,315.2 "/>
-<polyline points="1432.0,427.2 1432.0,446.4 1427.2,446.4 "/>
-<polyline points="1432.0,491.2 1432.0,472.0 1427.2,472.0 "/>
-<polyline points="1427.2,443.2 1427.2,475.2 "/>
-<polyline points="1420.8,446.4 1420.8,472.0 "/>
-<polyline points="1400.0,459.2 1420.8,459.2 "/>
-<polyline points="1432.0,347.2 1432.0,328.0 1427.2,328.0 "/>
-<polyline points="1432.0,283.2 1432.0,302.4 1427.2,302.4 "/>
-<polyline points="1427.2,331.2 1427.2,299.2 "/>
-<polyline points="1420.8,328.0 1420.8,302.4 "/>
-<circle cx="1417.6" cy="315.2" r="3.2" fill="#ffffff"/>
-<polyline points="1400.0,315.2 1414.4,315.2 "/>
-<polyline points="1816.0,363.2 1816.0,382.4 1811.2,382.4 "/>
-<polyline points="1816.0,427.2 1816.0,408.0 1811.2,408.0 "/>
-<polyline points="1811.2,379.2 1811.2,411.2 "/>
-<polyline points="1804.8,382.4 1804.8,408.0 "/>
-<polyline points="1784.0,395.2 1804.8,395.2 "/>
-<polyline points="1816.0,347.2 1816.0,328.0 1811.2,328.0 "/>
-<polyline points="1816.0,283.2 1816.0,302.4 1811.2,302.4 "/>
-<polyline points="1811.2,331.2 1811.2,299.2 "/>
-<polyline points="1804.8,328.0 1804.8,302.4 "/>
-<circle cx="1801.6" cy="315.2" r="3.2" fill="#ffffff"/>
-<polyline points="1784.0,315.2 1798.4,315.2 "/>
-<polyline points="3288.0,283.2 3288.0,310.4 "/>
-<polyline points="3288.0,320.0 3288.0,347.2 "/>
-<polyline points="3275.2,310.4 3300.8,310.4 "/>
-<polyline points="3275.2,320.0 3300.8,320.0 "/>
-<polyline points="1880.0,347.2 1880.0,320.0 "/>
-<polyline points="1880.0,310.4 1880.0,283.2 "/>
-<polyline points="1867.2,320.0 1892.8,320.0 "/>
-<polyline points="1867.2,310.4 1892.8,310.4 "/>
-<polyline points="2328.0,347.2 2328.0,320.0 "/>
-<polyline points="2328.0,310.4 2328.0,283.2 "/>
-<polyline points="2315.2,320.0 2340.8,320.0 "/>
-<polyline points="2315.2,310.4 2340.8,310.4 "/>
-<polyline points="3416.0,347.2 3416.0,320.0 "/>
-<polyline points="3416.0,310.4 3416.0,283.2 "/>
-<polyline points="3403.2,320.0 3428.8,320.0 "/>
-<polyline points="3403.2,310.4 3428.8,310.4 "/>
-<polyline points="3480.0,347.2 3480.0,320.0 "/>
-<polyline points="3480.0,310.4 3480.0,283.2 "/>
-<polyline points="3467.2,320.0 3492.8,320.0 "/>
-<polyline points="3467.2,310.4 3492.8,310.4 "/>
-<polyline points="3672.0,283.2 3672.0,310.4 "/>
-<polyline points="3672.0,320.0 3672.0,347.2 "/>
-<polyline points="3659.2,310.4 3684.8,310.4 "/>
-<polyline points="3659.2,320.0 3684.8,320.0 "/>
-<polyline points="4056.0,283.2 4056.0,302.4 4051.2,302.4 "/>
-<polyline points="4056.0,347.2 4056.0,328.0 4051.2,328.0 "/>
-<polyline points="4051.2,299.2 4051.2,331.2 "/>
-<polyline points="4044.8,302.4 4044.8,328.0 "/>
-<polyline points="4024.0,315.2 4044.8,315.2 "/>
-<polyline points="4120.0,363.2 4120.0,382.4 4115.2,382.4 "/>
-<polyline points="4120.0,427.2 4120.0,408.0 4115.2,408.0 "/>
-<polyline points="4115.2,379.2 4115.2,411.2 "/>
-<polyline points="4108.8,382.4 4108.8,408.0 "/>
-<circle cx="4105.6" cy="395.2" r="3.2" fill="#ffffff"/>
-<polyline points="4088.0,395.2 4102.4,395.2 "/>
-<polyline points="4184.0,347.2 4184.0,320.0 "/>
-<polyline points="4184.0,310.4 4184.0,283.2 "/>
-<polyline points="4171.2,320.0 4196.8,320.0 "/>
-<polyline points="4171.2,310.4 4196.8,310.4 "/>
-<polyline points="4248.0,347.2 4248.0,320.0 "/>
-<polyline points="4248.0,310.4 4248.0,283.2 "/>
-<polyline points="4235.2,320.0 4260.8,320.0 "/>
-<polyline points="4235.2,310.4 4260.8,310.4 "/>
-<polyline points="4376.0,347.2 4376.0,320.0 "/>
-<polyline points="4376.0,310.4 4376.0,283.2 "/>
-<polyline points="4363.2,320.0 4388.8,320.0 "/>
-<polyline points="4363.2,310.4 4388.8,310.4 "/>
-<polyline points="4440.0,347.2 4440.0,320.0 "/>
-<polyline points="4440.0,310.4 4440.0,283.2 "/>
-<polyline points="4427.2,320.0 4452.8,320.0 "/>
-<polyline points="4427.2,310.4 4452.8,310.4 "/>
-<polyline points="4312.0,363.2 4312.0,390.4 "/>
-<polyline points="4312.0,400.0 4312.0,427.2 "/>
-<polyline points="4299.2,390.4 4324.8,390.4 "/>
-<polyline points="4299.2,400.0 4324.8,400.0 "/>
-<polyline points="4632.0,75.2 4632.0,94.4 4627.2,94.4 "/>
-<polyline points="4632.0,139.2 4632.0,120.0 4627.2,120.0 "/>
-<polyline points="4627.2,91.2 4627.2,123.2 "/>
-<polyline points="4620.8,94.4 4620.8,120.0 "/>
-<polyline points="4600.0,107.2 4620.8,107.2 "/>
-<polyline points="4632.0,283.2 4632.0,302.4 4627.2,302.4 "/>
-<polyline points="4632.0,347.2 4632.0,328.0 4627.2,328.0 "/>
-<polyline points="4627.2,299.2 4627.2,331.2 "/>
-<polyline points="4620.8,302.4 4620.8,328.0 "/>
-<circle cx="4617.6" cy="315.2" r="3.2" fill="#ffffff"/>
-<polyline points="4600.0,315.2 4614.4,315.2 "/>
-<polyline points="1609.6,107.2 1638.4,107.2 "/>
-<text x="1624.0" y="101.2" text-anchor="middle" font-size="12" fill="#1d2330" stroke="none">vdd</text>
-<polyline points="1865.6,667.2 1894.4,667.2 "/>
-<polyline points="1870.4,672.0 1889.6,672.0 "/>
-<polyline points="1876.8,676.8 1883.2,676.8 "/>
-<text x="1894.0" y="677.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">vss</text>
-<polyline points="179.2,262.4 188.8,272.0 "/>
-<polyline points="179.2,272.0 188.8,262.4 "/>
-<polyline points="179.2,326.4 188.8,336.0 "/>
-<polyline points="179.2,336.0 188.8,326.4 "/>
-<polyline points="179.2,518.4 188.8,528.0 "/>
-<polyline points="179.2,528.0 188.8,518.4 "/>
+<polyline points="88.0,504.0 88.0,552.0 196.8,552.0 "/>
+<polyline points="484.8,315.2 516.8,315.2 "/>
+<polyline points="88.0,856.0 88.0,808.0 196.8,808.0 "/>
+<polyline points="1892.8,107.2 1892.8,283.2 "/>
+<polyline points="2340.8,107.2 2340.8,283.2 "/>
+<polyline points="3428.8,107.2 3428.8,283.2 "/>
+<polyline points="3492.8,107.2 3492.8,283.2 "/>
+<polyline points="324.8,1044.8 1124.8,1044.8 "/>
+<polyline points="4196.8,107.2 4196.8,283.2 "/>
+<polyline points="4260.8,107.2 4260.8,283.2 "/>
+<polyline points="4388.8,107.2 4388.8,283.2 "/>
+<polyline points="4452.8,107.2 4452.8,283.2 "/>
+<polyline points="324.8,1044.8 324.8,744.0 "/>
+<polyline points="996.8,107.2 996.8,504.0 "/>
+<polyline points="2116.8,107.2 2116.8,568.0 "/>
+<polyline points="2564.8,107.2 2564.8,568.0 "/>
+<polyline points="2884.8,107.2 2884.8,568.0 "/>
+<polyline points="3204.8,107.2 3204.8,568.0 "/>
+<polyline points="548.8,107.2 548.8,283.2 "/>
+<polyline points="1316.8,107.2 1316.8,283.2 "/>
+<polyline points="1636.8,107.2 1636.8,283.2 "/>
+<polyline points="932.8,107.2 932.8,283.2 "/>
+<polyline points="1444.8,107.2 1444.8,283.2 "/>
+<polyline points="1828.8,107.2 1828.8,283.2 "/>
+<polyline points="932.8,107.2 996.8,107.2 "/>
+<polyline points="996.8,107.2 1316.8,107.2 "/>
+<polyline points="1316.8,107.2 1444.8,107.2 "/>
+<polyline points="1444.8,107.2 1636.8,107.2 "/>
+<polyline points="1636.8,107.2 1828.8,107.2 "/>
+<polyline points="2564.8,107.2 2884.8,107.2 "/>
+<polyline points="2884.8,107.2 3204.8,107.2 "/>
+<polyline points="996.8,504.0 260.8,504.0 "/>
+<polyline points="996.8,856.0 996.8,1252.8 "/>
+<polyline points="2116.8,792.0 2116.8,1252.8 "/>
+<polyline points="2564.8,792.0 2564.8,1252.8 "/>
+<polyline points="2884.8,792.0 2884.8,1252.8 "/>
+<polyline points="3204.8,792.0 3204.8,1252.8 "/>
+<polyline points="356.8,347.2 356.8,1252.8 "/>
+<polyline points="1316.8,712.0 1316.8,1252.8 "/>
+<polyline points="1636.8,712.0 1636.8,1252.8 "/>
+<polyline points="740.8,347.2 740.8,1252.8 "/>
+<polyline points="1444.8,1076.8 1444.8,1252.8 "/>
+<polyline points="1828.8,712.0 1828.8,1252.8 "/>
+<polyline points="3684.8,347.2 3684.8,1252.8 "/>
+<polyline points="4324.8,712.0 4324.8,1252.8 "/>
+<polyline points="356.8,1252.8 740.8,1252.8 "/>
+<polyline points="740.8,1252.8 996.8,1252.8 "/>
+<polyline points="996.8,1252.8 1316.8,1252.8 "/>
+<polyline points="1316.8,1252.8 1444.8,1252.8 "/>
+<polyline points="1444.8,1252.8 1636.8,1252.8 "/>
+<polyline points="1636.8,1252.8 1828.8,1252.8 "/>
+<polyline points="1828.8,1252.8 1892.8,1252.8 "/>
+<polyline points="1892.8,1252.8 2116.8,1252.8 "/>
+<polyline points="2116.8,1252.8 2564.8,1252.8 "/>
+<polyline points="2564.8,1252.8 2884.8,1252.8 "/>
+<polyline points="2884.8,1252.8 3204.8,1252.8 "/>
+<polyline points="3204.8,1252.8 3300.8,1252.8 "/>
+<polyline points="3300.8,1252.8 3684.8,1252.8 "/>
+<polyline points="3684.8,1252.8 4324.8,1252.8 "/>
+<polyline points="996.8,856.0 260.8,856.0 "/>
+<polyline points="2020.8,315.2 2052.8,315.2 "/>
+<polyline points="2468.8,315.2 2500.8,315.2 "/>
+<polyline points="3492.8,347.2 3492.8,680.0 "/>
+<polyline points="3428.8,347.2 3428.8,680.0 "/>
+<polyline points="2340.8,347.2 2340.8,680.0 "/>
+<polyline points="1892.8,347.2 1892.8,680.0 "/>
+<polyline points="3684.8,107.2 3684.8,283.2 "/>
+<polyline points="2052.8,315.2 2052.8,616.0 "/>
+<polyline points="2500.8,315.2 2500.8,616.0 "/>
+<polyline points="2180.8,680.0 2212.8,680.0 "/>
+<polyline points="2948.8,680.0 2980.8,680.0 "/>
+<polyline points="1316.8,347.2 1316.8,648.0 "/>
+<polyline points="2020.8,680.0 2052.8,680.0 "/>
+<polyline points="2788.8,680.0 2820.8,680.0 "/>
+<polyline points="1572.8,680.0 1604.8,680.0 "/>
+<polyline points="1572.8,315.2 1604.8,315.2 "/>
+<polyline points="1636.8,347.2 1636.8,648.0 "/>
+<polyline points="2020.8,1044.8 2052.8,1044.8 "/>
+<polyline points="2788.8,1044.8 2820.8,1044.8 "/>
+<polyline points="2052.8,1044.8 2052.8,744.0 "/>
+<polyline points="2820.8,1044.8 2820.8,744.0 "/>
+<polyline points="4132.8,347.2 4132.8,648.0 "/>
+<polyline points="4644.8,139.2 4644.8,283.2 "/>
+<polyline points="4644.8,347.2 4644.8,363.2 4676.8,363.2 4676.8,59.2 4644.8,59.2 4644.8,75.2 "/>
+<polyline points="2628.8,680.0 2660.8,680.0 "/>
+<polyline points="3268.8,680.0 3300.8,680.0 "/>
+<polyline points="3300.8,107.2 3300.8,283.2 "/>
+<polyline points="4068.8,107.2 4068.8,283.2 "/>
+<polyline points="4132.8,712.0 4132.8,1044.8 "/>
+<polyline points="4068.8,347.2 4132.8,347.2 "/>
+<polyline points="1444.8,347.2 1444.8,1012.8 "/>
+<polyline points="2468.8,680.0 2500.8,680.0 "/>
+<polyline points="3108.8,680.0 3140.8,680.0 "/>
+<polyline points="1764.8,680.0 1796.8,680.0 "/>
+<polyline points="1764.8,315.2 1796.8,315.2 "/>
+<polyline points="4068.8,680.0 4100.8,680.0 "/>
+<polyline points="4580.8,315.2 4612.8,315.2 "/>
+<polyline points="1828.8,347.2 1828.8,648.0 "/>
+<polyline points="2468.8,1044.8 2500.8,1044.8 "/>
+<polyline points="3108.8,1044.8 3140.8,1044.8 "/>
+<polyline points="3940.8,315.2 4036.8,315.2 "/>
+<polyline points="4580.8,107.2 4612.8,107.2 "/>
+<polyline points="2500.8,1044.8 2500.8,744.0 "/>
+<polyline points="3140.8,1044.8 3140.8,744.0 "/>
+<polyline points="4196.8,347.2 4196.8,648.0 "/>
+<polyline points="4260.8,347.2 4260.8,648.0 "/>
+<polyline points="4388.8,347.2 4388.8,648.0 "/>
+<polyline points="4452.8,347.2 4452.8,648.0 "/>
+<polyline points="2788.8,315.2 2820.8,315.2 "/>
+<polyline points="3108.8,315.2 3140.8,315.2 "/>
+<polyline points="4196.8,648.0 4260.8,648.0 "/>
+<polyline points="4260.8,648.0 4324.8,648.0 "/>
+<polyline points="4324.8,648.0 4388.8,648.0 "/>
+<polyline points="4388.8,648.0 4452.8,648.0 "/>
+<polyline points="2820.8,315.2 2820.8,616.0 "/>
+<polyline points="3140.8,315.2 3140.8,616.0 "/>
+<polyline points="1124.8,680.0 1284.8,680.0 "/>
+<polyline points="356.8,107.2 356.8,283.2 "/>
+<polyline points="548.8,347.2 548.8,680.0 "/>
+<polyline points="1252.8,315.2 1284.8,315.2 "/>
+<polyline points="1380.8,1044.8 1412.8,1044.8 "/>
+<polyline points="1380.8,315.2 1412.8,315.2 "/>
+<polyline points="1380.8,315.2 1380.8,680.0 "/>
+<polyline points="1380.8,680.0 1380.8,1044.8 "/>
+<polyline points="740.8,107.2 740.8,283.2 "/>
+<polyline points="932.8,347.2 932.8,680.0 "/>
+<polyline points="676.8,315.2 708.8,315.2 "/>
+<polyline points="868.8,315.2 900.8,315.2 "/>
+<polyline points="212.8,520.0 308.8,520.0 308.8,840.0 212.8,840.0 212.8,520.0 "/>
+<polyline points="196.8,552.0 212.8,552.0 "/>
+<text x="236.8" y="555.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">inp</text>
+<polyline points="196.8,616.0 212.8,616.0 "/>
+<text x="236.8" y="619.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">inn</text>
+<polyline points="196.8,744.0 212.8,744.0 "/>
+<text x="241.6" y="747.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">phi1</text>
+<polyline points="196.8,808.0 212.8,808.0 "/>
+<text x="246.4" y="811.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">phi1e</text>
+<polyline points="324.8,616.0 308.8,616.0 "/>
+<text x="280.0" y="619.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">outa</text>
+<polyline points="324.8,744.0 308.8,744.0 "/>
+<text x="280.0" y="747.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">outb</text>
+<polyline points="260.8,504.0 260.8,520.0 "/>
+<text x="260.8" y="534.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
+<polyline points="260.8,856.0 260.8,840.0 "/>
+<text x="260.8" y="831.8" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
+<text x="260.8" y="683.0" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">pwm_driver</text>
+<polyline points="2068.8,584.0 2164.8,584.0 2164.8,776.0 2068.8,776.0 2068.8,584.0 "/>
+<polyline points="2052.8,616.0 2068.8,616.0 "/>
+<text x="2092.8" y="619.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
+<polyline points="2052.8,680.0 2068.8,680.0 "/>
+<text x="2097.6" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
+<polyline points="2052.8,744.0 2068.8,744.0 "/>
+<text x="2107.2" y="747.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
+<polyline points="2180.8,680.0 2164.8,680.0 "/>
+<text x="2140.8" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
+<polyline points="2116.8,568.0 2116.8,584.0 "/>
+<text x="2116.8" y="598.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
+<polyline points="2116.8,792.0 2116.8,776.0 "/>
+<text x="2116.8" y="767.8" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
+<text x="2116.8" y="683.0" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
+<polyline points="2516.8,584.0 2612.8,584.0 2612.8,776.0 2516.8,776.0 2516.8,584.0 "/>
+<polyline points="2500.8,616.0 2516.8,616.0 "/>
+<text x="2540.8" y="619.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
+<polyline points="2500.8,680.0 2516.8,680.0 "/>
+<text x="2545.6" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
+<polyline points="2500.8,744.0 2516.8,744.0 "/>
+<text x="2555.2" y="747.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
+<polyline points="2628.8,680.0 2612.8,680.0 "/>
+<text x="2588.8" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
+<polyline points="2564.8,568.0 2564.8,584.0 "/>
+<text x="2564.8" y="598.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
+<polyline points="2564.8,792.0 2564.8,776.0 "/>
+<text x="2564.8" y="767.8" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
+<text x="2564.8" y="683.0" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
+<polyline points="2836.8,584.0 2932.8,584.0 2932.8,776.0 2836.8,776.0 2836.8,584.0 "/>
+<polyline points="2820.8,616.0 2836.8,616.0 "/>
+<text x="2860.8" y="619.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
+<polyline points="2820.8,680.0 2836.8,680.0 "/>
+<text x="2865.6" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
+<polyline points="2820.8,744.0 2836.8,744.0 "/>
+<text x="2875.2" y="747.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
+<polyline points="2948.8,680.0 2932.8,680.0 "/>
+<text x="2908.8" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
+<polyline points="2884.8,568.0 2884.8,584.0 "/>
+<text x="2884.8" y="598.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
+<polyline points="2884.8,792.0 2884.8,776.0 "/>
+<text x="2884.8" y="767.8" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
+<text x="2884.8" y="683.0" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
+<polyline points="3156.8,584.0 3252.8,584.0 3252.8,776.0 3156.8,776.0 3156.8,584.0 "/>
+<polyline points="3140.8,616.0 3156.8,616.0 "/>
+<text x="3180.8" y="619.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">in_</text>
+<polyline points="3140.8,680.0 3156.8,680.0 "/>
+<text x="3185.6" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl</text>
+<polyline points="3140.8,744.0 3156.8,744.0 "/>
+<text x="3195.2" y="747.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">ctrl_b</text>
+<polyline points="3268.8,680.0 3252.8,680.0 "/>
+<text x="3228.8" y="683.0" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">out</text>
+<polyline points="3204.8,568.0 3204.8,584.0 "/>
+<text x="3204.8" y="598.2" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vdd</text>
+<polyline points="3204.8,792.0 3204.8,776.0 "/>
+<text x="3204.8" y="767.8" text-anchor="middle" font-size="9" fill="#1d2330" stroke="none">vss</text>
+<text x="3204.8" y="683.0" text-anchor="middle" font-size="11" fill="#1d2330" stroke="none">weight_tile_tg</text>
+<polyline points="356.8,283.2 356.8,302.4 352.0,302.4 "/>
+<polyline points="356.8,347.2 356.8,328.0 352.0,328.0 "/>
+<polyline points="352.0,299.2 352.0,331.2 "/>
+<polyline points="345.6,302.4 345.6,328.0 "/>
+<polyline points="324.8,315.2 345.6,315.2 "/>
+<polyline points="548.8,347.2 548.8,328.0 544.0,328.0 "/>
+<polyline points="548.8,283.2 548.8,302.4 544.0,302.4 "/>
+<polyline points="544.0,331.2 544.0,299.2 "/>
+<polyline points="537.6,328.0 537.6,302.4 "/>
+<circle cx="534.4" cy="315.2" r="3.2" fill="#ffffff"/>
+<polyline points="516.8,315.2 531.2,315.2 "/>
+<polyline points="1316.8,648.0 1316.8,667.2 1312.0,667.2 "/>
+<polyline points="1316.8,712.0 1316.8,692.8 1312.0,692.8 "/>
+<polyline points="1312.0,664.0 1312.0,696.0 "/>
+<polyline points="1305.6,667.2 1305.6,692.8 "/>
+<polyline points="1284.8,680.0 1305.6,680.0 "/>
+<polyline points="1316.8,347.2 1316.8,328.0 1312.0,328.0 "/>
+<polyline points="1316.8,283.2 1316.8,302.4 1312.0,302.4 "/>
+<polyline points="1312.0,331.2 1312.0,299.2 "/>
+<polyline points="1305.6,328.0 1305.6,302.4 "/>
+<circle cx="1302.4" cy="315.2" r="3.2" fill="#ffffff"/>
+<polyline points="1284.8,315.2 1299.2,315.2 "/>
+<polyline points="1636.8,648.0 1636.8,667.2 1632.0,667.2 "/>
+<polyline points="1636.8,712.0 1636.8,692.8 1632.0,692.8 "/>
+<polyline points="1632.0,664.0 1632.0,696.0 "/>
+<polyline points="1625.6,667.2 1625.6,692.8 "/>
+<polyline points="1604.8,680.0 1625.6,680.0 "/>
+<polyline points="1636.8,347.2 1636.8,328.0 1632.0,328.0 "/>
+<polyline points="1636.8,283.2 1636.8,302.4 1632.0,302.4 "/>
+<polyline points="1632.0,331.2 1632.0,299.2 "/>
+<polyline points="1625.6,328.0 1625.6,302.4 "/>
+<circle cx="1622.4" cy="315.2" r="3.2" fill="#ffffff"/>
+<polyline points="1604.8,315.2 1619.2,315.2 "/>
+<polyline points="740.8,283.2 740.8,302.4 736.0,302.4 "/>
+<polyline points="740.8,347.2 740.8,328.0 736.0,328.0 "/>
+<polyline points="736.0,299.2 736.0,331.2 "/>
+<polyline points="729.6,302.4 729.6,328.0 "/>
+<polyline points="708.8,315.2 729.6,315.2 "/>
+<polyline points="932.8,347.2 932.8,328.0 928.0,328.0 "/>
+<polyline points="932.8,283.2 932.8,302.4 928.0,302.4 "/>
+<polyline points="928.0,331.2 928.0,299.2 "/>
+<polyline points="921.6,328.0 921.6,302.4 "/>
+<circle cx="918.4" cy="315.2" r="3.2" fill="#ffffff"/>
+<polyline points="900.8,315.2 915.2,315.2 "/>
+<polyline points="1444.8,1012.8 1444.8,1032.0 1440.0,1032.0 "/>
+<polyline points="1444.8,1076.8 1444.8,1057.6 1440.0,1057.6 "/>
+<polyline points="1440.0,1028.8 1440.0,1060.8 "/>
+<polyline points="1433.6,1032.0 1433.6,1057.6 "/>
+<polyline points="1412.8,1044.8 1433.6,1044.8 "/>
+<polyline points="1444.8,347.2 1444.8,328.0 1440.0,328.0 "/>
+<polyline points="1444.8,283.2 1444.8,302.4 1440.0,302.4 "/>
+<polyline points="1440.0,331.2 1440.0,299.2 "/>
+<polyline points="1433.6,328.0 1433.6,302.4 "/>
+<circle cx="1430.4" cy="315.2" r="3.2" fill="#ffffff"/>
+<polyline points="1412.8,315.2 1427.2,315.2 "/>
+<polyline points="1828.8,648.0 1828.8,667.2 1824.0,667.2 "/>
+<polyline points="1828.8,712.0 1828.8,692.8 1824.0,692.8 "/>
+<polyline points="1824.0,664.0 1824.0,696.0 "/>
+<polyline points="1817.6,667.2 1817.6,692.8 "/>
+<polyline points="1796.8,680.0 1817.6,680.0 "/>
+<polyline points="1828.8,347.2 1828.8,328.0 1824.0,328.0 "/>
+<polyline points="1828.8,283.2 1828.8,302.4 1824.0,302.4 "/>
+<polyline points="1824.0,331.2 1824.0,299.2 "/>
+<polyline points="1817.6,328.0 1817.6,302.4 "/>
+<circle cx="1814.4" cy="315.2" r="3.2" fill="#ffffff"/>
+<polyline points="1796.8,315.2 1811.2,315.2 "/>
+<polyline points="3300.8,283.2 3300.8,310.4 "/>
+<polyline points="3300.8,320.0 3300.8,347.2 "/>
+<polyline points="3288.0,310.4 3313.6,310.4 "/>
+<polyline points="3288.0,320.0 3313.6,320.0 "/>
+<polyline points="1892.8,347.2 1892.8,320.0 "/>
+<polyline points="1892.8,310.4 1892.8,283.2 "/>
+<polyline points="1880.0,320.0 1905.6,320.0 "/>
+<polyline points="1880.0,310.4 1905.6,310.4 "/>
+<polyline points="2340.8,347.2 2340.8,320.0 "/>
+<polyline points="2340.8,310.4 2340.8,283.2 "/>
+<polyline points="2328.0,320.0 2353.6,320.0 "/>
+<polyline points="2328.0,310.4 2353.6,310.4 "/>
+<polyline points="3428.8,347.2 3428.8,320.0 "/>
+<polyline points="3428.8,310.4 3428.8,283.2 "/>
+<polyline points="3416.0,320.0 3441.6,320.0 "/>
+<polyline points="3416.0,310.4 3441.6,310.4 "/>
+<polyline points="3492.8,347.2 3492.8,320.0 "/>
+<polyline points="3492.8,310.4 3492.8,283.2 "/>
+<polyline points="3480.0,320.0 3505.6,320.0 "/>
+<polyline points="3480.0,310.4 3505.6,310.4 "/>
+<polyline points="3684.8,283.2 3684.8,310.4 "/>
+<polyline points="3684.8,320.0 3684.8,347.2 "/>
+<polyline points="3672.0,310.4 3697.6,310.4 "/>
+<polyline points="3672.0,320.0 3697.6,320.0 "/>
+<polyline points="4068.8,283.2 4068.8,302.4 4064.0,302.4 "/>
+<polyline points="4068.8,347.2 4068.8,328.0 4064.0,328.0 "/>
+<polyline points="4064.0,299.2 4064.0,331.2 "/>
+<polyline points="4057.6,302.4 4057.6,328.0 "/>
+<polyline points="4036.8,315.2 4057.6,315.2 "/>
+<polyline points="4132.8,648.0 4132.8,667.2 4128.0,667.2 "/>
+<polyline points="4132.8,712.0 4132.8,692.8 4128.0,692.8 "/>
+<polyline points="4128.0,664.0 4128.0,696.0 "/>
+<polyline points="4121.6,667.2 4121.6,692.8 "/>
+<circle cx="4118.4" cy="680.0" r="3.2" fill="#ffffff"/>
+<polyline points="4100.8,680.0 4115.2,680.0 "/>
+<polyline points="4196.8,347.2 4196.8,320.0 "/>
+<polyline points="4196.8,310.4 4196.8,283.2 "/>
+<polyline points="4184.0,320.0 4209.6,320.0 "/>
+<polyline points="4184.0,310.4 4209.6,310.4 "/>
+<polyline points="4260.8,347.2 4260.8,320.0 "/>
+<polyline points="4260.8,310.4 4260.8,283.2 "/>
+<polyline points="4248.0,320.0 4273.6,320.0 "/>
+<polyline points="4248.0,310.4 4273.6,310.4 "/>
+<polyline points="4388.8,347.2 4388.8,320.0 "/>
+<polyline points="4388.8,310.4 4388.8,283.2 "/>
+<polyline points="4376.0,320.0 4401.6,320.0 "/>
+<polyline points="4376.0,310.4 4401.6,310.4 "/>
+<polyline points="4452.8,347.2 4452.8,320.0 "/>
+<polyline points="4452.8,310.4 4452.8,283.2 "/>
+<polyline points="4440.0,320.0 4465.6,320.0 "/>
+<polyline points="4440.0,310.4 4465.6,310.4 "/>
+<polyline points="4324.8,648.0 4324.8,675.2 "/>
+<polyline points="4324.8,684.8 4324.8,712.0 "/>
+<polyline points="4312.0,675.2 4337.6,675.2 "/>
+<polyline points="4312.0,684.8 4337.6,684.8 "/>
+<polyline points="4644.8,75.2 4644.8,94.4 4640.0,94.4 "/>
+<polyline points="4644.8,139.2 4644.8,120.0 4640.0,120.0 "/>
+<polyline points="4640.0,91.2 4640.0,123.2 "/>
+<polyline points="4633.6,94.4 4633.6,120.0 "/>
+<polyline points="4612.8,107.2 4633.6,107.2 "/>
+<polyline points="4644.8,283.2 4644.8,302.4 4640.0,302.4 "/>
+<polyline points="4644.8,347.2 4644.8,328.0 4640.0,328.0 "/>
+<polyline points="4640.0,299.2 4640.0,331.2 "/>
+<polyline points="4633.6,302.4 4633.6,328.0 "/>
+<circle cx="4630.4" cy="315.2" r="3.2" fill="#ffffff"/>
+<polyline points="4612.8,315.2 4627.2,315.2 "/>
+<polyline points="1622.4,107.2 1651.2,107.2 "/>
+<text x="1636.8" y="101.2" text-anchor="middle" font-size="12" fill="#1d2330" stroke="none">vdd</text>
+<polyline points="1878.4,1252.8 1907.2,1252.8 "/>
+<polyline points="1883.2,1257.6 1902.4,1257.6 "/>
+<polyline points="1889.6,1262.4 1896.0,1262.4 "/>
+<text x="1906.8" y="1262.8" text-anchor="start" font-size="11" fill="#56607a" stroke="none">vss</text>
+<polyline points="192.0,547.2 201.6,556.8 "/>
+<polyline points="192.0,556.8 201.6,547.2 "/>
+<polyline points="192.0,611.2 201.6,620.8 "/>
+<polyline points="192.0,620.8 201.6,611.2 "/>
+<polyline points="192.0,803.2 201.6,812.8 "/>
+<polyline points="192.0,812.8 201.6,803.2 "/>
 </g>
-<circle cx="984.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="2104.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="2552.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="2872.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1304.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1624.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="920.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1432.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1816.0" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="984.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="2104.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="2552.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="2872.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="3192.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1304.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1624.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="728.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1432.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="1816.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="3288.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="3672.0" cy="667.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="4248.0" cy="363.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="4376.0" cy="363.2" r="3.8" fill="#1d2330" stroke="none"/>
-<circle cx="4312.0" cy="363.2" r="3.8" fill="#1d2330" stroke="none"/>
-<text x="136.0" y="395.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdrv0</text>
-<text x="2172.8" y="376.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xsvp0_0</text>
-<text x="2620.8" y="376.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xstp0_0</text>
-<text x="2940.8" y="376.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xsvn0_0</text>
-<text x="3064.0" y="376.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xstn0_0</text>
-<text x="348.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i1n</text>
-<text x="540.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i1p</text>
-<text x="1096.0" y="376.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i2n</text>
-<text x="1096.0" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i2p</text>
-<text x="1628.8" y="395.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i3n</text>
-<text x="1628.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i3p</text>
-<text x="732.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i1n</text>
-<text x="924.8" y="334.4" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i1p</text>
-<text x="1436.8" y="459.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i2n</text>
-<text x="1436.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i2p</text>
-<text x="1820.8" y="414.4" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i3n</text>
-<text x="1820.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i3p</text>
-<text x="3305.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xrail0</text>
-<text x="1897.6" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b0</text>
-<text x="2345.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b1</text>
-<text x="3331.2" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b2</text>
-<text x="3497.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b3</text>
-<text x="3689.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xballp0_0</text>
-<text x="4060.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdunp0_0</text>
-<text x="4124.8" y="395.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdupp0_0</text>
-<text x="4099.2" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b0</text>
-<text x="4265.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b1</text>
-<text x="4291.2" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b2</text>
-<text x="4457.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b3</text>
-<text x="4329.6" y="395.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xballn0_0</text>
-<text x="4528.0" y="88.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdunn0_0</text>
-<text x="4528.0" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdupn0_0</text>
-<text x="81.0" y="463.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1</text>
-<text x="273.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1</text>
-<text x="465.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1</text>
-<text x="2207.0" y="399.2" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vcm</text>
-<text x="2975.0" y="399.2" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vcm</text>
-<text x="657.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2</text>
-<text x="849.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2</text>
-<text x="2655.0" y="399.2" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="3295.0" y="399.2" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="1119.0" y="463.2" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
-<text x="4184.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
-<text x="4248.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
-<text x="4376.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
-<text x="4440.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
-<text x="1119.0" y="319.2" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
-<text x="1880.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
-<text x="2328.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
-<text x="3416.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
-<text x="3480.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
-<text x="2449.0" y="463.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
-<text x="3089.0" y="463.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
-<text x="3921.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
-<text x="4561.0" y="111.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
-<text x="2449.0" y="399.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
-<text x="3089.0" y="399.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
-<text x="1745.0" y="399.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
-<text x="1745.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
-<text x="4049.0" y="399.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
-<text x="4561.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
-<text x="2001.0" y="463.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_b_i</text>
-<text x="2769.0" y="463.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_b_i</text>
-<text x="2001.0" y="399.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
-<text x="2769.0" y="399.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
-<text x="1553.0" y="399.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
-<text x="1553.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
-<text x="2769.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tn0_0</text>
-<text x="3089.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tn0_0</text>
-<text x="2001.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
-<text x="2449.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
-<text x="728.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_n1</text>
-<text x="920.0" y="411.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_n1</text>
-<text x="344.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
-<text x="536.0" y="411.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
-<text x="1233.0" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
-<text x="3480.0" y="411.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
-<text x="3416.0" y="411.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
-<text x="2328.0" y="411.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
-<text x="1880.0" y="411.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
-<text x="3672.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
-<text x="3288.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="4056.0" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="4120.0" y="475.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="4113.0" y="359.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="4625.0" y="215.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="1809.0" y="359.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
-<text x="1425.0" y="391.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
-<text x="1617.0" y="359.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_b_i</text>
-<text x="1297.0" y="359.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
-<text x="1384.0" y="453.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_n1</text>
-<text x="1192.0" y="389.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
-<text x="4177.0" y="359.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tn0_0</text>
-<text x="4657.0" y="215.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
-<text x="40.0" y="750.0" text-anchor="start" font-size="12" fill="#1d2330" stroke="none"></text>
+<circle cx="996.8" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="2884.8" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="1316.8" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="1636.8" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="1444.8" cy="107.2" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="996.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="2116.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="2564.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="2884.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="3204.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="1316.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="1636.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="740.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="1444.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="1828.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="3684.8" cy="1252.8" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="4260.8" cy="648.0" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="4388.8" cy="648.0" r="3.8" fill="#1d2330" stroke="none"/>
+<circle cx="4324.8" cy="648.0" r="3.8" fill="#1d2330" stroke="none"/>
+<text x="148.8" y="680.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdrv0</text>
+<text x="2185.6" y="660.8" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xsvp0_0</text>
+<text x="2633.6" y="660.8" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xstp0_0</text>
+<text x="2953.6" y="660.8" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xsvn0_0</text>
+<text x="3273.6" y="660.8" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xstn0_0</text>
+<text x="148.8" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i1n</text>
+<text x="553.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i1p</text>
+<text x="1108.8" y="660.8" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i2n</text>
+<text x="1108.8" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i2p</text>
+<text x="1641.6" y="680.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i3n</text>
+<text x="1641.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi1_i3p</text>
+<text x="745.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i1n</text>
+<text x="937.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i1p</text>
+<text x="1449.6" y="1044.8" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i2n</text>
+<text x="1449.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i2p</text>
+<text x="1833.6" y="699.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i3n</text>
+<text x="1833.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xweight_tile_phi2_i3p</text>
+<text x="3318.4" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xrail0</text>
+<text x="1910.4" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b0</text>
+<text x="2358.4" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b1</text>
+<text x="3344.0" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b2</text>
+<text x="3510.4" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xp0_0_b3</text>
+<text x="3702.4" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xballp0_0</text>
+<text x="4073.6" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdunp0_0</text>
+<text x="4137.6" y="680.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdupp0_0</text>
+<text x="4112.0" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b0</text>
+<text x="4278.4" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b1</text>
+<text x="4304.0" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b2</text>
+<text x="4470.4" y="315.2" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xn0_0_b3</text>
+<text x="4342.4" y="680.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xballn0_0</text>
+<text x="4540.8" y="88.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdunn0_0</text>
+<text x="4540.8" y="296.0" text-anchor="start" font-size="11" fill="#56607a" stroke="none">xdupn0_0</text>
+<text x="477.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1</text>
+<text x="2219.8" y="684.0" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vcm</text>
+<text x="2987.8" y="684.0" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vcm</text>
+<text x="669.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2</text>
+<text x="861.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2</text>
+<text x="2667.8" y="684.0" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="3307.8" y="684.0" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="1131.8" y="1048.8" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
+<text x="4196.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
+<text x="4260.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
+<text x="4388.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
+<text x="4452.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowb0</text>
+<text x="1892.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
+<text x="2340.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
+<text x="3428.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
+<text x="3492.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
+<text x="2461.8" y="1048.8" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
+<text x="3101.8" y="1048.8" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
+<text x="3933.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
+<text x="4573.8" y="111.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
+<text x="2461.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
+<text x="3101.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
+<text x="1757.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
+<text x="1757.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
+<text x="4061.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
+<text x="4573.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
+<text x="2013.8" y="1048.8" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_b_i</text>
+<text x="2781.8" y="1048.8" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_b_i</text>
+<text x="2013.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
+<text x="2781.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
+<text x="1565.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
+<text x="1565.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
+<text x="2781.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tn0_0</text>
+<text x="3101.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tn0_0</text>
+<text x="2013.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
+<text x="2461.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
+<text x="740.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_n1</text>
+<text x="932.8" y="696.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_n1</text>
+<text x="356.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
+<text x="548.8" y="696.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
+<text x="1245.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
+<text x="3492.8" y="696.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
+<text x="3428.8" y="696.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
+<text x="2340.8" y="696.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
+<text x="1892.8" y="696.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
+<text x="3684.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tp0_0</text>
+<text x="3300.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="4068.8" y="101.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="4132.8" y="1060.8" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="4125.8" y="501.6" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="4637.8" y="215.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="1821.8" y="501.6" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_b_i</text>
+<text x="1437.8" y="684.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_i</text>
+<text x="1629.8" y="501.6" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_b_i</text>
+<text x="1309.8" y="501.6" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_i</text>
+<text x="1396.8" y="1038.8" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi2_n1</text>
+<text x="1204.8" y="674.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1_n1</text>
+<text x="4189.8" y="501.6" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">tn0_0</text>
+<text x="4669.8" y="215.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">col0</text>
+<text x="317.8" y="319.2" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1</text>
+<text x="331.8" y="620.0" text-anchor="start" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">rowa0</text>
+<text x="189.8" y="748.0" text-anchor="end" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">phi1</text>
+<text x="2116.8" y="562.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vdd</text>
+<text x="2564.8" y="562.0" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vdd</text>
+<text x="548.8" y="277.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vdd</text>
+<text x="3300.8" y="363.2" text-anchor="middle" font-size="12" fill="#2a62b8" stroke="none" font-style="italic">vss</text>
+<text x="40.0" y="1335.6" text-anchor="start" font-size="12" fill="#1d2330" stroke="none"></text>
 </svg>
