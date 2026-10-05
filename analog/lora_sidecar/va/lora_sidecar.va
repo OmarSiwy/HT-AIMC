@@ -1,0 +1,224 @@
+// Rank-1 signed LoRA sidecar — behavioural golden model, ports 1:1 with
+// netlist/lora_sidecar.py (.subckt lora_sidecar). In-out behaviour only:
+//   cells    store = write-switch-gated RC to the bus level; read current = EKV law of
+//            the store (source at vss, drain held near vcm) — always on, steered
+//   A rows   xen & !xneg: Ap -> colp, An -> coln; xen & xneg: swapped; else -> vcm dump
+//   A.x      ideal integrators (high-gain VCVS + C_int) on colp / coln, reset by rst
+//   V -> T   equal ramps iramp pull vaxp / vaxn to vth = vcm - vped; first-order
+//            comparator delay tc on each side; pos = ramp_en.cn./cp, neg = ramp_en.cp./cn
+//   B cols   pos: bpd sinks colb, bnm sources it (mirror gain km); neg: bpm sources,
+//            bnd sinks; otherwise the currents go to the vcm dump
+//   write    bus level = vcm * code / 15, code = 8 + m (m > 0) else 0, m = d2..d0; d3
+//            picks the + or - bus, the other is grounded
+// Continuous (OpenVAF subset): tanh logic thresholds at vdd/2, RC delays via ddt.
+// Not modelled: DAC settling, TG injection/leakage, OTA finite gain/offset/slew and
+// output limits, comparator offset, mismatch; vb_ramp and the OTA biases are taken as
+// nominal (iramp is a parameter).
+`include "disciplines.vams"
+`include "constants.vams"
+
+// one A row: store sp (+ cell) / sn (- cell) written from the A buses while ws is high
+`define AROW(xe, xn, ws, sp, sn) \
+        I(sp, vss) <+ cs * ddt(V(sp, vss)) + (V(sp, vss) - wap) * gw(V(ws, vss), V(vdd, vss)) + gleak * V(sp, vss); \
+        I(sp, ws) <+ cinj * ddt(V(sp, ws)); \
+        I(sn, vss) <+ cs * ddt(V(sn, vss)) + (V(sn, vss) - wan) * gw(V(ws, vss), V(vdd, vss)) + gleak * V(sn, vss); \
+        I(sn, ws) <+ cinj * ddt(V(sn, ws)); \
+        e = lg(V(xe, vss), V(vdd, vss)); \
+        x = lg(V(xn, vss), V(vdd, vss)); \
+        f1 = iread(V(sp, vss)); \
+        f2 = iread(V(sn, vss)); \
+        I(colp, vss) <+ e * ((1.0 - x) * f1 + x * f2); \
+        I(coln, vss) <+ e * ((1.0 - x) * f2 + x * f1); \
+        I(vcm, vss) <+ (1.0 - e) * (f1 + f2);
+
+// one B column: stores pd (+, direct), nm (-, mirrored), pm (+, mirrored), nd (-, direct)
+`define BCOL(ws, cb, pd, nm, pm, nd) \
+        I(pd, vss) <+ cs * ddt(V(pd, vss)) + (V(pd, vss) - wbp) * gw(V(ws, vss), V(vdd, vss)) + gleak * V(pd, vss); \
+        I(pd, ws) <+ cinj * ddt(V(pd, ws)); \
+        I(pm, vss) <+ cs * ddt(V(pm, vss)) + (V(pm, vss) - wbp) * gw(V(ws, vss), V(vdd, vss)) + gleak * V(pm, vss); \
+        I(pm, ws) <+ cinj * ddt(V(pm, ws)); \
+        I(nd, vss) <+ cs * ddt(V(nd, vss)) + (V(nd, vss) - wbn) * gw(V(ws, vss), V(vdd, vss)) + gleak * V(nd, vss); \
+        I(nd, ws) <+ cinj * ddt(V(nd, ws)); \
+        I(nm, vss) <+ cs * ddt(V(nm, vss)) + (V(nm, vss) - wbn) * gw(V(ws, vss), V(vdd, vss)) + gleak * V(nm, vss); \
+        I(nm, ws) <+ cinj * ddt(V(nm, ws)); \
+        f1 = iread(V(pd, vss)); \
+        f2 = iread(V(nm, vss)); \
+        f3 = iread(V(pm, vss)); \
+        f4 = iread(V(nd, vss)); \
+        I(cb, vss) <+ pos * f1 + neg * f4; \
+        I(vdd, cb) <+ km * (pos * f2 + neg * f3); \
+        I(vcm, vss) <+ (1.0 - pos) * f1 + (1.0 - neg) * f4; \
+        I(vdd, vcm) <+ km * ((1.0 - pos) * f2 + (1.0 - neg) * f3); \
+        I(vdd, vss) <+ f2 + f3;
+
+module lora_sidecar(
+    xen0, xen1, xen2, xen3, xen4, xen5, xen6, xen7, xen8, xen9, xen10, xen11, xen12,
+    xen13, xen14, xen15, xneg0, xneg1, xneg2, xneg3, xneg4, xneg5, xneg6, xneg7, xneg8,
+    xneg9, xneg10, xneg11, xneg12, xneg13, xneg14, xneg15, colb0, colb1, colb2, colb3,
+    colb4, colb5, colb6, colb7, colb8, colb9, colb10, colb11, colb12, colb13, colb14,
+    colb15, wa_sel0, wa_sel1, wa_sel2, wa_sel3, wa_sel4, wa_sel5, wa_sel6, wa_sel7,
+    wa_sel8, wa_sel9, wa_sel10, wa_sel11, wa_sel12, wa_sel13, wa_sel14, wa_sel15,
+    wb_sel0, wb_sel1, wb_sel2, wb_sel3, wb_sel4, wb_sel5, wb_sel6, wb_sel7, wb_sel8,
+    wb_sel9, wb_sel10, wb_sel11, wb_sel12, wb_sel13, wb_sel14, wb_sel15, da0, da1, da2,
+    da3, db0, db1, db2, db3, rst, ramp_en, vaxp, vaxn, vcm, vb_ramp, vb_nc, vb_pc,
+    vb_tail, vdd, vss);
+    inout
+    xen0, xen1, xen2, xen3, xen4, xen5, xen6, xen7, xen8, xen9, xen10, xen11, xen12,
+    xen13, xen14, xen15, xneg0, xneg1, xneg2, xneg3, xneg4, xneg5, xneg6, xneg7, xneg8,
+    xneg9, xneg10, xneg11, xneg12, xneg13, xneg14, xneg15, colb0, colb1, colb2, colb3,
+    colb4, colb5, colb6, colb7, colb8, colb9, colb10, colb11, colb12, colb13, colb14,
+    colb15, wa_sel0, wa_sel1, wa_sel2, wa_sel3, wa_sel4, wa_sel5, wa_sel6, wa_sel7,
+    wa_sel8, wa_sel9, wa_sel10, wa_sel11, wa_sel12, wa_sel13, wa_sel14, wa_sel15,
+    wb_sel0, wb_sel1, wb_sel2, wb_sel3, wb_sel4, wb_sel5, wb_sel6, wb_sel7, wb_sel8,
+    wb_sel9, wb_sel10, wb_sel11, wb_sel12, wb_sel13, wb_sel14, wb_sel15, da0, da1, da2,
+    da3, db0, db1, db2, db3, rst, ramp_en, vaxp, vaxn, vcm, vb_ramp, vb_nc, vb_pc,
+    vb_tail, vdd, vss;
+    electrical
+    xen0, xen1, xen2, xen3, xen4, xen5, xen6, xen7, xen8, xen9, xen10, xen11, xen12,
+    xen13, xen14, xen15, xneg0, xneg1, xneg2, xneg3, xneg4, xneg5, xneg6, xneg7, xneg8,
+    xneg9, xneg10, xneg11, xneg12, xneg13, xneg14, xneg15, colb0, colb1, colb2, colb3,
+    colb4, colb5, colb6, colb7, colb8, colb9, colb10, colb11, colb12, colb13, colb14,
+    colb15, wa_sel0, wa_sel1, wa_sel2, wa_sel3, wa_sel4, wa_sel5, wa_sel6, wa_sel7,
+    wa_sel8, wa_sel9, wa_sel10, wa_sel11, wa_sel12, wa_sel13, wa_sel14, wa_sel15,
+    wb_sel0, wb_sel1, wb_sel2, wb_sel3, wb_sel4, wb_sel5, wb_sel6, wb_sel7, wb_sel8,
+    wb_sel9, wb_sel10, wb_sel11, wb_sel12, wb_sel13, wb_sel14, wb_sel15, da0, da1, da2,
+    da3, db0, db1, db2, db3, rst, ramp_en, vaxp, vaxn, vcm, vb_ramp, vb_nc, vb_pc,
+    vb_tail, vdd, vss;
+    electrical colp, coln, cpq, cnq;
+    electrical
+    sap0, sap1, sap2, sap3, sap4, sap5, sap6, sap7, sap8, sap9, sap10, sap11, sap12,
+    sap13, sap14, sap15, san0, san1, san2, san3, san4, san5, san6, san7, san8, san9,
+    san10, san11, san12, san13, san14, san15, spd0, snm0, spm0, snd0, spd1, snm1, spm1,
+    snd1, spd2, snm2, spm2, snd2, spd3, snm3, spm3, snd3, spd4, snm4, spm4, snd4, spd5,
+    snm5, spm5, snd5, spd6, snm6, spm6, snd6, spd7, snm7, spm7, snd7, spd8, snm8, spm8,
+    snd8, spd9, snm9, spm9, snd9, spd10, snm10, spm10, snd10, spd11, snm11, spm11,
+    snd11, spd12, snm12, spm12, snd12, spd13, snm13, spm13, snd13, spd14, snm14, spm14,
+    snd14, spd15, snm15, spm15, snd15;
+
+    // defaults: sky130 tt 27 C; is/vt/nut fit to the DUT=sch level table (tb_lora_rho,
+    // levels at the DAC voltages 0.06 * (8 + m), within 2 %)
+    parameter real cs = 60e-15 from (0:inf);        // store = read-device gate cap (F)
+    parameter real gon = 1.0 / 34e3 from (0:inf);   // write switch on-conductance (S)
+    parameter real gleak = 1e-12 from [0:inf);      // write switch off leakage (S)
+    parameter real vsel = 0.9 from (0:inf);         // wsel on threshold (V)
+    parameter real vsw = 0.05 from (0:inf);         // wsel switching width (V)
+    parameter real cinj = 0.0 from [0:inf);         // wsel -> store overlap (F); the fit absorbs it
+    parameter real is = 9.2e-9 from (0:inf);        // read specific current (A)
+    parameter real vt = 0.544 from (0:inf);         // read threshold (V), incl. the write pedestal
+    parameter real nut = 0.0314 from (0:inf);       // read n * kT/q (V)
+    parameter real km = 1.0 from (0:inf);           // B mirror gain
+    parameter real cint = 0.9e-12 from (0:inf);     // A integration cap (F)
+    parameter real a0 = 1e4 from (0:inf);           // integrator OTA gain
+    parameter real grst = 1e-3 from (0:inf);        // reset switch conductance (S)
+    parameter real iramp = 4.854e-6 from (0:inf);    // V->T ramp current (A)
+    parameter real vped = 0.057 from (0:inf);        // comparator pedestal below vcm (V)
+    parameter real vcs = 2e-3 from (0:inf);         // comparator input width (V)
+    parameter real tc = 1e-9 from (0:inf);          // comparator + logic delay (s)
+    parameter real rdiv = 150e3 from (0:inf);       // vth divider (ohm, from vcm)
+
+    real e, x, f1, f2, f3, f4, code, lvl, sgn, wap, wan, wbp, wbn;
+    real cp, cn, ren, pos, neg, vth;
+
+    analog function real lg;                        // logic level of v on a vdd rail
+        input v, vd;
+        real v, vd;
+        begin
+            lg = 0.5 * (1.0 + tanh((v - 0.5 * vd) / 0.05));
+        end
+    endfunction
+
+    analog function real gw;                        // write switch conductance
+        input v, vd;
+        real v, vd;
+        begin
+            gw = gon * 0.5 * (1.0 + tanh((v - vsel) / vsw));
+        end
+    endfunction
+
+    analog function real iread;                      // read current, EKV forward term
+        input v;
+        real v, xx;
+        begin
+            xx = (v - vt) / (2.0 * nut);
+            xx = xx > 30.0 ? xx : ln(1.0 + exp(xx));
+            iread = is * xx * xx;
+        end
+    endfunction
+
+    analog begin
+        // write buses: code 8 + m (m > 0) else 0 on the bus the sign picks
+        code = 4.0 * lg(V(da2, vss), V(vdd, vss)) + 2.0 * lg(V(da1, vss), V(vdd, vss))
+            + lg(V(da0, vss), V(vdd, vss));
+        code = code + 8.0 * (1.0 - (1.0 - lg(V(da0, vss), V(vdd, vss)))
+            * (1.0 - lg(V(da1, vss), V(vdd, vss))) * (1.0 - lg(V(da2, vss), V(vdd, vss))));
+        lvl = V(vcm, vss) * code / 15.0;
+        sgn = lg(V(da3, vss), V(vdd, vss));
+        wap = (1.0 - sgn) * lvl;
+        wan = sgn * lvl;
+        code = 4.0 * lg(V(db2, vss), V(vdd, vss)) + 2.0 * lg(V(db1, vss), V(vdd, vss))
+            + lg(V(db0, vss), V(vdd, vss));
+        code = code + 8.0 * (1.0 - (1.0 - lg(V(db0, vss), V(vdd, vss)))
+            * (1.0 - lg(V(db1, vss), V(vdd, vss))) * (1.0 - lg(V(db2, vss), V(vdd, vss))));
+        lvl = V(vcm, vss) * code / 15.0;
+        sgn = lg(V(db3, vss), V(vdd, vss));
+        wbp = (1.0 - sgn) * lvl;
+        wbn = sgn * lvl;
+
+        // V -> T: comparator states (delayed), ramps, windows
+        vth = V(vcm, vss) - vped;
+        I(cpq, vss) <+ V(cpq, vss) - 0.5 * (1.0 + tanh((vth - V(vaxp, vss)) / vcs))
+            + tc * ddt(V(cpq, vss));
+        I(cnq, vss) <+ V(cnq, vss) - 0.5 * (1.0 + tanh((vth - V(vaxn, vss)) / vcs))
+            + tc * ddt(V(cnq, vss));
+        cp = 0.5 * (1.0 + tanh((V(cpq, vss) - 0.5) / 0.05));
+        cn = 0.5 * (1.0 + tanh((V(cnq, vss) - 0.5) / 0.05));
+        ren = lg(V(ramp_en, vss), V(vdd, vss));
+        pos = ren * cn * (1.0 - cp);
+        neg = ren * cp * (1.0 - cn);
+        I(vdd, colp) <+ iramp * ren * (1.0 - cp);
+        I(vdd, coln) <+ iramp * ren * (1.0 - cn);
+        I(vdd, vcm) <+ iramp * ((1.0 - ren * (1.0 - cp)) + (1.0 - ren * (1.0 - cn)));
+        I(vcm, vss) <+ V(vcm, vss) / rdiv;
+
+        // A integrators
+        I(colp, vaxp) <+ cint * ddt(V(colp, vaxp))
+            + grst * lg(V(rst, vss), V(vdd, vss)) * V(colp, vaxp);
+        V(vaxp, vss) <+ V(vcm, vss) + a0 * V(vcm, colp);
+        I(coln, vaxn) <+ cint * ddt(V(coln, vaxn))
+            + grst * lg(V(rst, vss), V(vdd, vss)) * V(coln, vaxn);
+        V(vaxn, vss) <+ V(vcm, vss) + a0 * V(vcm, coln);
+
+        `AROW(xen0, xneg0, wa_sel0, sap0, san0)
+        `AROW(xen1, xneg1, wa_sel1, sap1, san1)
+        `AROW(xen2, xneg2, wa_sel2, sap2, san2)
+        `AROW(xen3, xneg3, wa_sel3, sap3, san3)
+        `AROW(xen4, xneg4, wa_sel4, sap4, san4)
+        `AROW(xen5, xneg5, wa_sel5, sap5, san5)
+        `AROW(xen6, xneg6, wa_sel6, sap6, san6)
+        `AROW(xen7, xneg7, wa_sel7, sap7, san7)
+        `AROW(xen8, xneg8, wa_sel8, sap8, san8)
+        `AROW(xen9, xneg9, wa_sel9, sap9, san9)
+        `AROW(xen10, xneg10, wa_sel10, sap10, san10)
+        `AROW(xen11, xneg11, wa_sel11, sap11, san11)
+        `AROW(xen12, xneg12, wa_sel12, sap12, san12)
+        `AROW(xen13, xneg13, wa_sel13, sap13, san13)
+        `AROW(xen14, xneg14, wa_sel14, sap14, san14)
+        `AROW(xen15, xneg15, wa_sel15, sap15, san15)
+        `BCOL(wb_sel0, colb0, spd0, snm0, spm0, snd0)
+        `BCOL(wb_sel1, colb1, spd1, snm1, spm1, snd1)
+        `BCOL(wb_sel2, colb2, spd2, snm2, spm2, snd2)
+        `BCOL(wb_sel3, colb3, spd3, snm3, spm3, snd3)
+        `BCOL(wb_sel4, colb4, spd4, snm4, spm4, snd4)
+        `BCOL(wb_sel5, colb5, spd5, snm5, spm5, snd5)
+        `BCOL(wb_sel6, colb6, spd6, snm6, spm6, snd6)
+        `BCOL(wb_sel7, colb7, spd7, snm7, spm7, snd7)
+        `BCOL(wb_sel8, colb8, spd8, snm8, spm8, snd8)
+        `BCOL(wb_sel9, colb9, spd9, snm9, spm9, snd9)
+        `BCOL(wb_sel10, colb10, spd10, snm10, spm10, snd10)
+        `BCOL(wb_sel11, colb11, spd11, snm11, spm11, snd11)
+        `BCOL(wb_sel12, colb12, spd12, snm12, spm12, snd12)
+        `BCOL(wb_sel13, colb13, spd13, snm13, spm13, snd13)
+        `BCOL(wb_sel14, colb14, spd14, snm14, spm14, snd14)
+        `BCOL(wb_sel15, colb15, spd15, snm15, spm15, snd15)
+    end
+endmodule

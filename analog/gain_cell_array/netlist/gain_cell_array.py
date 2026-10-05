@@ -158,11 +158,12 @@ def sizes(pdk=None):
             "c_store": specs.design(pdk)["c_store"]}
 
 
-def gain_cell_subckt(name="gain_cell", caps=True, pdk=None):
+def gain_cell_subckt(name="gain_cell", caps=True, pdk=None, sz=None):
     """Single 2T gain cell `.subckt <name> wdata wsel rd col vss` (lora_sidecar reuses
-    it). caps=False drops the storage MIM (Philis deck, see __main__)."""
+    it). caps=False drops the storage MIM (Philis deck, see __main__); `sz` overrides
+    sizes() (lora_sidecar sizes its own read device)."""
     pdk = pdk or get_pdk()
-    sz = sizes(pdk)
+    sz = sz or sizes(pdk)
     s = ps.Subcircuit(name, CELL_PORTS)
     fet(s, "w", "wdata", "wsel", "store", "vss", "nfet", *sz["write"], pdk=pdk)
     fet(s, "r", "col", "store", "rd", "vss", "nfet", *sz["read"], pdk=pdk)
