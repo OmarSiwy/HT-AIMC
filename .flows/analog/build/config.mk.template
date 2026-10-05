@@ -16,3 +16,7 @@ DEPENDS = @BLOCK_DEPENDS@
 # Simulator for `make -C build/sim`: ESPice (VerA golden models run natively, no OSDI).
 # Parity with ngspice 45 on sky130 is checked in ESPice docs/sky130.md.
 BACKEND ?= espice
+
+# Layout route for `make -C build/layout views`: gen (substrate2 generator layout/<block>.rs)
+# or pnr (Philis; set RUN = seedN to the run you keep). Empty: gen when the generator exists.
+# LAYOUT_ROUTE = gen

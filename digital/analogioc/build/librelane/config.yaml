@@ -1,4 +1,4 @@
-# LibreLane (Classic flow) config for the digital top analogioc.
+# LibreLane (Classic flow) config for the digital top analogioc_top.
 #
 # Template: .flows/digital/build/librelane/config.yaml.in. `make AddDigitalModule`
 # writes config.yaml from it. Edit config.yaml, except the generated block at the
@@ -6,10 +6,11 @@
 # rewrites that block (MACROS, PDN hookup, halos, don't-touch analog nets).
 # Paths are relative to this file (`dir::`).
 # Reference: https://librelane.readthedocs.io/en/latest/reference/configuration.html
-# TODO (analogioc): not run yet. The top is analogioc_top (non-TinyTapeout, INTERFACE.md
-# D8); the analogioc macro has its blackbox and a ports-only .subckt stub but no gds/lef/lib
-# yet (see ../macros.toml), so `make config` stops at the missing gds. Before `make harden`:
-# macro views, DIE_AREA/placement for the macro, pin plan, clock period check.
+# analogioc_top (non-TinyTapeout, INTERFACE.md D8) around the analogioc macro. Wired, not
+# run (2026-10-05): `make config` needs the macro's views, which the analog flow produces
+# (`make -C ../.. flow` lists the order). PLACEHOLDERS before `make harden`: DIE_AREA,
+# the macro location (../macros.toml), the pin plan. CLOCK_PERIOD = T_CLK_MAX is the
+# contract (INTERFACE.md §4: conv_seq pacing is sized for it), not a placeholder.
 meta:
   version: 2
   flow: Classic
@@ -18,13 +19,14 @@ DESIGN_NAME: "analogioc_top"
 VERILOG_FILES: ["dir::../../src/*.v"]
 
 CLOCK_PORT: clk
-CLOCK_PERIOD: 20 # ns
+CLOCK_PERIOD: 20 # ns, = T_CLK_MAX (INTERFACE.md §4); a slower clock breaks the macro pacing
 
 # Floorplan. For a TinyTapeout tile use the tile's DIE_AREA and pin template:
 #   FP_DEF_TEMPLATE: dir::../../../../.flows/def/digital/tt_block_1x2_pg.def
 # (the top then needs the tt_um_* port list).
 FP_SIZING: absolute
-DIE_AREA: [0, 0, 200, 200]
+# PLACEHOLDER: grow to fit the macro (output/lef/analogioc.lef SIZE) plus the std-cell area.
+DIE_AREA: [0, 0, 1500, 1500]
 PL_TARGET_DENSITY_PCT: 50
 
 # Power. The digital domain is VPWR/VGND. Only the pins a macro lists under `pg` in

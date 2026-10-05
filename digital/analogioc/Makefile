@@ -25,3 +25,38 @@ build:
 
 clean:
 	rm -rf build
+
+# === Harden path: analog blocks -> analogioc macro -> analogioc_top (wired 2026-10-05, not run) ===
+# Run from ./env.sh mixed (the analog Makefiles need the nix shell). Each step runs alone,
+# in this order; `make flow` runs 1-5. Step 6 is blocked (INTERFACE.md §8.3, Q3).
+#   1 flow-netlists  every block's VerA lint + netlist (DeSpice scripts), then analogioc's
+#   2 flow-blocks    each block's layout by its route + PDK DRC/LVS -> its output/{gds,lef}
+#   3 flow-top       analogioc: layout/analogioc.rs places the blocks; DRC/LVS; macro views
+#   4 flow-lib       gpurify lib -> analogioc__<corner>.lib [ACCURACY=spice]
+#   5 flow-harden    macros.toml -> LibreLane config, harden analogioc_top, macro signoff
+#   6 flow-package   TinyTapeout package: needs tt_um_analogioc first
+A := ../../analog/analogioc/build
+.PHONY: flow flow-netlists flow-blocks flow-top flow-lib flow-harden flow-package
+
+flow: flow-netlists flow-blocks flow-top flow-lib flow-harden
+
+flow-netlists:
+	$(MAKE) -C $(A)/schematic deps netlist
+
+flow-blocks:
+	$(MAKE) -C $(A)/layout deps
+
+flow-top:
+	$(MAKE) -C $(A)/layout views
+
+flow-lib:
+	$(MAKE) -C $(A)/lib lib
+
+flow-harden:
+	$(MAKE) -C build/librelane harden
+
+flow-package:
+	@echo "blocked: TinyTapeout needs tt_um_analogioc (INTERFACE.md §8.3; Q3: 13 analog pins + 5"
+	@echo "supplies exceed TT's analog pins; Q12 weight stream). Then:"
+	@echo "  make -C ../../.flows CreateCaravel PROJECT_NAME=tt_um_analogioc"
+	@exit 1

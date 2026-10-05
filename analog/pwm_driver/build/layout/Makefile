@@ -56,7 +56,8 @@ PEX = ../../../common/pex.py
 PHILIS_ARGS = --seed $(SEED) --max-iters $(MAX_ITERS) \
 	$(if $(wildcard $(INTERFACE)),--interface $(INTERFACE))
 
-.PHONY: layout mag2gds init_tinytapeout clean pnr pnr-seeds pex gen gen-drc gen-lvs gen-pex
+.PHONY: layout mag2gds init_tinytapeout clean pnr pnr-seeds pex gen gen-drc gen-lvs gen-pex \
+	pnr-verify views deps
 
 init_tinytapeout:
 	@echo "Initializing TinyTapeout template..."
@@ -125,6 +126,9 @@ layout:
 ##       in the extraction; with several MIM caps, P&R a cap-free PNR_DECK (Philis hangs)
 ##       and let `make pex` add the caps back from the full deck.
 pnr:
+	@[ "$(LAYOUT_ROUTE)" != gen ] || { \
+		echo "$(BLOCK) is laid out by its generator (LAYOUT_ROUTE = gen in build/config.mk): make deps gen"; \
+		exit 1; }
 	@command -v $(PHILIS) >/dev/null 2>&1 || { \
 		echo "philis not found on PATH — it ships in the nix shell via EDA-Packaged."; \
 		exit 1; }
@@ -193,6 +197,38 @@ gen-lvs:
 ## gen-pex - magic extraction with parasitic C -> output/gen/<block>_pex.spice
 gen-pex:
 	$(VERIFY) pex $(BLOCK)
+
+# === Verification of a Philis GDS, and the macro views a parent or digital top places ===
+PNR_GDS = $(PNR_OUT)/$(RUN)/$(NETLIST).gds
+
+## pnr-verify - the PDK's klayout DRC + magic/netgen LVS on a Philis GDS: make pnr-verify RUN=seed1
+##              (Philis's own signoff under-reports; reports land in output/pnr/<RUN>/)
+pnr-verify:
+	@[ -f "$(PNR_GDS)" ] || { echo "No $(PNR_GDS): make pnr RUN=$(RUN) first"; exit 1; }
+	$(VERIFY) drc $(BLOCK) $(PNR_GDS); d=$$?; $(VERIFY) lvs $(BLOCK) $(PNR_GDS) && [ $$d -eq 0 ]
+
+## views - output/gds/<block>.gds + output/lef/<block>.lef (bus bits name[i]) from the
+##         verified layout, for a parent's generator or a digital top's macros.toml.
+##         VIEW_FROM=gen (the default when layout/<block>.rs exists or LAYOUT_ROUTE = gen)
+##         runs gen gen-drc gen-lvs first; VIEW_FROM=pnr RUN=seedN runs pnr-verify on that run.
+##         Pins are checked against netlist/<block>.ports, else the deck's .subckt.
+VIEW_FROM ?= $(or $(LAYOUT_ROUTE),$(if $(wildcard ../../layout/$(BLOCK).rs),gen,pnr))
+VIEW_GDS = $(if $(filter gen,$(VIEW_FROM)),../../output/gen/$(BLOCK).gds,$(PNR_GDS))
+VIEW_PORTS = $(firstword $(wildcard $(NETLIST_DIR)/$(BLOCK).ports) $(NETLIST_DIR)/$(BLOCK).spice)
+views:
+	$(MAKE) $(if $(filter gen,$(VIEW_FROM)),gen gen-drc gen-lvs,pnr-verify)
+	$(KLAYOUT) -b -r $(GEN_CRATE)/macro_views.py -rd block=$(BLOCK) -rd gds=$(VIEW_GDS) \
+		-rd out=../../output -rd ports=$(VIEW_PORTS)
+
+## deps - views of every block in DEPENDS (build/config.mk), each by its own route, deepest
+##        first. A block whose output/lef/<block>.lef exists is kept (FORCE=1 rebuilds it).
+deps:
+	@for d in $(DEPENDS); do \
+		if [ -z "$(FORCE)" ] && [ -f ../../../$$d/output/lef/$$d.lef ]; then \
+			echo "=== layout: $$d (views exist, kept) ==="; continue; fi; \
+		echo "=== layout: $$d ==="; \
+		$(MAKE) -C ../../../$$d/build/layout deps views || exit 1; \
+	done
 
 clean:
 	@echo "Cleaning generated files..."
