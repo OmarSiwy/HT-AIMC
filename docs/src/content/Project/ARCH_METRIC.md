@@ -98,7 +98,9 @@ which the search must test honestly against SOTA and the alternatives, not assum
 Every design and the systolic baseline are also scored under Etched Sohu's published benchmark
 conditions (`arch_eval/cli.py --conditions sohu`): Llama-3-70B, FP8 weights and KV cache,
 2,048 tokens in / 128 out, a fixed batch of 1,000, an 8-chip tensor-parallel group, and
-4.8 TB/s and 144 GB of HBM per chip. Die area stays the iso-area knob. The analog design may
+4.8 TB/s and 144 GB of HBM per chip. The die is **iso-area with the Sohu-equivalent** below
+(666 mm² today; it recalibrates when the sysreference synthesis lands), so every design gets the
+same area as the modeled Sohu chip. The analog design may
 re-tune its parameters for each condition set; the systolic baseline is the same RTL model,
 parameterized (FP8 weights). The search reports the winner against the baseline under both.
 
@@ -113,4 +115,5 @@ model at ASAP7 to Sohu's claimed 62,500 tok/s per chip (`cli.py --sohu-target`) 
 | 666 mm² | 537 W (+50 W HBM) | 62.6k | 16.5 | 107 | 225 | 94 | 0.175 |
 
 These are our model's numbers at ASAP7 with literature MAC energies until the sysreference
-synthesis lands, not Etched's (N4). Beat them under the same conditions.
+synthesis lands, not Etched's (N4). Under the Sohu conditions, our systolic baseline on that same
+666 mm² die is the Sohu-equivalent by construction; the analog design must beat it there.
