@@ -157,9 +157,9 @@ the switch are listed for comparison. sky130 tt, 27 °C unless noted.
 | golden model (`DUT=va`, ESPice) | PASS 3/3 | rho 0.01378; vs golden ≤ 0.04 code; ngspice/OSDI (single module, before the split) 0.01377 |
 | pre-layout (`DUT=sch`, ESPice) | PASS 3/3 | see below |
 | pre-layout (`DUT=sch`, ngspice 45) | PASS 3/3 | same numbers to ≤ 0.02 code |
-| corners (5 × −40/27/125 °C), ngspice | CORNERS_NG | |
-| corners, ESPice | CORNERS_ES | |
-| Monte Carlo (tt_mm, 30) | MC_RESULT | |
+| corners (5 × −40/27/125 °C), ngspice | rho 15/15, sidecar 15/15 PASS; update 9/15 (ff, sf failed loss check — tb planned the target from the tt record; fixed in ce39033, not rerun on ngspice) | |
+| corners, ESPice | PASS: rho 15/15, sidecar 15/15, update 15/15 | |
+| Monte Carlo (tt_mm, 30) | **not run** (bench written; runs killed by session stops, then simulation stopped by the user) | `make -C analog/lora_sidecar/build/sim mc` |
 | hotswap | not run | gf180 sizing would characterise new gm/ID tables and mismatch points (~30 min each under load); the script derives every size from `pdk_specs`/`specs`/`gmid`/`mismatch` |
 | layout | not this phase | |
 
