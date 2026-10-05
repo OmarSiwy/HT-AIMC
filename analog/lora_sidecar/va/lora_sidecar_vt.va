@@ -1,0 +1,62 @@
+// lora_sidecar_vt — behavioural golden model, ports 1:1 with the netlist subckt.
+// Two ideal integrators (high-gain VCVS + cint) on colp / coln, reset by rst. ramp_en:
+// equal ramp currents iramp pull vaxp / vaxn down to vth = vcm - vped; each side's
+// crossing is a first-order delayed state (tc), latched until ramp_en falls, and stops
+// its ramp. pos = ramp_en & cn & !cp, neg = ramp_en & cp & !cn, driven as vdd logic.
+// Not modelled: OTA finite gm / offset / limits (the ramp-start kick), comparator offset,
+// switch injection; vb_ramp and the OTA biases are taken as nominal (iramp a parameter).
+`include "disciplines.vams"
+`include "constants.vams"
+
+module lora_sidecar_vt(colp, coln, rst, ramp_en, vaxp, vaxn, pos, pos_b, neg, neg_b, vcm,
+    vb_ramp, vb_nc, vb_pc, vb_tail, vdd, vss);
+    inout colp, coln, rst, ramp_en, vaxp, vaxn, pos, pos_b, neg, neg_b, vcm,
+        vb_ramp, vb_nc, vb_pc, vb_tail, vdd, vss;
+    electrical colp, coln, rst, ramp_en, vaxp, vaxn, pos, pos_b, neg, neg_b, vcm,
+        vb_ramp, vb_nc, vb_pc, vb_tail, vdd, vss;
+    electrical cpq, cnq;
+    parameter real cint = 0.9e-12 from (0:inf);     // A integration cap (F)
+    parameter real a0 = 1e4 from (0:inf);           // integrator OTA gain
+    parameter real grst = 1e-3 from (0:inf);        // reset switch conductance (S)
+    parameter real iramp = 4.854e-6 from (0:inf);   // V->T ramp current (A)
+    parameter real vped = 0.057 from (0:inf);       // comparator pedestal below vcm (V)
+    parameter real vcs = 2e-3 from (0:inf);         // comparator input width (V)
+    parameter real tc = 1e-9 from (0:inf);          // comparator + logic delay (s)
+    parameter real rdiv = 150e3 from (0:inf);       // vth divider (ohm, from vcm)
+    parameter real rlog = 1e3 from (0:inf);         // logic output resistance (ohm)
+    real ren, cp, cn, e, p, n, vth, rs;
+
+    analog function real lg;                        // logic level of v on a vdd rail
+        input v, vd;
+        real v, vd;
+        begin
+            lg = 0.5 * (1.0 + tanh((v - 0.5 * vd) / 0.05));
+        end
+    endfunction
+
+    analog begin
+        vth = V(vcm, vss) - vped;
+        ren = lg(V(ramp_en, vss), V(vdd, vss));
+        rs = lg(V(rst, vss), V(vdd, vss));
+        cp = 0.5 * (1.0 + tanh((V(cpq, vss) - 0.5) / 0.05));
+        cn = 0.5 * (1.0 + tanh((V(cnq, vss) - 0.5) / 0.05));
+        e = 0.5 * (1.0 + tanh((vth - V(vaxp, vss)) / vcs));
+        I(cpq, vss) <+ V(cpq, vss) - ren * (e + cp - e * cp) + tc * ddt(V(cpq, vss));
+        e = 0.5 * (1.0 + tanh((vth - V(vaxn, vss)) / vcs));
+        I(cnq, vss) <+ V(cnq, vss) - ren * (e + cn - e * cn) + tc * ddt(V(cnq, vss));
+        I(vdd, colp) <+ iramp * ren * (1.0 - cp);
+        I(vdd, coln) <+ iramp * ren * (1.0 - cn);
+        I(vdd, vcm) <+ iramp * ((1.0 - ren * (1.0 - cp)) + (1.0 - ren * (1.0 - cn)));
+        I(vcm, vss) <+ V(vcm, vss) / rdiv;
+        I(colp, vaxp) <+ cint * ddt(V(colp, vaxp)) + grst * rs * V(colp, vaxp);
+        V(vaxp, vss) <+ V(vcm, vss) + a0 * V(vcm, colp);
+        I(coln, vaxn) <+ cint * ddt(V(coln, vaxn)) + grst * rs * V(coln, vaxn);
+        V(vaxn, vss) <+ V(vcm, vss) + a0 * V(vcm, coln);
+        p = ren * cn * (1.0 - cp);
+        n = ren * cp * (1.0 - cn);
+        I(pos, vss) <+ (V(pos, vss) - p * V(vdd, vss)) / rlog;
+        I(pos_b, vss) <+ (V(pos_b, vss) - (1.0 - p) * V(vdd, vss)) / rlog;
+        I(neg, vss) <+ (V(neg, vss) - n * V(vdd, vss)) / rlog;
+        I(neg_b, vss) <+ (V(neg_b, vss) - (1.0 - n) * V(vdd, vss)) / rlog;
+    end
+endmodule

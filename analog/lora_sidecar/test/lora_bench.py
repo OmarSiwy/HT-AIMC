@@ -77,11 +77,23 @@ def eff(v, levels):
     return np.sign(v) * WMAX * np.asarray(levels)[np.abs(v)]
 
 
-def va_params():
-    """DUT=va parameters derived like the netlist (PDK-agnostic ones)."""
+def va_dut():
+    """DUT=va: the block's golden is its four child Verilog-A modules (va/<child>.va, 1:1
+    with the netlist subckts), wired by the netlist's own instances() list. ESPice takes at
+    most 64 unknowns per Verilog-A device (its Jacobian rows are u64 masks): one module
+    for the whole sidecar has 201. vt gets the PDK-derived parameters."""
     vcm = specs.VCM_FRAC * PDK.vdd
-    return {"cint": specs.lora_c_int(PDK), "iramp": specs.lora_i_ramp(PDK),
-            "vped": SZ["v_ped"], "rdiv": vcm / L.DIV_I}
+    vt = {"cint": specs.lora_c_int(PDK), "iramp": specs.lora_i_ramp(PDK),
+          "vped": SZ["v_ped"], "rdiv": vcm / L.DIV_I}
+    top = ps.Subcircuit(f"tb_{BLOCK}")
+    for child in ("arow", "bcol", "wbus", "vt"):
+        m = f"{BLOCK}_{child}"
+        top.veriloga(str(A / BLOCK / "va" / f"{m}.va"))
+        par = " ".join(f"{k}={v}" for k, v in vt.items()) if child == "vt" else ""
+        top.raw_spice(f".model {m}_va {m} {par}".rstrip())
+    for inst, sub, nets in L.instances(BLOCK):
+        top.raw_spice(f"N{inst} {' '.join(nets)} {sub}_va")
+    return top
 
 
 class Run:
@@ -160,7 +172,7 @@ class Run:
         return self
 
     def _simulate(self, corner, seed):
-        top = dut(BLOCK, L.PORTS, **(va_params() if dut_kind() == "va" else {}))
+        top = va_dut() if dut_kind() == "va" else dut(BLOCK, L.PORTS)
         bias_network(top, PDK)
         fet(top, "rep_ramp", "vb_ramp", "vb_ramp", "vdd", "vdd", "pfet", *SZ["ramp"], pdk=PDK)
         top.I(name="ref_ramp", positive="vb_ramp", negative="vss",

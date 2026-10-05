@@ -426,21 +426,28 @@ def vt(name, sz, pdk):
     return s
 
 
+def instances(name="lora_sidecar"):
+    """[(instance, child subckt, nets)] of the top level — shared by build() and the
+    DUT=va bench, which wires the child Verilog-A modules the same way."""
+    out = [(f"a{i}", f"{name}_arow", [f"xen{i}", f"xneg{i}", f"wa_sel{i}", "wdap", "wdan",
+                                      "colp", "coln", "vcm", "vdd", "vss"]) for i in range(N)]
+    out += [(f"b{j}", f"{name}_bcol", [f"wb_sel{j}", "wdbp", "wdbn", f"colb{j}", "pos",
+                                       "pos_b", "neg", "neg_b", "vcm", "vb_tail", "vdd", "vss"])
+            for j in range(N)]
+    for side, d in (("a", "da"), ("b", "db")):
+        out.append((f"w{side}", f"{name}_wbus",
+                    [f"{d}{k}" for k in range(4)] + [f"w{side}_sel{i}" for i in range(N)]
+                    + [f"wd{side}p", f"wd{side}n", "vcm", "vdd", "vss"]))
+    out.append(("vt", f"{name}_vt", ["colp", "coln", "rst", "ramp_en", "vaxp", "vaxn", "pos",
+                                     "pos_b", "neg", "neg_b", "vcm", "vb_ramp", "vb_nc",
+                                     "vb_pc", "vb_tail", "vdd", "vss"]))
+    return out
+
+
 def build(name="lora_sidecar", pdk=None):
-    pdk = pdk or get_pdk()
     s = ps.Subcircuit(name, PORTS)
-    for i in range(N):
-        s.X(f"a{i}", f"{name}_arow", f"xen{i}", f"xneg{i}", f"wa_sel{i}", "wdap", "wdan",
-            "colp", "coln", "vcm", "vdd", "vss")
-    for j in range(N):
-        s.X(f"b{j}", f"{name}_bcol", f"wb_sel{j}", "wdbp", "wdbn", f"colb{j}", "pos", "pos_b",
-            "neg", "neg_b", "vcm", "vb_tail", "vdd", "vss")
-    s.X("wa", f"{name}_wbus", "da0", "da1", "da2", "da3", *[f"wa_sel{i}" for i in range(N)],
-        "wdap", "wdan", "vcm", "vdd", "vss")
-    s.X("wb", f"{name}_wbus", "db0", "db1", "db2", "db3", *[f"wb_sel{j}" for j in range(N)],
-        "wdbp", "wdbn", "vcm", "vdd", "vss")
-    s.X("vt", f"{name}_vt", "colp", "coln", "rst", "ramp_en", "vaxp", "vaxn", "pos", "pos_b",
-        "neg", "neg_b", "vcm", "vb_ramp", "vb_nc", "vb_pc", "vb_tail", "vdd", "vss")
+    for inst, sub, nets in instances(name):
+        s.X(inst, sub, *nets)
     return s
 
 
