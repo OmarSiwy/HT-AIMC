@@ -50,6 +50,7 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Distributions inside behavioural sources stay at nominal (same as ngspice for sky130: resistor mismatch reads 0) | size resistor matching from `pdk_specs` declared values | documented |
 | PWL longer than 64 points with `r=` is refused | split the source | documented |
 | Seed N draws a different mismatch sample than ngspice's seed N (own RNG); only the spread matches (σ(ln Id) 0.269 vs 0.274 over 100 seeds) | compare statistics, not single seeds | by design |
+| Once in ~70 runs under 6 parallel processes, `espice` exited `Error: <tmp>/deck.sp: FileNotFound` for a deck SpiceRack had just written (weight_tile, 2026-10-05); the rerun passed | rerun | not reported yet |
 | **BSIM4 comes from Cogenda VA-BSIM48 (CC-BY-NC 4.0)** compiled by VerA | — | **licence: non-commercial**; check before any commercial use |
 
 ## Others

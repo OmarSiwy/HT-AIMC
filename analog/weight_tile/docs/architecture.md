@@ -181,4 +181,34 @@ margin, and the edge already exceeds t_q_floor/3 = 67 ps (it did before: 136 ps 
 
 ## Results
 
-RESULTS
+Simulator ESPice (SpiceRack backend `espice`, main 1b2b91e) unless noted; ngspice 45 ran
+the same benches before the switch, and every number below agreed to the digits shown
+(write margin, write time, energy, edge, A11b identical; tb_weight_tile within 0.06 LSB;
+null MC σ 22.0 vs 20.6 LSB — different RNG, same spread).
+
+| Rung | Bench | Result |
+|------|-------|--------|
+| golden model (`DUT=va`) | `make test` | PASS all 7: R² 1.000000, slope 98.8 %, null +0.18, mirror 0.73 %, 32:32 −0.39 LSB; A11 worst 0.60 LSB; A11b 0.000 LSB; cascade K=1/2/4 worst 0.55/0.24/0.23 LSB; csnr PASS |
+| pre-layout (`DUT=sch`, tt 27 °C) | `tb_weight_tile` | PASS: R² 0.999899, slope 97.5 %, null +0.32 LSB, mirror 0.98 %, 32:32 −1.20 LSB (info 64:64 −5.18) |
+| | `tb_weight_readback` (A11) | PASS: worst 1.79 LSB over rows 0/15 × 6 runs (4/12 outside ±1) |
+| | `tb_weight_write_disturb` (A11b, Q10) | PASS: 0.004 LSB peak (5.7 µV), 0.000 at end; busiest pass_05 column (13, mac −89) |
+| | `tb_weight_write` | PASS: margin 774 mV (≥ 89), 9.1 pA/bit (0.036 µW tile), row write 628 ps at 1.62 V / 512 ps at 1.8 V, row edge 127 ps, 13.2 pJ/row all toggling, 109 pJ/pass |
+| | `tb_csnr` | PASS: kT/C 50.3 / 54.8 dB; ideal-VG delivery ≥ 1.02; busy-column nominal 0.92 |
+| | `tb_cascade` | CASCADE |
+| corners (`tb_weight_write`, 5 corners × −40/27/125 °C) | `corners.py` | PASS 15/15 (table below) |
+| Monte Carlo | `tb_weight_write_mc` (200 seeds, tt_mm) | PASS: 200/200 write; margin 772 ± 19.4 mV (Pelgrom estimate 18 mV), min 712; mean − 4.91σ = 677 mV |
+| | `tb_weight_tile_mc` (30 seeds) | **FAIL, pre-existing**: null mean −3.8, σ 22.0 LSB. The fixed-code deck it replaces fails the same way (10 seeds, ngspice: mean +9.5, σ 15.4); with an ideal OTA σ falls to 5.5 LSB, so the integrator's input offset × the switched bank capacitance dominates, not the tile. Owner: ota / integrator_conv (offset sampling or chopping); the 1.5 LSB gate was never met post-migration. |
+
+Write corners (ESPice, `tb_weight_write`; write time at 1.62 V, budget 2 ns):
+
+| corner | margin mV (−40/27/125) | write ps (−40/27/125) | leakage pA/bit at 125 °C | row edge ps |
+|---|---|---|---|---|
+| tt | 762 / 774 / 784 | 658 / 628 / 603 | 33.8 | 125–134 |
+| ss | 678 / 691 / 703 | 986 / 914 / 860 | 11.4 | 166–170 |
+| ff | 857 / 863 / 867 | 472 / 466 / 468 | 375 | 99–114 |
+| sf | 942 / 964 / 993 | 798 / 721 / 654 | 519 | 172–178 |
+| fs | 573 / 571 / 561 | 612 / 617 / 638 | 409 | 96–116 |
+
+Worst write margin 561 mV (fs, 125 °C); slowest write 986 ps (ss, −40 °C, 1.62 V);
+worst leakage 519 pA/bit (sf, 125 °C) = 2.0 µW for the tile, 0.55 % of OTA static.
+Write energy over corners 12.7–14.1 pJ/row, 105–116 pJ/pass.
