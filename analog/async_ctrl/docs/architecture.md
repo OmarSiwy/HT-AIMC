@@ -1,5 +1,7 @@
 # async_ctrl — self-timed sequencer + t_q grid
 
+Schematic, drawn by cktImg from `netlist/async_ctrl.spice` (`make import NETLIST=async_ctrl`): [async_ctrl.svg](async_ctrl.svg)
+
 Leaf block. The analog domain has no global clock (GALS, `analog/docs/architecture.md`):
 `async_ctrl` turns one GO edge into the column phases, and `tq_chain` — defined in the
 same deck, instantiated beside it by `analogioc` — lays the t_q PWM grid. `muller_c` is in

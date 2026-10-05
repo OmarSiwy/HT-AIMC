@@ -1,5 +1,7 @@
 # pwm_driver — PWM row driver
 
+Schematic, drawn by cktImg from `netlist/pwm_driver.spice` (`make import NETLIST=pwm_driver`): [pwm_driver.svg](pwm_driver.svg)
+
 Leaf block, 16 per weight tile (one per row) plus the packet bank of each
 `integrator_conv`. Chops the A5 PWM envelope onto the tile's two-phase switched-cap
 grid, so every chop cycle while the envelope is high moves exactly C·VDD per bank:

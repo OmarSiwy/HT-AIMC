@@ -1,5 +1,7 @@
 # ota — telescopic-cascode column-integrator OTA
 
+Schematic, drawn by cktImg from `netlist/ota.spice` (`make import NETLIST=ota`): [ota.svg](ota.svg)
+
 Leaf block. The amplifier of every column integrator: `integrator_conv` wraps it with
 C_int (feedback from `out` to the virtual ground `inn`, `inp` at vcm) and charge packets
 land on `inn`; `lora_sidecar` reuses it. AnalogIOC source: `library/ota.py`

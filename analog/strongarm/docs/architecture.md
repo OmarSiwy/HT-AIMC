@@ -1,5 +1,7 @@
 # strongarm — StrongARM latch comparator
 
+Schematic, drawn by cktImg from `netlist/strongarm.spice` (`make import NETLIST=strongarm`): [strongarm.svg](strongarm.svg)
+
 Leaf block. Clocked decision element of the column readout: `integrator_conv`
 uses it for both the event-rate coarse loop (threshold crossings of the integrator)
 and the fine SAR trials. See `analog/docs/architecture.md` §Column readout.

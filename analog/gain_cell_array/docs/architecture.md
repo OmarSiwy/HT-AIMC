@@ -1,5 +1,7 @@
 # gain_cell_array — 8×8 2T gain-cell array
 
+Schematic, drawn by cktImg from `netlist/gain_cell_array.spice` (`make import NETLIST=gain_cell_array`): [gain_cell_array.svg](gain_cell_array.svg)
+
 LoRA A/B weight storage: `lora_sidecar` reuses the single cell (`gain_cell_subckt`).
 Written by `write_dac` (4b, 0…V_W); read as a charge-domain dot product onto the column
 integrators. See `analog/docs/architecture.md` §Signal chain.

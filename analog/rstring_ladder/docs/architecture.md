@@ -1,5 +1,7 @@
 # rstring_ladder — 4b R-string reference ladder + tap mux
 
+Schematic, drawn by cktImg from `netlist/rstring_ladder.spice` (`make import NETLIST=rstring_ladder`): [rstring_ladder.svg](rstring_ladder.svg)
+
 Child: `cmos_switch` (one sized copy, `rstring_ladder_sw`, for all 16 taps). Used by
 `analogioc` (four instances): coarse comparator thresholds (vcm ± 15.5·D·u) and SAR CDAC
 span rails (vcm ± 16·D·u). Packet references are not taken from here (ratiometric to
