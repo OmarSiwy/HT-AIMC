@@ -6,15 +6,11 @@
 #                      check, iverilog sim with the behavioural model, harden, signoff counts
 #
 # LibreLane comes from the nix shell (./env.sh digital), used as-is. It needs the
-# sky130 build it pins (librelane/pdk_hashes.yaml, 8afc8346 for 3.0.14): the
-# shell.nix volare pin (PDK_VERSION, fa87f8f4) is too old for it (no
-# libs.tech/librelane, no KLAYOUT_DEF_LAYER_MAP). So LibreLane fetches its own pin
-# with ciel into LL_PDK_ROOT, apart from ~/.volare.
-# TODO: bump shell.nix PDK_VERSION to 8afc8346 (re-check the analog side), then set
-# LL_PDK_ROOT=$(PDK_ROOT) so analog and digital share one PDK.
+# sky130 build it pins (librelane/pdk_hashes.yaml, 8afc8346 for 3.0.14). shell.nix pins the
+# same version into $PDK_ROOT (~/.ciel), so analog and digital share one PDK.
 
 PDK ?= sky130A
-LL_PDK_ROOT ?= $(HOME)/.ciel
+LL_PDK_ROOT ?= $(or $(PDK_ROOT),$(HOME)/.ciel)
 LIBRELANE ?= librelane
 LL = $(LIBRELANE) --pdk-root $(LL_PDK_ROOT) --pdk $(PDK)
 MACROS_PY = ../macros.py

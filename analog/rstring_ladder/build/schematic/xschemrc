@@ -5,7 +5,7 @@
 # with a core dump, and since the recipe backgrounds xschem with `&`, the crash was
 # invisible and make still reported success. The `update-pdk` target existed only to sed
 # this line back into agreement with reality; nothing to sed, nothing to drift.
-set PDK_ROOT [expr {[info exists env(PDK_ROOT)] ? $env(PDK_ROOT) : "$env(HOME)/.volare"}]
+set PDK_ROOT [expr {[info exists env(PDK_ROOT)] ? $env(PDK_ROOT) : "$env(HOME)/.ciel"}]
 set PDK [expr {[info exists env(PDK)] ? $env(PDK) : "sky130A"}]
 set PDK_PATH "$PDK_ROOT/$PDK"
 

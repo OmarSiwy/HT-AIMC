@@ -120,6 +120,6 @@ docker run $DOCKER_PLATFORM $DOCKER_SECURITY_OPT -it --rm \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v "$(pwd):/workspace" \
     -v "$HOME/.cache/nix:/root/.cache/nix" \
-    -v "$HOME/.volare:/root/.volare" \
+    -v "$HOME/.ciel:/root/.ciel" \
     --name $CONTAINER_NAME \
     $IMAGE_NAME nix-shell

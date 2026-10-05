@@ -73,7 +73,7 @@ def va_testbench(corner="", temp=None):
                               f"{n[3 * N + c]} {n[-1]} {BLOCK}_cell_va")
     tb = ps.Testbench(top)
     tb.use_pdk(get_pdk().model_library(corner or os.environ.get("CORNER", "")))
-    tb.temperature = float(temp if temp is not None else os.environ.get("TEMP", 27))
+    tb.temperature = float(temp if temp is not None else os.environ.get("SIM_TEMP", 27))
     return tb
 
 

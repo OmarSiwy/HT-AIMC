@@ -8,7 +8,7 @@ endif
 # OpenLane2 Config
 OPENLANE2_ROOT ?= $(shell pwd)/openlane2
 PDK ?= sky130A
-PDK_ROOT ?= $(HOME)/.volare
+PDK_ROOT ?= $(HOME)/.ciel
 XSCHEM_DIR := xschem
 
 # CONFIG JSON VARIABLES

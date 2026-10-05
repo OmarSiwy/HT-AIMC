@@ -35,10 +35,10 @@ MEASURED = ("vth_n", "vth_p", "un_cox", "up_cox", "ss_mv_dec", "a_vt", "mim_ff_u
 
 def pdk_root() -> Path:
     env = os.environ.get("PDK_ROOT")
-    for p in ([Path(env)] if env else []) + [Path.home() / ".volare", Path.home() / ".ciel"]:
+    for p in ([Path(env)] if env else []) + [Path.home() / ".ciel", Path.home() / ".volare"]:
         if p.is_dir():
             return p
-    raise FileNotFoundError("PDK_ROOT not set and no ~/.volare or ~/.ciel — run ./env.sh")
+    raise FileNotFoundError("PDK_ROOT not set and no ~/.ciel or ~/.volare — run ./env.sh")
 
 
 @dataclass

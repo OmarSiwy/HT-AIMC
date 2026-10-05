@@ -106,7 +106,7 @@ def tq_testbench(corner="", temp=None):
         top.X("xdut", "tq_chain", *TQ_PORTS)
     tb = ps.Testbench(top)
     tb.use_pdk(PDK.model_library(corner or os.environ.get("CORNER", "")))
-    tb.temperature = float(temp if temp is not None else os.environ.get("TEMP", 27))
+    tb.temperature = float(temp if temp is not None else os.environ.get("SIM_TEMP", 27))
     return tb
 
 
@@ -136,7 +136,7 @@ def run_tq_grid(r):
     if not r.check("all taps toggle", stage is not None):
         return
     nominal = os.environ.get("CORNER", PDK.typical) == PDK.typical and \
-        float(os.environ.get("TEMP", 27)) == 27
+        float(os.environ.get("SIM_TEMP", 27)) == 27
     for k, dt in enumerate(stage, 1):
         lo, hi = (0.5, 1.3) if k == 1 else (1 - TQ_TOL, 1 + TQ_TOL)
         ok = lo * TQ_SPEC < dt < hi * TQ_SPEC

@@ -126,10 +126,10 @@ def column(cp, cn, kind="", rail=True, ideal_ota=False):
 
 
 def testbench(cp, cn, kind="", corner="", temp=None, **col):
-    """Column + instrument + supplies/vcm/reset; $CORNER/$TEMP as bench.testbench."""
+    """Column + instrument + supplies/vcm/reset; $CORNER/$SIM_TEMP as bench.testbench."""
     tb = ps.Testbench(column(cp, cn, kind, **col))
     tb.use_pdk(PDK.model_library(corner or os.environ.get("CORNER", "")))
-    tb.temperature = float(temp if temp is not None else os.environ.get("TEMP", 27))
+    tb.temperature = float(temp if temp is not None else os.environ.get("SIM_TEMP", 27))
     tb.options(reltol=1e-4, abstol=1e-12, vntol=1e-6, method="gear")   # AnalogIOC TIGHT
     tb.C(name="int", positive="vout", negative="col0", value=C_INT)
     tb.V(name="sup", positive="vdd", negative="0", value=VDD)

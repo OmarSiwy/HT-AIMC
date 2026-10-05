@@ -41,7 +41,7 @@ Makefile: This Makefile must be run inside the nix-shell environment
 
 **Fix:**
 \`\`\`bash
-rm -rf ~/.volare
+rm -rf ~/.ciel
 ./env.sh
 \`\`\`
 `

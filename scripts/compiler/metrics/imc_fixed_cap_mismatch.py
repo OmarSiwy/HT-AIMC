@@ -8,7 +8,7 @@ sys.path.insert(0,str(ROOT / "scripts"))
 import numpy as np
 from compiler.metrics.imc_programmable_digit_campaign import digits,radix,FORMATS
 
-PDK=Path.home()/'.volare/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__cap_mim_m3_1.model.spice'
+PDK=Path.home()/'.ciel/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__cap_mim_m3_1.model.spice'
 HIST=ROOT/'build/campaign/weight_digits/radix_screen.json'
 
 

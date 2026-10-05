@@ -56,14 +56,14 @@ def bias_network(top, pdk=PDK):
 def ota_testbench(extra=None, corner=""):
     """Testbench: DUT xdut on its port nets, vdd/vss sources, bias_network on vb_*.
     `extra(top)` adds devices to the wrapper (a Testbench carries only sources and R/C).
-    $CORNER / $TEMP as bench.testbench."""
+    $CORNER / $SIM_TEMP as bench.testbench."""
     top = dut("ota", PORTS)
     bias_network(top)
     if extra:
         extra(top)
     tb = ps.Testbench(top)
     tb.use_pdk(PDK.model_library(corner or os.environ.get("CORNER", "")))
-    tb.temperature = float(os.environ.get("TEMP", 27))
+    tb.temperature = float(os.environ.get("SIM_TEMP", 27))
     tb.V(name="sup", positive="vdd", negative="0", value=VDD)
     tb.V(name="ss", positive="vss", negative="0", value=0.0)
     return tb

@@ -9,7 +9,7 @@ Every testbench runs unchanged on three DUT sources (analog-design-flow skill, s
              PEX_FROM=gen substrate2 generator + magic (analog/common/layout/verify.py)
 
 The DUT is always instance `xdut` on nets named after its ports, so stimulus and probes
-never change between sources. Process corner / temperature come from $CORNER / $TEMP
+never change between sources. Process corner / temperature come from $CORNER / $SIM_TEMP
 (defaults: the PDK's typical section, 27 C).
 """
 import os
@@ -76,7 +76,7 @@ def testbench(block: str, ports: list, kind: str = "", corner: str = "",
     pdk = get_pdk()
     tb = ps.Testbench(dut(block, ports, kind, **va_params))
     tb.use_pdk(pdk.model_library(corner or os.environ.get("CORNER", "")))
-    tb.temperature = float(temp if temp is not None else os.environ.get("TEMP", 27))
+    tb.temperature = float(temp if temp is not None else os.environ.get("SIM_TEMP", 27))
     return tb
 
 
@@ -87,7 +87,7 @@ class Report:
         self.title, self.ok = title, True
         print(f"\n== {title} [DUT={dut_kind()} PDK={get_pdk().name} "
               f"CORNER={os.environ.get('CORNER', get_pdk().typical)} "
-              f"TEMP={os.environ.get('TEMP', 27)}] ==")
+              f"SIM_TEMP={os.environ.get('SIM_TEMP', 27)}] ==")
 
     def check(self, label: str, passed: bool, detail: str = "") -> bool:
         self.ok &= bool(passed)

@@ -176,10 +176,10 @@
     "vss": 0
    },
    "models": [
-    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" tt"
+    ".lib \"/home/omare/.ciel/sky130A/libs.tech/ngspice/sky130.lib.spice\" tt"
    ],
    "mc_models": [
-    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" tt_mm"
+    ".lib \"/home/omare/.ciel/sky130A/libs.tech/ngspice/sky130.lib.spice\" tt_mm"
    ]
   },
   {
@@ -190,10 +190,10 @@
     "vss": 0
    },
    "models": [
-    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ss"
+    ".lib \"/home/omare/.ciel/sky130A/libs.tech/ngspice/sky130.lib.spice\" ss"
    ],
    "mc_models": [
-    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ss_mm"
+    ".lib \"/home/omare/.ciel/sky130A/libs.tech/ngspice/sky130.lib.spice\" ss_mm"
    ]
   },
   {
@@ -204,10 +204,10 @@
     "vss": 0
    },
    "models": [
-    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ff"
+    ".lib \"/home/omare/.ciel/sky130A/libs.tech/ngspice/sky130.lib.spice\" ff"
    ],
    "mc_models": [
-    ".lib \"/home/omare/.volare/sky130A/libs.tech/ngspice/sky130.lib.spice\" ff_mm"
+    ".lib \"/home/omare/.ciel/sky130A/libs.tech/ngspice/sky130.lib.spice\" ff_mm"
    ]
   }
  ],

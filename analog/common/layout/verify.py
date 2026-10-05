@@ -19,7 +19,7 @@ from collections import Counter
 from pathlib import Path
 
 ANALOG = Path(__file__).resolve().parents[2]
-PDK_ROOT = Path(os.environ.get("PDK_ROOT", Path.home() / ".volare"))
+PDK_ROOT = Path(os.environ.get("PDK_ROOT", Path.home() / ".ciel"))
 PDK = os.environ.get("PDK", "sky130A")
 TECH = PDK_ROOT / PDK / "libs.tech"
 

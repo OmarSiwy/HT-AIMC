@@ -5,7 +5,7 @@ RTL     := $(wildcard src/*.v)
 RTL     += $(shell python3 build/macros.py sim build/macros.toml)
 TB_SRCS := $(wildcard test/tb_*.v)
 TESTS   := $(patsubst test/%.v,%,$(TB_SRCS))
-LIB     := $(HOME)/.volare/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+LIB     := $(HOME)/.ciel/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 
 .PHONY: test synth clean $(TESTS)
 

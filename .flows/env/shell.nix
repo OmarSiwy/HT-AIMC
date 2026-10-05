@@ -12,9 +12,8 @@ let
   eda = builtins.getFlake "github:OmarSiwy/EDA-Packaged";
   # LibreLane: not in nixpkgs 25.11. Pinned to a release tag; its binary cache is
   # https://nix-cache.fossi-foundation.org (env.sh passes it), else openroad builds locally.
-  # LibreLane 3.0.14 needs the sky130 it pins (8afc8346); PDK_VERSION below is too old
-  # for it, so build/librelane/Makefile lets it fetch its pin into ~/.ciel.
-  # TODO: move PDK_VERSION to 8afc8346 so analog and digital share one PDK.
+  # PDK_VERSION below is LibreLane 3.0.14's sky130 pin (8afc8346), so analog and
+  # digital share one PDK under ~/.ciel.
   librelane = builtins.getFlake "github:librelane/librelane/3.0.14";
   analog = import ./Analog.nix { inherit pkgs eda; };
   digital = import ./Digital.nix { inherit pkgs librelane; };
@@ -25,6 +24,7 @@ let
   commonPackages = with pkgs; [
     # Builds
     gnumake
+    librelane.inputs.ciel.packages.${pkgs.system}.ciel  # PDK manager (volare successor), the one LibreLane uses
     git
     gh
     python312
@@ -84,8 +84,8 @@ pkgs.mkShell {
 
     # === PDK Configuration ===
     export PDK="sky130A"
-    export PDK_VERSION="fa87f8f4bbcc7255b6f0c0fb506960f531ae2392"
-    export PDK_ROOT="$HOME/.volare"
+    export PDK_VERSION="8afc8346a57fe1ab7934ba5a6056ea8b43078e71"  # = LibreLane 3.0.14 pin
+    export PDK_ROOT="$HOME/.ciel"
 
     # === Python Dependencies Installation ===
     export VENV_DIR="$PROJECT_ROOT/.venv"
@@ -97,23 +97,12 @@ pkgs.mkShell {
       source "$VENV_DIR/bin/activate"
     fi
 
-    # === PDK SETUP WITH VOLARE ===
     pip install --upgrade pip==24.2 setuptools==75.1.0 wheel==0.44.0 >/dev/null 2>&1
-    pip install volare==0.20.6  >/dev/null 2>&1 || true
 
-    if [ -d "$PDK_ROOT/volare/sky130/versions" ]; then
-      echo "Cleaning up old PDK versions (keeping $PDK_VERSION)..."
-      cd "$PDK_ROOT/volare/sky130/versions"
-      find . -maxdepth 1 -mindepth 1 -type d ! -name "$PDK_VERSION" -exec echo "  Removing old version: {}" \; -exec rm -rf {} \;
-      if [ ! -d "$PDK_ROOT/$PDK" ]; then
-        echo "  Removing potentially invalid cache link: ~/.volare"
-        rm -rf "$HOME/.volare"
-      fi
-      cd "$PROJECT_ROOT"
-    fi
-
-    # Enable the PDK with volare
-    volare enable --pdk sky130 "$PDK_VERSION"
+    # === PDK SETUP WITH CIEL (nixpkgs; same store LibreLane uses) ===
+    # Downloads $PDK_VERSION once and points $PDK_ROOT/$PDK at it. Other versions are left alone.
+    ciel enable --pdk-root "$PDK_ROOT" --pdk-family sky130 "$PDK_VERSION" >/dev/null \
+      || echo "WARNING: ciel could not enable sky130 $PDK_VERSION in $PDK_ROOT"
 
     # === Mode Specific Hooks ===
     ${if useAnalog then analog.shellHook else ""}

@@ -203,7 +203,7 @@ def main():
             f"{'n/a' if ta is None else f'{ta * 1e9:.1f} ns'}, "
             f"specs formula {specs.tau_absorb() * 1e9:.1f} ns")
 
-    if dut_kind() != "sch" or "CORNER" in os.environ or "TEMP" in os.environ:
+    if dut_kind() != "sch" or "CORNER" in os.environ or "SIM_TEMP" in os.environ:
         print("  LVT vs SVT: skipped (informational, DUT=sch at the nominal corner only)")
         r.done()
     sz, bl = lvt_design()

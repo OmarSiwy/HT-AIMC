@@ -195,7 +195,7 @@ you re-climb from rung 0.
    (`analog/common/pex.py`, which also re-adds caps left out of the P&R deck), then
    `DUT=pex ... test` — all specs pass.
 4. **Corners:** `make -C analog/<block>/build/sim corners` (`corners.py` re-runs every
-   nominal `tb_*.py` over `pdk.corners` × −40/27/125 °C via `$CORNER`/`$TEMP`) — all pass.
+   nominal `tb_*.py` over `pdk.corners` × −40/27/125 °C via `$CORNER`/`$SIM_TEMP`) — all pass.
 5. **Monte Carlo:** `make ... mc` runs `test/tb_<block>_mc.py`: N fresh benches on the
    mismatch section (`pdk.typical + pdk.mismatch_suffix`) with `tb.options(seed=i)`
    (SpiceRack's `MonteCarloPlan` is Spectre-only) — yield target from the block doc met.

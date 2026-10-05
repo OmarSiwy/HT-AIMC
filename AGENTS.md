@@ -67,8 +67,8 @@ why flakes have to be enabled.
   substrate2 layout generators.
 - `.flows/env/Digital.nix`: yosys, verilator, iverilog, gtkwave, cocotb, openroad.
   LibreLane comes from its own flake in `shell.nix` and is used as-is.
-- The shell hook sets `PDK=sky130A`, `PDK_ROOT=~/.volare`, enables the pinned
-  PDK with volare, creates `.venv/`, and prints which tools resolved.
+- The shell hook sets `PDK=sky130A`, `PDK_ROOT=~/.ciel`, enables the pinned
+  PDK with ciel (the same store LibreLane uses), creates `.venv/`, and prints which tools resolved.
 
 To add a tool, add it to `Analog.nix` or `Digital.nix`. If nixpkgs does not
 carry it, add it to EDA-Packaged. ESPice is the exception: it is not in the

@@ -73,6 +73,6 @@ docker run -it --rm \
     -e DISPLAY="${DISPLAY:-:0}" \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v "$(pwd):/workspace" \
-    -v "$HOME/.volare:/root/.volare" \
+    -v "$HOME/.ciel:/root/.ciel" \
     --name $CONTAINER_NAME \
     $IMAGE_NAME nix-shell /nix-env/shell.nix $TYPE_ARG --extra-experimental-features flakes

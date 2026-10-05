@@ -11,7 +11,7 @@ NGSPICE = ngspice
 
 # PDK location. Both are exported by the nix shell; the defaults only matter if someone
 # runs make with a hand-rolled environment.
-PDK_ROOT ?= $(HOME)/.volare
+PDK_ROOT ?= $(HOME)/.ciel
 PDK_NAME ?= $(if $(PDK),$(PDK),sky130A)
 XSCHEMRC_FILE = xschemrc
 
