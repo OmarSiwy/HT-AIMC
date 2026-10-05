@@ -15,7 +15,8 @@ analog_root = "../../../analog"
 [[macro]]
 block = "analogioc"
 # Ports: analog/analogioc/netlist/analogioc.ports (contract: analog/analogioc/docs/INTERFACE.md).
-# 35 signal ports (349 bits) + 5 analog supplies. The macro has NO digital supply pins:
+# 37 signal ports (501 bits) + 5 analog supplies. w_wl/w_data (weight write, INTERFACE.md §7)
+# are plain digital pins: not analog_nets. The macro has NO digital supply pins:
 # its sequencer logic runs on its own `vdd`, kept off VPWR/VGND like the other analog rails.
 # TODO: delete this line once these views exist: output/gds, output/lef, output/lib
 # (optional), output/verilog blackbox (generated from analogioc.ports), va/analogioc_beh.v,

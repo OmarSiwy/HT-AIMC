@@ -1,5 +1,7 @@
 # analogioc — analog macro ↔ digital rail interface contract (phase 0)
 
+Amended: **reprogrammable weights** (D7, D10, D11, §7). This closes the old Q1.
+
 Every agent building the converter, the analog top, the digital top, the behavioural
 model or the co-simulation builds against this file. If it conflicts with anything else,
 this file wins for the macro boundary; `docs/src/content/Project/INTERFACES.md` stays
@@ -23,9 +25,11 @@ macro's own t_q grid (`tq_chain`), never the fabric clock.
 | D4 | One integrate handshake for the whole tile: the 17 `tile_fsm` instances are joined in the digital top by a registered C-element into one `integ_req`, and `integ_ack` fans back out. The coarse and fine handshakes are per column. | the PWM window is shared by all rows/columns; the coarse loops terminate per column |
 | D5 | The activation enters as quasi-static nibble data (`x_mag`, `x_neg`, `win_hi`) bundled with `integ_req`. The macro makes the PWM envelopes on its own t_q grid. The rail does not drive `xin_p/n_r*`. | envelope edges must land in the 0.8 ns all-off chop gap; a 20 ns fabric clock cannot place them (and 200 ps silicon t_q even less) |
 | D6 | The converter LSB D is runtime: `pkt_d[2:0]` = packet length in converter chop cycles (D=1..7; 0 means 1). The packet bank is sized once at D=1 (`specs.c_pkt(D=1)`). The reference spans for D come from the external ladder rails. | tensors on one chip use D ∈ {1,2} (`digital_config.json`); `c_pkt(D)` is linear in D |
-| D7 | Weights are a **build-time parameter** of the macro: the netlist is generated per pass from `caps.spice`, and the behavioural model loads `weights.hex`. No weight-write port. | that is how every existing tile netlist works (`weight_tile.build(Cp,Cn,chk)`). Open question Q1. |
+| D7 | Weights are **runtime state**, rewritten before every pass. Each of the 16×17 cells stores its differential code as 8 static bits, Cp[3:0] and Cn[3:0]. These bits drive the cap-bank switches. The tile has every bit cap; a stored bit decides whether that cap's bottom plate sees the row line. Writes go one row at a time through `w_wl`/`w_data` (§7). The netlist is the same for every pass, and the behavioural model computes from what was written. | the compiler emits 10,944 tile passes per token (`passes.json`), and each pass has its own `programming/<m>.npz` codes. A build-time tile cannot run a model. |
 | D8 | Digital top for phases 1–4 = new non-TinyTapeout module `analogioc_top` with a wide parallel interface. The TT stub `src/analogioc.v` is deleted, because module name `analogioc` now belongs to the macro. A TT wrapper `tt_um_analogioc` comes later. | macro needs 13 analog pins + 5 supplies; open question Q3 |
-| D9 | `tile_fsm.ota_en` must be HIGH for the whole FINE phase (INTERFACES.md, authoritative). The RTL currently drops it in `S_FINE`, which is the twice-reverted fine-phase park. That is a required RTL fix (§7.4). The macro still ORs `acq` into the OTA gate. | INTERFACES.md `ota_en`; origin `tb_ic_park` |
+| D9 | `tile_fsm.ota_en` must be HIGH for the whole FINE phase (INTERFACES.md, authoritative). The RTL currently drops it in `S_FINE`, which is the twice-reverted fine-phase park. That is a required RTL fix (§8.4). The macro still ORs `acq` into the OTA gate. | INTERFACES.md `ota_en`; origin `tb_ic_park` |
+| D10 | Storage cell = **write-only 6T bitcell** on `vdd`: two cross-coupled inverters plus two nfet access devices on complementary bitlines. There is no read port, no precharge and no sense amp. Q/QB drive a static bottom-plate selector directly (§7.2). | see §7.2 |
+| D11 | The weight write is a **fabric-timed level write**, not a 4-phase handshake. `w_wl`/`w_data` come from flops in `analogioc_top`, in the same timing class as `lora_w*_sel` and `dac_code`. Writes are legal only outside the integrate window (§7.3). | see §7.1 |
 
 ### 1.1 Why the wrapper is analog-side (D2)
 
@@ -52,7 +56,7 @@ Three options were considered.
 
 `.subckt analogioc` takes the ports **in this order**. Vectors are bit-blasted LSB first.
 The `.subckt` spells bit i as `name<i>` and Verilog/`.ports` spell it `name[i]`
-(`macros.py` maps `<i>`↔`[i]`). The Verilog blackbox and behavioural model declare the 35
+(`macros.py` maps `<i>`↔`[i]`). The Verilog blackbox and behavioural model declare the 37
 signal ports in this order with `[N-1:0]` ranges, and no supply pins. Direction is as seen
 from the macro.
 
@@ -84,21 +88,23 @@ are no level shifters.
 | 20 | `lora_wb_sel` | in | digital | vdd | 16 | one-hot write select, sidecar B cell j |
 | 21 | `lora_da` | in | digital | vdd | 4 | A write-DAC code |
 | 22 | `lora_db` | in | digital | vdd | 4 | B write-DAC code |
-| 23 | `vcm` | inout | analog | vdd | 1 | virtual ground / common mode, `specs.VCM_FRAC`·vdd = 0.9 V |
-| 24 | `vrn_thrp` `vrp_thrp` | inout | analog | vdd | 1+1 | thr_p ladder rails: vcm, vcm + 15.5·D·u_cal |
-| 25 | `vrn_thrn` `vrp_thrn` | inout | analog | vdd | 1+1 | thr_n ladder rails: vcm − 15.5·D·u_cal, vcm |
-| 26 | `vrn_sarp` `vrp_sarp` | inout | analog | vdd | 1+1 | sar_p ladder rails: vcm, vcm + 16·D·u_cal·trim |
-| 27 | `vrn_sarn` `vrp_sarn` | inout | analog | vdd | 1+1 | sar_n ladder rails: vcm − 16·D·u_cal·trim, vcm |
-| 28 | `vb_nc` `vb_pc` `vb_tail` | inout | analog | vdd_ota | 1+1+1 | OTA bias, shared by the 17 converter OTAs and the 2 sidecar OTAs. Origin values 1.25 / 0.29 / 0.665 V (`specs.ota()` governs). |
-| 29 | `vb_ramp` | inout | analog | vdd | 1 | sidecar V→T ramp pfet gate (origin 0.656 V) |
-| 30 | `vdd` | inout | supply | vdd | 1 | 1.8 V: logic, sequencers, TG drivers, tile, ladders, sidecar |
-| 31 | `vdd_ota` | inout | supply | vdd_ota | 1 | 1.8 V: 17 integrator OTAs |
-| 32 | `vdd_cmp` | inout | supply | vdd_cmp | 1 | 1.8 V: 34 StrongARMs |
-| 33 | `vdd_pkt` | inout | supply | vdd_pkt | 1 | 1.8 V: 17 packet drivers + banks |
-| 34 | `vss` | inout | supply | vss | 1 | 0 V |
+| 23 | `w_wl` | in | digital | vdd | 16 | weight word lines, at most one high. `w_wl[i]` high = row i's 17 cells follow `w_data`; the value on `w_wl[i]`↓ is stored (§7). All 0 from T_WSU before `integ_req`↑ until `integ_ack`↑. |
+| 24 | `w_data` | in | digital | vdd | 136 | row write word. Column j (j = 16 = checksum) is at `[8j+7:8j]`: Cp = `[8j+3:8j]`, Cn = `[8j+7:8j+4]`. Stable from ≥ T_WR before `w_wl`↓ until ≥ T_WH after it (§7.3). |
+| 25 | `vcm` | inout | analog | vdd | 1 | virtual ground / common mode, `specs.VCM_FRAC`·vdd = 0.9 V |
+| 26 | `vrn_thrp` `vrp_thrp` | inout | analog | vdd | 1+1 | thr_p ladder rails: vcm, vcm + 15.5·D·u_cal |
+| 27 | `vrn_thrn` `vrp_thrn` | inout | analog | vdd | 1+1 | thr_n ladder rails: vcm − 15.5·D·u_cal, vcm |
+| 28 | `vrn_sarp` `vrp_sarp` | inout | analog | vdd | 1+1 | sar_p ladder rails: vcm, vcm + 16·D·u_cal·trim |
+| 29 | `vrn_sarn` `vrp_sarn` | inout | analog | vdd | 1+1 | sar_n ladder rails: vcm − 16·D·u_cal·trim, vcm |
+| 30 | `vb_nc` `vb_pc` `vb_tail` | inout | analog | vdd_ota | 1+1+1 | OTA bias, shared by the 17 converter OTAs and the 2 sidecar OTAs. Origin values 1.25 / 0.29 / 0.665 V (`specs.ota()` governs). |
+| 31 | `vb_ramp` | inout | analog | vdd | 1 | sidecar V→T ramp pfet gate (origin 0.656 V) |
+| 32 | `vdd` | inout | supply | vdd | 1 | 1.8 V: logic, sequencers, TG drivers, tile, weight storage, ladders, sidecar |
+| 33 | `vdd_ota` | inout | supply | vdd_ota | 1 | 1.8 V: 17 integrator OTAs |
+| 34 | `vdd_cmp` | inout | supply | vdd_cmp | 1 | 1.8 V: 34 StrongARMs |
+| 35 | `vdd_pkt` | inout | supply | vdd_pkt | 1 | 1.8 V: 17 packet drivers + banks |
+| 36 | `vss` | inout | supply | vss | 1 | 0 V |
 
-Counts: 263 digital in + 86 digital out + 13 analog + 5 supply = **367 `.subckt` pins**.
-That is 35 Verilog signal ports (349 bits) plus 5 supply pins. Supplies are split for
+Counts: 415 digital in + 86 digital out + 13 analog + 5 supply = **519 `.subckt` pins**.
+That is 37 Verilog signal ports (501 bits) plus 5 supply pins. Supplies are split for
 per-block energy accounting (CONTRACT metrics mandate). `macros.toml` declares all five
 as `analog_supplies` (kept off the digital PDN; `pg = []`).
 
@@ -111,7 +117,9 @@ origin: thr_p 15, thr_n 0, sar_p 15, sar_n 0.
 
 | Inside `analogioc` (analog, `.subckt`) | Count | Block |
 |---|---|---|
-| `weight_tile` 16 rows × 17 columns, rows driven by its embedded `pwm_driver` | 1 (16 pwm_driver) | weight_tile |
+| `weight_tile` 16 rows × 17 columns, rows driven by its embedded `pwm_driver`. **Programmable:** every bank has all 4 bit caps, a bottom-plate selector per bit, and its storage bits (§7.2). | 1 (16 pwm_driver) | weight_tile |
+| weight storage: 8 write-only 6T bitcells per cell (272 cells, 2176 bits), inside `weight_tile` | 2176 | weight_tile |
+| weight write drivers: one WL buffer per row; one true/complement bitline driver per `w_data` bit (vertical bitlines, 16 cells each) | 16 + 136 | weight_tile |
 | `integrator_conv` (migrated ports, §5) | 17 | integrator_conv |
 | `rstring_ladder` thr_p, thr_n, sar_p, sar_n, shared by all columns | 4 | rstring_ladder |
 | `lora_sidecar` (gain_cell_array ×2 and write_dac ×2 inside), `colb<j>` tied to column j's virtual ground for j = 0..15 | 1 | lora_sidecar |
@@ -127,9 +135,13 @@ origin: thr_p 15, thr_n 0, sar_p 15, sar_n 0.
 | `abft_check` W=20 | 1 |
 | `requant` (one instance per channel, or one time-multiplexed: implementer's choice, same results) | 16 or 1 |
 | pass sequencer (HI then LO window, relu masking, ABFT wiring, LoRA write timing) | 1 |
+| weight-load controller (`wt_*` row stream → `w_wl`/`w_data`, write window, `w_loaded`; §7.4) | 1 |
 | `rail_top` | **not instantiated**. It stays the `make synth` smoke wrapper (one slice). |
 
 ## 4. Handshake conventions (all three handshakes)
+
+The weight write port (`w_wl`, `w_data`) is **not** a handshake. It is a timed write
+(D11), specified in §7.3.
 
 - 4-phase RZ: req↑ → ack↑ → req↓ → ack↓. The macro never raises a req while the previous
   ack is high.
@@ -236,6 +248,10 @@ The `async_ctrl` instance provides the reset and start: go ← `integ_req`, `xba
 | I7 | 17 completions (`muller_c` join) + T_BUNDLE | `integ_ack`↑ | — | T_BUNDLE ≥ 2 ns |
 | I8 | `integ_req`↓ | `integ_ack`↓. Integrators **hold** (rst stays 0) until the next I1. | — | — |
 
+The tile chop runs only in I3. In every other step it is parked (tphi1 = 1, tphi2 = 0), so
+the bank tops are clamped to vcm and cut off from the columns. That parked state is what
+makes a weight write outside the integrate window electrically safe (§7.3).
+
 ### 6.3 `conv_seq`: coarse loop, column j
 
 | Step | Trigger | Action | Time (sim) | Min / max |
@@ -265,9 +281,167 @@ sure that is seen. Packet energy depends on `pkt_d`; one packet = 16·D code uni
 This is the resampling SAR: every trial re-acquires the residue held on the awake
 integrator, so a stale `dac_code` between trials is harmless.
 
-## 7. Digital top composition
+## 7. Weight write
 
-### 7.1 Module `analogioc_top` (new, `digital/analogioc/src/analogioc_top.v`)
+### 7.1 Port and why it is not a handshake (D11)
+
+| Signal | Width | Meaning |
+|---|---|---|
+| `w_wl[i]` | 16 | word line of row i, driven straight from a flop in `analogioc_top`. One-hot or all-zero. The macro only buffers it. |
+| `w_data[8j+3:8j]` | 4 per column | Cp code of column j, 0..15 |
+| `w_data[8j+7:8j+4]` | 4 per column | Cn code of column j, 0..15 |
+
+- **Granularity:** one row per write. A row word holds all 17 cells of row i, 8 bits each
+  (136 bits). Weight of row i, column j = Cp − Cn (`golden.wq_from_caps`).
+- **ABFT checksum column:** column 16 is part of every row word (`w_data[135:128]`). It is
+  written in the same strobe as the data columns, so there is no separate checksum write.
+  Its codes are the differential split of the signed `chk_i` (|chk_i| ≤ 15), the same as
+  `caps.spice` `wcp/wcn_r{i}c16`: Cp = max(chk_i, 0), Cn = max(−chk_i, 0).
+- **Word lines are one-hot and need no decoder.** This follows the `lora_w*_sel`
+  precedent and keeps decode logic out of the analog deck. A binary address would save
+  12 pins but would put a glitch-prone decoder inside the macro.
+- **Why it is not 4-phase req/ack:** the INTERFACES.md GALS rule covers analog-side
+  events, whose timing the analog decides (charge settled, comparator resolved). A
+  static bitcell write has no analog completion. It is a bounded static-CMOS delay
+  (WL buffer + bitline driver + cell flip, a few ns), set by sizing and not by data. An
+  ack would need completion detection on 2176 bits, or a matched delay that is
+  equivalent to a timed write anyway. The same class already exists in this contract:
+  `lora_w*_sel` (timed write) and `dac_code` (bundled data). The CONTRACT rule "no global
+  clock in the analog domain" still holds. `w_wl` is a level write enable that is never
+  active while the macro's t_q grid drives the tile (§7.3), and no macro timing derives
+  from it.
+
+### 7.2 Storage cell (D10)
+
+Per cell: 8 bits, Cp[3:0] and Cn[3:0], one bit per bit cap. Each bit is:
+
+- **Bitcell: write-only 6T.** It has two cross-coupled min inverters (Q, QB) and two
+  nfet access devices gated by row i's WL onto the bitline pair BL/BLB of that column
+  bit. The macro's bitline driver makes BLB = !`w_data` bit. There is no read path,
+  because readback is by MAC (§11 A11). So read stability (β ratio), precharge and sense
+  amps all drop out. The only sizing constraint is writeability: the access nfet must
+  overpower the pull-up pfet (pfet at min W with L ≥ 2·min_l, access nfet at min W/L;
+  the weight_tile agent sizes and corners it). There are no half-selected cells, because
+  a write always covers a whole row.
+- **Why not a latch:** a D-latch needs 8–12 FETs plus a per-bit local enable/clock, and
+  it gives Q or QB, not both. The 6T cell is the smallest static cell, and its Q/QB pair
+  drives the TG selector without an extra inverter. A foundry SRAM bitcell or OpenRAM is
+  not used: it needs special DRC rules and a read port that is not needed here. The cell
+  is built from the deck's own min-inverter rules (D2).
+- **Selector (bottom-plate switching):** for bit b of the C+ bank of (i, j), a TG connects
+  the bit cap's bottom plate to `rowa<i>` (n gate Q, p gate QB), and an nfet ties the
+  bottom to vss (gate QB). C− uses `rowb<i>`. When a bit is off, its bottom plate sits at
+  vss and its top stays on the bank top. The top-plate capacitance is therefore
+  15·C_u + C_BALL for every code (code-independent), and the `sv`/`st` TGs and the
+  dummies are unchanged. The switch is **on the bottom plate, never on the top**: it is
+  static during integration, so it injects no charge onto the summing node. Its series
+  R into ≤ 8·C_u (1.2 fF) is a ps-scale time constant.
+- **Supply/domain:** `vdd` (1.8 V), the same rail as `pwm_driver` and the tile TGs. The
+  selector TG passes 0..vdd row-line swings, so its gates must swing the full `vdd`.
+  There are no level shifters.
+- **Retention:** static. A cell holds while `vdd` is up, with no refresh. Contents are
+  **undefined after power-up**, and `seq_rst_n` does not clear them. `analogioc_top`
+  writes all 16 rows before the first pass (§7.4).
+- **No charge on storage nodes:** Q/QB connect only to FET gates (the selector) and to
+  access-device diffusion. They are never in a charge path of the MAC, so they need no
+  settling accuracy. They only need to be at a valid logic level when the window opens.
+
+### 7.3 Timing
+
+The fabric clock is T_clk, and T_CLK_MAX = 20 ns (LibreLane).
+
+| Rule | Value |
+|---|---|
+| Must-be-stable window | storage (hence all `w_wl` = 0) from **T_WSU before `integ_req`↑ until `integ_ack`↑**, for every integrate handshake. This is wider than the physical need (tile chop in I3 only), so the RTL rule is simple. |
+| T_WSU (last `w_wl`↓ → `integ_req`↑) | ≥ 1 T_clk (20 ns). Physically the selector and bank top recover in < 1 ns, and I1+I2 add another 50 ns before the window. |
+| T_WR (`w_data` stable before `w_wl`↓) | ≥ T_clk − skew. The cell needs ≲ 2 ns (weight_tile measures it at ss/−40 °C/1.62 V). |
+| T_WH (`w_data` hold after `w_wl`↓) | ≥ 2 ns (= T_BUNDLE). Met by construction: data never changes on the edge where `w_wl` falls. |
+| `w_data` while `w_wl` high | may change. The write is level-sensitive and the last value before `w_wl`↓ wins. This lets data and WL change on the same edge. |
+| Writes between `integ_ack`↑ and the next `integ_req`↑ (converters running) | **allowed**, with the tile parked. The bank top is clamped by `sv`, so a selector flip draws its charge from vcm. The net charge through the off `st` TG is zero once the top re-settles. The transient on col j must leave the next comparator decision unchanged: A11b gates this, and Q10 is the fallback. |
+
+**Write time per pass**, with the RTL of §7.4 (2 T_clk per row: WL high, then WL low with data
+held):
+
+- 16 rows × 2 × 20 ns = **640 ns**, plus T_WSU 20 ns = **660 ns**.
+
+**Against the tile pass**, from `specs.py` on sky130:
+
+| | sim grid t_q = 10 ns | silicon t_q = 200 ps |
+|---|---|---|
+| `pass_time` (HI 1280 + LO 160 window, 2 × (80 settle + 780 `conv_time`)) | 3160 ns (28.9 tok/s @ 10,944 passes) | 1592 ns (57.4 tok/s) |
+| write **serialized** before the pass | 3820 ns (+21 %, 23.9 tok/s) | 2252 ns (+41 %, 40.6 tok/s) |
+| write **overlapped** with the LO conversion (§7.4) | exposed = max(0, 700 ns − t_conv,LO). 700 = 660 + 2 clk ack sync. | same |
+| exposed, worst case (all 17 LO columns terminate at count 0: 2·60 + 240 = 360 ns) | 340 ns (+11 %) | 340 ns (+21 %) |
+| exposed when the busiest LO column has count ≥ 6 (conv ≥ 720 ns) | 0 | 0 |
+
+Writes do not dominate. Serialized, they cost 21–41 %. Overlapped, they cost 0–11 % at
+the sim grid and 0–21 % at silicon t_q. At silicon t_q the real coarse cadence is slower
+than `conv_time` models (Q4), and that hides more of the write. **Overlap is required**
+(§7.4).
+
+**Ping-pong weight banks (OPTIONAL, not in the phase-0 port list).** Each bit gets a
+second 6T cell plus a 2:1 selector (TG pair) between the two cells' Q/QB and the
+bottom-plate switch. One new pin `w_bank` (in) chooses the bank that drives the
+switches; writes go to the other bank. It is held at the same must-be-stable window as
+`w_wl`. Costs:
+
+- storage 2176 → 4352 bitcells
+- about 19.6 k → 41 k FETs for storage plus selectors (≈ 2.1×)
+- a second set of bitline loads
+- one global `w_bank` buffer
+
+It buys back at most the 340 ns worst-case exposure above. It would also fix Q10, because
+the bank swap happens just before `integ_req`, when every converter is idle. **Not
+recommended for phase 0.** Adopt it only if A12 measures exposed write time above 10 % of
+the pass on the target schedule, or if A11b fails. Adding it means one new port line,
+appended after `w_data` in `analogioc.ports`, in its own commit.
+
+### 7.4 Digital side: weight-load controller (in `analogioc_top`)
+
+- **Source:** a ready/valid row stream `wt_valid`/`wt_ready`/`wt_data[135:0]` (§8.1). The
+  format is the same as `w_data`, rows 0..15 in order. 16 beats make one weight set, and
+  the k-th set belongs to the k-th accepted pass. The stream is the test port for
+  `analogioc_top`. In `tt_um_analogioc` (later) it is fed by a one-set (2176-bit) staging
+  buffer that fills from the TT pins during the previous pass (Q3/Q12). `analogioc_top`
+  itself has **no weight buffer**: `wt_ready` backpressures the source.
+  `programming/<m>.npz` → row words: tile (c, r), row i, column j < 16 →
+  Cp/Cn[c·16+j, r·16+i]; column 16 → split of `chk[c, r, i]`.
+- **State:** `w_row` (4b), `w_loaded`, `tile_busy`, `w_data_q` (136 flops), `w_wl_q` (16 flops).
+- **Per pass:**
+  1. `tile_busy` is set when the pass sequencer starts the HI window. It clears on the
+     2FF-synchronized `integ_ack`↑ of that pass's **LO** window: the tile charge is then
+     in the integrators and the tile is parked. `w_loaded` clears on the same event.
+     After reset, `tile_busy` = `w_loaded` = 0.
+  2. While `!tile_busy && !w_loaded` and `w_wl_q` = 0, `wt_ready` = 1. On a beat:
+     `w_data_q` ← `wt_data` and `w_wl_q` ← onehot(`w_row`). On the next edge,
+     `w_wl_q` ← 0 with data held, and `w_row` increments. That is 2 T_clk per row.
+     After row 15's WL falls, `w_loaded` ← 1.
+  3. The HI window may start (all 17 `tile_fsm` `start_valid`) only when `w_loaded`.
+     `start` → `integ_req` takes ≥ 2 clk (accept + join register), so T_WSU holds by
+     construction.
+  4. The HI and LO windows of one pass share the weights. No write happens between them,
+     because `tile_busy` covers both.
+- **Overlap:** step 2 for pass N+1 runs during pass N's LO conversion. The next HI window
+  cannot start before all 17 `tile_fsm` are back in IDLE, so the write is hidden whenever
+  it finishes first (§7.3 table).
+- **Assertions (RTL tb):** `w_wl_q` is one-hot or zero, and never nonzero while
+  `tile_busy` or while any `integ_req` is high.
+
+### 7.5 Required weight_tile change (owner: weight_tile agent)
+
+- `weight_tile.build(..., programmable=True)` emits every bit cap, the §7.2 selectors and
+  bitcells, the 16 WL buffers and the 136 bitline drivers. Ports:
+  `xin_p_r* xin_n_r* col* wwl0..wwl15 wd0..wd135 phi1 phi1e phi2 vcm vdd vss`, where
+  `wd<8j+k>` = `w_data[8j+k]`. `analogioc` wires `w_wl`/`w_data` straight through.
+- The fixed-code `build(Cp, Cn, chk)` stays for the weight_tile unit tbs until the
+  programmable crosspoint passes the same `tb_weight_tile` thresholds (initial
+  conditions on Q/QB are allowed in unit tbs).
+- Re-derive `specs.t_q_floor` row load with the selector junctions (17 × 8 per row
+  line), and the phi-buffer load if it changes.
+
+## 8. Digital top composition
+
+### 8.1 Module `analogioc_top` (new, `digital/analogioc/src/analogioc_top.v`)
 
 Synchronous on `clk`, async active-low `rst_n`. `config.mk` changes to
 `DESIGN_TOP := analogioc_top`, and the LibreLane `DESIGN_NAME` to the same. Delete
@@ -295,15 +469,19 @@ Synchronous on `clk`, async active-low `rst_n`. `config.mk` changes to
 | res_residual / res_abft_flag | out | 25 signed / 1 | abft_check |
 | lw_valid / lw_ready | in / out | 1 | LoRA cell write, only while idle |
 | lw_b, lw_idx, lw_code | in | 1, 4, 4 | 0 = A / 1 = B, cell index, 4b level |
+| wt_valid / wt_ready | in / out | 1 | ready/valid weight row stream (§7.4). 16 beats = the weight set of the next pass. |
+| wt_data | in | 136 | row word, `w_data` format: column j at [8j+7:8j], Cp low nibble, Cn high nibble, j = 16 checksum |
 | vcm, vrn_*/vrp_* (8), vb_nc, vb_pc, vb_tail, vb_ramp | inout | 1 each | passed through straight to the macro (the analog_nets in macros.toml) |
 
-### 7.2 Behaviour per pass
+### 8.2 Behaviour per pass
 
+0. **Weights:** the pass's weight set must already be written (`w_loaded`, §7.4). The
+   write runs during the previous pass's LO conversion.
 1. Accept the pass and latch `pass_x`. Split it with `golden.pwm_nibbles`: sign, hi = |x|>>4,
    lo = |x|&15.
 2. **HI window:** `x_mag` = hi, `x_neg` = sign<0, `win_hi` = 1. Start all 17 `tile_fsm` in
    the same cycle, only when all 17 `start_ready` are high. relu_en_j = cfg_relu_en for
-   j < 16, 0 for j = 16. Wait for all `col_valid`, latch `code_hi` and `col_exit` (§7.4),
+   j < 16, 0 for j = 16. Wait for all `col_valid`, latch `code_hi` and `col_exit` (§8.4),
    then `col_ready`.
 3. **LO window:** `x_mag` = lo, `win_hi` = 0. relu_en_j = cfg_relu_en & (code_hi_j == 0).
    After conversion, force code_lo_j = 0 where `col_exit` was set in HI. This makes it
@@ -322,30 +500,37 @@ Synchronous on `clk`, async active-low `rst_n`. `config.mk` changes to
 Integrate join: `integ_req_q <= (&fsm_req) ? 1 : (~|fsm_req) ? 0 : integ_req_q`, and
 `integ_ack` fans out to all 17. Per-column signals connect directly. `seq_rst_n` = `rst_n`.
 
-### 7.3 TinyTapeout
+### 8.3 TinyTapeout
 
 Phases 1–4 target `analogioc_top` only. `tt_um_analogioc` comes later and serializes the
-§7.1 fabric interface over `ui_in`/`uo_out`/`uio`. Its pin plan is open (Q3).
+§8.1 fabric interface over `ui_in`/`uo_out`/`uio`. Its pin plan is open (Q3). It
+must also carry the weight stream (272 B per pass) into a one-set staging buffer (§7.4,
+Q12).
 
-### 7.4 Required RTL changes (owner: digital-top agent)
+### 8.4 Required RTL changes (owner: digital-top agent)
 
 1. `tile_fsm.ota_en`: add `|| (state == S_FINE)`. Fix the stale comment. Re-run `tb_tile_fsm`.
 2. `tile_fsm`: new output `col_exit` (registered, set in S_DECIDE on `se_exit`, cleared on
    the next start accept, valid with `col_valid`). This is additive; update INTERFACES.md
    and `tb_tile_fsm`.
-3. `rail_top`, nibble/slice/bacc/abft/requant/event/sar: unchanged.
+3. `analogioc_top`: the weight-load controller of §7.4, with `wt_*` ports and `w_wl`/`w_data`
+   to the macro. `tile_fsm` is unchanged; the gating is on `start_valid`.
+4. `rail_top`, nibble/slice/bacc/abft/requant/event/sar: unchanged.
 
-## 8. Behavioural model contract (`analog/analogioc/va/analogioc_beh.v`)
+## 9. Behavioural model contract (`analog/analogioc/va/analogioc_beh.v`)
 
 Module `analogioc`, ports exactly as §2 (no supplies), `timescale 1ns/1ps`. Simulation
 only. It is the reference the RTL is verified against, so it must be **bit-true to
 `scripts/golden/model.py`**:
 
-- **Weights:** `parameter WEIGHTS = "weights.hex"`, overridable by plusarg
-  `+weights=<path>`. The file has 272 lines; line j·16+i is two hex digits, the 8-bit
-  two's complement of W[j][i] = `wcp_r{i}c{j}` − `wcn_r{i}c{j}` (j = 16 = signed checksum
-  column).
-- **On `integ_req`↑:** after T_INTEG, for each column, compute
+- **Weights (changed by the reprogrammable-weights amendment):** there is no weights file
+  and no `WEIGHTS` parameter. The model **stores what is written** and computes every MAC
+  from that storage, never from a netlist or `caps.spice`. Storage is
+  `reg [3:0] cp[0:16][0:15], cn[0:16][0:15]`, initialised to `4'bx`. On `w_wl[i]`↓, for
+  every j: `cp[j][i]` = `w_data[8j+3:8j]` and `cn[j][i]` = `w_data[8j+7:8j+4]` (the
+  value at the falling edge wins). W[j][i] = cp − cn (`golden.wq_from_caps`). j = 16 is
+  the checksum column. `seq_rst_n` does not clear storage.
+- **On `integ_req`↑:** snapshot W from storage, then after T_INTEG, for each column, compute
   mac_j = Σ_i W[j][i]·(x_neg_i ? −1 : 1)·m_i, plus LoRA if `lora_en` and j < 16
   (see below). Then `golden.eventrate_convert(mac_j, D = max(pkt_d,1))`:
   q = floor((2|mac| + D)/(2D)), mag = min(q,255), count_j = mag>>4, fine_j = mag&15,
@@ -365,13 +550,18 @@ only. It is the reference the RTL is verified against, so it must be **bit-true 
 - **Protocol assertions** (`$error`, and a fatal under `+strict`): data changing while its
   req/ack window is open; `cb_req` attempted while `coarse_en` = 0; a req while its ack is
   high; `integ_req` while any column is mid-conversion; `pkt_d` changing mid-pass.
+  Weight port: more than one `w_wl` high; any `w_wl` high, or its last ↓ less than
+  T_WSU before `integ_req`↑, inside [`integ_req`↑ − T_WSU, `integ_ack`↑]; `w_data`
+  changing within T_WH after a `w_wl`↓; a `w_wl` pulse shorter than T_WR; `integ_req`↑
+  while any stored bit is x (a row never written).
 - **Parameters** (ns, sim-grid defaults): `TQ=10, T_RST=40, T_RG=10, T_SETTLE=80,
   T_RAMP0=40, T_RAMPW=500, T_SETTLE_L=100, T_SIGN=6, T_BUNDLE=2, T_DEC=6, T_ABS=40,
-  T_CLK_MAX=20, T_ACQ1=80, T_ACQ=14, T_HOLD=15, T_FSTROBE=6, LORA_RHO=0.0` (real), and
+  T_CLK_MAX=20, T_ACQ1=80, T_ACQ=14, T_HOLD=15, T_FSTROBE=6, T_WSU=20, T_WR=5, T_WH=2,
+  LORA_RHO=0.0` (real), and
   `JITTER=0`. JITTER > 0 scales every analog delay by U[1−JITTER, 1+JITTER] per event,
   seeded by `+seed=`, to test delay-insensitivity.
 
-## 9. Data flow for tests
+## 10. Data flow for tests
 
 ```
 scripts/compiler/compile.py ─► scripts/compiler/out/
@@ -379,24 +569,27 @@ scripts/compiler/compile.py ─► scripts/compiler/out/
   programming/<m>.npz   acts/<m>.npz   digital_config.json
         │
         ▼  analog/analogioc/test/pass_vectors.py <pass_dir> <out_dir>   (owner: digital-top/beh agent)
-  weights.hex     (§8 format, from caps.spice)
+  weights.hex     16 lines, line i = row i's 136-bit row word as 34 hex digits (§7.1 `w_data` format),
+                  from caps.spice wcp/wcn_r{i}c{j} (j = 16 checksum); whole-matrix streams from
+                  programming/<m>.npz Cp/Cn/chk (§7.4 mapping)
   vectors.json    {tag, matrix, ct, D, budget, s[16], chk_e[16], xq[16], corr = _half_up_div(chk_e·xq, D),
                    relu, expected: code_hi[17], code_lo[17], coarse_*, fine_*, n_eval_*, y12[16], y12_chk, residual,
                    requant: scale/shift/offset[16] (digital_config[matrix], channels ct*16..ct*16+15),
                    q[16] = golden.requant_int8(slice_combine(y12), …)}
   refs.json       {vcm, vrn_*/vrp_* for D} (chimera_top.rail_sources rule, §2)
         │
-        ├─► analog tb (SpiceRack):  netlist analogioc.py --caps caps.spice; rails from refs.json;
-        │     x_mag/x_neg/win_hi/pkt_d as PWL logic sources; handshakes from an ideal
+        ├─► analog tb (SpiceRack):  netlist analogioc.py (one netlist for all passes); rails from refs.json;
+        │     weights written through w_wl/w_data PWL from weights.hex before the first integ_req
+        │     (§7.3 timing); x_mag/x_neg/win_hi/pkt_d as PWL logic sources; handshakes from an ideal
         │     tile_fsm stand-in (python-scheduled PWL or XSPICE) — pwm_*.spice are NOT used
         │     at macro level (only by weight_tile-level tbs)
-        ├─► digital tb (iverilog / cocotb):  analogioc_top + analogioc_beh.v (+weights=weights.hex),
+        ├─► digital tb (iverilog / cocotb):  analogioc_top + analogioc_beh.v; streams weights.hex on wt_*,
         │     drives pass_x/cfg from vectors.json, compares code_hi/lo, y12, res_* exactly
         └─► co-sim:  analogioc_top RTL ⇄ analogioc SPICE (same vectors.json/refs.json),
-              compares with the analog tolerances of §10
+              compares with the analog tolerances of §11
 ```
 
-## 10. Acceptance tests
+## 11. Acceptance tests
 
 CODE_TOL = 8 LSB is the gate (ERROR_IMPACT.md; `analog/docs/architecture.md` §6.2(5)).
 Every analog test also prints how many codes fall outside ±1 (CONTRACT acceptance 1's
@@ -404,28 +597,35 @@ original bar). Every tb prints PASS/FAIL and asserts numerically.
 
 | ID | Test | Owner | Pass criteria |
 |---|---|---|---|
-| A0 | port check | analog-top (views), digital-top (beh) | `macros.py check digital/analogioc/build/macros.toml` prints `ports agree (35 signal ports, 5 supply pins)` after the TODO is removed, and the `.subckt` pin order equals `analogioc.ports` line for line |
+| A0 | port check | analog-top (views), digital-top (beh) | `macros.py check digital/analogioc/build/macros.toml` prints `ports agree (37 signal ports, 5 supply pins)` after the TODO is removed, and the `.subckt` pin order equals `analogioc.ports` line for line |
 | A1 | `tb_integrator_conv` | converter | one converter + behavioural `conv_seq`/ideal handshake, D=1, mac ∈ {0, 15, 16, −50, 165}: \|code − `eventrate_convert`\| ≤ 1; E(0) < 0.3·E(165); coarse req count = count+1 per conversion (n_eval) |
 | A2 | `tb_eventrate` | converter | ≥ 7 points (A1 + mac 32, 80): E_conv non-decreasing in \|code\| with 5 % slack; E(code 0)/mean < 0.30 |
-| A3 | `tb_tile_mvm` | analog-top | pass_00_worst_code (required) and pass_05_typ_attn_q, both windows, all 17 columns: \|code − expected code_hi/lo\| ≤ CODE_TOL; `golden.abft_residual(y12, y12_chk, s, chk_e, xq, D)` ≤ budget (128 / 199) |
+| A3 | `tb_tile_mvm` | analog-top | weights written through `w_wl`/`w_data` (never netlist-built). pass_00_worst_code (required) and pass_05_typ_attn_q, both windows, all 17 columns: \|code − expected code_hi/lo\| ≤ CODE_TOL; `golden.abft_residual(y12, y12_chk, s, chk_e, xq, D)` ≤ budget (128 / 199) |
 | A4 | `tb_ffn_e2e` | analog-top | pass_09_typ_ffn_gate through the full macro (sidecar present, lora_en = 0): codes ≤ CODE_TOL, residual ≤ 217 |
 | A5 | `tb_training_step` | analog-top | rank-1 SGD step on pass_05 with lora_en = 1: L1 < L0; every updated column's Δy has the golden sign and \|Δy − pred\| ≤ max(3 LSB, 40 %); ABFT bypassed |
 | A6 | digital regression | digital-top | `make test` (all `test/tb_*.v`) PASS; `make synth` 0 latches |
 | A7 | `tb_analogioc_top` | digital-top | RTL + beh model, all 11 passes, JITTER = 0 and JITTER = 0.5 (3 seeds): code_hi/lo, y12, residual, q **exactly** equal to vectors.json; one relu fixture equals `golden.tile_mvm(relu=True)` exactly; zero protocol assertions |
-| A8 | `tb_audit` | digital-top (beh), co-sim (SPICE, optional) | one weight in weights.hex changed by ±1 cap LSB on a busy column → `res_abft_flag` = 1; clean run → 0, for pass_04_chk_max |
+| A8 | `tb_audit` | digital-top (beh), co-sim (SPICE, optional) | one cell of the streamed row word (`wt_data`) changed by ±1 cap LSB on a busy column → `res_abft_flag` = 1; clean run → 0, for pass_04_chk_max |
 | A9 | `cosim_tile_mvm` | co-sim | `analogioc_top` RTL ⇄ macro SPICE on pass_05: codes ≤ CODE_TOL vs expected, residual ≤ 199, exactly 17 `col_valid` per window, zero protocol violations, and RTL `code_*` equal to the codes decoded from the analog decisions |
 | A10 | `tb_attention_e2e` | co-sim (later phase) | projections via A7/A9 path, rail attention vs `golden.attention_forward` (CONTRACT acceptance 2); criteria set when scheduled |
+| A11 | `tb_weight_write` (write, then read back by MAC) | digital-top (beh, full); analog-top (SPICE, subset) | Write patterns per cell (Cp, Cn) ∈ {(v,0), (0,v), (v,v)}, v random 0..15, then the same with 15−v, so every storage bit is written both 0 and 1. Read back with one pass per row i: xq = 7 on row i, 0 elsewhere (LO nibble 7, HI 0), D = 1, so code_lo_j = 7·(Cp−Cn)[j][i] (\|mac\| ≤ 105 < MAC_MAX). Beh: all 272 cells, all 6 patterns (96 passes), every code **exactly** 7·W, and (v,v) reads 0. SPICE: rows 0 and 15, all 17 columns (checksum included), patterns (v,0)/(0,v)/(v,v): \|code − 7·W\| ≤ 3 LSB, which identifies W uniquely. Plus the beh protocol assertions fire on a deliberate WL-during-window and on an unwritten row. |
+| A11b | `tb_weight_write_disturb` | analog-top (SPICE) | pass_05: the same LO conversion run twice, once idle and once with all 16 rows rewritten to the bitwise complement during the coarse+fine conversion (§7.3 overlap). Codes of all 17 columns differ by ≤ 1 LSB between the runs, and the residual is ≤ 199. A failure triggers the Q10 fallback. |
+| A12 | `tb_back_to_back` | digital-top (beh); co-sim (SPICE) | Consecutive passes with **different** weight sets and no reset or idle gap, each set streamed on `wt_*` and written during the previous pass's LO conversion. Beh: all 11 passes in sequence, JITTER 0 and 0.5: code_hi/lo, y12, residual and q exactly equal to vectors.json. No write lands in a must-be-stable window (zero assertions). Report the exposed write time per pass against §7.3. Co-sim: pass_00 → pass_05 → pass_09 in one simulation: codes ≤ CODE_TOL, residual ≤ each pass's budget, and no code depends on the previous pass's weights. |
 
-## 11. Open questions (not resolved by the docs)
+## 12. Open questions (not resolved by the docs)
 
 | Q | Question | Phase 0 stance |
 |---|---|---|
-| Q1 | **Runtime weight storage.** Caps are compile-time (a zero bit has no capacitor), but the chip time-multiplexes one tile over 10,944 passes/token. No block has weight storage or a write port. | weights are a build-time parameter (D7); no port reserved |
+| Q1 | ~~Runtime weight storage.~~ **Resolved** by the reprogrammable-weights amendment: D7, D10, D11, §7. | 8-bit 6T storage per cell, `w_wl`/`w_data` write port |
 | Q2 | **On-chip references.** The thr/sar spans scale with D, and the A9/A10 per-column gain correction needs per-column spans. Shared external rails give neither on-chip generation nor per-column trim. The converter agent must also confirm that a `pkt_d`-cycle packet matches `c_pkt(D)` within ±1 LSB. | 8 external rail pins, shared; no per-column gain knob |
-| Q3 | **TinyTapeout pin budget.** 13 analog pins + 5 supplies do not fit TT's analog pins. A TT build needs on-chip bias/refs (origin `ptat_bias` is out of scope). | non-TT `analogioc_top` (D8) |
+| Q3 | **TinyTapeout pin budget.** 13 analog pins + 5 supplies do not fit TT's analog pins. A TT build needs on-chip bias/refs (origin `ptat_bias` is out of scope). The weight stream (Q12) adds to the pin budget. | non-TT `analogioc_top` (D8) |
 | Q4 | **Timing at the silicon grid.** At t_q = 200 ps, T_ABS and the pacing (≥ 2·T_CLK_MAX = 40 ns) dominate the coarse cadence. The per-decision latency ≈ T_DEC + 2–3 clk (sync) + pkt_d·t_q + T_ABS. That makes it slower than the origin's fixed 60 ns slot, and `specs.conv_time()` does not model it. | accept for function; metrics agent to re-derive |
 | Q5 | Coarse saturation: `event_ctrl` counts to 15 but `specs.COARSE_CAP` = 7 is lossless, so crossings 8..15 only burn energy. | unchanged RTL; macro never counts |
 | Q6 | **LoRA sign and scale.** The sidecar integrates unsigned \|x\| on xrd, but `golden.tile_mvm(lora=…)` uses signed sign·nibble. ρ (code units per A·B·x unit) is unmeasured, and only the LO window was validated. | beh model follows the hardware (unsigned), with LORA_RHO as a parameter; A5 keeps the origin tolerance-based check |
-| Q7 | Merged (S5), ping-pong (S6), cascade and super-tile modes need a switchable C_int or a second converter path. | not supported by this macro |
+| Q7 | Merged (S5), converter ping-pong (S6; not the optional weight ping-pong of §7.3), cascade and super-tile modes need a switchable C_int or a second converter path. | not supported by this macro |
 | Q8 | INTERFACES.md says "a tile replicates [tile_fsm] 16x"; ABFT needs the checksum column converted. | 17 instances (D4); update INTERFACES.md |
 | Q9 | Should the macro's logic `vdd` join VPWR via `pg`, rather than staying a separate analog supply? | separate (energy accounting); revisit at TT wrapper |
+| Q10 | **Write disturb during conversion.** A selector flip with the tile parked is charge-neutral at the column in steady state (§7.3), but its transient couples through the off `st` TGs while the OTA holds the residue and the CDAC acquires. Is it below ½ LSB at the next strobe? | allowed; A11b gates it. Fallback 1: write only while every column is idle (exposed write 0 → 660 ns per pass, +21 %/+41 %). Fallback 2: the optional weight ping-pong (§7.3). |
+| Q11 | **Storage format.** Data columns only ever use one bank (`caps_from_wq`: Cp or Cn is 0), so sign-magnitude would be 5 bits/cell (1360 bits, 85-bit row word). But CSD recodes (`tile_mvm_caps`), the Cp = Cn null tests and the checksum split need both banks independent. | 8 bits/cell (Cp, Cn); revisit if storage area or `w_data` routing hurts |
+| Q12 | **Weight bandwidth into the chip.** One set is 272 B per pass, so 2.98 MB/token at 10,944 passes. At `pass_time` that is 86 MB/s (sim grid) or 171 MB/s (silicon t_q). The TT pins (~16 data bits at ≤ 50 MHz, realistically less) cannot sustain it, so a TT build is weight-I/O-bound, not tile-bound. Prefill could reuse one written set across T tokens if the compiler ordered passes tile-outer (a `pass_keep_w` bit, not specified). | non-TT `analogioc_top` with a 136-bit `wt_data` test port; TT pin plan and set reuse deferred to `tt_um_analogioc` |
+| Q13 | **Unmodeled cost of the write.** `specs.pass_energy_pj` (1461 pJ) has no write term. First order: ≈ 20 fF per bitline (16 access junctions + wire) at 1.8 V = 65 fJ per toggle, 2176 bits per pass at ½–1 toggle each ≈ 70–140 pJ (5–10 %), plus the fabric's weight-source reads. The selector junctions also load the row lines (`t_q_floor`, §7.5). | metrics agent adds a write term to `pass_energy_pj` and the exposed write time to `pass_time` once A11/A12 measure them |
