@@ -59,6 +59,8 @@ def need(m, view):
 
 def strip(text):
     text = re.sub(r"/\*.*?\*/|\(\*.*?\*\)", " ", text, flags=re.S)
+    # supply pins of a powered (USE_POWER_PINS) view are not signal ports
+    text = re.sub(r"`ifdef\s+USE_POWER_PINS\b.*?`endif", " ", text, flags=re.S)
     return re.sub(r"//[^\n]*", " ", text)
 
 

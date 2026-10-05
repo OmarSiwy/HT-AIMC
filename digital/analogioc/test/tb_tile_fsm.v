@@ -9,7 +9,7 @@ module tb_tile_fsm;
     wire start_ready, col_valid;
     wire [7:0] col_code;
     wire [3:0] evt_count_gray, dac_code;
-    wire integ_req, coarse_en, cb_ack, cmp_req;
+    wire integ_req, coarse_en, cb_ack, cmp_req, ota_en, col_exit;
     reg  integ_ack = 0, col_sign = 0;
     reg  cb_req = 0, cb_cross = 0;
     reg  cmp_ack = 0, cmp_result = 0;
@@ -21,7 +21,7 @@ module tb_tile_fsm;
         .integ_req(integ_req), .integ_ack(integ_ack), .col_sign(col_sign),
         .coarse_en(coarse_en), .cb_req(cb_req), .cb_cross(cb_cross), .cb_ack(cb_ack),
         .cmp_req(cmp_req), .cmp_ack(cmp_ack), .cmp_result(cmp_result),
-        .dac_code(dac_code));
+        .dac_code(dac_code), .ota_en(ota_en), .col_exit(col_exit));
 
     always #5 clk = ~clk;
 
@@ -73,6 +73,10 @@ module tb_tile_fsm;
         cmp_ack = 0;
     end
 
+    // -------- OTA gate: awake for the whole fine phase (every SAR trial) ----
+    always @(posedge clk) if (rst_n && (dut.state == 3'd5 || cmp_req || cmp_ack) && ota_en !== 1'b1)
+        $fatal(1, "tile_fsm: ota_en low during the fine phase");
+
     // -------- illegal-activity monitor for early-exit trials --------
     always @(posedge cb_ack)  if (exp_exit) $fatal(1, "tile_fsm: cb_ack during early exit");
     always @(posedge cmp_req) if (exp_exit) $fatal(1, "tile_fsm: cmp_req during early exit");
@@ -119,6 +123,8 @@ module tb_tile_fsm;
             if (!exp_exit && (evt_count_gray !== (cnt[3:0] ^ (cnt[3:0] >> 1))))
                 $fatal(1, "tile_fsm: gray=%b exp=%b", evt_count_gray,
                        cnt[3:0] ^ (cnt[3:0] >> 1));
+            if (col_exit !== exp_exit)
+                $fatal(1, "tile_fsm: col_exit=%b exp=%b", col_exit, exp_exit);
             if (start_ready !== 1'b0)
                 $fatal(1, "tile_fsm: start_ready high during readout");
 

@@ -6,14 +6,15 @@
 # rewrites that block (MACROS, PDN hookup, halos, don't-touch analog nets).
 # Paths are relative to this file (`dir::`).
 # Reference: https://librelane.readthedocs.io/en/latest/reference/configuration.html
-# TODO (analogioc): not run yet. src/analogioc.v is still the TinyTapeout stub and
-# does not instantiate the analog macro, which has no views yet (see ../macros.toml).
-# Before `make harden`: real top, TT tile DIE_AREA + FP_DEF_TEMPLATE, clock period.
+# TODO (analogioc): not run yet. The top is analogioc_top (non-TinyTapeout, INTERFACE.md
+# D8); the analogioc macro has its blackbox and a ports-only .subckt stub but no gds/lef/lib
+# yet (see ../macros.toml), so `make config` stops at the missing gds. Before `make harden`:
+# macro views, DIE_AREA/placement for the macro, pin plan, clock period check.
 meta:
   version: 2
   flow: Classic
 
-DESIGN_NAME: "analogioc"
+DESIGN_NAME: "analogioc_top"
 VERILOG_FILES: ["dir::../../src/*.v"]
 
 CLOCK_PORT: clk

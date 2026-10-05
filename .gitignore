@@ -33,4 +33,9 @@ docs/node_modules/
 **/build/librelane/runs/
 **/build/librelane/smoke/build/
 digital/*/output/
+**/build/verification/sim_build/
+**/build/verification/results.xml
 docs/dist/
+digital/*/build/*.vvp
+digital/*/build/synth.log
+digital/*/build/*_syn.v

@@ -18,10 +18,9 @@ block = "analogioc"
 # 37 signal ports (501 bits) + 5 analog supplies. w_wl/w_data (weight write, INTERFACE.md §7)
 # are plain digital pins: not analog_nets. The macro has NO digital supply pins:
 # its sequencer logic runs on its own `vdd`, kept off VPWR/VGND like the other analog rails.
-# TODO: delete this line once these views exist: output/gds, output/lef, output/lib
-# (optional), output/verilog blackbox (generated from analogioc.ports), va/analogioc_beh.v,
-# netlist/analogioc.spice.
-todo = "analog/analogioc has no gds/lef/lib/blackbox/behavioural/.subckt views yet"
+# TODO (phase 2, analog top): output/gds, output/lef, output/lib (optional) do not exist
+# yet, so `make config`/`make harden` stop at the missing gds. netlist/analogioc.spice is a
+# ports-only STUB generated from analogioc.ports; the real netlist replaces it.
 halo = [10, 10]
 pg = []
 analog_supplies = ["vdd", "vdd_ota", "vdd_cmp", "vdd_pkt", "vss"]  # kept OFF the digital PDN
@@ -31,3 +30,7 @@ analog_nets = ["vcm", "vr[np]_(thrp|thrn|sarp|sarn)", "vb_(nc|pc|tail|ramp)"]
 [macro.instances.u_analogioc]
 location = [70, 60]   # TODO: real placement (non-TT analogioc_top floorplan)
 orientation = "N"
+
+[macro.views]
+# committed blackbox (analog/*/output/ is gitignored), same ports as the behavioural model
+blackbox = "../../../analog/analogioc/va/analogioc.v"
