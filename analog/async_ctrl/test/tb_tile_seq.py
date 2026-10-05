@@ -25,6 +25,8 @@ Checks (rows):
   ring stops when idle, restarts on busy
 DUT=va: no golden model of tile_seq — skipped.
 """
+import hashlib
+import json
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -57,6 +59,24 @@ NOMINAL = os.environ.get("CORNER", PDK.typical) == PDK.typical and \
 
 
 def run(hi, lora, mag, n_pass, end, corner="", temp=None):
+    """(t, {net: v}), cached under output/tb by deck hash + backend/corner/temp/run."""
+    key = hashlib.sha1((dut_path("async_ctrl", "sch").read_text() + Path(__file__).read_text()
+                        + (A / "async_ctrl" / "test" / "seq_drv.va").read_text()).encode())
+    tag = "_".join([os.environ.get("SPICERACK_BACKEND", "ngspice"),
+                    corner or os.environ.get("CORNER", PDK.typical),
+                    str(temp if temp is not None else os.environ.get("SIM_TEMP", 27)),
+                    f"hi{hi}_lora{lora}_n{n_pass}", key.hexdigest()[:10]])
+    cache = A / "async_ctrl" / "output" / "tb" / f"tile_seq_{tag}.json"
+    if cache.exists():
+        got = json.loads(cache.read_text())
+        return got["t"], got["w"]
+    t, w = _run(hi, lora, mag, n_pass, end, corner, temp)
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    cache.write_text(json.dumps({"t": t, "w": w}))
+    return t, w
+
+
+def _run(hi, lora, mag, n_pass, end, corner="", temp=None):
     top = ps.Subcircuit("tb_tile_seq")
     top.include(str(dut_path("async_ctrl", "sch")))
     top.X("xdut", "tile_seq", *ac.tile_seq_ports())
@@ -93,7 +113,7 @@ def run(hi, lora, mag, n_pass, end, corner="", temp=None):
             + [f"xrd_en{i}" for i in range(R)])
     tb.save(*(f"V({x})" for x in sigs))
     d = tb.transient(step_time=0.2e-9, end_time=end)
-    return list(d.time), {x: list(d[x]) for x in sigs}
+    return [float(x) for x in d.time], {x: [float(y) for y in d[x]] for x in sigs}
 
 
 def edges(t, v, rising=True):
@@ -165,20 +185,27 @@ def check(r, tag, cfg, t, w):
     gaps = [(f2, min([x for x in E["tphi1"] if x > f2], default=f2 + 1)) for f2 in F["tphi2"]]
     env_e = [x for i in range(R) for p in "pn" for x in E[f"xin_{p}_r{i}"] + F[f"xin_{p}_r{i}"]]
     out_gap = [x for x in env_e if not any(a < x < b for a, b in gaps)]
+    def rel(x):
+        f2 = max([g for g, _ in gaps if g <= x], default=None)
+        return "?" if f2 is None else f"{(x - f2) * 1e9:+.2f}"
     r.check(f"{tag} I3: envelope edges inside the all-off gap", not out_gap,
-            f"{len(out_gap)} outside" if out_gap else f"{len(env_e)} edges")
-    # I5
+            (f"{len(out_gap)} of {len(env_e)} outside, ns after tphi2 fall: "
+             + " ".join(rel(x) for x in sorted(out_gap)[:8])) if out_gap
+            else f"{len(env_e)} edges")
+    # I5 (in ticks of the measured ring t_q)
+    per = [b - a for a, b in zip(E["phi1"], E["phi1"][1:]) if b - a < 2 * TQ]
+    tqm = sum(per) / len(per)
     sgo_r = [x for x in E["sgo"] if x > req0][0]
     if lora:
         ru, rd = E["ramp_en"][0], F["ramp_en"][0]
         r.check(f"{tag} I5a: ramp_en 4 t_q after the window, 50 t_q >= 250 ns, settle 10 t_q",
-                abs((ru - wend) / TQ - ac.N_RAMP0) < 1.5 and abs((rd - ru) / TQ - ac.N_RAMPW) < 1.5
-                and rd - ru >= 250e-9 and abs((sgo_r - rd) / TQ - ac.N_SETTLE_L) < 1.5,
-                f"{(ru - wend) / TQ:.2f} / {(rd - ru) / TQ:.2f} ({(rd - ru) * 1e9:.0f} ns) / "
-                f"{(sgo_r - rd) / TQ:.2f} t_q")
+                abs((ru - wend) / tqm - ac.N_RAMP0) < 1.5 and abs((rd - ru) / tqm - ac.N_RAMPW) < 1.5
+                and rd - ru >= 250e-9 and abs((sgo_r - rd) / tqm - ac.N_SETTLE_L) < 1.5,
+                f"{(ru - wend) / tqm:.2f} / {(rd - ru) / tqm:.2f} ({(rd - ru) * 1e9:.0f} ns) / "
+                f"{(sgo_r - rd) / tqm:.2f} t_q of {tqm * 1e9:.2f} ns")
     else:
-        r.check(f"{tag} I5b: sgo 8 t_q after the window", abs((sgo_r - wend) / TQ - ac.N_SETTLE) < 1.5,
-                f"{(sgo_r - wend) / TQ:.2f} t_q")
+        r.check(f"{tag} I5b: sgo 8 t_q after the window", abs((sgo_r - wend) / tqm - ac.N_SETTLE) < 1.5,
+                f"{(sgo_r - wend) / tqm:.2f} t_q of {tqm * 1e9:.2f} ns")
     # I7 / I8
     acks, req_f, ack_f = E["integ_ack"], F["integ_req"], F["integ_ack"]
     sd = [x for x in E["sdone16"] if x < acks[0]][-1]

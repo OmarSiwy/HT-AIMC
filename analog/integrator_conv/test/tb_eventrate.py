@@ -27,9 +27,11 @@ def main():
     r.check("E_conv non-decreasing in |code| (5 % slack)",
             all(b >= a * 0.95 for a, b in zip(es, es[1:])))
     mean = sum(es) / len(es)
-    e0 = next(e for p, e in zip(res, es) if p["code"] == 0)
+    e0 = next(e for p, e in zip(res, es) if p["mac"] == 0)       # the empty column
     r.check("E(code 0) / mean < 0.30", e0 < 0.3 * mean,
             f"{e0:.2f} / {mean:.2f} pJ = {e0 / mean:.2f}")
+    print(f"  info  packet slope {(es[-1] - e0) / max(p['count'] for p in res):.2f} pJ/decision; "
+          f"fine phase {sum(p['e_fine_pJ'] for p in res) / len(res):.2f} pJ (4 SA2 strobes)")
     r.done()
 
 

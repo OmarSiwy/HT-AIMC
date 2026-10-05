@@ -575,13 +575,11 @@ def tile_seq(pdk=None, cells=None):
     g.buf(g.or_("xbar_rst", g.inv(started)), "rst", load=2 * NC + 4)
     g.buf(g.rsl("sg", g.or_("xbar_rst", srb)), "sgo", load=2 * NC)
     ackp = g.rsl("sg", rI)
+    # 17-way C-element join; C-elements with reset (seq_rst_n), so the tree powers up low
+    # (a bare muller_c holds an arbitrary state and acked before the columns had)
     join = [f"sdone{j}" for j in range(NC)]
     while len(join) > 1:
-        nxt = []
-        for i in range(0, len(join) - 1, 2):
-            o = g.net()
-            s.X(f"xc{o}", "muller_c", join[i], join[i + 1], o, "vdd", "vss")
-            nxt.append(o)
+        nxt = [g.crs(join[i], join[i + 1], srb) for i in range(0, len(join) - 1, 2)]
         join = nxt + ([join[-1]] if len(join) % 2 else [])
     g.and_(ackp, g.and_(join[0], g.delay(join[0], T_BUNDLE, "bundle")), "adc_done")
     # ring
@@ -631,15 +629,18 @@ def tile_seq(pdk=None, cells=None):
     ct = [g.mux("win_hi", cb[4 + k], cb[k], hib) for k in range(3)] + [g.and_(hib, cb[3])]
     ctb = [g.inv(x) for x in ct]
     tenb = g.inv(ten)
+    # envelope latch enable: the tile gap proper, after the raw tile phi2 has fallen and
+    # before ck = e(0.8) ends (tile phi1 rises after it)
+    een = g.and_("t_ck", g.inv("t_phi2"))
     for i in range(R):
         m = [f"x_mag{4 * i + k}" for k in range(4)]
         lt = g.and_(ctb[0], m[0])
         for k in (1, 2, 3):
             lt = g.maj(ctb[k], m[k], lt)
         env = g.dff(g.mux(ten, g.and_(w_d, lt), f"env{i}", tenb), bus, rI, f"env{i}")
-        # change only while the tile chop's ck = e(0.8) is high: exactly its gap
+        # change only inside the tile gap
         envb = g.inv(env)
-        env = g.rsl(g.and_(env, "t_ck"), g.or_(g.and_(envb, "t_ck"), rI))
+        env = g.inv(g.inv(g.rsl(g.and_(env, een), g.or_(g.and_(envb, een), rI))))
         g.and_(env, g.inv(f"x_neg{i}"), f"xin_p_r{i}")
         g.and_(env, f"x_neg{i}", f"xin_n_r{i}")
         g.and_(env, "lora_en", f"xrd_en{i}")

@@ -22,6 +22,7 @@ reuses tb_integrator_conv's points.
 """
 import functools
 import hashlib
+import inspect
 import json
 import os
 import sys
@@ -169,12 +170,19 @@ def edges(t, v, rising=True, level=VDD / 2):
 
 
 def _key(mac, seed):
-    """Cache key: DUT/corner/temp/point plus a hash of every deck and fixture source."""
+    """Cache key: backend/DUT/corner/temp/point plus a hash of what the simulation sees:
+    the converter deck, conv_seq's part of the async_ctrl deck (tile_seq edits don't
+    invalidate converter points), the rail stand-in and the fixture code."""
     h = hashlib.sha1()
-    for p in (dut_path("integrator_conv"), dut_path("async_ctrl", "sch"), Path(__file__),
-              rtl_standin.HERE / "rtl_standin.va"):
-        h.update(p.read_bytes())
-    return "_".join([dut_kind(), os.environ.get("CORNER", PDK.typical),
+    ac_deck = dut_path("async_ctrl", "sch").read_text()
+    h.update(dut_path("integrator_conv").read_bytes())
+    h.update(ac_deck[ac_deck.index(".subckt dly_pace"):ac_deck.index(".ends conv_seq")].encode())
+    h.update((rtl_standin.HERE / "rtl_standin.va").read_bytes())
+    for f in (pulses, bench, run_point, _common, _tile):
+        h.update(inspect.getsource(f).encode())
+    h.update(repr((D, T_RST, K_WIN, REFS, SIGS)).encode())
+    return "_".join([os.environ.get("SPICERACK_BACKEND", "ngspice"), dut_kind(),
+                     os.environ.get("CORNER", PDK.typical),
                      os.environ.get("SIM_TEMP", "27"), f"m{mac}", f"s{seed}",
                      h.hexdigest()[:10]])
 
@@ -189,23 +197,23 @@ def run_point(w, nib, neg, seed=None, corner=""):
     end = T_SGO + (exp["coarse"] + 2) * 220e-9 + 1.3e-6
     d = bench(w, nib, neg, end, corner=corner, seed=seed).transient(step_time=0.5e-9,
                                                                     end_time=end)
-    t = list(d.time)
-    v = {x: list(d[x]) for x in SIGS}
+    t = [float(x) for x in d.time]
+    v = {x: [float(y) for y in d[x]] for x in SIGS}
     reqs = edges(t, v["cb_req"])
 
     def at(x, tt):
         k = min(range(len(t)), key=lambda i: abs(t[i] - tt))
         return v[x][k] > VDD / 2
-    count = sum(at("cb_cross", x + 0.2e-9) for x in reqs)
+    count = int(sum(at("cb_cross", x + 0.2e-9) for x in reqs))
     acks_f = edges(t, v["cmp_ack"], rising=False)
     done = len(acks_f) == 4
-    fine = sum((1 << k) * at(f"b{k}", t[-1]) for k in range(4))
+    fine = int(sum((1 << k) * at(f"b{k}", t[-1]) for k in range(4)))
     sgn = -1 if at("col_sign", t[-1]) else 1
     mag = 16 * count + fine
     code = sgn * min(mag, 127) if mag else 0
     t_f0 = (edges(t, v["cmp_req"]) or [t[-1]])[0]
     t_f1 = (acks_f[-1] + 5e-9) if done else t[-1]
-    i_tot = [a + b for a, b in zip(_cur(d, "vsupc"), _cur(d, "vsupp"))]
+    i_tot = [float(a + b) for a, b in zip(_cur(d, "vsupc"), _cur(d, "vsupp"))]
 
     def energy(a, b):
         e = 0.0
