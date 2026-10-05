@@ -109,6 +109,10 @@ _DESIGN_DEFAULT = {
         "c_load_delay": 220e-15,  # delay chain load
         "c_int_col": 200e-15,     # column integrator load (incl. parasitics)
         "c_store": 30e-15,        # gain-cell storage MOM cap
+        "c_dac_u": 7.5e-15,       # converter SAR CDAC unit (16 units = 120 fF): 30 fF
+                                  # units dragged the 6 uA OTA -22 % of the residue in
+                                  # the 40 ns acq (AnalogIOC dbg_q8); kick immunity
+                                  # comes from the matched R-C, not top-plate bulk
         "n_rst_stages": 10,       # ~5ns reset phase
         "n_settle_stages": 20,    # ~10ns settle phase
         "cload": "220f",

@@ -83,3 +83,72 @@ testbench prints the measured ps/fF per inverter for recalibration after a PDK s
 
 AnalogIOC reference (its hand sizing): reset 19.7 ns, settle 43.1 ns, t_q 7.7 / 10.15 ns
 inner, spread 0.00%.
+
+## Macro wrapper cells: `conv_seq` and `tile_seq` (phase 1a)
+
+The req/ack ↔ phase-clock translator of the macro (`analog/analogioc/docs/INTERFACE.md`
+D2, §6) is emitted by this generator next to `async_ctrl`/`tq_chain`/`muller_c`. Static
+CMOS from this deck's cells only: the inverter / nand2 sizing above, nor2 (p stack
+doubled), NOR set-reset latches (reset priority), master-slave D flops built from NOR2
+latches with non-overlapping enables, `muller_c`, and loaded-gate delay elements. The
+default deck carries them; `--no-caps` (the Philis deck) and `tq_chain` decks are
+unchanged, and `async_ctrl` stays the last `.subckt`. `async_ctrl` / `tq_chain` devices
+are unchanged (tb_async_ctrl numbers identical).
+
+```
+.subckt conv_seq rst_n sgo phi1 phi2 coarse_en cb_ack cmp_req ota_en pkt_d0 pkt_d1 pkt_d2
++ c1p c1n c2p c2n sdone col_sign cb_req cb_cross cmp_ack cmp_result busy
++ run fire sign sgd clk_c acq clk_f awake vdd vss
+.subckt tile_seq seq_rst_n integ_req integ_ack win_hi lora_en x_mag0..x_mag63 x_neg0..x_neg15
++ sdone0..sdone16 busy0..busy16 sgo rst phi1 phi1e phi2 tphi1 tphi1e tphi2
++ xin_p_r0 xin_n_r0 .. xin_p_r15 xin_n_r15 xrd_en0..xrd_en15 ramp_en vdd vss
+```
+
+Wiring in `analogioc`: every `conv_seq` takes `rst_n = seq_rst_n`, `sgo`, `phi1`, `phi2`
+from `tile_seq` and the column's rail pins; its `run fire sign sgd clk_c acq clk_f awake`
+go to the column's `integrator_conv`, whose `c1p c1n c2p c2n` come back; `sdone_j` and
+`busy_j` (= coarse_en_j | cmp_req_j) go to `tile_seq`; `col_sign` etc. are macro pins.
+`tile_seq` drives `integrator_conv.rst` (and the sidecar `lrst`, the same net),
+`phi1/phi1e/phi2` (converter chop, all 17 columns), `tphi1/tphi1e/tphi2` and
+`xin_p_r<i>/xin_n_r<i>` (weight_tile), `xrd_en<i>` (the xrd TG drivers: xrd_i = vss while
+high, else vcm) and `ramp_en`. `x_mag`/`x_neg`/`win_hi` are not latched: the contract holds
+them until integ_ack rises and nothing reads them later. `pkt_d` goes to every conv_seq.
+
+### conv_seq
+
+| Function | Implementation |
+|---|---|
+| decision decode | dual rail: `p = !c?p & c?n`, `n = !c?n & c?p`, completion = p \| n. A rail pair falling together (the StrongARM common-mode dip before regeneration) is not a decision. |
+| SA1 strobe | `arm` = request seen while phi1 low (dropped with the request); `clk_c` rises with phi1 while armed, falls once disarmed and phi1 is low. So it rises at a phi1 rise (chop offset) and is held until completion. |
+| sign (I6) | sign := p at the strobe with sgd = 0; sgd when the strobe is low and SA1 precharged again; col_sign = sgd & !sign; sdone = sgd |
+| coarse (C0-C5) | `ready` = T_PACE after both the last cb_ack fall and the sign strobe; strobe request latched from ready & coarse_en & !cb_ack; cross := (cmp == sign); cb_req = T_BUNDLE after the latched, precharged decision; on cb_ack with cross: `fire` for pkt_d (0 → 1) chop cycles, counted by phi2-fall flops, edges in the gap; cb_req falls after the packet (or at once on no-cross); run set at the first strobe, cleared by a no-cross ack or by coarse_en low after pacing |
+| SAR trial (F1-F5) | acq = cmp_req for T_ACQ1 (first trial since sgo) or T_ACQ; clk_f T_HOLD after acq falls, through a slew-limited driver (≥ T_FEDGE 10-90 %), held until completion and ≥ T_FHI; cmp_result := sign ? c2p : c2n; cmp_ack T_BUNDLE after the precharge, falls with cmp_req |
+| awake / busy | ota_en \| acq; coarse_en \| cmp_req |
+
+Minimum-time delay elements (`dly_*`): DLY_PAIRS nand(in, prev)+inverter pairs; a falling
+input resets every pair at once (re-arms fast). Sized for t_min / T_FAST at tt (T_FAST =
+0.72, the measured ff/−40 °C to tt ratio of this deck's chains), L stepped up from Lmin
+until the per-gate load fits `c_load_delay`:
+
+| Element | Contract minimum | L (µm) | C per gate |
+|---|---|---|---|
+| dly_pace | T_PACE = 2·T_CLK_MAX = 40 ns | 1.2 | 122 fF |
+| dly_acq1 | T_ACQ1 = 2·specs.T_ACQ = 80 ns | 2.4 | 127 fF |
+| dly_acq / dly_hold | 14 / 15 ns | 0.3 | 136 / 145 fF |
+| dly_fhi / dly_bundle | 4 / 2 ns | 0.15 | 67 / 34 fF |
+| clk_f driver | 10-90 % ≥ 2 ns | 0.15 | 369 fF |
+
+### tile_seq
+
+| Function | Implementation |
+|---|---|
+| t_q ring | `tq_chain` closed by one nand2(ring_en, tap4) sized for equal rise/fall current and one full t_q per edge; each edge of its 5 nodes is a tick, p = their parity; ring_en = integ_req \| integ_ack \| any busy |
+| chop (§6.1) | `chop_gen(p)`: e(x) = p xor p_delayed(x) from one line of identical 0.2 ns cells; phi1 = e(2.4)&!e(0.8), phi1e = e(2.6)&!e(0.8), phi2 = !e(3.0) (falls at the tick = gap start), ck = e(0.8) |
+| integrate (I1-I2) | async_ctrl unchanged: go = integ_req & seq_rst_n; rst = xbar_rst \| not-yet-started (I0); adc_go 2-flop synchronised to ck |
+| window (I3-I4) | 8-bit synchronous counter on ck; LO 16 tile cycles of t_q, HI 8 of 16 t_q; p_tile toggles at each tile tick, tile chop = chop_gen(p_tile) gated by w2 (opens at the first tile phi1, closes at the window-end tick; parked tphi1 = tphi1e = 1, tphi2 = 0); row i envelope = (tile cycle < m_i) by a ripple-majority comparator, registered, then a latch transparent only while the tile ck = e(0.8) is high, i.e. inside the tile gap |
+| settle / LoRA (I5) | counter restarts at the window end: sgo after N_SETTLE = 8 t_q, or with lora_en ramp_en from 4 to 54 t_q and sgo at 64 t_q |
+| sign join (I6-I8) | sgo latched until the next xbar_rst; 17 sdone joined by a muller_c tree, + T_BUNDLE, & this-request flag → async_ctrl adc_done → done = integ_ack; integ_req low clears the flag, so integ_ack falls with integ_req while the columns keep converting |
+
+### Results (wrapper cells)
+
+WRAPPER_RESULTS

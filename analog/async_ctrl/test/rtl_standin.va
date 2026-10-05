@@ -1,0 +1,68 @@
+// tile_fsm / event_ctrl / sar_ctrl stand-in for one column (testbench fixture, not a
+// block). The RTL side of the conv_seq handshakes, reduced to one conversion:
+//   coarse_en  rises t_sync after sdone (integ_ack seen through a 2FF sync); falls with the
+//              ack of the first no-cross decision (event_ctrl done)
+//   cb_ack     follows cb_req t_sync later, both edges
+//   ota_en     low from that ack until the fine phase starts t_sync later (S_FINE)
+//   cmp_req    4 MSB-first SAR trials, each raised t_sync after the previous cmp_ack fell;
+//              dropped t_sync after cmp_ack rose; kept bit := cmp_result at cmp_ack rise
+//   b3..b0     dac_code = kept bits | trial bit (the final code once trials end)
+//   rtl_done   coarse done
+// Event-driven (ESPice / VerA): @(cross), @(timer), transition().
+`include "disciplines.vams"
+`include "constants.vams"
+
+module rtl_standin(sdone, cb_req, cb_cross, cmp_ack, cmp_result, coarse_en, cb_ack,
+                   cmp_req, ota_en, b3, b2, b1, b0, rtl_done);
+    inout sdone, cb_req, cb_cross, cmp_ack, cmp_result, coarse_en, cb_ack, cmp_req, ota_en,
+          b3, b2, b1, b0, rtl_done;
+    electrical sdone, cb_req, cb_cross, cmp_ack, cmp_result, coarse_en, cb_ack, cmp_req,
+               ota_en, b3, b2, b1, b0, rtl_done;
+
+    parameter real vdd = 1.8 from (0:inf);
+    parameter real t_sync = 40e-9 from (0:inf);     // 2FF latency at T_CLK_MAX
+    parameter real tr = 0.2e-9 from (0:inf);
+
+    integer ce, ack, done, ota, req, trial, k3, k2, k1, k0;
+    real t_fine;
+
+    analog begin
+        @(initial_step) begin
+            ce = 0; ack = 0; done = 0; ota = 1; req = 0; trial = 3;
+            k3 = 0; k2 = 0; k1 = 0; k0 = 0; t_fine = 1.0;
+        end
+        @(cross(V(sdone) - vdd / 2, +1)) ce = 1;
+        @(cross(V(cb_req) - vdd / 2, +1)) begin
+            ack = 1;
+            if (V(cb_cross) < vdd / 2) begin
+                ce = 0; done = 1; ota = 0; t_fine = $abstime + t_sync + 1e-9;
+            end
+        end
+        @(cross(V(cb_req) - vdd / 2, -1)) ack = 0;
+        @(timer(t_fine)) begin
+            ota = 1; req = 1;
+        end
+        @(cross(V(cmp_ack) - vdd / 2, +1)) begin
+            if (V(cmp_result) > vdd / 2) begin
+                if (trial == 3) k3 = 1;
+                if (trial == 2) k2 = 1;
+                if (trial == 1) k1 = 1;
+                if (trial == 0) k0 = 1;
+            end
+            req = 0;
+        end
+        @(cross(V(cmp_ack) - vdd / 2, -1)) begin
+            trial = trial - 1;
+            if (trial >= 0) req = 1;
+        end
+        V(cb_ack) <+ transition(ack * vdd, t_sync, tr);
+        V(coarse_en) <+ transition(ce * vdd, t_sync, tr);
+        V(ota_en) <+ transition(ota * vdd, t_sync, tr);
+        V(cmp_req) <+ transition(req * vdd, t_sync, tr);
+        V(rtl_done) <+ transition(done * vdd, t_sync, tr);
+        V(b3) <+ transition(((trial == 3) || k3) * vdd, 1e-9, tr);
+        V(b2) <+ transition(((trial == 2) || k2) * vdd, 1e-9, tr);
+        V(b1) <+ transition(((trial == 1) || k1) * vdd, 1e-9, tr);
+        V(b0) <+ transition(((trial == 0) || k0) * vdd, 1e-9, tr);
+    end
+endmodule

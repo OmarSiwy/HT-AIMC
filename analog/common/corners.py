@@ -1,6 +1,7 @@
 """Run one testbench across every PDK corner x temperature (signoff ladder rung 4).
 
     python3 analog/common/corners.py analog/<block>/test/tb_x.py [--temps -40,27,125]
+                                     [--jobs N]   (N corner runs at once; default 1)
 
 The testbench is unchanged — it reads $CORNER/$SIM_TEMP through bench.testbench(). $DUT is
 passed through, so `DUT=pex corners.py ...` runs corners on the post-layout netlist.
@@ -9,9 +10,9 @@ n corners in parallel (default 1).
 """
 import argparse
 import os
+from concurrent.futures import ThreadPoolExecutor
 import subprocess
 import sys
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "docs"))
@@ -23,6 +24,7 @@ def main():
     ap.add_argument("tb")
     ap.add_argument("--temps", default="-40,27,125")
     ap.add_argument("--corners", default=",".join(get_pdk().corners))
+    ap.add_argument("--jobs", type=int, default=int(os.environ.get("CORNERS_JOBS", os.environ.get("CORNER_JOBS", 1))))
     a = ap.parse_args()
     temps = [t for t in a.temps.split(",")]
     runs = [(c, t) for c in a.corners.split(",") for t in temps]
@@ -30,17 +32,17 @@ def main():
     def one(ct):
         env = dict(os.environ, CORNER=ct[0], SIM_TEMP=ct[1])
         return subprocess.run([sys.executable, a.tb], env=env, capture_output=True, text=True)
-
-    # CORNERS_JOBS=n runs n corners side by side (slow transient benches); default serial
-    with ThreadPoolExecutor(int(os.environ.get("CORNERS_JOBS", 1))) as ex:
-        res = list(ex.map(one, runs))
     grid, ok = {}, True
-    for (c, t), p in zip(runs, res):
-        grid[c, t] = p.returncode == 0
-        ok &= grid[c, t]
-        if p.returncode:
-            print(f"--- FAIL {c} {t}C ---\n" + "\n".join(
-                ln for ln in p.stdout.splitlines() if "FAIL" in ln) + p.stderr[-800:])
+    with ThreadPoolExecutor(max(1, a.jobs)) as ex:
+        for (c, t), p in zip(runs, ex.map(one, runs)):
+            grid[c, t] = p.returncode == 0
+            ok &= grid[c, t]
+            info = [ln for ln in p.stdout.splitlines() if "info" in ln or "PASS" in ln]
+            if os.environ.get("CORNER_VERBOSE"):
+                print(f"--- {c} {t}C ---\n" + "\n".join(info))
+            if p.returncode:
+                print(f"--- FAIL {c} {t}C ---\n" + "\n".join(
+                    ln for ln in p.stdout.splitlines() if "FAIL" in ln) + p.stderr[-800:])
     print(f"\n{Path(a.tb).stem}  DUT={os.environ.get('DUT', 'sch')}")
     print("corner " + "".join(f"{t:>8}" for t in temps))
     for c in a.corners.split(","):

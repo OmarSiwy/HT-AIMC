@@ -1,0 +1,31 @@
+// Dual-rail StrongARM stand-in for conv_seq's SA2 with sign = 1 (testbench fixture): at each
+// clk_f strobe the trial is kept (c2n falls) iff fine >= dac_code (b3..b0), else c2p falls;
+// both rails high while clk_f is low.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module sa2_standin(clk_f, b3, b2, b1, b0, c2p, c2n);
+    inout clk_f, b3, b2, b1, b0, c2p, c2n;
+    electrical clk_f, b3, b2, b1, b0, c2p, c2n;
+    parameter integer fine = 10 from [0:15];
+    parameter real vdd = 1.8 from (0:inf);
+    parameter real td = 0.5e-9 from (0:inf);
+    integer p, n, dac;
+
+    analog begin
+        @(initial_step) begin
+            p = 0; n = 0;
+        end
+        @(cross(V(clk_f) - vdd / 2, +1)) begin
+            dac = 8 * (V(b3) > vdd / 2) + 4 * (V(b2) > vdd / 2) + 2 * (V(b1) > vdd / 2)
+                  + (V(b0) > vdd / 2);
+            n = (fine >= dac);
+            p = 1 - n;
+        end
+        @(cross(V(clk_f) - vdd / 2, -1)) begin
+            p = 0; n = 0;
+        end
+        V(c2p) <+ transition(vdd * (1 - p), td, 0.1e-9);
+        V(c2n) <+ transition(vdd * (1 - n), td, 0.1e-9);
+    end
+endmodule

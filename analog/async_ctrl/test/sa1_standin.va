@@ -1,0 +1,29 @@
+// Dual-rail StrongARM stand-in for conv_seq's SA1 (testbench fixture): strobe k (0 = the
+// sign strobe) decides "out > vinn" (c1p falls) for k <= n_cross, "below" (c1n falls) after;
+// both rails high while clk_c is low.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module sa1_standin(clk_c, c1p, c1n);
+    inout clk_c, c1p, c1n;
+    electrical clk_c, c1p, c1n;
+    parameter integer n_cross = 2 from [0:15];
+    parameter real vdd = 1.8 from (0:inf);
+    parameter real td = 0.5e-9 from (0:inf);
+    integer k, p, n;
+
+    analog begin
+        @(initial_step) begin
+            k = 0; p = 0; n = 0;
+        end
+        @(cross(V(clk_c) - vdd / 2, +1)) begin
+            p = (k <= n_cross);
+            n = 1 - p;
+        end
+        @(cross(V(clk_c) - vdd / 2, -1)) begin
+            k = k + 1; p = 0; n = 0;
+        end
+        V(c1p) <+ transition(vdd * (1 - p), td, 0.1e-9);
+        V(c1n) <+ transition(vdd * (1 - n), td, 0.1e-9);
+    end
+endmodule
