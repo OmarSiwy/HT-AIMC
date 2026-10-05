@@ -1,0 +1,61 @@
+// lora_sidecar_arow — behavioural golden model, ports 1:1 with the netlist subckt.
+// Two always-on cells (store sp: |A| if A > 0, sn: if A < 0) written from wdp / wdn while
+// wsel is high; their read currents are steered: xen & !xneg -> sp to colp, sn to coln;
+// xen & xneg -> swapped; !xen -> both to the vcm dump. Not modelled: switch injection,
+// TG resistance, mismatch.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module lora_sidecar_arow(xen, xneg, wsel, wdp, wdn, colp, coln, vcm, vdd, vss);
+    inout xen, xneg, wsel, wdp, wdn, colp, coln, vcm, vdd, vss;
+    electrical xen, xneg, wsel, wdp, wdn, colp, coln, vcm, vdd, vss;
+    electrical sp, sn;
+    // cell defaults: sky130 tt 27 C; is/vt/nut fit to the DUT=sch level table (within 2 %)
+    parameter real cs = 60e-15 from (0:inf);        // store = read-device gate cap (F)
+    parameter real gon = 1.0 / 34e3 from (0:inf);   // write switch on-conductance (S)
+    parameter real gleak = 1e-12 from [0:inf);      // write switch off leakage (S)
+    parameter real vsel = 0.9 from (0:inf);         // wsel on threshold (V)
+    parameter real vsw = 0.05 from (0:inf);         // wsel switching width (V)
+    parameter real is = 9.2e-9 from (0:inf);        // read specific current (A)
+    parameter real vt = 0.544 from (0:inf);         // read threshold incl. write pedestal (V)
+    parameter real nut = 0.0314 from (0:inf);       // read n * kT/q (V)
+    real e, x, fp, fn;
+
+    analog function real lg;                        // logic level of v on a vdd rail
+        input v, vd;
+        real v, vd;
+        begin
+            lg = 0.5 * (1.0 + tanh((v - 0.5 * vd) / 0.05));
+        end
+    endfunction
+
+    analog function real gw;                        // write switch conductance
+        input v;
+        real v;
+        begin
+            gw = gon * 0.5 * (1.0 + tanh((v - vsel) / vsw));
+        end
+    endfunction
+
+    analog function real iread;                     // read current, EKV forward term
+        input v;
+        real v, xx;
+        begin
+            xx = (v - vt) / (2.0 * nut);
+            xx = xx > 30.0 ? xx : ln(1.0 + exp(xx));
+            iread = is * xx * xx;
+        end
+    endfunction
+
+    analog begin
+        I(sp, vss) <+ cs * ddt(V(sp, vss)) + V(sp, wdp) * gw(V(wsel, vss)) + gleak * V(sp, vss);
+        I(sn, vss) <+ cs * ddt(V(sn, vss)) + V(sn, wdn) * gw(V(wsel, vss)) + gleak * V(sn, vss);
+        e = lg(V(xen, vss), V(vdd, vss));
+        x = lg(V(xneg, vss), V(vdd, vss));
+        fp = iread(V(sp, vss));
+        fn = iread(V(sn, vss));
+        I(colp, vss) <+ e * ((1.0 - x) * fp + x * fn);
+        I(coln, vss) <+ e * ((1.0 - x) * fn + x * fp);
+        I(vcm, vss) <+ (1.0 - e) * (fp + fn);
+    end
+endmodule

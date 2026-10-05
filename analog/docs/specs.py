@@ -713,6 +713,70 @@ def tokens_per_j(pdk=None, passes_per_token=10944, duty_ota=1.0):
 
 
 # ---------------------------------------------------------------------------
+# rank-1 LoRA sidecar (analog/lora_sidecar/docs/architecture.md)
+# ---------------------------------------------------------------------------
+# Delta mac_j = rho * B_j * sum_i A_i * s_i * m_i  (code units), with A, B the sidecar's
+# signed effective weights on golden's W_MAX = 7 scale and s_i*m_i the signed nibble.
+LORA_MAG_BITS = 3        # lora_da/db = sign bit + 3b magnitude: golden lora_quant's W_MAX = 7
+LORA_AX_MAX = 60         # compiler budget per A integrator: sum over the rows routed to one
+                         # side of (cell current / full scale) * nibble. Worst case is
+                         # N_ROWS*15 = 240; random signed traffic sits near 20 (origin
+                         # derated A the same way: summed A current <= 8 uA).
+LORA_CAL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lora_cal")
+
+
+def lora_mac_max():
+    """LoRA full-scale term in code units: the headroom between the 4-sigma code ceiling
+    and OTA compression, so a full-scale update never pushes a nominal column past MAC_MAX."""
+    return MAC_MAX - CODE_MAX
+
+
+def lora_i_cell(pdk=None):
+    """Full-scale sidecar cell current: all N_ROWS A cells on one integrator stay inside
+    the OTA's class-A sink I_SIDE."""
+    return I_SIDE / N_ROWS
+
+
+def lora_c_int(pdk=None):
+    """A.x integration cap: LORA_AX_MAX full-scale t_q units inside the swing V_SWING,
+    snapped to 10 fF."""
+    c = LORA_AX_MAX * lora_i_cell(pdk) * TQ_SIM / V_SWING
+    return round(c * 1e14) * 1e-14
+
+
+def lora_t_b_max(pdk=None):
+    """Longest B window: a full-scale B cell delivers lora_mac_max() code units in it."""
+    return lora_mac_max() * q_unit(pdk) / lora_i_cell(pdk)
+
+
+def lora_i_ramp(pdk=None):
+    """V->T ramp current: a full A.x budget (lora_c_int * V_SWING) ramps out in t_b_max."""
+    return lora_c_int(pdk) * V_SWING / lora_t_b_max(pdk)
+
+
+def lora_rho_design(pdk=None):
+    """rho if every cell sat exactly at lora_i_cell() at code 7 (the measured value is
+    lora_cal()['rho']): rho = I_A I_B t_q / (W_MAX^2 I_ramp q_unit)."""
+    w = 2 ** LORA_MAG_BITS - 1
+    return lora_i_cell(pdk) ** 2 * TQ_SIM / (w * w * lora_i_ramp(pdk) * q_unit(pdk))
+
+
+def lora_cal(pdk=None):
+    """Measured sidecar calibration {"rho", "levels", ...} of this PDK, written by
+    analog/lora_sidecar/test/tb_lora_rho.py (DUT=sch, typical corner, 27 C). levels[m] is
+    the cell current at magnitude code m over that at code 7; the golden's effective
+    weight of a 4b code (s, m) is (-1)^s * 7 * levels[m] (golden.lora_quant must quantize
+    onto these, not onto integers — see the block doc)."""
+    import json
+    pdk = pdk or get_pdk()
+    path = os.path.join(LORA_CAL_DIR, f"{pdk.name}.json")
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"{path} missing: run analog/lora_sidecar/test/tb_lora_rho.py")
+    with open(path) as f:
+        return json.load(f)
+
+
+# ---------------------------------------------------------------------------
 # self-check: sky130 must reproduce the falsifier-validated values
 # ---------------------------------------------------------------------------
 def _selfcheck():

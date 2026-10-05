@@ -48,7 +48,7 @@ Leaves first; a block starts once everything in its DEPENDS reached `sch`.
 | rstring_ladder | cmos_switch | components/rstring_ladder | tb_rstring | — |
 | weight_tile | cmos_switch pwm_driver | components/weight_tile | tb_weight_tile, tb_cascade, tb_csnr, diag_countinl, a10_closure_driver (+ new for reprogrammable weights, INTERFACE §7: tb_weight_write, tb_weight_readback, tb_weight_write_disturb, tb_weight_write_mc) | sch — programmable (6T storage + bottom-plate selectors + code-zero gate), see `analog/weight_tile/docs/architecture.md` |
 | integrator_conv | cmos_switch ota pwm_driver strongarm | components/integrator_conv (AnalogIOC subckt `int_conv` → renamed `integrator_conv`), testbenches/_conv_common.py | tb_integrator_conv, diag_fine15, diag_pingpong, diag_a8b, diag_cascade_gain, diag_multibank, diag_park | — |
-| lora_sidecar | cmos_switch gain_cell_array ota write_dac | components/lora_sidecar | tb_lora_sidecar | — |
+| lora_sidecar | cmos_switch gain_cell_array ota write_dac | components/lora_sidecar (+ the sidecar half of top/tb_training_step) | tb_lora_sidecar, tb_lora_rho, tb_lora_update (+ new tb_lora_sidecar_mc) | STATUS_LORA — redesigned to resolve INTERFACE Q6 (signed x/A/B, both windows, rho measured); no layout this phase |
 | chip_supertile | integrator_conv | top/chip_supertile.py | tb_supertile | — |
 | analogioc | async_ctrl gain_cell_array integrator_conv lora_sidecar ota rstring_ladder weight_tile write_dac | top/analogioc_top.py, top/harness.py, top/diag_op.py | tb_tile_mvm, tb_attention_e2e, tb_training_step, tb_ffn_e2e, tb_audit, tb_eventrate, tb_adaptive_range, test_gain_servo, diag_a8 | — |
 

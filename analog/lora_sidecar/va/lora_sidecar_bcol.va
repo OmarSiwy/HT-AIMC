@@ -1,0 +1,69 @@
+// lora_sidecar_bcol — behavioural golden model, ports 1:1 with the netlist subckt.
+// Four always-on cells: pd / pm hold |B| if B > 0 (from wdp), nd / nm if B < 0 (from wdn).
+// pos window: pd sinks from colb, nm sources into it (mirror, gain km); neg window: nd
+// sinks, pm sources; otherwise every current goes to the vcm dump. The mirror's standing
+// bias (vb_tail) cancels and is not modelled; pos_b / neg_b are the complements.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module lora_sidecar_bcol(wsel, wdp, wdn, colb, pos, pos_b, neg, neg_b, vcm, vb_tail, vdd,
+    vss);
+    inout wsel, wdp, wdn, colb, pos, pos_b, neg, neg_b, vcm, vb_tail, vdd, vss;
+    electrical wsel, wdp, wdn, colb, pos, pos_b, neg, neg_b, vcm, vb_tail, vdd, vss;
+    electrical pd, nm, pm, nd;
+    // cell defaults: sky130 tt 27 C; is/vt/nut fit to the DUT=sch level table (within 2 %)
+    parameter real cs = 60e-15 from (0:inf);        // store = read-device gate cap (F)
+    parameter real gon = 1.0 / 34e3 from (0:inf);   // write switch on-conductance (S)
+    parameter real gleak = 1e-12 from [0:inf);      // write switch off leakage (S)
+    parameter real vsel = 0.9 from (0:inf);         // wsel on threshold (V)
+    parameter real vsw = 0.05 from (0:inf);         // wsel switching width (V)
+    parameter real is = 9.2e-9 from (0:inf);        // read specific current (A)
+    parameter real vt = 0.544 from (0:inf);         // read threshold incl. write pedestal (V)
+    parameter real nut = 0.0314 from (0:inf);       // read n * kT/q (V)
+    parameter real km = 1.0 from (0:inf);           // B mirror gain
+    real p, n, f1, f2, f3, f4;
+
+    analog function real lg;                        // logic level of v on a vdd rail
+        input v, vd;
+        real v, vd;
+        begin
+            lg = 0.5 * (1.0 + tanh((v - 0.5 * vd) / 0.05));
+        end
+    endfunction
+
+    analog function real gw;                        // write switch conductance
+        input v;
+        real v;
+        begin
+            gw = gon * 0.5 * (1.0 + tanh((v - vsel) / vsw));
+        end
+    endfunction
+
+    analog function real iread;                     // read current, EKV forward term
+        input v;
+        real v, xx;
+        begin
+            xx = (v - vt) / (2.0 * nut);
+            xx = xx > 30.0 ? xx : ln(1.0 + exp(xx));
+            iread = is * xx * xx;
+        end
+    endfunction
+
+    analog begin
+        I(pd, vss) <+ cs * ddt(V(pd, vss)) + V(pd, wdp) * gw(V(wsel, vss)) + gleak * V(pd, vss);
+        I(pm, vss) <+ cs * ddt(V(pm, vss)) + V(pm, wdp) * gw(V(wsel, vss)) + gleak * V(pm, vss);
+        I(nd, vss) <+ cs * ddt(V(nd, vss)) + V(nd, wdn) * gw(V(wsel, vss)) + gleak * V(nd, vss);
+        I(nm, vss) <+ cs * ddt(V(nm, vss)) + V(nm, wdn) * gw(V(wsel, vss)) + gleak * V(nm, vss);
+        p = lg(V(pos, vss), V(vdd, vss));
+        n = lg(V(neg, vss), V(vdd, vss));
+        f1 = iread(V(pd, vss));
+        f2 = iread(V(nm, vss));
+        f3 = iread(V(pm, vss));
+        f4 = iread(V(nd, vss));
+        I(colb, vss) <+ p * f1 + n * f4;
+        I(vdd, colb) <+ km * (p * f2 + n * f3);
+        I(vcm, vss) <+ (1.0 - p) * f1 + (1.0 - n) * f4;
+        I(vdd, vcm) <+ km * ((1.0 - p) * f2 + (1.0 - n) * f3);
+        I(vdd, vss) <+ f2 + f3;
+    end
+endmodule

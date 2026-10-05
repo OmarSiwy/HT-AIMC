@@ -16,6 +16,7 @@ import json
 import math
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -57,9 +58,12 @@ def sigma_vgs(dev, W, L, i_d, pdk=None):
                                        w=pdk.um(W), l=pdk.um(L), extra="")
             src, probe = f"Vdd vdd 0 {pdk.vdd}\nI1 g 0 DC {i_d:.4e}", "v(vdd)-v(g)"
         head = [f"* mismatch {pdk.name} {key}", pdk.lib_line(pdk.typical + pdk.mismatch_suffix)]
-        v = [ngspice(head + [f".options seed={i}", src, card, ".control", "op",
-                             f"let vgs = {probe}", "print vgs", ".endc"])["vgs"]
-             for i in range(1, N + 1)]
+        # seeds are independent ngspice runs (own temp dirs): run them side by side, 8 at a
+        # time (each loads the mismatch libs, ~250 MB)
+        with ThreadPoolExecutor(min(N, 8)) as ex:
+            v = list(ex.map(lambda i: ngspice(head + [
+                f".options seed={i}", src, card, ".control", "op",
+                f"let vgs = {probe}", "print vgs", ".endc"])["vgs"], range(1, N + 1)))
         cache[key] = float(np.std(v, ddof=1)) * 1e3
         p = _cache_path(pdk)
         p.parent.mkdir(exist_ok=True)

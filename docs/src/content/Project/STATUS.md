@@ -443,3 +443,23 @@ Measured on ESPice (ngspice agreed before the switch):
 - k_cal was re-measured: 0.9747 (was 0.9906). The code-independent top costs 1.6 %.
 - tb_weight_tile, csnr, cascade and the DUT=va suite all pass.
 - tb_weight_tile_mc null still fails, as it did before this change: σ 22 LSB, and the old deck gave 15. The cause is OTA offset, not the tile.
+### 2026-10-05 — Phase 1b: lora_sidecar migrated; INTERFACE Q6 resolved
+
+`analog/lora_sidecar/` (netlist, 4 Verilog-A child modules, tb_lora_sidecar / tb_lora_rho /
+tb_lora_update / tb_lora_sidecar_mc), redesigned so the LoRA term matches
+`golden.tile_mvm(lora=(A, B, rho))` with **signed x, signed A, signed B, both windows**:
+always-on 2T cells (0.43/19.2 µm read device, I_cell = I_SIDE/16) with steered drains;
+A pairs swapped by x_neg onto two integrators (Q_P − Q_N = A·x); XOR V→T window between
+two latched comparators (delays cancel: x = 0 reads 0.000 code, no baseline pass);
+B direct sinks (+) and biased PMOS mirrors (−); sign-magnitude 4b codes (W_MAX = 7);
+HI window integrates one t_q per chop cycle. **rho measured: 0.01337 code per
+(A_eff·B_eff·x) at sky130 tt/27 °C** (physical cross-check −1.6 %), recorded in
+`analog/docs/lora_cal/sky130.json` (`specs.lora_cal()`); corner range 0.0054 … 0.0276
+(per-chip calibration). vs golden: worst column 0.06 code LO, 0.06 HI, 0.23 HI at the
+A·x budget (tol max(1 code, 5 %)); SGD step loss 175.6 → 11.5, |Δy − pred| ≤ 0.05 code;
+61.6 pJ per LO op. ESPice and ngspice agree to ≤ 0.02 code (rho identical). Corners
+3 × 15/15 PASS on ESPice. Remaining golden mismatch: the cell current is not linear in
+the code (levels .0143 .0480 .1270 .2645 .4598 .7065 1 for m = 1..7; the 60 mV write DAC
+cannot make 7 linear levels) — `golden.lora_quant` must quantize onto the measured level
+table (exact change in the block doc; golden not edited). Analog top needs from
+`tile_seq`: logic `xen<i>` (replaces the 16 xrd TG drivers) and `xneg<i>`.

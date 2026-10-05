@@ -1,0 +1,45 @@
+// lora_sidecar_wbus — behavioural golden model, ports 1:1 with the netlist subckt.
+// While any select s<i> is high, the bus the sign d3 picks is driven to vref * code / 15
+// with code = 8 + m (m = d2..d0 > 0) or 0, and the other bus to 0 V; with no select high
+// both buses park at vref. Thevenin outputs through rbus. Not modelled: DAC settling,
+// decoder delay, logic current.
+`include "disciplines.vams"
+`include "constants.vams"
+
+module lora_sidecar_wbus(d0, d1, d2, d3, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15,
+    wdp, wdn, vref, vdd, vss);
+    inout d0, d1, d2, d3, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15,
+        wdp, wdn, vref, vdd, vss;
+    electrical d0, d1, d2, d3, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15,
+        wdp, wdn, vref, vdd, vss;
+    parameter real rbus = 10e3 from (0:inf);        // DAC + tap TG + bus switch (ohm)
+    real b0, b1, b2, code, lvl, sgn, wact;
+
+    analog function real lg;                        // logic level of v on a vdd rail
+        input v, vd;
+        real v, vd;
+        begin
+            lg = 0.5 * (1.0 + tanh((v - 0.5 * vd) / 0.05));
+        end
+    endfunction
+
+    analog begin
+        b0 = lg(V(d0, vss), V(vdd, vss));
+        b1 = lg(V(d1, vss), V(vdd, vss));
+        b2 = lg(V(d2, vss), V(vdd, vss));
+        code = 4.0 * b2 + 2.0 * b1 + b0 + 8.0 * (1.0 - (1.0 - b0) * (1.0 - b1) * (1.0 - b2));
+        lvl = V(vref, vss) * code / 15.0;
+        sgn = lg(V(d3, vss), V(vdd, vss));
+        wact = 1.0 - (1.0 - lg(V(s0, vss), V(vdd, vss))) * (1.0 - lg(V(s1, vss), V(vdd, vss)))
+            * (1.0 - lg(V(s2, vss), V(vdd, vss))) * (1.0 - lg(V(s3, vss), V(vdd, vss)))
+            * (1.0 - lg(V(s4, vss), V(vdd, vss))) * (1.0 - lg(V(s5, vss), V(vdd, vss)))
+            * (1.0 - lg(V(s6, vss), V(vdd, vss))) * (1.0 - lg(V(s7, vss), V(vdd, vss)))
+            * (1.0 - lg(V(s8, vss), V(vdd, vss))) * (1.0 - lg(V(s9, vss), V(vdd, vss)))
+            * (1.0 - lg(V(s10, vss), V(vdd, vss))) * (1.0 - lg(V(s11, vss), V(vdd, vss)))
+            * (1.0 - lg(V(s12, vss), V(vdd, vss))) * (1.0 - lg(V(s13, vss), V(vdd, vss)))
+            * (1.0 - lg(V(s14, vss), V(vdd, vss))) * (1.0 - lg(V(s15, vss), V(vdd, vss)));
+        I(wdp, vss) <+ (V(wdp, vss) - wact * (1.0 - sgn) * lvl
+            - (1.0 - wact) * V(vref, vss)) / rbus;
+        I(wdn, vss) <+ (V(wdn, vss) - wact * sgn * lvl - (1.0 - wact) * V(vref, vss)) / rbus;
+    end
+endmodule
