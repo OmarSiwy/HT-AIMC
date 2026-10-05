@@ -16,7 +16,7 @@ tb_weight_readback) and skips with PASS.
 """
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -75,14 +75,22 @@ def write_margin(corner="", temp=None, seed=None):
 
 def leakage(corner="", temp=None):
     """Static current [A] of one holding cell, WL = 0, BL = BLB = VDD (one access
-    device leaks into the 0 node), all sources summed."""
+    device leaks into the 0 node), all sources summed. The 1 is written first (a
+    bistable op point needs a nodeset, which ESPice ignores), the current averaged over
+    the last ns of the hold."""
+    t_end = 6e-9
     tb = _bench(_cell_top(), VDD, corner, temp)
-    for n in ("bl", "blb"):
-        tb.V(name=n, positive=n, negative="0", value=VDD)
-    tb.V(name="wl", positive="wl", negative="0", value=0.0)
-    tb.node_set(q=VDD, qb=0.0)
-    op = tb.operating_point()
-    return -sum(op[f"i(v{n})"] for n in ("sup", "bl", "blb"))
+    tb.V(name="bl", positive="bl", negative="0", value=VDD)
+    tb.PieceWiseLinearVoltageSource(name="blb", positive="blb", negative="0",
+                                    values=[(0, 0.0), (2e-9, 0.0), (2.1e-9, VDD)])
+    tb.PieceWiseLinearVoltageSource(name="wl", positive="wl", negative="0",
+                                    values=[(0, VDD), (1e-9, VDD), (1.1e-9, 0.0)])
+    tb.save("I(Vsup)", "I(Vbl)", "I(Vblb)")
+    d = tb.transient(step_time=10e-12, end_time=t_end)
+    t = np.array(d.time)
+    w = t >= t_end - 1e-9
+    i = -sum(np.array(d[f"i(v{n})"]) for n in ("sup", "bl", "blb"))
+    return float(np.trapezoid(i[w], t[w]) / (t[w][-1] - t[w][0]))
 
 
 def wire_loads(text, n_rows, n_cols):
@@ -152,7 +160,7 @@ def main():
         r.done()
     corner, temp = os.environ.get("CORNER", ""), os.environ.get("SIM_TEMP")
     cs = wt.sizes()["cell"]
-    with ThreadPoolExecutor(4) as ex:
+    with ProcessPoolExecutor(4) as ex:
         f_wm = ex.submit(write_margin, corner, temp)
         f_lk = ex.submit(leakage, corner, temp)
         f_lo = ex.submit(row_run, VDD * (1 - VDD_TOL), corner, temp)

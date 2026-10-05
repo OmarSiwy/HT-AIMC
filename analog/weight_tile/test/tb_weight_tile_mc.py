@@ -8,7 +8,8 @@ corner (sky130 `tt_mm`) with a fresh ngspice seed. MC_N samples (default 30).
 import os
 import statistics
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -36,8 +37,8 @@ def main():
     pdk = get_pdk()
     section = pdk.typical + pdk.mismatch_suffix if pdk.mismatch_suffix else pdk.mc_section
     r = Report(f"weight_tile MC ({N} samples, {section})")
-    with ThreadPoolExecutor(JOBS) as ex:
-        v = [x / U1 for x in ex.map(lambda s: null(s, section), range(1, N + 1))]
+    with ProcessPoolExecutor(JOBS) as ex:
+        v = [x / U1 for x in ex.map(partial(null, section=section), range(1, N + 1))]
     mu, sd = statistics.mean(v), statistics.stdev(v)
     print(f"  null [LSB]: {' '.join(f'{x:+.2f}' for x in v)}")
     r.check("|mean| + 3 sigma null < 1.5 LSB", abs(mu) + 3 * sd < 1.5,

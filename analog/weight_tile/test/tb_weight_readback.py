@@ -17,7 +17,7 @@ on row 0 only, then on row 15 only (D = 1). The tile-level charge equivalent of 
 """
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -72,7 +72,7 @@ def readback(run):
 def main():
     runs = [int(a) for a in sys.argv[1:]] or list(range(6))
     r = Report("weight_tile write -> MAC readback (A11, tile side)")
-    with ThreadPoolExecutor(min(JOBS, len(runs))) as ex:
+    with ProcessPoolExecutor(min(JOBS, len(runs))) as ex:
         res = dict(zip(runs, ex.map(readback, runs)))
     worst, n_out1, n = 0.0, 0, 0
     for run in runs:

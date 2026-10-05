@@ -26,7 +26,8 @@ it does across the parked converter) and each column runs as a 1-column tile
 import json
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
+from itertools import repeat
 from pathlib import Path
 
 import numpy as np
@@ -117,8 +118,8 @@ def main():
     print(f"  window macs (17-col max |.|): {[int(np.abs(m).max()) for m in macs]}, "
           f"running max {int(np.abs(run).max())} <= {MAC_GUARD}")
 
-    with ThreadPoolExecutor(JOBS) as ex:
-        res = dict(zip(cols, ex.map(lambda j: column(j, Cp, Cn, chk, xs), cols)))
+    with ProcessPoolExecutor(JOBS) as ex:
+        res = dict(zip(cols, ex.map(column, cols, *(repeat(a) for a in (Cp, Cn, chk, xs)))))
 
     worst = {K: 0.0 for K in KS}
     print(f"  {'col':>4}{'units':>7}{'gain':>8}{'eff(A9)':>9}  " +

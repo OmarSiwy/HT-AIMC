@@ -57,6 +57,7 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Tool | Issue | Workaround | Upstream fix |
 |---|---|---|---|
 | SpiceRack | no EGSpice backend | ESPice via SpiceRack | add once EGSpice runs decks |
+| SpiceRack | a run holds the GIL for the whole simulation, so a `ThreadPoolExecutor` of benches simulates one at a time (ngspice and espice; seen 2026-10-05: one simulator process under JOBS=8) | `ProcessPoolExecutor` with module-level callables (`analog/weight_tile/test/tb_*.py`) | release the GIL around the backend call |
 | EGSpice | separate successor simulator, mid-rewrite: current build rejects a resistor (`no device model compiled for kind resistor`) and a sky130 FET (`UndefinedReference`); devices compiled from Verilog-A at build time only | not in the flow yet | finish the analysis/device migration (STEPS.md step 4) |
 | sky130 models | mismatch does not follow Pelgrom at short L (10.45/0.30: 3.66 mV vs 2.10 predicted) | `analog/docs/mismatch.py` measures per geometry | — (model property) |
 | sky130 models | `m=` alone does not scale mismatch (`sqrt(l*w*mult)`); gf180 uses `par` | `pdk.mult_card` | — |

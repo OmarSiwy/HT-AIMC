@@ -15,7 +15,7 @@ LSB" (the converter is not migrated yet):
 import json
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -64,8 +64,8 @@ def run(cp, cn, x, rewrite):
 def main():
     r = Report("weight_tile write disturb (A11b, tile side)")
     j, cp, cn, x, mac = column_codes()
-    with ThreadPoolExecutor(2) as ex:
-        idle, rw = ex.map(lambda w: run(cp, cn, x, w), (False, True))
+    with ProcessPoolExecutor(2) as ex:
+        idle, rw = ex.map(run, [cp] * 2, [cn] * 2, [x] * 2, (False, True))
     t_i, v_i, t_rw, t_end = idle
     t_w, v_w = rw[0], rw[1]
     grid = np.linspace(t_rw, t_end, 4000)

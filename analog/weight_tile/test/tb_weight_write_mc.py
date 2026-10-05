@@ -11,7 +11,8 @@ Transistor-level only: DUT=va skips with PASS.
 import os
 import statistics
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 from pathlib import Path
 from statistics import NormalDist
 
@@ -32,8 +33,8 @@ def main():
     if dut_kind() == "va":
         print("  skip  transistor-level cell (DUT=va)")
         r.done()
-    with ThreadPoolExecutor(JOBS) as ex:
-        wm = list(ex.map(lambda s: write_margin(section, None, s), range(1, N + 1)))
+    with ProcessPoolExecutor(JOBS) as ex:
+        wm = list(ex.map(partial(write_margin, section, None), range(1, N + 1)))
     mu, sd = statistics.mean(wm), statistics.stdev(wm)
     z = NormalDist().inv_cdf(1 - (1 - wt.YIELD) / N_BITS_TILE)
     fails = sum(w <= 0 for w in wm)
