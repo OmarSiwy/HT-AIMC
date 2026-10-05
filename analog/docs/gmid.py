@@ -9,7 +9,7 @@ API (dev is "nfet" or "pfet", L in um):
     VGS(gm_id, L, dev)          |VGS| [V]
     gm_gds(gm_id, L, dev)       intrinsic gain
     W_for_gm(gm, gm_id, L, dev) width [um] for a target gm [S]
-    ft(...)                     NOT AVAILABLE: GmIDVisualizer exports no cgg
+    ft(gm_id, L, dev)           transit frequency gm/(2pi*Cgg) [Hz]
 
 Tables: analog/docs/gmid_tables/<pdk>/<dev>_L<L>.csv, generated on first use from
 GmIDVisualizer (mid-VDS slice, W=10um, typical corner, 27C) and committed, so a PDK
@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from pdk_specs import get_pdk, pdk_root  # noqa: E402
 
 TABLE_ROOT = Path(__file__).resolve().parent / "gmid_tables"
-COLS = ("VGS", "gm_ID", "ID_per_W", "gm", "gds", "gm_gds")
+COLS = ("VGS", "gm_ID", "ID_per_W", "gm", "gds", "gm_gds", "cgg")
 _cache = {}
 
 
@@ -100,9 +100,12 @@ def characterise(dev, L, pdk=None):
         lib.gmid_free_result(rp)
     if not len(luts[0]):
         raise RuntimeError(f"GmIDVisualizer returned an empty LUT for {model} L={L}")
-    # plots: 0 gmid->jd, 1 gmid->gm, 2 gmid->gds, 3 gmid->av, 4 vgs->gmid (same order)
+    # plots: 0 gmid->jd, 1 gmid->gm, 2 gmid->gds, 3 gmid->av, 4 vgs->gmid,
+    # 6 gmid->cgg [F at W=10um, incl. overlaps] (same order)
+    if len(luts) < 7:
+        raise RuntimeError("GmIDVisualizer too old: no cgg plot (need >= c3e0091)")
     table = np.column_stack([np.abs(luts[4][:, 0]), luts[0][:, 0], luts[0][:, 1],
-                             luts[1][:, 1], luts[2][:, 1], luts[3][:, 1]])
+                             luts[1][:, 1], luts[2][:, 1], luts[3][:, 1], luts[6][:, 1]])
     table = table[np.argsort(table[:, 0])]
     path = out / f"{dev}_L{L:g}.csv"
     hdr = (f"{model} L={L}um W=10um VDS=mid-sweep {pdk.typical} 27C (GmIDVisualizer)\n"
@@ -117,7 +120,8 @@ def load_table(dev, L, pdk=None):
     key = (pdk.name, dev, float(L))
     if key not in _cache:
         path = TABLE_ROOT / pdk.name / f"{dev}_L{L:g}.csv"
-        if not path.exists():
+        # tables written before the cgg column have 6 columns: regenerate once
+        if not path.exists() or np.loadtxt(path, delimiter=",", ndmin=2).shape[1] != len(COLS):
             characterise(dev, L, pdk)
         _cache[key] = dict(zip(COLS, np.loadtxt(path, delimiter=",").T))
     return _cache[key]
@@ -190,9 +194,13 @@ def gm_gds(gm_id, L, dev="nfet", pdk=None):
     return _inv_lookup(gm_id, L, dev, "gm_gds", pdk=pdk)
 
 
-def ft(gm_id, L, dev="nfet"):
-    raise NotImplementedError("GmIDVisualizer exports no cgg, so no ft; "
-                              "characterise cgg with a SpiceRack AC sweep if needed")
+def ft(gm_id, L, dev="nfet", pdk=None):
+    """Transit frequency gm/(2pi*Cgg) [Hz] at (gm/ID, L). Cgg is the total gate
+    capacitance (BSIM cgg + overlaps); W cancels. Log-interpolated like J_D."""
+    br = _monotone_branch(load_table(dev, L, pdk))
+    if not (br["cgg"] > 0).all():
+        raise RuntimeError(f"no cgg in the {dev} L={L} table (model reports none)")
+    return 10 ** pchip(br["gm_ID"], np.log10(br["gm"] / (2 * np.pi * br["cgg"])), gm_id)
 
 
 def W_for_gm(gm, gm_id, L, dev="nfet", pdk=None):
@@ -208,8 +216,10 @@ if __name__ == "__main__":
         assert abs(rt - 12.0) < 0.3, f"{dev} round-trip gm_ID(VGS(12))={rt}"
         assert 1e-7 < j12 < 1e-4, f"{dev} J_D(12) = {j12}"
         assert J_D(8.0, L2, dev) > J_D(15.0, L2, dev)
+        assert ft(8.0, L2, dev) > ft(15.0, L2, dev) > 1e8, f"{dev} ft(8,15)"
         print(f"{dev}: VGS(12,L={L2:g})={v12:.3f} V  J_D(12)={j12*1e6:.2f} uA/um  "
-              f"gm/gds(12)={gm_gds(12.0, L2, dev):.0f}  round-trip={rt:.2f}")
+              f"gm/gds(12)={gm_gds(12.0, L2, dev):.0f}  ft(12)={ft(12.0, L2, dev)/1e9:.2f} GHz  "
+              f"round-trip={rt:.2f}")
     # AnalogIOC's own sky130 tables (ngspice, VDS=0.9V) gave these; GmIDVisualizer must agree
     for (g, L, dev), ref in ({} if get_pdk().name != "sky130" else {(12, 0.3, "nfet"): 11.0e-6, (10, 0.3, "nfet"): 16.1e-6,
                              (10, 0.5, "pfet"): 2.29e-6}).items():

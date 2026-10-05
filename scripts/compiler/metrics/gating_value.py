@@ -28,11 +28,12 @@ import numpy as np
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_HERE)))
 sys.path.insert(0, os.path.join(_ROOT, "analog", "docs"))
+sys.path.insert(0, os.path.join(_ROOT, "analog", "ota", "netlist"))
 sys.path.insert(0, os.path.join(_ROOT, "scripts"))
 
 import specs                                             # noqa: E402
 import gmid as lookup                                    # noqa: E402
-from pdk_specs import Sky130                   # noqa: E402
+from pdk_specs import Sky130, get_pdk          # noqa: E402
 from pdk_specs import Asap7Proj            # noqa: E402
 from pdk_specs import TsmcN4Proj         # noqa: E402
 from compiler.metrics.pdk_projections import (           # noqa: E402
@@ -122,11 +123,14 @@ def tg_ron(pdk, v_node):
     return float("inf") if g <= 0 else 1.0 / g
 
 
-def cgg(dev):
-    """Gate cap from the MEASURED gm/ID tables: Cgg = gm / (2 pi f_T)."""
-    gmid, L, typ = specs.OTA_COORDS[dev]
+def cgg(dev, pdk):
+    """Gate cap from the MEASURED gm/ID tables: Cgg = gm / (2 pi f_T).
+    Projection PDKs read sky130 tables at the same min-L multiple (as specs.ota)."""
+    # ponytail: sky130 ft stands in for projection nodes; real ASAP7 tables replace it
+    gmid, _, typ = specs.OTA_COORDS[dev]
+    ref = pdk if pdk.installed else get_pdk("sky130")
     i_d = 2 * specs.I_SIDE if dev == "ota_tail" else specs.I_SIDE
-    return gmid * i_d / (2 * math.pi * lookup.ft(gmid, L, typ))
+    return gmid * i_d / (2 * math.pi * lookup.ft(gmid, specs.ota_L(dev, ref), typ, pdk=ref))
 
 
 # Coupling of the OTA output node to the vdd_ota rail, as a fraction of the
@@ -138,16 +142,17 @@ CDB_FRAC = 0.3
 
 def wakeup(pdk, r):
     """Bias-gating wake vs full-VDD-gating wake, per PDK."""
-    from library.ota import BIAS
-    r_t, r_p = tg_ron(pdk, BIAS["vb_tail"]), tg_ron(pdk, BIAS["vb_pc"])
-    tau_bias = max(r_t * cgg("ota_tail"), r_p * cgg("ota_pcasc"))
+    from ota import bias
+    b = bias(pdk if pdk.installed else get_pdk("sky130"))
+    r_t, r_p = tg_ron(pdk, b["vb_tail"]), tg_ron(pdk, b["vb_pc"])
+    tau_bias = max(r_t * cgg("ota_tail", pdk), r_p * cgg("ota_pcasc", pdk))
     # bias gating: RC on the bias nodes, then the loop must re-settle.
     # coarse_cadence == K_SETTLE * tau_absorb by construction, so one
     # re-settle costs almost exactly one coarse slot.
     t_wake_bias = 5.0 * tau_bias + specs.K_SETTLE * r["tau"]
     # full VDD gating: same, PLUS the rail ramp couples into the floating
     # integrator node through the output devices' bulk/overlap caps.
-    c_couple = CDB_FRAC * cgg("ota_pcasc")
+    c_couple = CDB_FRAC * cgg("ota_pcasc", pdk)
     c_node = specs.c_int(pdk) + specs.cal(pdk)["c_ota_self"] * (
         specs.I_SIDE / specs.cal(pdk)["i_side_ref"])
     dv_inject = c_couple / (c_couple + c_node) * pdk.vdd
@@ -340,13 +345,13 @@ def main():
 
     # ---- 4. wake-up / granularity ---------------------------------------
     L += ["## 4. Wake-up cost and the finest feasible granularity", "",
-          "Bias network (`library/ota.py`): `vb_nc`=1.25 V static (never "
+          "Bias network (`analog/ota/netlist/ota.py:bias`): `vb_nc`=1.25 V static (never "
           "gated), `vb_pc`=0.29 V and `vb_tail`=0.665 V routed through "
           "`dac_sw` CMOS TGs (`integrator_conv.py` ~L150-190).  There is "
           "**no explicit bias decap** in the schematic — the TG drives the "
           "device gate cap only.  `Cgg` from the MEASURED gm/ID tables "
-          f"(`Cgg = gm/2*pi*f_T`): tail {cgg('ota_tail')*1e15:.1f} fF, "
-          f"pcasc {cgg('ota_pcasc')*1e15:.1f} fF.", "",
+          f"(`Cgg = gm/2*pi*f_T`): tail {cgg('ota_tail', get_pdk('sky130'))*1e15:.1f} fF, "
+          f"pcasc {cgg('ota_pcasc', get_pdk('sky130'))*1e15:.1f} fF.", "",
           "| PDK | TG Ron (vb_tail) | bias-node RC | 5RC + loop re-settle "
           "(`K_SETTLE*tau`) | coarse cadence | wake / cadence |",
           "|---|---|---|---|---|---|"]
@@ -381,7 +386,7 @@ def main():
           "capacitance of `pc_r` (whose bulk IS vdd) against that "
           "floating node:", "",
           f"- coupling `C_db ~ {CDB_FRAC} * Cgg(pcasc)` = "
-          f"{CDB_FRAC*cgg('ota_pcasc')*1e15:.1f} fF (geometry-class "
+          f"{CDB_FRAC*cgg('ota_pcasc', get_pdk('sky130'))*1e15:.1f} fF (geometry-class "
           "estimate — SPICE ask below)",
           f"- node cap `C_int + C_ota_self` = "
           f"{(specs.c_int(Sky130()) + specs.cal(Sky130())['c_ota_self']*specs.I_SIDE/specs.cal(Sky130())['i_side_ref'])*1e15:.0f}"
