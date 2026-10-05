@@ -8,8 +8,7 @@ tools that already work, with their workarounds, are listed in
 |---|---|---|---|
 | 1 | cktImg: land the hierarchy/SVG branch in the env | block diagrams, top-level schematics | cktImg, EDA-Packaged, `.flows/tools` |
 | 2 | SpiceRack: ESPice / EGSpice backends | Verilog-A models with events, without the OpenVAF detour | SpiceRack |
-| 3 | GmIDVisualizer: export cgg (for `gmid.ft`) | `gating_value.py` | GmIDVisualizer |
-| 4 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
+| 3 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
 
 ## 1. cktImg: land the hierarchy/SVG branch
 
@@ -42,19 +41,7 @@ run with `@(cross)`/`transition()` (OpenVAF -> ngspice has neither). The SpiceRa
 build rejects even a resistor. Also: Spectre still drops `raw_spice`, which needs a
 `simulator lang=spice` wrapper and a Spectre install to test.
 
-## 3. GmIDVisualizer: export cgg
-
-**Done (2026-10-04):** GmIDVisualizer is packaged in EDA-Packaged (`gmidvisualizer`),
-included in `Analog.nix`, and `GMID_LIB` is exported. The PMOS `abs()` and relative
-`model_file` fixes are upstream (`OmarSiwy/GmIDVisualizer` `fab7970`).
-
-**Still missing:** `analog/docs/gmid.py:ft()` raises `NotImplementedError` because the
-LUTs carry no gate capacitance, so `scripts/compiler/metrics/gating_value.py` stops there.
-
-**Want:** GmIDVisualizer also sweeps `cgg` (ngspice `@m[cgg]`, or `cgs + cgd + cgb`) into
-the LUT, so `ft = gm / (2π·cgg)` can be interpolated like `J_D`.
-
-## 4. Port to ASAP7 (after sky130 is finished)
+## 3. Port to ASAP7 (after sky130 is finished)
 
 **Decision (2026-10-04):** finish and verify the full IMC on sky130 first, then port
 everything to ASAP7 (7 nm FinFET, predictive, not fabricable) and drop sky130.
