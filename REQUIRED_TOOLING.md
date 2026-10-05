@@ -6,29 +6,18 @@ tools that already work, with their workarounds, are listed in
 
 | # | Gap | Blocks | Owner |
 |---|---|---|---|
-| 1 | cktImg: land the hierarchy/SVG branch in the env | block diagrams, top-level schematics | cktImg, EDA-Packaged, `.flows/tools` |
+| 1 | cktImg: grouping hints | readable schematics of matched structures | cktImg |
 | 2 | SpiceRack: ESPice / EGSpice backends | Verilog-A models with events, without the OpenVAF detour | SpiceRack |
 | 3 | ASAP7 as the only PDK (after the sky130 design is complete) | the port | several |
 
-## 1. cktImg: land the hierarchy/SVG branch
+## 1. cktImg: grouping hints
 
-**Done on branch `analogioc/hierarchy-render`** (OmarSiwy/cktImg): `X` subcircuit instances
-are placed as `block:<name>` boxes, there is headless `--svg` output, and the MOS bulk net
-is a `bulk` field.
+Hierarchy, `--svg` and the MOS bulk field landed (cktImg `51f348d`, pinned in EDA-Packaged
+`6015a4b`); `.flows/tools/cktimg_to_xschem.py` uses them and every block with a netlist
+imports and netlists back clean.
 
-**Still needed:**
-- **Engine bugs:** layout time blows up when many blocks share a net, and the strongarm
-  latch's `outp`/`outn` come out in disconnected pieces. Both are being fixed; the branch
-  is pushed once they pass.
-- **EDA-Packaged:** bump the cktImg pin from `1cbffa9` to the pushed branch.
-- **`.flows/tools/cktimg_to_xschem.py` and the manifest:**
-  - read `devices[].bulk`
-  - accept named rails (`_vdd9`)
-  - add `ipin`/`opin` and `block:<name>` (or `box`) classes
-  - retune `units.scale` for the new grid
-  - drop `.pdk` from `cktimg_sky130.zon`
-  - treat several rail/port symbols on one net as one node
-- **Grouping hints** (keep a diff pair or current mirror together in placement): not started.
+**Still needed:** grouping hints, so placement keeps a diff pair or current mirror
+together. Not started.
 
 ## 2. SpiceRack: ESPice / EGSpice backends
 

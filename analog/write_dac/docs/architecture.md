@@ -1,5 +1,7 @@
 # write_dac — 4-bit R-string write DAC
 
+Schematic, drawn by cktImg from `netlist/write_dac.spice` (`make import NETLIST=write_dac`): [write_dac.svg](write_dac.svg)
+
 Programs gain-cell storage nodes: `gain_cell_array` writes (row-shared `wdata`) and the
 two `lora_sidecar` update DACs (`wda`/`wdb`). Depends on `cmos_switch` (tap mux). See
 `analog/docs/architecture.md`.

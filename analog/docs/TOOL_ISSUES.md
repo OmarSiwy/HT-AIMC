@@ -23,6 +23,12 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | **Pin text on a non-conductor layer:** every top-level text (pins *and* instance names Xtail, Xinp, …) is written on 236/0, which is not a sky130 layer, so no net binds to it. GPurify, magic/KLayout LVS and any LEF abstract can't find the pins | GPurify session, 2026-10-04 (strongarm if_seed1, cmos_switch seed12, ota if_seed1) | use `output/gen/*.gds` (substrate2, pins on met1/met2 .pin + .label) for anything that needs pins | emit each pin as `<metal>.pin` (e.g. met2 69/16) + `<metal>.label` (69/5) on the conductor reaching the boundary; keep instance names off conductor layers |
 | Only `sky130.json` / `generic_finfet.json` rule decks packaged | — | layout rung is sky130-only | package gf180/ihp decks |
 
+## cktImg (OmarSiwy/cktImg `51f348d`, EDA-Packaged `6015a4b`) — found 2026-10-04
+
+| Issue | Found by | Workaround here | Upstream fix |
+|---|---|---|---|
+| Router runs a wire straight across other nets' pins / wire ends (weight_tile `rowa0` over the `phi1`/`phi2` inverter gates), which xschem connects: a short in the drawing | `cktimg_to_xschem.py` self-check; rstring_ladder, write_dac, gain_cell_array, weight_tile | the converter drops the offending net's wires and joins it by labels on its pins (prints `note: cktImg routed ...`) | router must treat foreign pins and wire ends as blockages |
+
 ## substrate2 (ucb-substrate/substrate2, `substrate` registry) — found by layout-infra 2026-09-29
 
 | Issue | Workaround here (`analog/common/layout/`) | Upstream fix |

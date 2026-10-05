@@ -20,8 +20,9 @@ XSCHEMRC_FILE = xschemrc
 TOOLS_DIR = ../../../../.flows/tools
 NETLIST_DIR = ../../netlist
 SCHEMATIC_DIR = ../../schematics
+DOCS_DIR = ../../docs
 # cktImg grid units -> xschem units. Unset uses units.scale from
-# .flows/tools/xschem_sky130.json; `make import SCALE=2.5` overrides it for one run.
+# .flows/tools/xschem_sky130.json; `make import SCALE=2` overrides it for one run.
 SCALE ?=
 
 .PHONY: all schematic spice clean setup update-pdk netlist import deps
@@ -90,16 +91,18 @@ netlist:
 	done; \
 	if [ $$found -eq 0 ]; then echo "No .py circuits in $(NETLIST_DIR)/"; fi
 
-# Place a deck with cktImg and write an xschem schematic you can open and edit.
-# Named NETLIST=<stem>, matching netlist/<stem>.spice -> schematics/<stem>.sch.
+# Place a deck with cktImg and write an xschem schematic you can open and edit, plus
+# cktImg's own drawing of it for the docs.
+# Named NETLIST=<stem>: netlist/<stem>.spice -> schematics/<stem>.sch + docs/<stem>.svg.
 import:
 	$(if $(NETLIST),,$(error Usage: make import NETLIST=<name>  # for $(NETLIST_DIR)/<name>.spice))
 	@[ -f "$(NETLIST_DIR)/$(NETLIST).spice" ] || { \
 		echo "No such deck: $(NETLIST_DIR)/$(NETLIST).spice"; \
 		echo "Run 'make netlist' first if it comes from a DeSpice script."; exit 1; }
-	@mkdir -p $(SCHEMATIC_DIR)
+	@mkdir -p $(SCHEMATIC_DIR) $(DOCS_DIR)
 	python3 $(TOOLS_DIR)/cktimg_to_xschem.py \
 		$(if $(SCALE),--scale $(SCALE)) \
+		--svg $(DOCS_DIR)/$(NETLIST).svg \
 		$(NETLIST_DIR)/$(NETLIST).spice \
 		$(SCHEMATIC_DIR)/$(NETLIST).sch
 	@echo "Wrote $(SCHEMATIC_DIR)/$(NETLIST).sch — open it with: make schematic TOP_SCHEMATIC=$(NETLIST)"

@@ -1,5 +1,7 @@
 # weight_tile — charge-domain capacitive crossbar
 
+Schematic, drawn by cktImg from `netlist/weight_tile.spice` (`make import NETLIST=weight_tile`): [weight_tile.svg](weight_tile.svg)
+
 The MVM array of AnalogIOC: 16 rows × (16 + 1 ABFT checksum) columns of differential 4b
 cap banks. Row `i` is driven by its own `pwm_driver` from the PWM nibble on
 `xin_p_r<i>` / `xin_n_r<i>`; column `j` dumps charge onto `col<j>`, the virtual ground

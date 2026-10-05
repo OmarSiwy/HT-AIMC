@@ -96,23 +96,29 @@ testbench tour.
 
 ```bash
 cd analog/<block>/build/schematic
-make import NETLIST=divider         # netlist/divider.spice -> schematics/divider.sch
+make import NETLIST=divider         # netlist/divider.spice -> schematics/divider.sch + docs/divider.svg
 make schematic TOP_SCHEMATIC=divider   # open it
 ```
 
 `make import` runs `.flows/tools/cktimg_to_xschem.py`, which runs cktImg's place-and-route
-(`cktimg-json`) and converts the placed geometry to an xschem `.sch` using **real sky130
-symbols**. The result opens, edits, and netlists back: verified by running xschem's own
-netlister on the output and diffing against the source deck (a 5T OTA in both `M` and
-`XM ... sky130_fd_pr__` form, and a spicerack divider).
+(`cktimg-json --svg`) and converts the placed geometry to an xschem `.sch` using **real sky130
+symbols**; the SVG is cktImg's own drawing, for the block's docs. A deck of only `.subckt`
+definitions draws its last one. The result opens, edits, and netlists back: every block
+with a netlist (strongarm, cmos_switch, ota, pwm_driver, rstring_ladder, write_dac,
+gain_cell_array, async_ctrl, weight_tile) was netlisted back with xschem and matched its
+deck device by device and pin by pin, with W/L.
+
+cktImg also ships `cktimg-xschem`. It is not used here: it maps to xschem's generic
+`nmos4.sym`/`res.sym` with a built-in table (no sky130 symbols, no manifest), and drops
+subcircuit instances to bare labels, so an `X` block vanishes from the netlist.
 
 Three files, each owning one thing:
 
 | File | Owns |
 |------|------|
 | `.flows/tools/xschem_sky130.json` | The symbol mapping: a cktImg **target manifest** (`--target`) |
-| `.flows/tools/cktimg_sky130.zon` | cktImg's config (`--config`): PDK resolution, strict geometry |
-| `.flows/tools/cktimg_to_xschem.py` | xschem geometry: orientation, stubs, labels, the self-check |
+| `.flows/tools/cktimg_sky130.zon` | cktImg's config (`--config`): strict geometry |
+| `.flows/tools/cktimg_to_xschem.py` | xschem geometry: orientation, stubs, labels, block symbols, the self-check |
 
 ### The manifest: adding or changing a symbol
 
@@ -133,59 +139,65 @@ the class's `style`, which cktImg passes through untouched:
 ```
 
 * `pin_xy` -- the centre of each `B 5 x0 y0 x1 y1` pin box in the `.sym` file, in the
-  manifest's pin order (catalog order unless the class sets `pins`).
+  manifest's pin order (catalog order unless the class sets `pins`), which must also be
+  the symbol's netlist order (the order of its `B 5` lines).
 * `sym` and `attrs` are Python format strings over `name`, `ref` (name minus a leading
-  `x`, since sky130 symbols add their own `X`), `value`, `net` (first pin's net), and --
-  for a class whose style has `model` -- `model`/`w`/`l`, taken from the deck's own card
-  and falling back to the style's defaults.
-* `bulk` -- the 4th MOS pin cktImg does not model; the net comes from the deck.
-* `rail: true` -- a global label symbol (`vdd.sym`/`gnd.sym`); its net is not labelled twice.
+  `x`, since sky130 symbols add their own `X`), `value`, `net` (first pin's net), `cell`
+  (the class minus `block:`) and -- for a class whose style has `model` --
+  `model`/`w`/`l`, read from the card (cktImg's `value`), falling back to the style's
+  defaults. A card whose first word is a number (`R1 a b 2k`) keeps the default model.
+* `bulk` -- where to label the device's extra node (cktImg's `devices[].bulk`: a MOS body,
+  a `res_high_po` substrate). `net` is the fallback when the card has none; without it
+  nothing is labelled.
+* `rail: true` -- a label symbol (`vdd`/`gnd`/`ipin`/`opin`); its net is not labelled twice.
+* `unmapped.mode = box` -- every other class, in practice `block:<subckt>` (an `X` of a
+  `.subckt`). The script draws a box symbol with the instance's ports where cktImg put
+  them and embeds it in the `.sch` (`embed=true`), so nothing is written to `symbols/`.
+  It netlists as `<name> <ports> <subckt>`, `type=primitive`, so xschem does not look
+  for the child's schematic.
 
 cktImg validates class and terminal names, so a typo fails the run instead of miswiring.
 To find the classes a deck needs, run `cktimg-json deck.spice` and read the `class` fields.
-Unmapped classes are skipped with a warning (`"unmapped": {"mode": "skip"}`).
 
 ### What it handles, and why you should care
 
 * **Net names survive.** Every net gets a label. Without one, xschem renames unlabelled
   nodes `net1`, `net2`, ... and name-based LVS against your source deck silently breaks.
-* **MOSFETs match the deck.** cktImg models 3-terminal devices and reports the model only
-  as a display string. The script re-reads the deck's `M`/`X` cards for the bulk net, the
-  exact model (so `_lvt`/`_hvt`/`g5v0d10v5` get their own sky130 symbol) and W/L.
-* **Node `0` is ground.** `cktimg-json` only creates a ground rail for a net literally
-  named `gnd`, so on a spicerack deck (`0` everywhere) it treats ground as a signal and
-  parks grounded loads in the margin band. The script appends `Xgnd0 0 ground` to a temp
-  copy of the deck, which also puts a real ground symbol in the schematic.
+* **MOSFETs and passives match the deck.** The model (so `_lvt`/`_hvt`/`res_high_po_*`
+  get their own sky130 symbol), W/L and the bulk net come from cktImg's `value` and `bulk`.
 * **Symbol geometry is reconciled automatically.** cktImg's MOSFET and sky130's are
   different shapes. The script picks whichever of xschem's 8 orientations fits best and
-  bridges any remaining gap with a short stub wire. Connectivity is correct by construction.
-* **It self-checks.** Every run asserts each net comes out as one connected group,
-  modelling xschem's real rule (including T-junctions onto a wire's interior). A failure
-  aborts rather than writing a plausible-looking broken schematic.
+  bridges any remaining gap with a short stub wire.
+* **Router shorts are routed around.** cktImg sometimes runs a wire across another net's
+  pin or wire end (seen on rstring_ladder, write_dac, gain_cell_array, weight_tile), which
+  xschem would short. Such a net loses its wires and gets a label on each of its pins
+  instead; the run prints `note: cktImg routed <nets> across another net`.
+* **It self-checks.** Every run asserts each net comes out as one node and no two nets
+  share one, modelling xschem's real rule (a pin, label or wire end on a wire joins it;
+  same-named labels and rail/port symbols are one node). A failure aborts rather than
+  writing a plausible-looking broken schematic.
 
 ### The one knob
 
-`units.scale` in the manifest converts cktImg's abstract grid to xschem units (2). cktImg
-passes it through without applying it. Override per run:
+`units.scale` in the manifest converts cktImg's grid to xschem units (1.5: cktImg puts
+MOS/R/C pins 20 from the centre, sky130 30). cktImg passes it through without applying
+it. Override per run:
 
 ```bash
-make import NETLIST=divider SCALE=2.5
+make import NETLIST=divider SCALE=2
 ```
 
-There is no correct value derivable from either format's spec -- **tune it by eye with the
-schematic open.** Too small and symbols overlap; too large and the routing sprawls. It
-only affects looks, never connectivity.
+**Tune it by eye with the schematic open.** Too small and symbols overlap; too large and
+the routing sprawls. It only affects looks, never connectivity.
 
 ### Limits
 
-* Mapped classes: MOSFETs (`nmos`/`pmos`/`nfet`/`pfet`), `res`, `cap`, `vsource`, and the
-  rails. Anything else is skipped with a warning -- add it to the manifest.
-* sky130 transistors only resolve through `cktimg_sky130.zon`'s `.pdk` section. A
-  replacement `--config` needs the same section, or cktImg drops every MOSFET.
-* `res`/`cap` map to `res_generic_m1`/`cap_mim_m3_1` with `W=1 L=1`; the deck's value is
-  kept as `cktimg_value` for reference, not simulated.
-* A deck whose only `0` token is a *value* (`V1 a b 0`) still gets a ground symbol,
-  unconnected to anything.
+* Mapped classes: `nmos`/`pmos`/`nfet`/`pfet`, `res`, `cap`, `vsource`, the rails and
+  ports. Anything else becomes a generated box -- add it to the manifest for a real symbol.
+* A plain-valued `R`/`C` (`2k`, `1p`) becomes `res_generic_m1`/`cap_mim_m3_1` with the
+  style's W/L; the value is not kept.
+* Nets joined by labels (see above) read worse than wired ones: the fix is in cktImg's
+  router, not here.
 * `make clean` deletes `analog/<block>/netlist/*.spice`. That is correct for generated decks --
   but a **hand-written `.spice` with no `.py` beside it will be lost.** Keep hand decks
   elsewhere or give them a generator.
@@ -193,10 +205,9 @@ only affects looks, never connectivity.
 ### Why `cktimg_sky130.zon` sets `symbol_geometry = .err`
 
 xschem connects by geometry -- a wire touching a pin *is* a connection -- which is exactly
-the host cktImg's LINT.md says `.err` is for. At the default `.warn`, cktImg does not spread
-margin-band feedback devices that share a centre, so two of them (e.g. an R∥C load that
-resolved as feedback) land on the same point. The node-0 fix above removes the usual
-trigger; this removes the rest.
+the host cktImg's lint rule says `.err` is for. At the default `.warn`, cktImg does not
+spread margin-band feedback devices that share a centre, so two of them can land on the
+same point.
 
 ## 3. Direct tool use
 
@@ -205,14 +216,14 @@ Bypass make when you need to:
 ```bash
 T=.flows/tools
 cktimg-json deck.spice                                  # raw geometry, to stdout
-cktimg-json --config $T/cktimg_sky130.zon --target $T/xschem_sky130.json deck.spice
-cktimg-json --lint deck.spice                           # rule findings on stderr
-python3 $T/cktimg_to_xschem.py deck.spice out.sch [--scale 2.5] [--config F] [--target F]
+cktimg-json --config $T/cktimg_sky130.zon --target $T/xschem_sky130.json --svg out.svg deck.spice
+python3 $T/cktimg_to_xschem.py deck.spice out.sch [--svg out.svg] [--scale 2] [--config F] [--target F]
+xschem -x -q -n -s -o outdir out.sch                    # netlist it back (run beside xschemrc)
 ```
 
 `lint.zon` also tunes cktImg's placement and routing (`abut_gap`, `track_w`, `refine`,
 ...). Unrecognized keys are reported, not fatal. Router cost weights are deliberately not
-configurable -- see cktImg's `docs/ALGORITHM.md`.
+configurable -- see cktImg's `ALGORITHM.md`.
 
 ## 4. Philis (P&R to GDS)
 

@@ -1,5 +1,7 @@
 # cmos_switch — CMOS transmission gate
 
+Schematic, drawn by cktImg from `netlist/cmos_switch.spice` (`make import NETLIST=cmos_switch`): [cmos_switch.svg](cmos_switch.svg)
+
 Leaf block, parametrised. An NMOS and a PMOS in parallel between `in_` and `out`; every
 switched-charge block uses its own sized copy: `write_dac` / `rstring_ladder` tap muxes,
 `integrator_conv` reset / packet / CDAC switches, `weight_tile` transfer switches,
