@@ -29,8 +29,8 @@ class Cfg:
         self.R, self.C, self.WW, self.D, self.P = rows, cols, ww, acc_depth, pipe
         self.row_w = max(1, (rows - 1).bit_length())
         self.idx_w = max(1, (acc_depth - 1).bit_length())
-        # issue -> y_valid_o of the last column (see sa_top tag alignment + 3 edge stages)
-        self.lat = 1 + rows + pipe + (cols - 1) + 3
+        # issue -> y_valid_o of the last column (see sa_top tag alignment + 7 edge stages)
+        self.lat = 1 + rows + pipe + (cols - 1) + 7
 
 
 def schedule(cfg, jobs, data=True):

@@ -68,7 +68,7 @@ module tb_sa_top;
 `ifndef GL
   for (genvar c = 0; c < Cols; c++) begin : g_mon
     always @(posedge clk) begin
-      if (dut.g_edge[c].u_edge.sum_valid_q)
+      if (dut.g_edge[c].u_edge.v_q[0])
         $fwrite(fsum, "%0d %0d\n", c, $signed(dut.g_edge[c].u_edge.sum_q));
     end
   end

@@ -1,3 +1,2 @@
-build/test/
-build/power/
-build/out/
+build/
+__pycache__/
