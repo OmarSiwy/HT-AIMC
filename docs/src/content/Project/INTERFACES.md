@@ -129,8 +129,11 @@ exit = force_zero = relu_en & sign_neg & sign_valid.
 ## tile_fsm (top controller; instantiates event_ctrl, sar_ctrl, sign_exit)
 
 Phase sequence: IDLE -> INTEGRATE -> (sign early exit?) -> COARSE -> FINE
--> READOUT. One instance per column converter; a tile replicates 16x with
-a common fabric start.
+-> READOUT. One instance per column converter; a tile replicates it 17x
+(16 data columns + the ABFT checksum column, which always runs with
+`relu_en` = 0) with a common fabric start. `analogioc_top` joins the 17
+`integ_req` into the macro's single `integ_req` with a registered C-element
+and fans `integ_ack` back out (analog/analogioc/docs/INTERFACE.md §8).
 
 Fabric side (sync, `clk`):
 | port | dir | width | meaning |
@@ -139,6 +142,7 @@ Fabric side (sync, `clk`):
 | relu_en | in | 1 | enable sign-early-exit for this conversion |
 | col_code | out | signed 8 | see assembly below; quasi-static while col_valid |
 | col_valid / col_ready | out/in | 1 | ready/valid readout |
+| col_exit | out | 1 | ReLU sign-early-exit taken in this conversion (`col_code` forced 0). Registered: set in DECIDE, cleared on the next start accept, valid with `col_valid`. `analogioc_top` uses the HI window's `col_exit` to force that column's LO code to 0. |
 | evt_count_gray | out | 4 | LIVE Gray event count; a foreign clock domain may 2FF-sample it directly (Gray counter for the event-count crossing). Caveats: (1) holds the previous conversion's value during an early-exit conversion; (2) it restarts to 0 at conversion start, a multi-bit change - the single-bit-change guarantee holds only WITHIN a conversion, so qualify samples with conversion phase (e.g. between start accept and col_valid) or tolerate one torn sample at start. |
 
 Analog side (async):
@@ -149,7 +153,7 @@ Analog side (async):
 | coarse_en (out) | level | analog may issue cb_req decisions ONLY while high. Never rises on an early-exit conversion (this is what makes early exit safe: no orphaned req). Sample it at the start of each decision window. |
 | cb_req / cb_cross (in), cb_ack (out) | 4-phase | via event_ctrl |
 | cmp_req (out), cmp_ack / cmp_result (in), dac_code (out) | 4-phase | via sar_ctrl |
-| ota_en (out) | level | item S4 OTA bias gate: high through INTEGRATE/DECIDE, low during COARSE once event_ctrl's early-termination done latches (the analog wrapper parks the column OTA tail and pfet cascode gate; residue held on the floating integrator node, < 0.3 fine LSB/us droop measured), then HIGH FOR THE WHOLE FINE PHASE. Fine-phase park is FORBIDDEN (tried twice, reverted): a parked OTA between SAR trials leaves the residue floating under the CDAC acq TGs and their injection walks it ~1 fine LSB/trial (tb_ic_park measured). |
+| ota_en (out) | level | item S4 OTA bias gate: high through INTEGRATE/DECIDE, low during COARSE once event_ctrl's early-termination done latches (the analog wrapper parks the column OTA tail and pfet cascode gate; residue held on the floating integrator node, < 0.3 fine LSB/us droop measured), then HIGH FOR THE WHOLE FINE PHASE (RTL: `state == S_FINE`; the old RTL dropped it there, fixed per analog/analogioc/docs/INTERFACE.md D9). Fine-phase park is FORBIDDEN (tried twice, reverted): a parked OTA between SAR trials leaves the residue floating under the CDAC acq TGs and their injection walks it ~1 fine LSB/trial (tb_ic_park measured). |
 
 Column code assembly (coarse LSB = 16 fine LSBs; SAR carry realizes the
 1-bit redundancy overlap):

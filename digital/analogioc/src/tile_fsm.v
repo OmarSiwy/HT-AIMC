@@ -41,13 +41,17 @@ module tile_fsm (
     input  wire       cmp_ack,
     input  wire       cmp_result,
     output wire [3:0] dac_code,
-    // OTA bias gate (item S4 power hook): high while this column's
-    // integrator amplifier must be awake — integrate/settle/decide and
-    // the coarse loop UNTIL the event controller's early-termination
-    // done. During S_FINE the analog wrapper ORs its own acq strobe
-    // (CDAC sampling windows) into the bias gate; between acqs the
-    // residue is held on the floating integrator node.
-    output wire       ota_en
+    // OTA bias gate (item S4 power hook): high through integrate/settle/
+    // decide, during the coarse loop UNTIL the event controller's early-
+    // termination done, and again for the WHOLE fine phase (S_FINE): a
+    // parked OTA between SAR trials lets the CDAC acq injection walk the
+    // floating residue (tb_ic_park, INTERFACES.md). The macro ORs its own
+    // acq strobe into the gate on top of this.
+    output wire       ota_en,
+    // ReLU sign-early-exit taken in this conversion (col_code forced 0).
+    // Registered; set in S_DECIDE, cleared on the next start accept, valid
+    // with col_valid.
+    output reg        col_exit
 );
     // 2FF synchronizers for integrate handshake (sign aligned with ack)
     reg iack_m, iack_s, sign_m, sign_s;
@@ -104,7 +108,8 @@ module tile_fsm (
     assign coarse_en   = (state == S_COARSE);
     assign ota_en      = (state == S_INTEG) || (state == S_INTFALL) ||
                          (state == S_DECIDE) ||
-                         ((state == S_COARSE) && !ev_done);
+                         ((state == S_COARSE) && !ev_done) ||
+                         (state == S_FINE);
 
     // magnitude assembly (used in S_ASSEMBLE)
     wire [7:0] mag     = {ev_count, 4'b0000} + {4'b0000, sar_code};
@@ -121,6 +126,7 @@ module tile_fsm (
             relu_r    <= 1'b0;
             sign_r    <= 1'b0;
             sign_seen <= 1'b0;
+            col_exit  <= 1'b0;
         end else begin
             ev_start  <= 1'b0;  // default: single-cycle pulses
             sar_start <= 1'b0;
@@ -128,6 +134,7 @@ module tile_fsm (
                 S_IDLE: if (start_valid) begin
                     relu_r    <= relu_en;
                     sign_seen <= 1'b0;
+                    col_exit  <= 1'b0;
                     integ_req <= 1'b1;
                     state     <= S_INTEG;
                 end
@@ -142,6 +149,7 @@ module tile_fsm (
                 S_DECIDE: begin
                     if (se_exit) begin
                         col_code  <= 8'd0;      // ReLU-bound negative -> 0
+                        col_exit  <= 1'b1;
                         col_valid <= 1'b1;
                         state     <= S_READOUT;
                     end else begin
