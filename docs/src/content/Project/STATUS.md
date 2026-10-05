@@ -463,3 +463,6 @@ the code (levels .0143 .0480 .1270 .2645 .4598 .7065 1 for m = 1..7; the 60 mV w
 cannot make 7 linear levels) — `golden.lora_quant` must quantize onto the measured level
 table (exact change in the block doc; golden not edited). Analog top needs from
 `tile_seq`: logic `xen<i>` (replaces the 16 xrd TG drivers) and `xneg<i>`.
+Not yet run on ESPice for lora_sidecar (simulation paused by the user): the Monte Carlo
+`tb_lora_sidecar_mc` (30 × tt_mm, written, never completed on either simulator) and the
+gf180 hotswap. Done on ESPice: `make test` DUT=sch and DUT=va 3/3 PASS, corners 3 × 15/15.
