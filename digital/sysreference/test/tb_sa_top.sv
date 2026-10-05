@@ -14,6 +14,7 @@ module tb_sa_top;
   parameter int NCyc     = 1;
   parameter int NExp     = 1;
   parameter     Dir      = "build";
+  parameter int VcdFrom  = 0;      // first stimulus cycle inside the VCD power window
 
   localparam int AW    = 8;
   localparam int RowW  = $clog2(Rows);
@@ -44,7 +45,11 @@ module tb_sa_top;
           a_idx, a_rqsel, a_last, a_first, a_bank, a_data, a_valid,
           w_data, w_bank, w_row, w_valid} = cur;
 
+`ifdef GL  // post-route netlist: parameters are baked in, no RTL hierarchy to probe
+  sa_top dut (
+`else
   sa_top #(.Rows(Rows), .Cols(Cols), .WW(WW), .AccDepth(AccDepth), .PipeMul(PipeMul)) dut (
+`endif
     .clk_i(clk), .rst_ni(rst_n),
     .w_valid_i(w_valid), .w_row_i(w_row), .w_bank_i(w_bank), .w_data_i(w_data),
     .a_valid_i(a_valid), .a_data_i(a_data), .a_bank_i(a_bank), .a_first_i(a_first),
@@ -54,17 +59,20 @@ module tb_sa_top;
     .y_valid_o(y_valid), .y_idx_o(y_idx), .y_data_o(y_data)
   );
 
+  bit vcd_en = 1'b0;
   integer cyc = 0, tick = -1, n_out = 0, n_err = 0, last_out = 0, fsum;
 
   // tick = index of the stimulus word sampled at this edge (one idle edge after reset)
   always @(posedge clk) if (rst_n) tick <= tick + 1;
 
+`ifndef GL
   for (genvar c = 0; c < Cols; c++) begin : g_mon
     always @(posedge clk) begin
       if (dut.g_edge[c].u_edge.sum_valid_q)
         $fwrite(fsum, "%0d %0d\n", c, $signed(dut.g_edge[c].u_edge.sum_q));
     end
   end
+`endif
 
   always @(posedge clk) begin
     if (rst_n && y_valid) begin
@@ -84,17 +92,23 @@ module tb_sa_top;
     $readmemh({Dir, "/stim.hex"}, stim);
     $readmemh({Dir, "/exp.hex"}, expv);
     fsum = $fopen({Dir, "/sums.txt"}, "w");
-    if ($test$plusargs("vcd")) begin
+    vcd_en = $test$plusargs("vcd");
+    if (vcd_en) begin
       $dumpfile({Dir, "/sa.vcd"});
       $dumpvars(0, dut);
+      $dumpoff;
     end
     cur = '0;
     repeat (3) @(negedge clk);
     rst_n = 1'b1;
+    // VCD window = the issue phase only (pipeline fill and drain excluded), so the
+    // power read from it is the steady-state power of the schedule being replayed.
     for (cyc = 0; cyc < NCyc; cyc++) begin
       @(negedge clk);
       cur = stim[cyc];
+      if (vcd_en && cyc == VcdFrom) $dumpon;
     end
+    if (vcd_en) $dumpoff;
     @(negedge clk);
     cur = '0;
     repeat (Rows + Cols + 16) @(negedge clk);

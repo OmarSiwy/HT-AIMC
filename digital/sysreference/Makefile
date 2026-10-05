@@ -22,4 +22,4 @@ synth ppa:
 	$(MAKE) -C build $@
 
 clean:
-	rm -rf build/test build/power build/synth build/orfs
+	rm -rf build/test build/power build/out build/orfs/work
