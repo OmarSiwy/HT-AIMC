@@ -579,3 +579,54 @@ nix-shell -p ngspice --run 'make -C analog/analogioc/build/lib lib GPURIFY=... G
 # set DIE_AREA (config.yaml) + location (macros.toml) from output/lef/analogioc.lef SIZE
 make -C digital/analogioc flow-harden       # config + LibreLane harden + macros.py signoff
 ```
+
+### 2026-10-05 — ASAP7 is a usable PDK (models on ESPice, pdk_specs, gm/ID, DRC)
+
+- **PDK:** EDA-Packaged `asap7` (`b85d8fb`, pushed) is the ASAP7 r1p7 root, exported as
+  `$ASAP7_ROOT` by `Analog.nix`. `PDK=asap7 ./env.sh` selects it. It holds the PDK's HSPICE
+  BSIM-CMG 107 cards, layer maps and the DRM. It adds BSIM-CMG 111.0.0 Verilog-A (UC Berkeley,
+  ECL-2.0; 4-terminal, module `bsimcmg`), the cards rewritten for it, `models/espice/asap7.lib`
+  (`.hdl` + cards, sections tt/ff/ss), an ngspice lib with `models/osdi/bsimcmg.osdi`, and
+  `klayout/asap7.drc` + `.lyp`/`.lyt`. Licences: PDK BSD-3, BSIM-CMG ECL-2.0, DRC deck BSD-2.
+- **ESPice runs BSIM-CMG with no ESPice/VerA change.** VerA compiles the VA as a user `.hdl`
+  model in about 4 min, once, then caches it. `M` cards bind to it. `analog/docs/asap7_smoke.py`
+  passes; values are TT, 1 fin, |VDS| = 0.7 V, 25 C:
+
+  | device | Idsat µA (published) | Ioff pA (published) |
+  |---|---|---|
+  | nmos_rvt | 35.4 (37.85) | 15.4 (19) |
+  | pmos_rvt | 31.1 (32.88) | 16.0 (23) |
+
+  All 8 devices are within −4 % to −9 % of Clark et al. 2016 on Idsat. SS is 60–62 mV/dec.
+  nmos_sram Ioff is GIDL-limited at 4.9× the paper; the paper predates the 160803 cards.
+  FF > TT > SS holds. `NFIN=10` equals `NFIN=5 NF=2`.
+  The 2+2-fin inverter at 0.7 V: VM 0.348 V, gain 34, tpd 8.0 ps into 1 fF,
+  **5.73 ps/fF**. Off-FET drain cap is 0.160 fF/µm.
+  Against ngspice-44.2 + OSDI of the same source: Idsat within 2e-4, transfer curve within 0.36 mV.
+- **pdk_specs `Asap7`** (`asap7_proj` and `tsmc_n4_proj` unchanged):
+  - vdd 0.7, one gate length (L = 21 nm), `w_fin` 0.0705 µm, fin pitch 27 nm.
+  - FET card `M… L= NFIN=`; `devices.fet` turns W into NFIN and folds `m` into NF.
+  - No MIM: an ideal C card, budgeted at a 2.0 fF/µm² MOM estimate from the metal stack. No resistors.
+  - No statistical models: a_vt 1.3 mV·µm (literature), applicable through DELVTRAND. No `_mm` sections.
+- **gm/ID:** `gmid.py` characterises FinFET PDKs in ESPice: a DC sweep gives Id, and one AC
+  deck with a device copy per VGS gives gm, gds and Cgg. GmIDVisualizer writes `W=` cards and
+  drives ngspice, so it can't be used here. Tables are in
+  `analog/docs/gmid_tables/asap7/{nfet,pfet}_L0.021.csv` (10 fins, VDS 0.35 V). At gm/ID 12, nfet:
+  VGS 0.43 V, 90.5 µA/µm (6.4 µA/fin), gm/gds 35, fT 282 GHz. The pfet: 61 µA/µm, fT 181 GHz.
+- **DRC:** `$ASAP7_ROOT/klayout/asap7.drc` is OpenROAD-flow-scripts' `asap7.lydrc` with fixes:
+  - S.1 on LISD/LIG/M1–M3 passed parallel 18 nm wires at any spacing;
+  - three rule-name/layer typos;
+  - batch report path.
+
+  On std cells (INVx1, NAND2x1, DFFHQNx1) it finds only the expected lone-cell ACTIVE.LUP.1
+  (no tap), plus one real V1.S.4 (26.9 vs 27 nm) in the flip-flop. Seeded M1.W.1 and M2.S.1
+  are caught. There is no open LVS.
+- **Open (REQUIRED_TOOLING §3):**
+  - GPurify `asap7.deck` and Philis `asap7.json` (device recognisers, MOL conductors, caps).
+  - A substrate2 ASAP7 crate (2–4 weeks).
+  - ORFS harden path: LibreLane has no ASAP7.
+  - ESPice `m=` on VA devices.
+  - Per-instance mismatch.
+  - Tile calibration at ASAP7: `cal()` has no `fine_ref_trim` for asap7 or asap7_proj, so
+    `specs.py` self-check fails there.
+  - Porting the blocks: their netlist scripts format `fet_card` with W, not NFIN.

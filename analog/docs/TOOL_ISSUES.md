@@ -63,6 +63,18 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | Seed N draws a different mismatch sample than ngspice's seed N (own RNG); only the spread matches (σ(ln Id) 0.269 vs 0.274 over 100 seeds) | compare statistics, not single seeds | by design |
 | Once in ~70 runs under 6 parallel processes, `espice` exited `Error: <tmp>/deck.sp: FileNotFound` for a deck SpiceRack had just written (weight_tile, 2026-10-05); the rerun passed | rerun | not reported yet |
 | **BSIM4 comes from Cogenda VA-BSIM48 (CC-BY-NC 4.0)** compiled by VerA | — | **licence: non-commercial**; check before any commercial use |
+| `m=` on a Verilog-A device is refused: `module 'bsimcmg' has no parameter 'm'` (ASAP7, 2026-10-05) | `devices.fet` folds `m` into BSIM-CMG `NF` (exact) | REQUIRED_TOOLING §3 |
+| A deck whose first line is `.lib`/`.include` loses it: line 1 is the title (SPICE rule), and the device then fails `UnsupportedDevice` with no hint | always write a title line (`gmid._espice` does) | a warning when line 1 is a dot-card would help |
+
+## ASAP7 (EDA-Packaged `asap7`, 2026-10-05)
+
+| Tool | Issue | Workaround | Upstream fix |
+|---|---|---|---|
+| OpenVAF-r | exits 0 when its link step fails (no `cc` in a `stdenvNoCC` build), leaving only `bsimcmg.o*` | the derivation uses `stdenv` and tests for the `.osdi` | report to arpadbuermen/OpenVAF |
+| VerA `--check` | with a host `zig` other than 0.17 first on PATH (here 0.16), it reports "codegen produced Zig that does not compile — this is an engine bug" (`@backingInt`) — the toolchain is wrong, not the engine | put zig 0.17 first, or skip `--check`: ESPice's wrapper sets `ZIG` itself | name the Zig version mismatch in the message |
+| ORFS `asap7.lydrc` | S.1 on LISD/LIG/M1–M3 dropped every violation touching a ≤ 36 nm edge, so two parallel 18 nm wires passed at any spacing; `M1.S.2` output as `"  "`, `LIG.S.2` reported as `LISD.S.2`, `LIG.S.4-5` filtered on `lisd` edges; batch runs need a GUI view for the report path | fixed in EDA-Packaged `nix/asap7/klayout_drc.py` | report to OpenROAD-flow-scripts |
+| ngspice 44.2 + OSDI | an OSDI model on an `M` card: "model type mismatch … incorrect model type" | `N` cards for the ngspice reference (ESPice takes `M`) | — (ngspice binds OSDI to `N` only) |
+| ASAP7 models | BSIM-CMG 111 runs the CMG 107 cards (`version`, `capmod`, `coremod`, `nseg` dropped). Idsat is 4–9 % under Clark et al. 2016, and nmos_sram Ioff (GIDL) is 4.9× the paper, which predates the 160803 cards | judge against `asap7_smoke.py`, not the paper | — (no CMG 107 Verilog-A is public) |
 
 ## Others
 

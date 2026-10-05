@@ -18,6 +18,10 @@ under pdk_models/<name>/ with the PDK's params, the corner's lib section and any
 always-on sections, and returns a SpiceRack ModelLibrary that includes it. The corner
 token `<corner><mismatch_suffix>` (e.g. tt_mm, typical_mm) turns on local mismatch.
 
+ASAP7 (`asap7`, the target process) is a real PDK whose root is $ASAP7_ROOT (EDA-Packaged
+`asap7`), not $PDK_ROOT: BSIM-CMG cards loaded through `.lib ... tt|ff|ss`, the model a
+Verilog-A source VerA compiles for ESPice. FinFET widths are fins: `w_fin` um of W per fin.
+
 Projection PDKs (asap7_proj, tsmc_n4_proj) have no SPICE models; they carry `t_q_grid`,
 `cal_proj`, `topology_flags` for the architecture-projection math in scripts/compiler/metrics.
 
@@ -42,6 +46,14 @@ def pdk_root() -> Path:
     raise FileNotFoundError("PDK_ROOT not set and no ~/.ciel or ~/.volare — run ./env.sh")
 
 
+def asap7_root() -> Path:
+    env = os.environ.get("ASAP7_ROOT")
+    if env and Path(env).is_dir():
+        return Path(env)
+    raise FileNotFoundError("ASAP7_ROOT not set — run ./env.sh analog "
+                            "(or: nix build github:OmarSiwy/EDA-Packaged#asap7)")
+
+
 @dataclass
 class PDKConfig:
     name: str
@@ -58,8 +70,10 @@ class PDKConfig:
     fet_card: str = "X{name} {d} {g} {s} {b} {model} W={w} L={l}{extra}"
     mult_card: str = " m={m}"    # instance multiplicity; must scale current AND mismatch
     w_max: float = 0.0           # um, widest single instance the models bin (0 = none)
-    mim_cap: str = ""            # 2-terminal MIM cap device
-    mim_card: str = "X{name} {p} {n} {model} W={w} L={l}"
+    w_fin: float = 0.0           # FinFET: um of W per fin (W -> nfin); 0 = planar
+    fin_pitch: float = 0.0       # um
+    mim_cap: str = ""            # 2-terminal MIM cap device ("" + a C card: no MIM, ideal C)
+    mim_card: str = "X{name} {p} {n} {model} W={w} L={l}"   # {c} = value in F
     res_poly: str = ""           # dense (high sheet R) 3-terminal poly resistor
     res_poly_w: float = 0.0      # um, width it is drawn at
     res_poly_lotc: str = ""      # low-tempco poly resistor for references
@@ -290,6 +304,73 @@ class Asap7Proj(PDKConfig):
         )
 
 
+class Asap7(PDKConfig):
+    """ASAP7 r1p7 (ASU/ARM, BSD-3-Clause): 7 nm FinFET, predictive, not fabricable.
+
+    Models: the PDK's HSPICE BSIM-CMG 107 cards (`level = 72`, TT/FF/SS, 8 devices each),
+    rewritten by EDA-Packaged for the BSIM-CMG 111.0.0 Verilog-A (UC Berkeley, ECL-2.0),
+    which VerA compiles for ESPice. ESPice vs ngspice+OSDI on the same source: Id equal to
+    6 digits (analog/docs/asap7_smoke.py). No statistical models and no passives in the PDK.
+    Published reference: Clark et al., Microelectronics J. 53 (2016), Tables 1, 3, 4
+    ("MEJ" below), which predates the 160803 cards the PDK ships."""
+    def __init__(self):
+        proj = Asap7Proj()
+        super().__init__(
+            name="asap7", variant="asap7", lib_rel="asap7.lib",
+            vdd=0.70,              # MEJ: nominal VDD 0.7 V
+            min_l=0.021,           # cards: l = 2.1e-8 (drawn gate 20 nm, MEJ Table 1); the
+                                   # PDK has one gate length — longer L is model-only
+            # electrical W per fin = 2*HFIN + TFIN (BSIM-CMG GEOMOD=1 triple gate), TT cards
+            # hfin 32 nm, tfin 6.5 nm. Tables and devices.fet use it: W -> nfin.
+            w_fin=0.0705, min_w=0.0705,
+            fin_pitch=0.027,       # MEJ Table 1 (SAQP, 6.5/7 nm fin)
+            nfet="nmos_rvt", pfet="pmos_rvt",
+            nfet_lvt="nmos_lvt", pfet_lvt="pmos_lvt",
+            pfet_hvt="pmos_sram",  # highest-Vt P device ASAP7 has (SRAM: no LDD, lowest Ioff)
+            # also in the cards: nmos/pmos_slvt, nmos_sram
+            # M: the bsimcmg module is a 4-terminal device; NFIN per finger, NF fingers.
+            # ESPice VA devices take no m= ($mfactor), so devices.fet folds m into NF.
+            fet_card="M{name} {d} {g} {s} {b} {model} L={l} NFIN={nfin}{extra}",
+            # No MIM in ASAP7 (no capm layer). MOM/fringe caps: drawn in metal, simulated as
+            # an ideal C. Density estimate, not extracted (no open PEX): M1-M5 interdigitated
+            # at 2x min pitch, k = 2.7, aspect ratio 2:1 (MEJ 4.4): lateral eps*t/(s*p) is
+            # 1.33 fF/um^2 per M1-M3 layer and 1.0 per M4-M5 at min pitch -> 6.0, /4 at 2x
+            # pitch -> 1.5, +~30 % fringe -> 2.0 fF/um^2 (asap7_proj carried the same).
+            mim_card="C{name} {p} {n} {c}", mim_ff_um2=2.0,
+            corners=("tt", "ff", "ss"), typical="tt",
+            r_sq_wire=proj.r_sq_wire, wire_pitch=proj.wire_pitch,   # asap7_proj (MEDIUM)
+            # square-law pair as pdk_char.elr measures it, but at L = min_l (the only L):
+            # extrapolated-linear fit of the asap7 gm/ID tables (VDS = 0.35 V, 27 C). MEJ
+            # Tables 3/4 give the constant-current Vtsat 0.17 / 0.16 V (RVT, 25 C).
+            vth_n=0.265, vth_p=0.250, un_cox=143.0, up_cox=93.0,
+            ss_mv_dec=63.0,        # MEJ Table 3 RVT; asap7_smoke.py measures 61.4
+            # No mismatch models in ASAP7. Pelgrom from literature for 7/14 nm-class FinFETs
+            # (~1-1.5 mV*um, over Weff*L); apply per device as BSIM-CMG DELVTRAND with
+            # sigma = a_vt / sqrt(2*W*L), W = nfin*w_fin. Not wired into a _mm corner.
+            a_vt=proj.a_vt,
+            # measured by analog/docs/asap7_smoke.py (ESPice, TT, 27 C, 2026-10-05):
+            # 2+2-fin RVT inverter tpd slope 1 -> 3 fF; off-FET drain cap per um of W
+            # (W = nfin*w_fin; BSIM-CMG cards carry overlap/fringe, no junction cap)
+            t_inv_ps_per_ff=5.73, cd_n_ff_um=0.160, cd_p_ff_um=0.160,
+            jitter_budget_s=proj.jitter_budget_s,
+            # the analogioc tile is not calibrated at ASAP7: carry the projection's
+            t_q_grid=proj.t_q_grid, cal_proj=proj.cal_proj, topology_flags=proj.topology_flags,
+        )
+
+    def ngspice_dir(self) -> Path:
+        """The ESPice model lib (`.hdl` + cards) under $ASAP7_ROOT."""
+        return asap7_root() / "models" / "espice"
+
+    def sections(self) -> tuple:
+        return self.corners      # no mismatch sections (see a_vt)
+
+    def missing(self) -> list:
+        """As PDKConfig, less the passives ASAP7 does not have (MIM, poly resistors)."""
+        absent = {"mim_cap", "mim_ff_um", "res_poly", "res_poly_lotc", "res_poly_ohm_sq",
+                  "res_poly_lotc_ohm_sq"}
+        return [f for f in super().missing() if f not in absent]
+
+
 class TsmcN4Proj(PDKConfig):
     """TSMC N4-class PROJECTION-GRADE parameters (no SPICE)."""
     def __init__(self):
@@ -315,7 +396,7 @@ class TsmcN4Proj(PDKConfig):
 
 
 _REGISTRY = {"sky130": Sky130, "gf180mcu": GF180MCU, "ihp-sg13g2": IHP_SG13G2,
-             "asap7_proj": Asap7Proj, "tsmc_n4_proj": TsmcN4Proj}
+             "asap7": Asap7, "asap7_proj": Asap7Proj, "tsmc_n4_proj": TsmcN4Proj}
 # $PDK is the volare variant name; map it to a registry key.
 _VARIANT = {"sky130A": "sky130", "sky130B": "sky130", "gf180mcuD": "gf180mcu",
             "ihp-sg13g2": "ihp-sg13g2"}
@@ -351,7 +432,11 @@ if __name__ == "__main__":
     print(f"active: {active.name} ($PDK={os.environ.get('PDK', '<unset>')})")
     for key in _REGISTRY:
         p = get_pdk(key)
-        ok = p.installed and p.lib_path().exists()
+        try:
+            ok = p.installed and p.lib_path().exists()
+        except FileNotFoundError as e:    # root not set (e.g. $ASAP7_ROOT outside the shell)
+            print(f"\n[{key}] ** {e}")
+            continue
         print(f"\n[{key}] " + (f"lib={p.lib_path()}" if p.installed else "(projection)")
               + ("" if ok or not p.installed else "  ** NOT INSTALLED **"))
         for f in fields(p):

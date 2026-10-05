@@ -71,8 +71,15 @@ why flakes have to be enabled.
   generators. No ngspice and no OpenVAF: golden models go VerA -> ESPice.
 - `.flows/env/Digital.nix`: yosys, verilator, iverilog, gtkwave, cocotb, openroad.
   LibreLane comes from its own flake in `shell.nix` and is used as-is.
-- The shell hook sets `PDK=sky130A`, `PDK_ROOT=~/.ciel`, enables the pinned
+- The shell hook sets `PDK=sky130A` (unless `PDK` is already set), `PDK_ROOT=~/.ciel`, enables the pinned
   PDK with ciel (the same store LibreLane uses), creates `.venv/`, and prints which tools resolved.
+- **ASAP7** (the target process) is not under `PDK_ROOT`: `Analog.nix` exports
+  `ASAP7_ROOT` (EDA-Packaged `asap7`). It holds `models/espice/asap7.lib` (BSIM-CMG via VerA,
+  sections tt/ff/ss), `models/ngspice/` + `models/osdi/bsimcmg.osdi` (reference only),
+  `klayout/asap7.drc` (open DRC), the layer maps and the DRM. Select it with
+  `PDK=asap7 ./env.sh analog` (or `PDK=asap7` per command; `get_pdk("asap7")` in python).
+  Devices are `M<name> d g s b nmos_rvt L=0.021u NFIN=<fins>`; use `devices.fet`, which
+  turns W into fins. Smoke check: `python3 analog/docs/asap7_smoke.py`.
 
 To add a tool, add it to `Analog.nix` or `Digital.nix`. If nixpkgs does not
 carry it, add it to EDA-Packaged.
