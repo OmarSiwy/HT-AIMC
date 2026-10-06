@@ -65,6 +65,9 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | **BSIM4 comes from Cogenda VA-BSIM48 (CC-BY-NC 4.0)** compiled by VerA | — | **licence: non-commercial**; check before any commercial use |
 | `m=` on a Verilog-A device is refused: `module 'bsimcmg' has no parameter 'm'` (ASAP7, 2026-10-05) | `devices.fet` folds `m` into BSIM-CMG `NF` (exact) | REQUIRED_TOOLING §3 |
 | A deck whose first line is `.lib`/`.include` loses it: line 1 is the title (SPICE rule), and the device then fails `UnsupportedDevice` with no hint | always write a title line (`gmid._espice` does) | a warning when line 1 is a dot-card would help |
+| **The 64-unknown cap also applies to `.v` (VerA digital) devices**, so a co-simulated RTL block holds at most 64 pins in ESPice, not VerA's 256 (imc_tile, 2026-10-06) | `analog/imc_tile/test/tb_cosim.py` runs open loop: iverilog writes a pin trace, ESPice runs the tiles from it, the RTL replays the SAR codes (exact because the tile's inputs never depend on its outputs) | not reported upstream yet |
+| A B-source takes at most 8 probes (imc_tile) | book event energies in Python from the same parameters the models use | not reported upstream yet |
+| A Verilog-A device whose `@(cross)` events probe fast-moving inputs continuously drives the timestep down to about 0.1 fs (imc_tile) | probe inputs only inside events (`imc_col.va`) | not reported upstream yet |
 
 ## ASAP7 (EDA-Packaged `asap7`, 2026-10-05)
 
@@ -75,6 +78,13 @@ upstream fix is. Found 2026-09-28/29 on sky130A / gf180mcuD.
 | ORFS `asap7.lydrc` | S.1 on LISD/LIG/M1–M3 dropped every violation touching a ≤ 36 nm edge, so two parallel 18 nm wires passed at any spacing; `M1.S.2` output as `"  "`, `LIG.S.2` reported as `LISD.S.2`, `LIG.S.4-5` filtered on `lisd` edges; batch runs need a GUI view for the report path | fixed in EDA-Packaged `nix/asap7/klayout_drc.py` | report to OpenROAD-flow-scripts |
 | ngspice 44.2 + OSDI | an OSDI model on an `M` card: "model type mismatch … incorrect model type" | `N` cards for the ngspice reference (ESPice takes `M`) | — (ngspice binds OSDI to `N` only) |
 | ASAP7 models | BSIM-CMG 111 runs the CMG 107 cards (`version`, `capmod`, `coremod`, `nseg` dropped). Idsat is 4–9 % under Clark et al. 2016, and nmos_sram Ioff (GIDL) is 4.9× the paper, which predates the 160803 cards | judge against `asap7_smoke.py`, not the paper | — (no CMG 107 Verilog-A is public) |
+
+## VerA (vera 1.0.0, EDA-Packaged `VERA_CONTRACT` build) — found by imc_tile, 2026-10-06
+
+| Issue | Workaround | Upstream status |
+|---|---|---|
+| `vera --check` fails on every model, including the repo's reference `strongarm.va`: a contract `isDenseEnum` comptime error | gate on `vera --lint` instead | not reported upstream yet |
+| The event engine is IEEE 1364 only | write co-simulated RTL as Verilog-2001 with the `_d/_q` discipline | by design |
 
 ## Others
 

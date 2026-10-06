@@ -9,7 +9,7 @@ tools that already work, with their workarounds, are listed in
 | 1 | cktImg: grouping hints | readable schematics of matched structures | cktImg |
 | 2 | SpiceRack: EGSpice backend | the successor simulator | SpiceRack, EGSpice |
 | 3 | ASAP7 as the target PDK: models, pdk_specs, gm/ID, KLayout DRC done; P&R/LVS decks, layout crate, ORFS harden, `m=` open | the port; all new work | GPurify, Philis, substrate2 (ours), ESPice, digital flow |
-| 4 | VerA `.v` device: > 256 pins, output-variable ports on part-selects, task-enable panic | wide mixed-signal co-sim (`analog/imc_tile/test/tb_cosim.py` stays small to fit) | VerA (ESPice picks it up) |
+| 4 | VerA `.v` device in ESPice: > 64 pins (ESPice's per-device cap; VerA allows 256), output-variable ports on part-selects, task-enable panic | wide mixed-signal co-sim (`analog/imc_tile/test/tb_cosim.py` stays small to fit) | VerA (ESPice picks it up) |
 
 ## 1. cktImg: grouping hints
 
