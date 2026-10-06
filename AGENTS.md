@@ -27,7 +27,8 @@ AnalogIOC/
 │   ├── common/              # shared python: bench, corners, devices, pex
 │   ├── docs/                # system architecture, specs.py, gm/Id tables, PDK char
 │   └── library/             # submodule: UW-ASIC/AnalogLibrary, components shared across projects
-├── digital/analogioc/       # RTL (src/), iverilog testbenches (test/), synth.ys
+├── digital/imc_driver/      # tile-array controller RTL (src/), iverilog regression (test/)
+├── digital/sysreference/    # digital systolic baseline (RTL, bit-exact regression)
 ├── scripts/
 │   ├── compiler/            # GGUF -> hardware compiler + metrics/ campaigns
 │   ├── golden/              # bit-exact reference models
@@ -117,8 +118,7 @@ upstream the fix and re-copy it.
 | Reusable component other projects will use (OTA, comparator, DAC, LDO, ...) | `analog/library/<Module>/`, following `analog/library/ADDING_MODULE.md` |
 | Shared analog python (this repo only) | `analog/common/` |
 | System specs / design math | `analog/docs/specs.py`, `analog/docs/architecture.md` |
-| RTL / digital tbs | `digital/analogioc/src/`, `digital/analogioc/test/` |
-| Analog macro used by a digital top (harden + sim) | declare it once in `digital/<module>/build/macros.toml`; `build/macros.py check` keeps the blackbox, behavioural model and `.subckt` ports equal |
+| RTL / digital tbs | `digital/imc_driver/src/`, `digital/imc_driver/test/` |
 | Compiler, metrics campaigns | `scripts/compiler/`, `scripts/compiler/metrics/` |
 | Golden models | `scripts/golden/` |
 | Test weights | `scripts/models/` (gitignored, never committed) |
@@ -143,8 +143,9 @@ python3 scripts/compiler/test_formats.py
 python3 scripts/compiler/test_lattice.py
 python3 scripts/compiler/test_dps.py
 
-# digital: 10 iverilog tbs + yosys synth (synth needs the volare PDK)
-cd digital/analogioc && nix-shell -p iverilog yosys --run 'make test synth'
+# digital: driver and systolic baseline regressions (iverilog)
+make -C digital/imc_driver test
+make -C digital/sysreference test
 
 # docs site
 cd docs && bun install && bun run dev

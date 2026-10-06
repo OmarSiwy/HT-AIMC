@@ -1,4 +1,0 @@
-* Dummy analog macro: ports only (signal ports + every supply pin).
-.subckt dummy_macro en c0 c1 c2 c3 done ana VPWR VGND
-+ VDDA VSSA
-.ends dummy_macro

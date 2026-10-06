@@ -20,10 +20,3 @@ serde_json = "1"
 
 # Block generators: one binary per block, source next to the block it lays out.
 # Add one [[bin]] per new analog/<block>/layout/<block>.rs.
-[[bin]]
-name = "cmos_switch"
-path = "../../cmos_switch/layout/cmos_switch.rs"
-
-[[bin]]
-name = "strongarm"
-path = "../../strongarm/layout/strongarm.rs"
