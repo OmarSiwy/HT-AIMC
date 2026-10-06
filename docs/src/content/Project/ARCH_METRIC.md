@@ -117,3 +117,22 @@ model at ASAP7 to Sohu's claimed 62,500 tok/s per chip (`cli.py --sohu-target`) 
 These are our model's numbers at ASAP7 with literature MAC energies until the sysreference
 synthesis lands, not Etched's (N4). Under the Sohu conditions, our systolic baseline on that same
 666 mm² die is the Sohu-equivalent by construction; the analog design must beat it there.
+
+## Algorithmic and dataflow transforms (user, 2026-10-06)
+
+Anything that works on the tiles of a systolic array applies almost directly to our streaming
+analog tiles, so systolic-array research is in scope and must be mapped onto ours:
+dataflows (weight-, output-, input-, row-stationary), tiling and loop order, double buffering,
+sparsity skipping, variable precision (bit-serial, bit-fusion), flexible interconnects and
+routing between tiles, and attention mapping.
+
+Algorithms that cut multiplies, conversions or traffic are in scope too, beyond Strassen:
+other fast matrix multiplication (Winograd's inner-product trick and the fast-inner-product
+systolic arrays built on it, AlphaTensor-style schemes), Karatsuba and Toom-Cook for precision
+slicing, structured, low-rank and butterfly matrices, structured sparsity, and lookup-table or
+product-quantization matrix multiply. Score each on this metric: what it saves in MACs,
+conversions and HBM bytes per token, against the extra additions, dynamic range and noise it
+costs in analog. Charge sharing adds for free, which may make pre-addition schemes cheap in the
+linear domain. This repo found a Strassen-like bilinear lowering (DPS-48) net-negative at INT4
+(+4.7 to 10.9 dB error, 1.5× passes): say what would change that. Study:
+`ArchResearch/lit/LIT_SYSTOLIC_ALGOS.md`.
