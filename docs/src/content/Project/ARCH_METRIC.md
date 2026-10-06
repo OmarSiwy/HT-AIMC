@@ -99,7 +99,7 @@ Every design and the systolic baseline are also scored under Etched Sohu's publi
 conditions (`arch_eval/cli.py --conditions sohu`): Llama-3-70B, FP8 weights and KV cache,
 2,048 tokens in / 128 out, a fixed batch of 1,000, an 8-chip tensor-parallel group, and
 4.8 TB/s and 144 GB of HBM per chip. The die is **iso-area with the Sohu-equivalent** below
-(666 mm² today; it recalibrates when the sysreference synthesis lands), so every design gets the
+(1,063 mm² as of 2026-10-06, after the node research updated the shared rail and buffer models; it recalibrates on every run, including when the sysreference synthesis lands), so every design gets the
 same area as the modeled Sohu chip. The analog design may
 re-tune its parameters for each condition set; the systolic baseline is the same RTL model,
 parameterized (FP8 weights). The search reports the winner against the baseline under both.
@@ -112,11 +112,11 @@ model at ASAP7 to Sohu's claimed 62,500 tok/s per chip (`cli.py --sohu-target`) 
 
 | Die | Die power | tok/s per chip | TOPS/W | tok/W | tok/J | tok/s per mm² | tok/s per mm² per W |
 |---|---|---|---|---|---|---|---|
-| 666 mm² | 537 W (+50 W HBM) | 62.6k | 16.5 | 107 | 225 | 94 | 0.175 |
+| 1,063 mm² | 821 W (+50 W HBM) | 62.6k | 10.8 | 72 | 124 | 59 | 0.072 |
 
 These are our model's numbers at ASAP7 with literature MAC energies until the sysreference
 synthesis lands, not Etched's (N4). Under the Sohu conditions, our systolic baseline on that same
-666 mm² die is the Sohu-equivalent by construction; the analog design must beat it there.
+same die is the Sohu-equivalent by construction; the analog design must beat it there.
 
 ## Algorithmic and dataflow transforms (user, 2026-10-06)
 
