@@ -1,7 +1,7 @@
 """Transistor-level ASAP7 netlist of the upgraded IMC tile (BS6H drive, E-trim SAR, AdcShare 3), in SpiceRack.
 
     python3 netlist/imc_tile.py --emit     .spice decks       -> output/netlist/
-    python3 netlist/imc_tile.py --draw     cktImg schematics  -> output/schematics/   (block view + one per subckt)
+    python3 netlist/imc_tile.py --draw     cktImg schematics  -> output/schematics/   (cells by stage, block views)
     python3 netlist/imc_tile.py --sim      ESPice checks on a reduced tile, PASS/FAIL  -> output/spice/
 
 The spec is docs/src/content/Project/ARCH_CHOSEN.md (B1-B5); the behaviour each block must reproduce is the
@@ -711,24 +711,218 @@ def draw_deck(name):
     return "\n".join(out + [hdr, *hints, *body, ".ends"]) + "\n"
 
 
+# The views: (file, subckt, options). cktImg lays a deck out well when it reads like a textbook stage (supply on
+# top, signal left to right); a switch network, a gate array or a latch loop it scatters, and a port it cannot
+# tell from an internal net it leaves unmarked. So each view is a stage of one subckt, drawn with:
+#   keep   regex over the cards drawn (a stage, or a representative slice of a repeated structure)
+#   label  nets named at every pin instead of wired (clocks, phases, logic inputs)
+#   fb     {card: [net]}: that card's pin on the net named, not wired (a latch's cross-coupling, a follower's loop)
+#   role   {net: "i" | "o" | "s"}: a stage's boundary nets as input / output / supply terminals
+#   tg     an nmos + pmos pair on the same two nets drawn as one transmission gate (cktImg's switch symbol)
+#   block  a block view: nets an instance shares with the same neighbours (same direction) become one bus,
+#          vdd / vss stay off the blocks
+#   note   the caption: what the slice stands for
+# Ports take their role from the subckt's *@ side (left in, right out, top supply). Only the drawing changes: the
+# names cktImg reads roles from are restored in the JSON and SVG, and the netlists above are untouched.
+_LATCH = dict(lata=(r"Mt2|M[pnr]a|Mxa[pn]", dict(d1="i", oa="o", xa="o"), {"Mpa": ["ob"], "Mna": ["ob"]}),
+              latb=(r"M[pnr]b|Mxb[pn]", dict(t2="s", d2="i", ob="o", xb="o"), {"Mpb": ["oa"], "Mnb": ["oa"]}))
+DRAW = [
+    ("gc3t", "gc3t", {}),
+    ("xp", "xp", {}),
+    ("smx", "smx", {}),
+    ("rdrv", "rdrv", dict(keep=r"M(s|ap)\w*|Mop\w|Rsp|Cwp", label="d sg sgb", note="rp rail; rn is the same on sg")),
+    ("bsw", "bsw", {}),
+    ("bank.share", "bank", dict(keep=r"Xs[ml]|Mr(a|bl|mm)", label="sh br", role=dict(a="o", bl="o", mm="o"))),
+    ("bank.merge", "bank", dict(keep=r"Mm[lm][np]|C[mr]", tg=1, label="mg mgb", role=dict(bl="i", a="o"))),
+    ("bank.step", "bank", dict(keep=r"Cd0|M[ep]0[np]?", tg=1, label="en enb", role=dict(a="o"),
+                               note="step 0 (1024 LSB) of 12")),
+    ("ctl", "ctl", dict(keep=r"Mb[pn]|Msh[01]\w*", label="bank bankb sh", note="sh0, sh1; mg and br alike")),
+    *[(f"{c}.pre", c, dict(keep=r"Ms1|M[ab]1|Mr[12]|C[12]", label="clk", role=dict(d1="o", d2="o"),
+                           note="" if c == "dtf" else "slice 1 of 3; 2-3 on clkt")) for c in ("dtf", "dtq")],
+    ("dtq.trim", "dtq", dict(keep=r"Mtr\w*", role=dict(clkt="o"))),
+    *[(f"{c}.{h}", c, dict(keep=k, label="clkb", role=r, fb=f)) for c in ("dtf", "dtq") for h, (k, r, f) in _LATCH.items()],
+    ("bpd2.out", "bpd2_32", dict(keep=r"Mop[mrg][np]?", tg=1, label="c cb", role=dict(ophb="i", oplo="i"),
+                                 note="op side of the 1024-LSB step; on swaps d, db; 16 / 8 / 4 fins below")),
+    ("bpd2.dec", "bpd2_32", dict(keep=r"Mop[hl]\w*", label="c cb d db", role=dict(ophb="o", oplo="o"))),
+    ("mux", "conv", dict(keep=r"Mx00\w*", tg=1, label="e0_0 e0_0b", role=dict(cp="o", cn="o"),
+                         note=f"column 0, bank 0 of {ADC_SHARE} x 2")),
+    ("refbuf", "refbuf", dict(fb={"M1": ["out"]})),
+    ("half", "half", dict(block=1, keep=r"Xg[067]|Xm|Xx[06]|Cu[06]", note="bits 0 and 6 of 0-6, and the sign bit 7")),
+    ("wcell", "wcell", dict(block=1)),
+    ("col", "col", dict(block=1)),
+    ("conv", "conv", dict(block=1, keep=r"X\S*|Mx00\w*", tg=1, label="e0_0 e0_0b cf cfb cq cqb",
+                          note=f"mux of column 0, bank 0 of {ADC_SHARE} x 2")),
+    ("cgrp", "cgrp", dict(block=1)),
+    ("rows", "rows", dict(block=1, note=f"2 of {ROWS} rows")),
+    ("arr", "arr", dict(block=1, note=f"2 of {ROWS} rows x {ADC_SHARE} of {COLS} columns")),
+    ("tile", "tile", dict(block=1, note=f"2 of {ROWS} rows x {ADC_SHARE} of {COLS} columns, 1 converter")),
+    ("tiles", "tiles", dict(block=1, note="2 of the die's tiles")),
+]
+_ROLE = dict(i="in_", o="out_", s="vdd_", l="vb_")      # name prefixes cktImg reads roles from
+
+
+def _cards(src):
+    """{subckt: (ports, {port: side}, [card tokens])} of a deck."""
+    import re
+    out = {}
+    for blk in re.findall(r"^\.subckt.*?^\.ends", src, re.S | re.M):
+        ls = [ln.split() for ln in blk.splitlines()[:-1] if ln.strip()]
+        sides = {x: ln[1] for ln in ls[1:] if ln[0] == "*@" for x in ln[2:]}
+        out[ls[0][1]] = (ls[0][2:], sides, [t for t in ls[1:] if not t[0].startswith("*")])
+    return out
+
+
+def _nn(t):
+    """Net count of a card."""
+    return 4 if t[0][0] in "MmSs" else 2 if t[0][0] in "CcRr" else len(t) - 2
+
+
+def _tgs(body):
+    """nmos + pmos on the same two nets -> one switch card S<name> a b gn gp."""
+    out, done = [], set()
+    for t in body:
+        if t[0] in done:
+            continue
+        u = next((u for u in body if t[0][0] == "M" and "nmos" in t[5] and u[0][0] == "M" and "pmos" in u[5]
+                  and u[0] not in done and {u[1], u[3]} == {t[1], t[3]}), None)
+        out.append(["S" + t[0][1:-1], t[1], t[3], t[2], u[2], "tg"] if u else t)
+        done |= {t[0], u[0]} if u else {t[0]}
+    return out
+
+
+def _bundle(S, name, body):
+    """Block view: nets with the same users (instance and direction, or the top) become one bus token."""
+    import re
+    ports, sides, _ = S[name]
+    users = {}
+    for t in body:
+        if t[0][0] in "Xx":
+            cp, cs, _ = S[t[-1]]
+            for mp, n in zip(cp, t[1:-1]):
+                users.setdefault(n, set()).add((t[0], cs.get(mp) == "right"))
+        else:
+            for n in t[1:1 + _nn(t)]:
+                users.setdefault(n, set()).add(t[0])
+    for p in ports:
+        users.setdefault(p, set()).add("top")
+    groups = {}
+    for n, u in users.items():
+        if n not in ("vdd", "vss", "vdr", "vcm", "vref") and all(isinstance(x, tuple) or x == "top" for x in u):
+            groups.setdefault(frozenset(u), []).append(n)
+    order = [n for t in body for n in t[1:1 + _nn(t)]] + list(ports)
+    tok = {}
+    for g in groups.values():
+        if len(g) < 2:
+            continue
+        g.sort(key=order.index)
+        idx = {re.search(r"(<.*>|\d*)$", m).group(1) for m in g}       # one shared index stays on the token
+        bases = list(dict.fromkeys(re.sub(r"\d+$", "", re.sub(r"_?<.*>$|\d+$", "", m)) or m for m in g))
+        t, k = "/".join(bases) + (idx.pop() if len(idx) == 1 else ""), 2
+        while t in tok.values():
+            t, k = "/".join(bases) + f"_{k}", k + 1
+        tok.update({m: t for m in g})
+    nb, stubs = [], {}
+    for t in body:
+        k = _nn(t)
+        if t[0][0] not in "Xx":
+            nb.append([t[0]] + [tok.get(n, n) for n in t[1:1 + k]] + t[1 + k:])
+            continue
+        cp, cs, _ = S[t[-1]]
+        pins = {}                       # net token -> the master's ports on it (the block's pin name)
+        for mp, n in zip(cp, t[1:-1]):
+            if n not in ("vdd", "vss"):
+                pins.setdefault(tok.get(n, n), []).append(mp)
+        names = ["/".join(dict.fromkeys(re.sub(r"<.*>$", "", x) for x in v)) for v in pins.values()]
+        if len(set(names)) < len(names):
+            names = ["/".join(v) for v in pins.values()]
+        master = t[-1]
+        while master in stubs and stubs[master][0] != names:
+            master += "'"
+        stubs[master] = (names, {nm: cs.get(v[0], "left") for nm, v in zip(names, pins.values())})
+        nb.append([t[0], *pins, master])
+    tp = list(dict.fromkeys(tok.get(p, p) for p in ports))
+    return nb, tp, {tok.get(p, p): sides.get(p, "left") for p in ports}, stubs
+
+
+def view_deck(sub, src, keep=None, label="", fb=None, role=None, tg=False, block=False, note=""):
+    """The cktImg deck of one view (from `src`, the deck's subckts), {drawn name: netlist name}, {port: role}."""
+    import re
+    S = _cards(draw_deck(sub) if block else src)
+    ports, sides, body = S[sub]
+    body = [list(t) for t in body if not keep or re.fullmatch(keep, t[0])]
+    if tg:
+        body = _tgs(body)
+    for t in body:
+        k = _nn(t)
+        t[1:1 + k] = ["vb_" + x if x in (fb or {}).get(t[0], ()) else x for x in t[1:1 + k]]
+    stubs = {t[-1]: S[t[-1]][:2] for t in body if t[0][0] in "Xx"}
+    if block:
+        body, ports, sides, stubs = _bundle(S, sub, body)
+    used = {n for t in body for n in t[1:1 + _nn(t)]}
+    roles = {p: {"left": "i", "right": "o", "top": "s"}.get(sides.get(p), "i") for p in ports if p != "vss"}
+    roles.update({n: "l" for n in label.split()}, **(role or {}))
+    ren = {n: _ROLE[roles[n]] + n for n in used if n in roles and not (roles[n] == "s" and n.startswith("vdd"))}
+    out = []
+    for master, (cp, cs) in stubs.items():
+        out.append(f".subckt {master} {' '.join(cp)}")
+        out += [f"*@ {sd} {' '.join(p for p in cp if cs.get(p) == sd)}" for sd in ("left", "right", "top", "bottom")
+                if any(cs.get(p) == sd for p in cp)]
+        out.append(".ends")
+    out.append(f".subckt {sub}_view {' '.join(ren.get(p, p) for p in ports if p in used)}")
+    for t in body:
+        k = _nn(t)
+        if t[0][0] == "M":          # bulk on the source: cktImg counts the hidden bulk as a supply path
+            t = t[:4] + [t[3]] + t[5:]
+        out.append(" ".join([t[0]] + [ren.get(x, x) for x in t[1:1 + k]] + t[1 + k:]))
+    out.append(".ends")
+    back = {v: k for k, v in ren.items()} | {"vb_" + n: n for ns in (fb or {}).values() for n in ns}
+    return "\n".join(out) + "\n", back, {n: roles[n] for n in ren}
+
+
 def draw():
+    import re
     d = OUT / "schematics"
     d.mkdir(parents=True, exist_ok=True)
     ck = shutil.which("cktimg-json")
     if not ck:
         sys.exit("cktimg-json not on PATH (run inside ./env.sh analog)")
-    # each subckt at a drawable size: tiles of 2 rows x 2 converters' columns, 2 tiles; index runs as buses
-    build_all(rows=2, cols=2 * ADC_SHARE, ntiles=2, draw=True)
-    for n in SUBS:
-        f = d / f"{n}.spice"
-        f.write_text(draw_deck(n))
-        r = subprocess.run([ck, "--svg", str(d / f"{n}.svg"), str(f), str(d / f"{n}.json")], capture_output=True, text=True)
-        size = ""
-        if r.returncode == 0:
-            import re
-            mt = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', (d / f"{n}.svg").read_text()[:400])
-            size = f" {float(mt.group(1)):.0f} x {float(mt.group(2)):.0f}" if mt else ""
-        print(f"{'OK  ' if r.returncode == 0 else 'FAIL'} {n}.svg{size}" + ("" if r.returncode == 0 else ": " + r.stderr[-400:]))
+    for f in [*d.glob("*.spice"), *d.glob("*.json"), *d.glob("*.svg")]:
+        f.unlink()
+    esc = lambda x: x.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")   # noqa: E731
+    index = {}
+    # cells at the full tile's sizing; block views at a drawable size (2 rows x one converter's columns, 2 tiles)
+    built = None
+    for view, sub, opt in sorted(DRAW, key=lambda v: bool(v[2].get("block"))):
+        if built != bool(opt.get("block")):
+            built = bool(opt.get("block"))
+            build_all(rows=2, cols=ADC_SHARE, ntiles=2, draw=True) if built else build_all(draw=True)
+            src = logic_stub() + text()
+        deck, back, ports = view_deck(sub, src, **opt)
+        (d / f"{view}.spice").write_text(deck)
+        r = subprocess.run([ck, "--svg", str(d / f"{view}.svg"), str(d / f"{view}.spice"), str(d / f"{view}.json")],
+                           capture_output=True, text=True)
+        if r.returncode:
+            print(f"FAIL {view}.svg: {r.stderr[-400:]}")
+            continue
+        g = json.loads((d / f"{view}.json").read_text())
+        g["nets"] = [back.get(n, n) for n in g["nets"]]
+        for x in [*g["wires"], *g["labels"]]:
+            x["net"] = back.get(x["net"], x["net"])
+        for dev in g["devices"]:
+            for pin in dev["pins"]:
+                pin["net"] = back.get(pin["net"], pin["net"])
+        (d / f"{view}.json").write_text(json.dumps(g))
+        svg = (d / f"{view}.svg").read_text()
+        for a, b in back.items():
+            svg = svg.replace(f">{esc(a)}<", f">{esc(b)}<")
+        note = " · ".join(x for x in (f"{sub} (netlist/imc_tile.py)", opt.get("note")) if x)
+        svg = re.sub(r"(<text[^>]*>)(</text>\s*</svg>)", lambda mt: mt.group(1) + esc(note) + mt.group(2), svg)
+        (d / f"{view}.svg").write_text(svg)
+        size = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', svg)
+        index[view] = dict(subckt=sub, note=opt.get("note", ""), block=bool(opt.get("block")), ports=ports,
+                           size=[float(size.group(1)), float(size.group(2))])
+        print(f"OK   {view}.svg {float(size.group(1)):.0f} x {float(size.group(2)):.0f}")
+    (d / "views.json").write_text(json.dumps(index, indent=1))
 
 
 # ----------------------------------------------------------------------------- --sim

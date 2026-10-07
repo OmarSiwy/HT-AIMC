@@ -206,10 +206,13 @@ strap and rail wire are interconnect elements. The SAR logic is Verilog-A (`va/i
 | `arr`, `cgrp`, `tile`, `tiles` | the array; 3 columns + their converter; a tile; N_TILES tiles on their R_PDN with the shared VCM buffer |
 
 `--emit` writes `output/netlist/imc_tile.spice` (the full 8 × 256 tile ×2: 356 MOSFET cards in the subcircuit
-bodies, 373,878 transistors per tile flattened, 130 per weight). `--draw` writes a cktImg schematic per subcircuit to
-`output/schematics/` (block views of `tiles`, `tile`, `cgrp`, `arr`, `col`, `conv` at 2 rows × 6 columns,
-transistor views of the leaf cells), with port sides from `*@` hints and index runs drawn as buses where every
-use bundles them the same way. `--sim` runs the checks below (ESPice, the shared lock, 4 GB, `.tran 2p`).
+bodies, 373,878 transistors per tile flattened, 130 per weight). `--draw` writes cktImg views to
+`output/schematics/` (`<view>.spice`, `.json`, `.svg`, and `views.json`): each cell, or each stage of one, at the
+full tile's sizing (the comparators as preamp and two half-latches, the bank as share / merge / step, a captioned
+slice where a structure repeats), and block views of `half`, `wcell`, `rows`, `arr`, `col`, `conv`, `cgrp`,
+`tile`, `tiles` at 2 rows × 3 columns with the nets an instance shares with one neighbour bundled into a bus.
+Ports take their role from the `*@` sides. `docs/architecture/gen_architecture.py` draws them into the
+architecture diagram (`docs/architecture/imc_architecture.pdf`). `--sim` runs the checks below (ESPice, the shared lock, 4 GB, `.tran 2p`).
 
 ### 5.1 Results (M = this ESPice run, D = derived)
 
