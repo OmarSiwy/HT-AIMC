@@ -1,0 +1,36 @@
+{
+ "name": "r2_A3_cw",
+ "frame": "A3 frame: designs/r2_A3_frame.py (joint frame + scale bytes, dequant area/energy, merge-cap area, bridge slot removal; --corrected = judge ADC rule)",
+ "label": "projected",
+ "note": "A3 class-weight-contingent point: as r2_A3_best at cu 1.25 fF, 24-fin share. Passes G2 only with n8's +3 dB ADC class weight (+0.16 dB; -1.19 dB without)",
+ "nodes": {
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_direct_residue_amp",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard",
+  "n9_circuits": "vt_lvt_logic",
+  "n2_domain": "hybrid_msb_digital",
+  "n5_array": "r2_l8_bridge_direct"
+ },
+ "params": {
+  "adc_bits": 12,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 1.5,
+  "kv_bits": 4,
+  "nn_kv": true,
+  "kv_lo_bits": 4,
+  "kv_hi_bits": 8,
+  "kv_sink": 8,
+  "kv_recent": 120,
+  "kv_scale_group": 128,
+  "buffer_MB": 16,
+  "rows": 8,
+  "cols": 256,
+  "adc_share": 4,
+  "cu_fF": 1.25,
+  "share_fins": 24,
+  "dq_share": 2,
+  "row_fins": 32
+ }
+}

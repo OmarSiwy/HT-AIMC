@@ -1,0 +1,24 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n4_formats__lns6_linear_tile",
+ "nodes": {
+  "n10_wildcards": "ensemble_avg",
+  "n2_domain": "cco_freq_mac",
+  "n4_formats": "lns6_linear_tile",
+  "n6_readout": "sar_27h1",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "single_rail"
+ },
+ "params": {
+  "adc_bits": 14,
+  "cu_fF": 16.0,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 0.5,
+  "v_exc_frac": 0.43,
+  "wire_x": 4
+ }
+}

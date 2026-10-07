@@ -1,0 +1,90 @@
+{
+ "name": "r2_A1_best_sohu",
+ "frame": "joint (notes_native.score_design); tile_pitch_um = shared-frame fixed point (the per-physical-conversion N9 frame converges at 136.3 um)",
+ "label": "projected",
+ "note": "Round-2b A1 (docs/src/content/Project/ArchResearch/nodes/N6_r2.md, post-critic). ROUND-2b SOHU LEAD: as r2_A1_best but LVT 300 ps FIA, adc_share 4, 2 bits/cycle, 6 fine bits; the lowest-kappa class that keeps t_word (Sohu prefill is power-cap bound). Also the TOPS/W end under ARCH.",
+ "nodes": {
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_direct_residue_amp",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 11,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "buffer_MB": 16,
+  "cascade_K": 4,
+  "adc_share": 4,
+  "cmp_cls": "lvt300",
+  "dac": "mono",
+  "pool_tracks": 2,
+  "bpc": 2,
+  "pipe_ra": true,
+  "flash_bits": 2,
+  "cu_fF": 1.25,
+  "vtc_bits": 6,
+  "ra_gain": 16.0,
+  "dac_density": 4.78,
+  "t_model": "meas",
+  "kv_bits": 8,
+  "tile_pitch_um": 160.6
+ },
+ "scores_projected": {
+  "arch/shared": {
+   "tok": 44216,
+   "tw": 11.36,
+   "tokw": 583.6,
+   "tokj": 583.6,
+   "m": 0.64,
+   "area": 25782,
+   "t1": 1.642,
+   "tpass": 6.77
+  },
+  "sohu/shared": {
+   "tok": 82764,
+   "tw": 11.81,
+   "tokw": 78.1,
+   "tokj": 80.7,
+   "m": 0.64,
+   "area": 25784,
+   "t1": 1.642,
+   "tpass": 6.77
+  },
+  "arch/fix": {
+   "tok": 49335,
+   "tw": 10.09,
+   "tokw": 531.6,
+   "tokj": 544.9,
+   "m": 0.65,
+   "area": 18587,
+   "t1": 1.516,
+   "tpass": 6.77
+  },
+  "sohu/fix": {
+   "tok": 80753,
+   "tw": 11.26,
+   "tokw": 74.7,
+   "tokj": 74.7,
+   "m": 0.65,
+   "area": 18586,
+   "t1": 1.516,
+   "tpass": 6.77
+  },
+  "arch/core_cli": {
+   "tok": 29554,
+   "tw": 14.8,
+   "tokw": 712.9,
+   "tokj": 874.3
+  },
+  "sohu/core_cli": {
+   "tok": 46626,
+   "tw": 15.46,
+   "tokw": 100.3,
+   "tokj": 131.7
+  }
+ }
+}

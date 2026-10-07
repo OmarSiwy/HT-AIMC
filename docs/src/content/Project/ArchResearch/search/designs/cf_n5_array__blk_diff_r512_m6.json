@@ -1,0 +1,28 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n5_array__blk_diff_r512_m6",
+ "nodes": {
+  "n10_wildcards": "stack3d",
+  "n2_domain": "charge_ota",
+  "n3_cell": "customlatch_mos_caps",
+  "n4_formats": "w8_2b_slices",
+  "n5_array": "blk_diff_r512_m6",
+  "n6_readout": "sar_27h1",
+  "n7_dataflow": "no_pingpong",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 13,
+  "cu_fF": 2.0,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "mos_fins": 128,
+  "rail_headroom": 0.5,
+  "share_fins": 32,
+  "v_exc_frac": 0.35,
+  "wire_x": 4
+ }
+}

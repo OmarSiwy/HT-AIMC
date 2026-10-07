@@ -1,0 +1,420 @@
+{
+ "label": "projected (joint frame, search.evaluate + notes_native memory-format patch); baseline PE: ppa.json = derived, LIT = projected",
+ "design": {
+  "frame": "joint",
+  "label": "projected",
+  "name": "notes_native",
+  "nodes": {
+   "n4_formats": "w8a8_lead_tokact",
+   "n6_readout": "sar_direct_pool_k4",
+   "n7_dataflow": "tdm_noc",
+   "n8_quality": "lv_hadamard",
+   "n9_circuits": "ref_bandgap_ldo"
+  },
+  "params": {
+   "adc_bits": 12,
+   "k_dig": 0,
+   "mcast": 16,
+   "rail_headroom": 2.0,
+   "share_fins": 16,
+   "kv_bits": 4,
+   "nn_kv": true,
+   "kv_lo_bits": 4,
+   "kv_hi_bits": 8,
+   "kv_sink": 8,
+   "kv_recent": 120,
+   "kv_scale_group": 128
+  }
+ },
+ "notes_native": {
+  "tok_s_die": 69688.6,
+  "tops_w": 15.66,
+  "tok_w": 829.5,
+  "tok_j": 887.5,
+  "B": 587,
+  "b_max": 587,
+  "vdd": 0.55,
+  "die_W": 67.5,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.05
+ },
+ "notes_native_kv_sink4_recent28": {
+  "tok_s_die": 76017.3,
+  "tops_w": 15.726,
+  "tok_w": 854.7,
+  "tok_j": 916.1,
+  "B": 677,
+  "b_max": 677,
+  "vdd": 0.55,
+  "die_W": 73.4,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.05
+ },
+ "notes_native_plus_wstream": {
+  "tok_s_die": 70887.7,
+  "tops_w": 15.568,
+  "tok_w": 832.4,
+  "tok_j": 890.7,
+  "B": 611,
+  "b_max": 611,
+  "vdd": 0.55,
+  "die_W": 69.1,
+  "per_stream": 38.3,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.05
+ },
+ "notes_native_tile_at_kv8": {
+  "tok_s_die": 51026.4,
+  "tops_w": 14.659,
+  "tok_w": 708.0,
+  "tok_j": 777.8,
+  "B": 368,
+  "b_max": 368,
+  "vdd": 0.6,
+  "die_W": 52.8,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.05
+ },
+ "r01_asis": {
+  "tok_s_die": 53863.5,
+  "tops_w": 10.452,
+  "tok_w": 546.7,
+  "tok_j": 689.7,
+  "B": 368,
+  "b_max": 368,
+  "vdd": 0.7,
+  "die_W": 78.2,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "attention",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.26
+ },
+ "r01_with_kv48": {
+  "tok_s_die": 75247.2,
+  "tops_w": 14.581,
+  "tok_w": 783.0,
+  "tok_j": 817.6,
+  "B": 587,
+  "b_max": 587,
+  "vdd": 0.5,
+  "die_W": 78.3,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.26
+ },
+ "hadamard_asis": {
+  "tok_s_die": 51026.4,
+  "tops_w": 14.659,
+  "tok_w": 708.0,
+  "tok_j": 777.8,
+  "B": 368,
+  "b_max": 368,
+  "vdd": 0.6,
+  "die_W": 52.8,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.05
+ },
+ "hadamard_with_kv48": {
+  "tok_s_die": 69688.6,
+  "tops_w": 15.66,
+  "tok_w": 829.5,
+  "tok_j": 887.5,
+  "B": 587,
+  "b_max": 587,
+  "vdd": 0.55,
+  "die_W": 67.5,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": 0.05
+ },
+ "baseline_W8_ppa_kv8": {
+  "tok_s_die": 41356.1,
+  "tops_w": 7.659,
+  "tok_w": 423.9,
+  "tok_j": 839.2,
+  "B": 368,
+  "b_max": 368,
+  "vdd": 0.7,
+  "die_W": 82.0,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W8_ppa_kv48": {
+  "tok_s_die": 46398.2,
+  "tops_w": 10.614,
+  "tok_w": 600.1,
+  "tok_j": 967.7,
+  "B": 587,
+  "b_max": 587,
+  "vdd": 0.6,
+  "die_W": 66.3,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W8_ppa_kv48_sink4_recent28": {
+  "tok_s_die": 49096.6,
+  "tops_w": 10.645,
+  "tok_w": 613.2,
+  "tok_j": 1001.7,
+  "B": 677,
+  "b_max": 677,
+  "vdd": 0.6,
+  "die_W": 70.0,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W8_LIT_kv8": {
+  "tok_s_die": 46401.4,
+  "tops_w": 17.737,
+  "tok_w": 811.2,
+  "tok_j": 1339.2,
+  "B": 368,
+  "b_max": 368,
+  "vdd": 0.7,
+  "die_W": 39.7,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W8_LIT_kv48": {
+  "tok_s_die": 61005.3,
+  "tops_w": 18.305,
+  "tok_w": 938.5,
+  "tok_j": 1704.5,
+  "B": 587,
+  "b_max": 587,
+  "vdd": 0.7,
+  "die_W": 50.6,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W8_LIT_kv48_sink4_recent28": {
+  "tok_s_die": 65757.3,
+  "tops_w": 18.424,
+  "tok_w": 972.1,
+  "tok_j": 1814.3,
+  "B": 677,
+  "b_max": 677,
+  "vdd": 0.7,
+  "die_W": 54.2,
+  "per_stream": 38.2,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W4_ppa_kv8": {
+  "tok_s_die": 47158.0,
+  "tops_w": 7.702,
+  "tok_w": 440.7,
+  "tok_j": 906.0,
+  "B": 457,
+  "b_max": 457,
+  "vdd": 0.7,
+  "die_W": 92.9,
+  "per_stream": 38.9,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W4_ppa_kv48": {
+  "tok_s_die": 50798.2,
+  "tops_w": 10.662,
+  "tok_w": 620.9,
+  "tok_j": 1022.2,
+  "B": 730,
+  "b_max": 730,
+  "vdd": 0.6,
+  "die_W": 72.3,
+  "per_stream": 38.9,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W4_ppa_kv48_sink4_recent28": {
+  "tok_s_die": 53335.4,
+  "tops_w": 10.687,
+  "tok_w": 632.0,
+  "tok_j": 1052.0,
+  "B": 842,
+  "b_max": 842,
+  "vdd": 0.6,
+  "die_W": 75.7,
+  "per_stream": 38.9,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W4_LIT_kv8": {
+  "tok_s_die": 53832.5,
+  "tops_w": 18.023,
+  "tok_w": 876.7,
+  "tok_j": 1520.0,
+  "B": 457,
+  "b_max": 457,
+  "vdd": 0.7,
+  "die_W": 45.3,
+  "per_stream": 38.9,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W4_LIT_kv48": {
+  "tok_s_die": 68845.9,
+  "tops_w": 18.494,
+  "tok_w": 992.3,
+  "tok_j": 1883.5,
+  "B": 730,
+  "b_max": 730,
+  "vdd": 0.7,
+  "die_W": 56.5,
+  "per_stream": 38.9,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "baseline_W4_LIT_kv48_sink4_recent28": {
+  "tok_s_die": 73590.5,
+  "tops_w": 18.59,
+  "tok_w": 1021.9,
+  "tok_j": 1988.7,
+  "B": 842,
+  "b_max": 842,
+  "vdd": 0.7,
+  "die_W": 60.1,
+  "per_stream": 38.9,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "kv_capacity (B = KV limit)"
+  },
+  "margin_db": null
+ },
+ "sohu_notes_native_kv8": {
+  "tok_s_die": 101612.6,
+  "tops_w": 13.864,
+  "tok_w": 90.7,
+  "tok_j": 112.2,
+  "B": 1000,
+  "b_max": 3030,
+  "vdd": 0.7,
+  "die_W": 1039.7,
+  "per_stream": 92.4,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "fixed batch 1000"
+  },
+  "margin_db": 0.05
+ },
+ "sohu_baseline_FP8_ppa": {
+  "tok_s_die": 62570.7,
+  "tops_w": 10.815,
+  "tok_w": 71.9,
+  "tok_j": 124.3,
+  "B": 1000,
+  "b_max": 3030,
+  "vdd": 0.6,
+  "die_W": 820.8,
+  "per_stream": 92.4,
+  "binding": {
+   "prefill": "compute",
+   "decode": "hbm",
+   "concurrency": "fixed batch 1000"
+  },
+  "margin_db": null
+ },
+ "sohu_baseline_FP8_LIT": {
+  "tok_s_die": 86229.2,
+  "tops_w": 18.773,
+  "tok_w": 119.8,
+  "tok_j": 255.6,
+  "B": 1000,
+  "b_max": 3030,
+  "vdd": 0.7,
+  "die_W": 651.6,
+  "per_stream": 92.4,
+  "binding": {
+   "prefill": "attention",
+   "decode": "hbm",
+   "concurrency": "fixed batch 1000"
+  },
+  "margin_db": null
+ }
+}

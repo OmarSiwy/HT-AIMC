@@ -32,6 +32,7 @@ that trades 10x TOPS/W for tok/s is documented even when it is not the pick.
 | tok/J | Best tokens per joule over **any** operating point (VDD in [0.45, 0.7] V, any clock, any concurrency). Gameable by running slow, which is why it ranks last. |
 | Quality gate | **Set by the research** (decision node N8), justified from the notes and the literature, and measured numerically on SmolLM2-135M (in repo) as the proxy. Compiler and hardware co-design (re-quantization, rotation, hardware-aware fine-tuning) is allowed and must be counted when used. |
 | Scope | Analog / mixed-signal IMC only. The digital systolic array in `digital/sysreference/` is the baseline it has to beat, not a candidate. |
+| Baseline comparison | Lever-matched: the baseline gets the candidate's memory formats (weight width in HBM, KV format), since they are compiler and memory choices either chip can use. `cli.py <design>` prints it with the ratios. The standard systolic metrics (peak and achieved TOPS, utilization, TOPS/mm², pJ/MAC, HBM GB/s, bytes per token) are reported alongside the four ranked ones. |
 | Labels | Every number is **measured** (SPICE / RTL sim / synthesis here), **derived** (law on measured params) or **projected** (literature/law only). |
 
 ## Verification ladder for the pick

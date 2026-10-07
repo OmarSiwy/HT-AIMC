@@ -1,0 +1,53 @@
+// B1/B3 crosspoint: one weight's unit caps between its row rails and the column pair's top plates.
+// Output q[slice*2 + side] is this row's contribution to that top plate's voltage,
+//     q = units(stored bits) * cu * V(rail) / C_slice
+// (the column top plate is a linear capacitive divider, so the rows superpose; imc_col sums them).
+// Side + (outp) units follow rp when w >= 0 and rn when w < 0; side - the other rail.
+// Each bit b of a slice is 2^b units, sigma sig_cu * sqrt(2^b) units, frozen at t = 0.
+// Defaults: cu 1 fF (MSB) / 0.25 fF (LSB), 7 / 15 units per side, 1 % / 2 % unit sigma (P).
+`include "disciplines.vams"
+module imc_xp(rp, rn, s, q);
+    parameter integer ROWS = 8 from [1:64];          // sets C_slice
+    parameter integer seed = 1;
+    parameter real cu_msb = 1.0e-15;
+    parameter real cu_lsb = 0.25e-15;
+    parameter real c_par  = 0.0;
+    parameter real sig_cu_msb = 0.01;
+    parameter real sig_cu_lsb = 0.02;
+    parameter real vmin1 = 0.58;
+    input rp, rn; input [0:7] s; output [0:3] q;
+    electrical rp, rn; electrical [0:7] s; electrical [0:3] q;
+    real u[0:13], st[0:7], cq[0:3];
+    real c_msb, c_lsb, w, sg;
+    integer b, sd, sds;
+    genvar g;
+    analog begin
+        @(initial_step) begin
+            sds = seed;
+            c_msb = ROWS * 7 * cu_msb + c_par;
+            c_lsb = ROWS * 15 * cu_lsb + c_par;
+            for (sd = 0; sd < 2; sd = sd + 1)
+                for (b = 0; b < 7; b = b + 1) begin
+                    w = pow(2, (b < 4) ? b : b - 4);
+                    u[sd * 7 + b] = w + $rdist_normal(sds, 0, 1) * sqrt(w) * ((b < 4) ? sig_cu_lsb : sig_cu_msb);
+                end
+        end
+        for (g = 0; g < 8; g = g + 1) st[g] = V(s[g]);
+        // a stored bit reads as connected above vmin1; a 2 mV-wide sigmoid keeps it continuous
+        // (the written levels sit >= 50 mV away, so the read is exact to < 1e-10)
+        for (b = 0; b < 8; b = b + 1) st[b] = 0.5 * (1 + tanh((st[b] - vmin1) / 2m));
+        sg = st[7];
+        for (sd = 0; sd < 2; sd = sd + 1) begin
+            cq[sd] = 0; cq[2 + sd] = 0;
+            for (b = 0; b < 3; b = b + 1) cq[sd] = cq[sd] + st[4 + b] * u[sd * 7 + 4 + b];
+            for (b = 0; b < 4; b = b + 1) cq[2 + sd] = cq[2 + sd] + st[b] * u[sd * 7 + b];
+            cq[sd] = cq[sd] * cu_msb / c_msb;
+            cq[2 + sd] = cq[2 + sd] * cu_lsb / c_lsb;
+        end
+        // side 0 (+) follows rp if w >= 0, rn if w < 0; side 1 (-) the other rail
+        V(q[0]) <+ cq[0] * ((1 - sg) * V(rp) + sg * V(rn));
+        V(q[1]) <+ cq[1] * ((1 - sg) * V(rn) + sg * V(rp));
+        V(q[2]) <+ cq[2] * ((1 - sg) * V(rp) + sg * V(rn));
+        V(q[3]) <+ cq[3] * ((1 - sg) * V(rn) + sg * V(rp));
+    end
+endmodule

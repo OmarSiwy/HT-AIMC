@@ -1,0 +1,22 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n8_quality__g43_w4_acceptable",
+ "nodes": {
+  "n2_domain": "time_delay",
+  "n4_formats": "w8a8_lead_q80",
+  "n6_readout": "sar_direct_stack_pool",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "g43_w4_acceptable",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 12,
+  "buffer_MB": 8,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 32
+ }
+}

@@ -1,0 +1,37 @@
+// B1 gain-cell weight store: one weight (one row of one differential column pair), ARCH_CHOSEN B1,
+// N3_r2 gc3t + MOM6. Bit 7 = sign, bits 6..0 = |w| (bits 6..4 MSB slice, 3..0 LSB slice); both
+// columns of the pair store the bits (16 gain bits per weight).
+// Continuous sample-and-hold per storage node s (no events):
+//     c_node dV/dt = g_wr(WL) (V_target - V) - i_leak(V)
+//   write  while WL is high the node settles to the WBL target ('1' -> v1, '0' -> v0) with tau_wr
+//   hold   a '1' leaks at the constant rate that takes it from v1 to vmin1 in t_ret (design
+//          retention); a node near 0 stops leaking (smooth floor)
+//   read   imc_xp treats a node above vmin1 as a connected unit group
+// Defaults: v1 0.631 V, v0 -0.072 V, tau_wr 9.6 ps (D: 44.3 ps to 99 %, M, N3_r2 wr2.py TT 27 C) and the
+// write level; t_ret 2.08 us (M-derived gc3t hold-high design retention, N3_r2); vmin1 0.58 V
+// (TG dead zone, N3_r2). Write energy (0.52 fJ per '1', M) is booked by the testbench per '1'.
+// One instance per weight: an ESPice device holds at most 64 unknowns, so a whole column does not fit.
+`include "disciplines.vams"
+module imc_gc(wl, wbl, s);
+    parameter real v1     = 0.631;
+    parameter real v0     = -0.072;
+    parameter real vmin1  = 0.58;
+    parameter real t_ret  = 2.08e-6 from (0:inf);
+    parameter real tau_wr = 9.6e-12 from (0:inf);   // 44.3 ps to 99 % (M) = 4.6 tau
+    parameter real c_node = 1e-15 from (0:inf);
+    parameter real vth    = 0.35;
+    input wl; input [0:7] wbl; output [0:7] s;
+    electrical wl; electrical [0:7] wbl; electrical [0:7] s;
+    real en, vt, ileak;
+    genvar g;
+    analog function real lg; input x, th, w; real x, th, w; lg = 0.5 * (1 + tanh((x - th) / w)); endfunction
+    analog begin
+        en = lg(V(wl), vth, 0.02);
+        ileak = c_node * (v1 - vmin1) / t_ret;
+        for (g = 0; g < 8; g = g + 1) begin
+            vt = v0 + (v1 - v0) * lg(V(wbl[g]), vth, 0.02);
+            I(s[g]) <+ c_node * ddt(V(s[g])) - (c_node / tau_wr) * (en + 1e-9) * (vt - V(s[g]))
+                       + ileak * lg(V(s[g]), 0.05, 0.01);
+        end
+    end
+endmodule

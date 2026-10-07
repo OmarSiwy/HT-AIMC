@@ -1,0 +1,21 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n4_formats__w8a8_lead_bitserial",
+ "nodes": {
+  "n2_domain": "hybrid_wmsb_digital",
+  "n3_cell": "gaincell_mom_caps",
+  "n4_formats": "w8a8_lead_bitserial",
+  "n6_readout": "sar_vtc_fine",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "colsw_midrail_nmos_rvt"
+ },
+ "params": {
+  "adc_bits": 12,
+  "k_dig": 5,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 1.0
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n5_array__blk_diff_c1024",
+ "nodes": {
+  "n10_wildcards": "dps48",
+  "n2_domain": "time_delay_cal",
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_lead_tokact",
+  "n5_array": "blk_diff_c1024",
+  "n6_readout": "sar_sampled",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard"
+ },
+ "params": {
+  "adc_bits": 12,
+  "k_dig": 4,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 1.0
+ }
+}

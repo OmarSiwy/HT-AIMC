@@ -1,0 +1,20 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n7_dataflow__digital_rail",
+ "nodes": {
+  "n4_formats": "w8a8_lead_norot",
+  "n7_dataflow": "digital_rail",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "vt_lvt_logic"
+ },
+ "params": {
+  "adc_bits": 11,
+  "buffer_MB": 2,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 32
+ }
+}

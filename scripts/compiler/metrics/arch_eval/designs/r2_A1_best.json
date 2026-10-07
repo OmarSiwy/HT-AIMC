@@ -1,0 +1,96 @@
+{
+ "name": "r2_A1_best",
+ "frame": "joint (notes_native.score_design); tile_pitch_um = shared-frame fixed point (the per-physical-conversion N9 frame converges at 134.0 um)",
+ "label": "projected",
+ "note": "Round-2b A1 (docs/src/content/Project/ArchResearch/nodes/N6_r2.md, post-critic). ROUND-2b ARCH LEAD (post-critic): pipelined residue-amp SAR on K=4 charge-pooled tiles, LVT 150 ps FIA, adc_share 6, 3 bits/cycle, 2-b flash seed, 11 b, cu 1.25 fF, 2-track center-tapped pool bus. Priced with the critic fixes (pool-bus wire on the pooled node, FIA area from the measured device, switch drive in kappa, decision broadcast, back end on IMC-grade SAs at x13, window + back-end period bound).",
+ "nodes": {
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_direct_residue_amp",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 11,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "kv_bits": 4,
+  "nn_kv": true,
+  "kv_lo_bits": 4,
+  "kv_hi_bits": 8,
+  "kv_sink": 8,
+  "kv_recent": 120,
+  "kv_scale_group": 128,
+  "buffer_MB": 16,
+  "cascade_K": 4,
+  "adc_share": 6,
+  "cmp_cls": "lvt150",
+  "dac": "mono",
+  "pool_tracks": 2,
+  "bpc": 3,
+  "pipe_ra": true,
+  "flash_bits": 2,
+  "cu_fF": 1.25,
+  "vtc_bits": 7,
+  "ra_gain": 16.0,
+  "dac_density": 4.78,
+  "t_model": "meas",
+  "tile_pitch_um": 151.0
+ },
+ "scores_projected": {
+  "arch/shared": {
+   "tok": 60835,
+   "tw": 11.22,
+   "tokw": 629.3,
+   "tokj": 642.9,
+   "m": 0.63,
+   "area": 22816,
+   "t1": 1.13,
+   "tpass": 6.78
+  },
+  "sohu/shared": {
+   "tok": 80753,
+   "tw": 10.89,
+   "tokw": 72.3,
+   "tokj": 72.4,
+   "m": 0.63,
+   "area": 22818,
+   "t1": 1.13,
+   "tpass": 6.78
+  },
+  "arch/fix": {
+   "tok": 67426,
+   "tw": 10.47,
+   "tokw": 593.0,
+   "tokj": 593.0,
+   "m": 0.64,
+   "area": 17966,
+   "t1": 1.059,
+   "tpass": 6.77
+  },
+  "sohu/fix": {
+   "tok": 72220,
+   "tw": 9.81,
+   "tokw": 65.6,
+   "tokj": 65.6,
+   "m": 0.64,
+   "area": 17966,
+   "t1": 1.059,
+   "tpass": 6.77
+  },
+  "arch/core_cli": {
+   "tok": 36844,
+   "tw": 11.3,
+   "tokw": 652.6,
+   "tokj": 778.3
+  },
+  "sohu/core_cli": {
+   "tok": 46334,
+   "tw": 11.45,
+   "tokw": 75.8,
+   "tokj": 91.9
+  }
+ }
+}

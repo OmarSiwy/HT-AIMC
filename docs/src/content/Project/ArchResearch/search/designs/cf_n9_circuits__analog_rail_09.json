@@ -1,0 +1,23 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n9_circuits__analog_rail_09",
+ "nodes": {
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_lead_norot",
+  "n6_readout": "sar_vtc_pool",
+  "n7_dataflow": "digital_rail",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "analog_rail_09"
+ },
+ "params": {
+  "adc_bits": 11,
+  "buffer_MB": 2,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "v_exc_frac": 0.43
+ }
+}

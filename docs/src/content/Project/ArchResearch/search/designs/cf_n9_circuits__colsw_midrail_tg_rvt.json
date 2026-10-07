@@ -1,0 +1,21 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n9_circuits__colsw_midrail_tg_rvt",
+ "nodes": {
+  "n4_formats": "w8a8_lead_norot",
+  "n6_readout": "sar_vtc_pool",
+  "n7_dataflow": "lean_int8_rail",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "colsw_midrail_tg_rvt"
+ },
+ "params": {
+  "adc_bits": 11,
+  "buffer_MB": 8,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 32
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n2_domain__charge_ota",
+ "nodes": {
+  "n10_wildcards": "dps48",
+  "n2_domain": "charge_ota",
+  "n4_formats": "w8a8_1cell8b",
+  "n5_array": "blk_diff_r8_c64_s16",
+  "n6_readout": "sar_vtc_pool",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_interleave",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 11,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 0.5,
+  "share_fins": 32,
+  "wire_x": 4
+ }
+}

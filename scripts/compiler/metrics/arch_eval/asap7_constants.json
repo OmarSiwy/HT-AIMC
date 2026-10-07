@@ -1,0 +1,464 @@
+{
+ "vdd_nom": {
+  "value": 0.7,
+  "unit": "V",
+  "label": "projected",
+  "source": "ASAP7 nominal VDD (Clark et al., MEJ 53 (2016) Sec. 3)"
+ },
+ "kT_300K_J": {
+  "value": 4.141947e-21,
+  "unit": "J",
+  "label": "derived",
+  "source": "Boltzmann k * 300 K"
+ },
+ "kTC_noise_uV_rms_at_1fF": {
+  "value": 2035.1773878460817,
+  "unit": "uV",
+  "label": "derived",
+  "source": "sqrt(kT/C), C = 1 fF, 300 K"
+ },
+ "fo4_delay_ps": {
+  "value": 9.875626400970235,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "inv_switch_energy_fJ": {
+  "value": 0.12093012737300404,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates; E per output transition = vdd*Q(one period)/2, includes 4 gate loads + own drain + short-circuit"
+ },
+ "fo4_delay_ps@0.45": {
+  "value": 25.86539312628836,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "inv_switch_energy_fJ@0.45": {
+  "value": 0.04068263107960327,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "fo4_delay_ps@0.5": {
+  "value": 18.835209825285467,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "inv_switch_energy_fJ@0.5": {
+  "value": 0.05304840667599686,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "fo4_delay_ps@0.6": {
+  "value": 12.544069364416416,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "inv_switch_energy_fJ@0.6": {
+  "value": 0.08331270058456307,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "fo4_delay_ps@0.7": {
+  "value": 9.875626400970235,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "inv_switch_energy_fJ@0.7": {
+  "value": 0.12093012737300404,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates"
+ },
+ "fo4_delay_ps_ff": {
+  "value": 8.758639383927067,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates; ff corner"
+ },
+ "inv_switch_energy_fJ_ff": {
+  "value": 0.13851193752743696,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates; ff corner"
+ },
+ "fo4_delay_ps_ss": {
+  "value": 11.354334694296425,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates; ss corner"
+ },
+ "inv_switch_energy_fJ_ss": {
+  "value": 0.10772118023579684,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates; ss corner"
+ },
+ "fo4_delay_ps_slvt": {
+  "value": 7.152127981189044,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py inv: ESPice BSIM-CMG, TT 27C, RVT 1+1-fin inverter chain, FO4 = 4 identical inverter loads, no wiring/cell parasitics. Liberty INVx1 (cell parasitics) is ~1.85x slower and ~5x the energy: use *_lib for digital estimates; SLVT devices"
+ },
+ "fo4_delay_ps_lib": {
+  "value": 18.264918771111113,
+  "unit": "ps",
+  "label": "derived",
+  "source": "asap7sc7p5t INVBUF RVT TT 0.7V 25C NLDM: INVx1 at 20 ps slew into 4*Cin(A)=2.48 fF, mean rise/fall"
+ },
+ "inv_switch_energy_fJ_lib": {
+  "value": 0.6550767230677778,
+  "unit": "fJ",
+  "label": "derived",
+  "source": "same NLDM: CL*V^2/2 + mean internal energy, INVx1 FO4"
+ },
+ "dff_energy_fJ": {
+  "value": 0.8226598076726863,
+  "unit": "fJ",
+  "label": "derived",
+  "source": "DFFHQNx1_ASAP7_75t_R liberty: (E_clk(rise+fall) + 0.5*E_Q toggle) per cycle at 10 ps slew / 0.72 fF, TT 0.7V INTERPOLATED as mean E/V^2 of FF(0.77V,0C) and SS(0.63V,100C), x 0.49 (no TT SEQ lib in set); excludes the clock-net load 0.5 fF*V^2"
+ },
+ "dff_area_um2": {
+  "value": 0.2916,
+  "unit": "um2",
+  "label": "derived",
+  "source": "DFFHQNx1_ASAP7_75t_R liberty area (1x)"
+ },
+ "dff_clk_cap_fF": {
+  "value": 0.52201,
+  "unit": "fF",
+  "label": "derived",
+  "source": "DFFHQNx1 CLK pin cap, FF liberty"
+ },
+ "nand2_area_um2": {
+  "value": 0.05832,
+  "unit": "um2",
+  "label": "derived",
+  "source": "NAND2xp33_ASAP7_75t_R liberty area (NAND2x1: 0.08748)"
+ },
+ "inv_x1_area_um2": {
+  "value": 0.04374,
+  "unit": "um2",
+  "label": "derived",
+  "source": "INVx1_ASAP7_75t_R liberty area"
+ },
+ "sram6t_bitcell_um2": {
+  "value": 0.023327999999999998,
+  "unit": "um2",
+  "label": "derived",
+  "source": "MEJ Sec. 5.2/Fig. 7: '111' 6T cell is 8 fins tall (8*27 nm) x 2 CPP (2*54 nm). Commercial N7 HD 6T is ~0.027 um2 (projected cross-check). The 112 cell (2-fin PD) is larger, height not stated"
+ },
+ "sram8t_bitcell_um2": {
+  "value": 0.034992,
+  "unit": "um2",
+  "label": "projected",
+  "source": "6T 111 cell + 2-transistor read port as one extra CPP column (assumption, not drawn): 3 CPP x 8 fins; literature 8T/6T area ratio 1.3-1.5 (note 27i7)"
+ },
+ "mom_cap_density_fF_per_um2": {
+  "value": 2.0,
+  "unit": "fF/um2",
+  "label": "derived",
+  "source": "lateral eps*t/(s*p), k=2.7, AR 2:1 (MEJ 4.4), pitches MEJ Table 1: M1-M5 at min pitch 5.98 fF/um2 (upper bound, M1 unusable over cells); M2-M5 at width w, space 3w 0.77; design value 2.0 = between, matches pdk_specs.Asap7.mim_ff_um2. Lit. cross-check: FinFET-node MOM 2-4 fF/um2 (projected)"
+ },
+ "mom_cap_density_min_pitch_M1_M5_fF_per_um2": {
+  "value": 5.976450000000002,
+  "unit": "fF/um2",
+  "label": "derived",
+  "source": "as above, upper bound"
+ },
+ "unit_cap_min_fF": {
+  "value": 0.2,
+  "unit": "fF",
+  "label": "projected",
+  "source": "practical MOM unit: below ~0.2 fF routing/fringe parasitics and edge LER dominate (sub-fF MOM matching data: Omran et al. TCAS-I 2016; Tripathi & Murmann TCAS-I 2014). kT/C at 0.2 fF = 144 uV"
+ },
+ "cap_match_sigma_pct_at_1fF": {
+  "value": 0.5,
+  "unit": "%",
+  "label": "projected",
+  "source": "MOM sigma(dC/C) ~0.3-1 % at ~1 fF in 32-40 nm measurements (Omran 2016, Tripathi & Murmann 2014); sigma = A_C/sqrt(area) (note 27i1); not measured for ASAP7 (no statistical BEOL)"
+ },
+ "avt_mV_um": {
+  "value": 1.3,
+  "unit": "mV*um",
+  "label": "projected",
+  "source": "no mismatch models in ASAP7; 7-16 nm FinFET literature ~1.0-1.5 mV*um over Weff*L (pdk_specs.Asap7Proj.a_vt, LOW confidence); Pelgrom law note 19l"
+ },
+ "nfet_id_per_fin_uA": {
+  "value": 35.33383420544531,
+  "unit": "uA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak: nmos_rvt VGS=VDS=0.7 V TT 27C (MEJ Table 3 Idsat 37.85)"
+ },
+ "nfet_id_per_fin_uA_ff": {
+  "value": 45.45278833699226,
+  "unit": "uA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, ff"
+ },
+ "nfet_id_per_fin_uA_ss": {
+  "value": 27.58262455426862,
+  "unit": "uA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, ss"
+ },
+ "pfet_id_per_fin_uA": {
+  "value": 30.97912649749321,
+  "unit": "uA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak: pmos_rvt |VGS|=|VDS|=0.7"
+ },
+ "nfet_cgg_per_fin_aF": {
+  "value": 59.80240629378739,
+  "unit": "aF",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; at VGS=0.7, AC 1 MHz"
+ },
+ "nfet_gm_over_id_max_per_V": {
+  "value": 37.63667794316002,
+  "unit": "1/V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/"
+ },
+ "nfet_ft_GHz": {
+  "value": 306.83750601861686,
+  "unit": "GHz",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; peak gm/(2 pi Cgg), intrinsic, no BEOL"
+ },
+ "nfet_ft_at_gmid10_GHz": {
+  "value": 297.69625489130584,
+  "unit": "GHz",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/"
+ },
+ "nfet_gm_gds_at_gmid10": {
+  "value": 28.79094376587793,
+  "unit": "V/V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/ (intrinsic gain, L fixed at 21 nm)"
+ },
+ "pfet_gm_gds_at_gmid10": {
+  "value": 17.125965053032342,
+  "unit": "V/V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/"
+ },
+ "switch_ron_ohm_per_fin": {
+  "value": 5950.114716995004,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: nmos 1 fin, VD-VS = 10 mV, TT 27C; RVT VG=0.7 VS=0 (at VS=0.35: 31055; LVT 5349; SLVT 5012). Saturates ~5 kohm at high drive (series S/D resistance)"
+ },
+ "switch_ron_ohm_per_fin@0.45": {
+  "value": 11569.084886487268,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: nmos 1 fin, VD-VS = 10 mV, TT 27C; RVT, VS=0"
+ },
+ "switch_ron_ohm_per_fin@0.5": {
+  "value": 9132.968494220715,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: nmos 1 fin, VD-VS = 10 mV, TT 27C; RVT, VS=0"
+ },
+ "switch_ron_ohm_per_fin@0.6": {
+  "value": 6916.834522558354,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: nmos 1 fin, VD-VS = 10 mV, TT 27C; RVT, VS=0"
+ },
+ "switch_ron_ohm_per_fin@0.7": {
+  "value": 5950.114716995004,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: nmos 1 fin, VD-VS = 10 mV, TT 27C; RVT, VS=0"
+ },
+ "switch_ron_ohm_per_fin@0.8": {
+  "value": 5436.721196192793,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: nmos 1 fin, VD-VS = 10 mV, TT 27C; RVT, VS=0"
+ },
+ "switch_ron_ohm_per_fin@0.9": {
+  "value": 5128.91656376857,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: nmos 1 fin, VD-VS = 10 mV, TT 27C; RVT, VS=0"
+ },
+ "switch_coff_aF_per_fin": {
+  "value": 11.279999863063013,
+  "unit": "aF",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: off device (VG=0) drain cap to AC ground at VD=0.35 V, 1 MHz. Drain-source feedthrough reads ~0 (BSIM-CMG cards carry no direct Cds)"
+ },
+ "tgate_ron_max_ohm_1n1p": {
+  "value": 18424.91021812482,
+  "unit": "ohm",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py sw: RVT 1+1 fin TG, worst over 0..VDD"
+ },
+ "nfet_ileak_per_fin_nA": {
+  "value": 0.016376626993746004,
+  "unit": "nA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak: nmos_rvt VGS=0 VDS=0.7 TT 27C (MEJ Table 3: 0.019)"
+ },
+ "nfet_ileak_per_fin_nA_ff": {
+  "value": 0.02473971666522668,
+  "unit": "nA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, ff@27C"
+ },
+ "nfet_ileak_per_fin_nA_ss": {
+  "value": 0.010515047500345385,
+  "unit": "nA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, ss@27C"
+ },
+ "nfet_ileak_per_fin_nA_85C": {
+  "value": 0.13211508881774695,
+  "unit": "nA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, tt@85C"
+ },
+ "nfet_ileak_per_fin_nA_lvt": {
+  "value": 0.134231257286346,
+  "unit": "nA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, TT 27C"
+ },
+ "nfet_ileak_per_fin_nA_slvt": {
+  "value": 1.3230800310795645,
+  "unit": "nA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, TT 27C"
+ },
+ "nfet_ileak_per_fin_nA_sram": {
+  "value": 0.004941023313882479,
+  "unit": "nA",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py leak, TT 27C"
+ },
+ "vt_rvt_V": {
+  "value": 0.37168174391060266,
+  "unit": "V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; nmos max-gm linear extrapolation at VDS=0.35 V (MEJ Vtsat by const. current is lower)"
+ },
+ "vt_rvt_cc_V": {
+  "value": 0.28841539707550706,
+  "unit": "V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; constant current 100 nA*Weff/L per fin at VDS=0.35 V"
+ },
+ "vt_lvt_V": {
+  "value": 0.3021277457316668,
+  "unit": "V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; nmos max-gm linear extrapolation at VDS=0.35 V (MEJ Vtsat by const. current is lower)"
+ },
+ "vt_lvt_cc_V": {
+  "value": 0.22020724323753768,
+  "unit": "V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; constant current 100 nA*Weff/L per fin at VDS=0.35 V"
+ },
+ "vt_slvt_V": {
+  "value": 0.23885121708068066,
+  "unit": "V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; nmos max-gm linear extrapolation at VDS=0.35 V (MEJ Vtsat by const. current is lower)"
+ },
+ "vt_slvt_cc_V": {
+  "value": 0.15797851489039283,
+  "unit": "V",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py gmid: ESPice BSIM-CMG TT 27C, L=21 nm, |VDS|=0.35 V, CSV analog/docs/asap7/gmid/; constant current 100 nA*Weff/L per fin at VDS=0.35 V"
+ },
+ "wire_c_fF_per_um": {
+  "value": 0.173323,
+  "unit": "fF/um",
+  "label": "projected",
+  "source": "OpenROAD/ORFS asap7 setRC.tcl set_wire_rc -signal (correlation fit to its RCX, not PDK-extracted)"
+ },
+ "wire_r_ohm_per_um": {
+  "value": 32.3151,
+  "unit": "ohm/um",
+  "label": "projected",
+  "source": "same: 3.23151E-02 kohm/um signal wire"
+ },
+ "comparator_energy_fJ": {
+  "value": 0.43795807040281004,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py cmp: StrongARM RVT (in 4, tail 4, latch 2n/2p, reset 1 fin), X/Y loaded by 1+1 inverters, 1 GHz, VCM 0.55 V, 1 mV input, TT 27C, no layout parasitics"
+ },
+ "comparator_energy_fJ_ff": {
+  "value": 0.49940453210316527,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py cmp: StrongARM RVT (in 4, tail 4, latch 2n/2p, reset 1 fin), X/Y loaded by 1+1 inverters, 1 GHz, VCM 0.55 V, 1 mV input, TT 27C, no layout parasitics; ff"
+ },
+ "comparator_energy_fJ_ss": {
+  "value": 0.38895899630994946,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py cmp: StrongARM RVT (in 4, tail 4, latch 2n/2p, reset 1 fin), X/Y loaded by 1+1 inverters, 1 GHz, VCM 0.55 V, 1 mV input, TT 27C, no layout parasitics; ss"
+ },
+ "comparator_tdec_ps_at_1mV": {
+  "value": 26.849999999992725,
+  "unit": "ps",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py cmp: StrongARM RVT (in 4, tail 4, latch 2n/2p, reset 1 fin), X/Y loaded by 1+1 inverters, 1 GHz, VCM 0.55 V, 1 mV input, TT 27C, no layout parasitics; clk 50% to |X-Y|>VDD/2"
+ },
+ "comparator_offset_sigma_mV": {
+  "value": 16.89309213768476,
+  "unit": "mV",
+  "label": "projected",
+  "source": "Pelgrom Avt=1.3 mV*um over Weff*L of the 4-fin input pair (latch adds); no ASAP7 mismatch models"
+ },
+ "comparator_noise_mV_rms": {
+  "value": 7.522444256884685,
+  "unit": "mV",
+  "label": "derived",
+  "source": "note 19p: vn^2 = 4kT*gamma/((gm/ID)*C1*Vthn) + reset kT/C1 (note 19p1), gamma=1 (1.5 -> 9.04), on measured Iss, C1=0.081 fF, gm/ID"
+ },
+ "comparator_imc_energy_fJ": {
+  "value": 2.9360734416001004,
+  "unit": "fJ",
+  "label": "measured",
+  "source": "analog/docs/asap7/char.py cmp: IMC-grade StrongARM (in 16 fins, tail 8, latch 4/4, +2 fF MOM on P/Q), TT, 1 mV"
+ },
+ "comparator_imc_noise_mV_rms": {
+  "value": 1.2444565685321312,
+  "unit": "mV",
+  "label": "derived",
+  "source": "analog/docs/asap7/char.py cmp: IMC-grade StrongARM (in 16 fins, tail 8, latch 4/4, +2 fF MOM on P/Q), TT, 1 mV; note 19p"
+ },
+ "comparator_imc_offset_sigma_mV": {
+  "value": 8.44654606884238,
+  "unit": "mV",
+  "label": "projected",
+  "source": "analog/docs/asap7/char.py cmp: IMC-grade StrongARM (in 16 fins, tail 8, latch 4/4, +2 fF MOM on P/Q), TT, 1 mV; Pelgrom Avt=1.3"
+ },
+ "sar_adc_fom_fJ_per_step": {
+  "value": 3.3810000000000002,
+  "unit": "fJ/conv-step",
+  "label": "projected",
+  "source": "Gonugondla et al. 2022 column-ADC model E=k1(B+log2 r)+k2 r^2 4^B, k1=100 fJ, k2=1 aJ (note 27h1), B=8, r=1: 866 fJ/conv; Murmann ADC survey SAR envelope ~1-5 fJ/step at 10-500 MS/s (cross-check)"
+ },
+ "sar_adc_energy_bottomup_8b_fJ": {
+  "value": 83.66521522385273,
+  "unit": "fJ",
+  "label": "derived",
+  "source": "8 x comparator_imc_energy + CDAC 0.3*256*0.2fF*V^2 + SAR logic 8 cycles x 8 DFF; no references, clock tree, wiring: a FLOOR, not a design (FoM 0.33 fJ/step at 8 b)"
+ }
+}

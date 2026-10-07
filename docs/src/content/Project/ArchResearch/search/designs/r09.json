@@ -1,0 +1,18 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "r09",
+ "nodes": {
+  "n7_dataflow": "mixed_rail",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "vt_slvt_logic"
+ },
+ "params": {
+  "adc_bits": 11,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 32
+ }
+}

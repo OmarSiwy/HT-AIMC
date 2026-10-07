@@ -1,0 +1,24 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n4_formats__w8_2b_slices",
+ "nodes": {
+  "n10_wildcards": "residual_tiles",
+  "n2_domain": "time_delay",
+  "n3_cell": "gaincell_c2c",
+  "n4_formats": "w8_2b_slices",
+  "n5_array": "blk_diff_r16_c256_s8",
+  "n6_readout": "sar_27h1",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_interleave",
+  "n9_circuits": "single_rail"
+ },
+ "params": {
+  "adc_bits": 10,
+  "buffer_MB": 8,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 0.5,
+  "share_fins": 32
+ }
+}

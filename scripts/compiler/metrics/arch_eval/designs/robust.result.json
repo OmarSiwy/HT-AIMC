@@ -1,0 +1,347 @@
+{
+ "robust": {
+  "why": null,
+  "tt": {
+   "tok_s_die": 47765.67945471697,
+   "tops_w": 9.629954296343666,
+   "tok_w": 511.98863376472593,
+   "tok_j": 549.2559339134226,
+   "margin_db": 2.2622054847419335,
+   "binding": {
+    "prefill": "compute",
+    "decode": "hbm",
+    "concurrency": "kv_capacity (B = KV limit)"
+   },
+   "snr_parts": {
+    "thermal": 46.73990695482237,
+    "mismatch": 49.03089986991944,
+    "settle": 2602.7565914628713,
+    "row_gain": 80.29127005319347,
+    "coupling": 63.01029995663981,
+    "row_coupling": 79.09689430686184,
+    "injection": 76.94309987657928,
+    "cap_nl": 300.0,
+    "ref_droop": 53.979400086720375,
+    "adc": 44.07284392198085,
+    "supply": 60.0,
+    "n9_droop": 65.08524397816142,
+    "n9_drv_inl": 54.80725378988488
+   },
+   "B": 368,
+   "vdd": 0.6,
+   "die_W": 75.28140513996169
+  },
+  "ss": {
+   "tok_s_die": 42036.80541162478,
+   "tops_w": 8.496665311945844,
+   "tok_w": 462.23890388305085,
+   "tok_j": 503.91531378614343,
+   "margin_db": 0.5218842405306177,
+   "binding": {
+    "prefill": "compute",
+    "decode": "hbm",
+    "concurrency": "kv_capacity (B = KV limit)"
+   },
+   "snr_parts": {
+    "thermal": 44.87886915295983,
+    "mismatch": 43.01029995663981,
+    "settle": 2602.7565914628713,
+    "row_gain": 74.56575710817279,
+    "coupling": 63.01029995663981,
+    "row_coupling": 79.09689430686184,
+    "injection": 76.94309987657928,
+    "cap_nl": 300.0,
+    "ref_droop": 53.979400086720375,
+    "adc": 43.45153685672814,
+    "supply": 53.979400086720375,
+    "n9_droop": 64.63049330116823,
+    "n9_drv_inl": 54.80725378988488
+   },
+   "B": 368,
+   "vdd": 0.6,
+   "die_W": 75.08914783498754
+  },
+  "ff": {
+   "tok_s_die": 48204.187124532364,
+   "tops_w": 7.6821015814294595,
+   "tok_w": 425.02750279717435,
+   "tok_j": 456.4227662019485,
+   "margin_db": 0.8577186955090284,
+   "binding": {
+    "prefill": "attention",
+    "decode": "hbm",
+    "concurrency": "kv_capacity (B = KV limit)"
+   },
+   "snr_parts": {
+    "thermal": 45.97229374924488,
+    "mismatch": 43.01029995663981,
+    "settle": 2602.7565914628713,
+    "row_gain": 85.7842726381067,
+    "coupling": 63.01029995663981,
+    "row_coupling": 79.09689430686184,
+    "injection": 76.94309987657928,
+    "cap_nl": 300.0,
+    "ref_droop": 53.979400086720375,
+    "adc": 43.8164252754885,
+    "supply": 53.979400086720375,
+    "n9_droop": 61.292378725238635,
+    "n9_drv_inl": 54.80725378988488
+   },
+   "B": 368,
+   "vdd": 0.55,
+   "die_W": 95.23590231162707
+  },
+  "min_margin_db": 0.5218842405306177,
+  "all_pass": true
+ },
+ "references": {
+  "winner": {
+   "why": "robust: n8 lever credit not measured on the proxy",
+   "tt": {
+    "tok_s_die": 53863.52290947598,
+    "tops_w": 10.452050423575413,
+    "tok_w": 546.6855414458647,
+    "tok_j": 689.7172209936119,
+    "margin_db": 0.22723876416370814,
+    "binding": {
+     "prefill": "attention",
+     "decode": "hbm",
+     "concurrency": "kv_capacity (B = KV limit)"
+    },
+    "snr_parts": {
+     "thermal": 43.311599143036254,
+     "mismatch": 46.020599913279625,
+     "settle": 2602.7565914628713,
+     "row_gain": 59.17947121788594,
+     "coupling": 63.01029995663981,
+     "row_coupling": 74.75855928933936,
+     "injection": 67.92310073838945,
+     "cap_nl": 300.0,
+     "ref_droop": 53.979400086720375,
+     "adc": 39.47403451645727,
+     "supply": 60.0,
+     "n9_droop": 59.97404819552462,
+     "n9_drv_inl": 54.80725378988488
+    },
+    "B": 368,
+    "vdd": 0.7,
+    "die_W": 78.21485442691537
+   },
+   "ss": {
+    "tok_s_die": 0.0,
+    "tops_w": 0.0,
+    "tok_w": 0.0,
+    "tok_j": 0.0,
+    "margin_db": -1.5992007319900807,
+    "binding": null,
+    "snr_parts": null,
+    "B": null,
+    "vdd": null,
+    "die_W": null
+   },
+   "ff": {
+    "tok_s_die": 0.0,
+    "tops_w": 0.0,
+    "tok_w": 0.0,
+    "tok_j": 0.0,
+    "margin_db": -1.0172190150052884,
+    "binding": null,
+    "snr_parts": null,
+    "B": null,
+    "vdd": null,
+    "die_W": null
+   },
+   "min_margin_db": -1.5992007319900807,
+   "all_pass": false
+  },
+  "cf_n8_quality__lv_hadamard": {
+   "why": "robust: n9_circuits option not SPICE-verifiable in ASAP7",
+   "tt": {
+    "tok_s_die": 51026.445657553486,
+    "tops_w": 14.658600571912887,
+    "tok_w": 707.964213834827,
+    "tok_j": 777.7741051834075,
+    "margin_db": 0.04422226437585408,
+    "binding": {
+     "prefill": "compute",
+     "decode": "hbm",
+     "concurrency": "kv_capacity (B = KV limit)"
+    },
+    "snr_parts": {
+     "thermal": 43.311599143036254,
+     "mismatch": 46.020599913279625,
+     "settle": 2602.7565914628713,
+     "row_gain": 76.9447253242024,
+     "coupling": 63.01029995663981,
+     "row_coupling": 74.75855928933936,
+     "injection": 73.94370065166908,
+     "cap_nl": 300.0,
+     "ref_droop": 53.979400086720375,
+     "adc": 43.301141057389,
+     "supply": 66.02059991327963,
+     "n9_droop": 60.697803604717265,
+     "n9_drv_inl": 54.80725378988488
+    },
+    "B": 368,
+    "vdd": 0.6,
+    "die_W": 52.832211424292595
+   },
+   "ss": {
+    "tok_s_die": 0.0,
+    "tops_w": 0.0,
+    "tok_w": 0.0,
+    "tok_j": 0.0,
+    "margin_db": -2.120581067265789,
+    "binding": null,
+    "snr_parts": null,
+    "B": null,
+    "vdd": null,
+    "die_W": null
+   },
+   "ff": {
+    "tok_s_die": 0.0,
+    "tops_w": 0.0,
+    "tok_w": 0.0,
+    "tok_j": 0.0,
+    "margin_db": -1.6671646254896046,
+    "binding": null,
+    "snr_parts": null,
+    "B": null,
+    "vdd": null,
+    "die_W": null
+   },
+   "min_margin_db": -2.120581067265789,
+   "all_pass": false
+  },
+  "p08": {
+   "why": "robust: n8 lever credit not measured on the proxy",
+   "tt": {
+    "tok_s_die": 52157.00938604684,
+    "tops_w": 16.379620261403012,
+    "tok_w": 767.0407795948458,
+    "tok_j": 945.0551676946262,
+    "margin_db": 0.0119318046180652,
+    "binding": {
+     "prefill": "attention",
+     "decode": "hbm",
+     "concurrency": "kv_capacity (B = KV limit)"
+    },
+    "snr_parts": {
+     "thermal": 42.00156816790761,
+     "mismatch": 46.020599913279625,
+     "settle": 2602.7565914628713,
+     "row_gain": 73.16419061611286,
+     "coupling": 63.01029995663981,
+     "row_coupling": 73.44852831421072,
+     "injection": 72.63366967654042,
+     "cap_nl": 300.0,
+     "ref_droop": 53.979400086720375,
+     "adc": 39.98411038581898,
+     "supply": 60.0,
+     "n9_droop": 61.14311715789214,
+     "n9_drv_inl": 54.80725378988488
+    },
+    "B": 368,
+    "vdd": 0.7,
+    "die_W": 48.328669083375885
+   },
+   "ss": {
+    "tok_s_die": 0.0,
+    "tops_w": 0.0,
+    "tok_w": 0.0,
+    "tok_j": 0.0,
+    "margin_db": -1.6365497745013826,
+    "binding": null,
+    "snr_parts": null,
+    "B": null,
+    "vdd": null,
+    "die_W": null
+   },
+   "ff": {
+    "tok_s_die": 0.0,
+    "tops_w": 0.0,
+    "tok_w": 0.0,
+    "tok_j": 0.0,
+    "margin_db": -1.1597112273064951,
+    "binding": null,
+    "snr_parts": null,
+    "B": null,
+    "vdd": null,
+    "die_W": null
+   },
+   "min_margin_db": -1.6365497745013826,
+   "all_pass": false
+  }
+ },
+ "baseline": {
+  "W8KV8_ppaPE_tt": {
+   "tok_s_die": 41356.119500580084,
+   "tops_w": 7.658629760489508,
+   "tok_w": 423.93649091715054,
+   "tok_j": 839.2065405355464
+  },
+  "W8KV8_ppaPE_ss": {
+   "tok_s_die": 35195.958782702895,
+   "tops_w": 7.614571154000295,
+   "tok_w": 421.8856791548043,
+   "tok_j": 832.855138253807
+  },
+  "W8KV8_ppaPE_ff": {
+   "tok_s_die": 43374.59844366615,
+   "tops_w": 7.53465531969086,
+   "tok_w": 418.15615640911255,
+   "tok_j": 823.3346337027084
+  },
+  "W8KV8_litPE_tt": {
+   "tok_s_die": 46401.44101883444,
+   "tops_w": 17.737392749037646,
+   "tok_w": 811.1735951060017,
+   "tok_j": 1339.1960548329705
+  },
+  "W8KV8_litPE_ss": {
+   "tok_s_die": 40541.973471038946,
+   "tops_w": 15.212496224130238,
+   "tok_w": 727.3776403756725,
+   "tok_j": 1173.811067063015
+  },
+  "W8KV8_litPE_ff": {
+   "tok_s_die": 48255.793292514696,
+   "tops_w": 13.046631670501537,
+   "tok_w": 649.1703862244023,
+   "tok_j": 1054.5539989260658
+  }
+ },
+ "corners": {
+  "tt": {
+   "delay": 1.0,
+   "ron": 1.0,
+   "kT": 1.0,
+   "leak": 1.0,
+   "leak85": 1.0,
+   "mm": 1.0,
+   "avt": 1.3,
+   "ripple": 0.01
+  },
+  "ss": {
+   "delay": 1.425,
+   "ron": 1.42,
+   "kT": 1.5349794238683128,
+   "leak": 7.744,
+   "leak85": 0.64,
+   "mm": 2.0,
+   "avt": 1.5,
+   "ripple": 0.02
+  },
+  "ff": {
+   "delay": 0.887,
+   "ron": 0.777,
+   "kT": 1.1933333333333334,
+   "leak": 18.271,
+   "leak85": 1.51,
+   "mm": 2.0,
+   "avt": 1.5,
+   "ripple": 0.02
+  }
+ },
+ "evaluated": 511
+}

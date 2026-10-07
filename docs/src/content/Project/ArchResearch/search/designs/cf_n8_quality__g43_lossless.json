@@ -1,0 +1,24 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n8_quality__g43_lossless",
+ "nodes": {
+  "n10_wildcards": "dps48",
+  "n2_domain": "time_delay",
+  "n4_formats": "w8a8_lead_norot",
+  "n5_array": "blk_diff_s2",
+  "n6_readout": "dsm_incremental",
+  "n7_dataflow": "digital_rail",
+  "n8_quality": "g43_lossless",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 14,
+  "buffer_MB": 2,
+  "cu_fF": 2.0,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 0.5
+ }
+}

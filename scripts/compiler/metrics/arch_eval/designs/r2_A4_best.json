@@ -1,0 +1,29 @@
+{
+ "frame": "joint (notes_native memory-format patch)",
+ "label": "projected: round-1 pick + gc3t_mom6 (112 T/w, measured write/retention) + LSB unit 0.2 fF (N4 f_cu_lsb). Same 12-b converter as the pick (182.7 dB); gate margin +0.055 dB TT",
+ "name": "r2_A4_best",
+ "nodes": {
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_direct_pool_k4",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard",
+  "n9_circuits": "lead",
+  "n3_cell": "gc3t_mom6"
+ },
+ "params": {
+  "adc_bits": 12,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "kv_bits": 4,
+  "nn_kv": true,
+  "kv_lo_bits": 4,
+  "kv_hi_bits": 8,
+  "kv_sink": 8,
+  "kv_recent": 120,
+  "kv_scale_group": 128,
+  "buffer_MB": 16,
+  "f_cu_lsb": 0.2
+ }
+}

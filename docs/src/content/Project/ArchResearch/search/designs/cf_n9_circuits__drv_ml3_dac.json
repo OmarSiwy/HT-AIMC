@@ -1,0 +1,23 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n9_circuits__drv_ml3_dac",
+ "nodes": {
+  "n2_domain": "time_delay_cal",
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_lead_norot",
+  "n5_array": "blk_diff_r8_c256_s4",
+  "n6_readout": "sar_vtc_pool",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hwa_distill",
+  "n9_circuits": "drv_ml3_dac"
+ },
+ "params": {
+  "adc_bits": 11,
+  "cu_fF": 0.2,
+  "k_dig": 4,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 1.0
+ }
+}

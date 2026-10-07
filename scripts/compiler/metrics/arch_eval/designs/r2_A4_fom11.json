@@ -1,0 +1,30 @@
+{
+ "frame": "joint (notes_native memory-format patch)",
+ "label": "projected: round-1 pick + gc3t_mom6 + Cu 1.1 fF + 11-b SAR + LSB unit 0.2 (round-2 'r2_A4_best' before the critic). Needs a 185.6 dB Schreier SAR (9.41 ENOB, 664 MS/s, 95.9 fJ): 2.9 dB further past the envelope than the pick's 182.7 dB. Gate margin +0.030 dB TT",
+ "name": "r2_A4_fom11",
+ "nodes": {
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_direct_pool_k4",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard",
+  "n9_circuits": "lead",
+  "n3_cell": "gc3t_mom6"
+ },
+ "params": {
+  "adc_bits": 11,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "kv_bits": 4,
+  "nn_kv": true,
+  "kv_lo_bits": 4,
+  "kv_hi_bits": 8,
+  "kv_sink": 8,
+  "kv_recent": 120,
+  "kv_scale_group": 128,
+  "buffer_MB": 16,
+  "cu_fF": 1.1,
+  "f_cu_lsb": 0.2
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n5_array__blk_pseudo_r32",
+ "nodes": {
+  "n10_wildcards": "ensemble_avg",
+  "n2_domain": "cco_freq_mac",
+  "n4_formats": "w8a8_1cell8b",
+  "n5_array": "blk_pseudo_r32",
+  "n6_readout": "flash",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "single_rail"
+ },
+ "params": {
+  "adc_bits": 10,
+  "double_buffer": true,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 0.5
+ }
+}

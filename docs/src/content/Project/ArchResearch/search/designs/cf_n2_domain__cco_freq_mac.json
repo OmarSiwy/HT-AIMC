@@ -1,0 +1,24 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n2_domain__cco_freq_mac",
+ "nodes": {
+  "n10_wildcards": "dps48",
+  "n2_domain": "cco_freq_mac",
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_lead_lsb1",
+  "n5_array": "blk_diff_r8_c64_s16",
+  "n6_readout": "sar_vtc_pool",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 11,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 0.5,
+  "share_fins": 32
+ }
+}

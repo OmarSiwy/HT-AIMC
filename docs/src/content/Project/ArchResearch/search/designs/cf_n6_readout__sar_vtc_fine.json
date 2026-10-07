@@ -1,0 +1,19 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n6_readout__sar_vtc_fine",
+ "nodes": {
+  "n4_formats": "w8a8_lead_norot",
+  "n6_readout": "sar_vtc_fine",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "vt_slvt_logic"
+ },
+ "params": {
+  "adc_bits": 12,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 32
+ }
+}

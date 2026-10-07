@@ -1,0 +1,20 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n4_formats__w7a8_lead_1cell",
+ "nodes": {
+  "n4_formats": "w7a8_lead_1cell",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "vt_slvt_logic"
+ },
+ "params": {
+  "adc_bits": 11,
+  "buffer_MB": 8,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 32
+ }
+}

@@ -1,0 +1,96 @@
+{
+ "name": "r2_A1_k2_shared_n9",
+ "frame": "joint (notes_native.score_design); tile_pitch_um = shared-frame fixed point (the per-physical-conversion N9 frame converges at 136.8 um)",
+ "label": "projected",
+ "note": "Round-2b A1 (docs/src/content/Project/ArchResearch/nodes/N6_r2.md, post-critic). K=2, adc_share 6, LVT 300: the shared-evaluator winner, which drops 4 % in the per-physical-conversion N9 frame (I1).",
+ "nodes": {
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_direct_residue_amp",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard",
+  "n9_circuits": "lead"
+ },
+ "params": {
+  "adc_bits": 11,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "kv_bits": 4,
+  "nn_kv": true,
+  "kv_lo_bits": 4,
+  "kv_hi_bits": 8,
+  "kv_sink": 8,
+  "kv_recent": 120,
+  "kv_scale_group": 128,
+  "buffer_MB": 16,
+  "cascade_K": 2,
+  "adc_share": 6,
+  "cmp_cls": "lvt300",
+  "dac": "mono",
+  "pool_tracks": 2,
+  "bpc": 2,
+  "pipe_ra": true,
+  "flash_bits": 2,
+  "cu_fF": 1.25,
+  "vtc_bits": 7,
+  "ra_gain": 16.0,
+  "dac_density": 4.78,
+  "t_model": "meas",
+  "tile_pitch_um": 144.9
+ },
+ "scores_projected": {
+  "arch/shared": {
+   "tok": 62783,
+   "tw": 10.63,
+   "tokw": 600.7,
+   "tokj": 608.9,
+   "m": 0.44,
+   "area": 20989,
+   "t1": 1.145,
+   "tpass": 6.87
+  },
+  "sohu/shared": {
+   "tok": 72220,
+   "tw": 10.22,
+   "tokw": 68.2,
+   "tokj": 68.2,
+   "m": 0.44,
+   "area": 20989,
+   "t1": 1.145,
+   "tpass": 6.87
+  },
+  "arch/fix": {
+   "tok": 60098,
+   "tw": 9.32,
+   "tokw": 536.1,
+   "tokj": 536.1,
+   "m": 0.44,
+   "area": 18716,
+   "t1": 1.135,
+   "tpass": 6.81
+  },
+  "sohu/fix": {
+   "tok": 59719,
+   "tw": 7.99,
+   "tokw": 53.9,
+   "tokj": 57.2,
+   "m": 0.44,
+   "area": 18722,
+   "t1": 1.135,
+   "tpass": 13.62
+  },
+  "arch/core_cli": {
+   "tok": 36766,
+   "tw": 10.06,
+   "tokw": 589.1,
+   "tokj": 671.2
+  },
+  "sohu/core_cli": {
+   "tok": 46046,
+   "tw": 10.19,
+   "tokw": 67.9,
+   "tokj": 78.2
+  }
+ }
+}

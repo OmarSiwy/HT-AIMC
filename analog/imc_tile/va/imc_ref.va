@@ -1,0 +1,19 @@
+// B5 buffered reference (ARCH_CHOSEN B5, N9 lead class-A), also used for the ml2 level nets
+// (V/3, 2V/3: N9_r2 class-AB SSF) and the bit-serial V rail (R_PDN).
+// Thevenin: v0 behind r_out, decap c_dec on the output. Class-A supply current: i_bias plus the
+// sourced load current, drawn from vdd so the testbench integrates the energy from the source.
+// Defaults: the C-DAC reference, v0 = vref / 2 per side ... set by the netlist per use.
+`include "disciplines.vams"
+module imc_ref(out, vdd);
+    parameter real v0     = 0.7;
+    parameter real r_out  = 1.0 from (0:inf);
+    parameter real c_dec  = 0.0 from [0:inf);
+    parameter real i_bias = 0.0 from [0:inf);
+    inout out, vdd; electrical out, vdd;
+    real il;
+    analog begin
+        il = (v0 - V(out)) / r_out;                   // current sourced into out
+        I(out) <+ -il + c_dec * ddt(V(out));
+        I(vdd) <+ i_bias + max(il, 0.0);
+    end
+endmodule

@@ -1,0 +1,24 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n8_quality__g_paper_28_38",
+ "nodes": {
+  "n10_wildcards": "analog_psum",
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_lead_norot",
+  "n5_array": "blk_diff_r8_c64_s16",
+  "n6_readout": "sar_direct_stack_pool",
+  "n7_dataflow": "lean_int8_rail",
+  "n8_quality": "g_paper_28_38",
+  "n9_circuits": "vt_lvt_logic"
+ },
+ "params": {
+  "adc_bits": 10,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "v_exc_frac": 0.43
+ }
+}

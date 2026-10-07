@@ -1,0 +1,23 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n10_wildcards__dps48_strassen",
+ "nodes": {
+  "n10_wildcards": "dps48_strassen",
+  "n2_domain": "charge_ota",
+  "n4_formats": "w8a8_1cell8b",
+  "n6_readout": "sar_27h1",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "single_rail"
+ },
+ "params": {
+  "adc_bits": 14,
+  "cu_fF": 16.0,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 0.5,
+  "wire_x": 4
+ }
+}

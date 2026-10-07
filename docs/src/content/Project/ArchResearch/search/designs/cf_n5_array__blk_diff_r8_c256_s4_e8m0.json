@@ -1,0 +1,23 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n5_array__blk_diff_r8_c256_s4_e8m0",
+ "nodes": {
+  "n2_domain": "time_delay_cal",
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_lead_norot",
+  "n5_array": "blk_diff_r8_c256_s4_e8m0",
+  "n6_readout": "sar_sampled",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hwa_distill",
+  "n9_circuits": "single_rail"
+ },
+ "params": {
+  "adc_bits": 12,
+  "cu_fF": 0.5,
+  "k_dig": 4,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 1.0
+ }
+}

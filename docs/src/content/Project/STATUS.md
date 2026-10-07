@@ -630,3 +630,14 @@ make -C digital/analogioc flow-harden       # config + LibreLane harden + macros
   - Tile calibration at ASAP7: `cal()` has no `fine_ref_trim` for asap7 or asap7_proj, so
     `specs.py` self-check fails there.
   - Porting the blocks: their netlist scripts format `fet_card` with W, not NFIN.
+
+### 2026-10-06: matched-baseline comparison, bottleneck order
+
+- `arch_eval/cli.py <design>` now also scores the systolic baseline with the design's weight and KV formats,
+  and prints the standard systolic metrics (peak and achieved TOPS, utilization, TOPS/mm², pJ/MAC,
+  HBM GB/s, bytes per token). The plain-CLI baseline had been on KV16 against the design's KV4.
+  Matched, the round-1 pick and the baseline tie on tok/s (1.01× ARCH, 0.996× Sohu).
+- Bottleneck order (`ARCH_CHOSEN.md` §10): (1) tile pass time, analog; (2) power cap, analog;
+  (3) HBM bandwidth and (4) KV capacity, digital and system. Documented, not researched.
+- Row-drive and comparator research landed: `ArchResearch/nodes/DRIVE_ALT.md` (BS6H) and
+  `ArchResearch/nodes/COMPARATOR_ALT.md` (E-trim double-tail SAR).

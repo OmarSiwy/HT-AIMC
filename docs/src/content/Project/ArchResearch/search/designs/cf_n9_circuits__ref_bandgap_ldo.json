@@ -1,0 +1,21 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n9_circuits__ref_bandgap_ldo",
+ "nodes": {
+  "n4_formats": "w8a8_lead_norot",
+  "n6_readout": "sar_vtc_pool",
+  "n7_dataflow": "digital_rail",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "ref_bandgap_ldo"
+ },
+ "params": {
+  "adc_bits": 11,
+  "buffer_MB": 2,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16
+ }
+}

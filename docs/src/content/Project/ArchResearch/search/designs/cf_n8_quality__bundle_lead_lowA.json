@@ -1,0 +1,23 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n8_quality__bundle_lead_lowA",
+ "nodes": {
+  "n10_wildcards": "analog_psum",
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_vtc_pool",
+  "n7_dataflow": "lean_int8_rail",
+  "n8_quality": "bundle_lead_lowA",
+  "n9_circuits": "vt_slvt_logic"
+ },
+ "params": {
+  "adc_bits": 11,
+  "buffer_MB": 32,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16
+ }
+}

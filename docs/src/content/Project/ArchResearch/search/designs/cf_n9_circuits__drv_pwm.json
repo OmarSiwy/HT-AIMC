@@ -1,0 +1,20 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n9_circuits__drv_pwm",
+ "nodes": {
+  "n4_formats": "w8a8_lead_norot",
+  "n6_readout": "sar_vtc_pool",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "drv_pwm"
+ },
+ "params": {
+  "adc_bits": 11,
+  "buffer_MB": 8,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 32,
+  "v_exc_frac": 0.43
+ }
+}

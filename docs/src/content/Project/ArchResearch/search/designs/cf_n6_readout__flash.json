@@ -1,0 +1,29 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n6_readout__flash",
+ "nodes": {
+  "n10_wildcards": "analog_psum",
+  "n1_system": "streaming",
+  "n2_domain": "hybrid_wmsb_digital",
+  "n3_cell": "gaincell_mos_caps_sramrule",
+  "n4_formats": "w8a8_1cell8b",
+  "n5_array": "blk_diff_r16_c256_s8",
+  "n6_readout": "flash",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "bundle_raw",
+  "n9_circuits": "colsw_bootstrap_lvt"
+ },
+ "params": {
+  "adc_bits": 11,
+  "cu_fF": 2.0,
+  "double_buffer": false,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "mos_fins": 8,
+  "rail_headroom": 0.5,
+  "share_fins": 32,
+  "wire_x": 4
+ }
+}

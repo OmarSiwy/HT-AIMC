@@ -1,0 +1,23 @@
+{
+ "frame": "joint",
+ "label": "projected",
+ "name": "cf_n4_formats__fp8_per_element_analog",
+ "nodes": {
+  "n10_wildcards": "ensemble_avg",
+  "n2_domain": "time_delay",
+  "n4_formats": "fp8_per_element_analog",
+  "n6_readout": "sar_sampled",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_protect_tensor",
+  "n9_circuits": "vt_slvt_logic"
+ },
+ "params": {
+  "adc_bits": 14,
+  "buffer_MB": 8,
+  "cu_fF": 16.0,
+  "k_dig": 0,
+  "kv_bits": 8,
+  "mcast": 16,
+  "rail_headroom": 2.0
+ }
+}

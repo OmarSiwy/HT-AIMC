@@ -1,0 +1,52 @@
+// B2 row drive of one tile (ARCH_CHOSEN B2 / N9 ml2_rails; N2_r2 bit-serial fallback).
+// Two bottom-plate rails per row (rp, rn): the activation sign picks the rail that carries the
+// level, the other stays at ground. drv[3r+0] = d0, drv[3r+1] = d1, drv[3r+2] = sign.
+//   mode 0 (ml2):       digit d = {d1,d0} selects l1 (V/3), l2 (2V/3) or l3 (V); 0 = ground
+//   mode 1 (bitserial): d0 = 1 selects l3 (V)
+// Each rail is c_row through r_sw to the selected level net, so the level nets (imc_ref instances)
+// see every row that switches onto them at once: the code-dependent droop is in the circuit.
+// cc = 1 (bitserial only): a dummy c_row charges from l3 when the row's bit is 0 while phi_drv is
+// high, so the l3 charge per slot does not depend on the input (constant-charge coding, N2_r2).
+// Defaults are for the full 256-column row (c_row 7.47 pF, P); tau_row = r_sw c_row = 16.1 ps
+// (M-fit, N2_r2 lead). A reduced-width simulation scales c_row and r_sw together.
+`include "disciplines.vams"
+module imc_rowdrv(drv, phi_drv, rp, rn, l1, l2, l3);
+    parameter integer ROWS = 8 from [1:64];
+    parameter integer mode = 0 from [0:1];
+    parameter integer cc   = 0 from [0:1];
+    parameter real c_row = 7.47e-12 from (0:inf);
+    parameter real r_sw  = 2.155 from (0:inf);
+    parameter real vth   = 0.35;
+    parameter real vs    = 0.02;         // logic-input smoothing (V), keeps Newton away from a hard step
+    input [0:ROWS*3-1] drv; input phi_drv; inout [0:ROWS-1] rp, rn; inout l1, l2, l3;
+    electrical [0:ROWS*3-1] drv; electrical phi_drv; electrical [0:ROWS-1] rp, rn; electrical l1, l2, l3;
+    electrical [0:ROWS-1] dm;
+    real a0, a1, sg, en, s1, s2, s3, g;
+    genvar r;
+    analog function real lg; input x, th, w; real x, th, w; lg = 0.5 * (1 + tanh((x - th) / w)); endfunction
+    analog begin
+        g = 1 / r_sw;
+        en = lg(V(phi_drv), vth, vs);
+        for (r = 0; r < ROWS; r = r + 1) begin
+            a0 = lg(V(drv[3 * r]), vth, vs);
+            a1 = lg(V(drv[3 * r + 1]), vth, vs);
+            sg = lg(V(drv[3 * r + 2]), vth, vs);
+            if (mode == 0) begin
+                s1 = a0 * (1 - a1); s2 = (1 - a0) * a1; s3 = a0 * a1;
+            end else begin
+                s1 = 0; s2 = 0; s3 = a0;
+            end
+            // active rail: rp when sign = 0, rn when sign = 1; the off rail and digit 0 go to ground
+            I(rp[r]) <+ c_row * ddt(V(rp[r])) + g * (1 - sg) * (s1 * V(rp[r], l1) + s2 * V(rp[r], l2) + s3 * V(rp[r], l3))
+                        + g * (1 - (1 - sg) * (s1 + s2 + s3)) * V(rp[r]);
+            I(rn[r]) <+ c_row * ddt(V(rn[r])) + g * sg * (s1 * V(rn[r], l1) + s2 * V(rn[r], l2) + s3 * V(rn[r], l3))
+                        + g * (1 - sg * (s1 + s2 + s3)) * V(rn[r]);
+            I(l1) <+ g * (1 - sg) * s1 * V(l1, rp[r]) + g * sg * s1 * V(l1, rn[r]);
+            I(l2) <+ g * (1 - sg) * s2 * V(l2, rp[r]) + g * sg * s2 * V(l2, rn[r]);
+            I(l3) <+ g * (1 - sg) * s3 * V(l3, rp[r]) + g * sg * s3 * V(l3, rn[r]);
+            // constant-charge dummy (bitserial): on l3 while the row is in its drive window with bit 0
+            I(dm[r]) <+ c_row * ddt(V(dm[r])) + g * cc * en * (1 - a0) * V(dm[r], l3) + g * (1 - cc * en * (1 - a0)) * V(dm[r]);
+            I(l3) <+ g * cc * en * (1 - a0) * V(l3, dm[r]);
+        end
+    end
+endmodule

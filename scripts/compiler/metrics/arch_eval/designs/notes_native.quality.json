@@ -1,0 +1,160 @@
+{
+ "weight_entropy": {
+  "ch_plain": {
+   "H0_bits": 7.201081756034931,
+   "huffman_bits": 7.237577151074822,
+   "n_weights": 106168320
+  },
+  "ch_hadamard": {
+   "H0_bits": 7.292768528661324,
+   "huffman_bits": 7.329988569094811,
+   "n_weights": 106168320
+  }
+ },
+ "weight_entropy_note": "measured on SmolLM2-135M (dequantized Q8_0 -> INT8 per output channel, absmax), linears without the tied LM head; zero-order per-tensor Huffman, table overhead excluded (< 0.01 b/w at 4 KB chunks). Llama-3-8B is projected to differ.",
+ "label": "measured (SmolLM2-135M proxy, 4 windows x 512 = 2,044 scored tokens, seed 0, notes_native.forward_kv on scripts/golden/quality)",
+ "kv": {
+  "kv8 per-token-head": {
+   "config": {
+    "lo": 8,
+    "hi": 0,
+    "sink": 0,
+    "recent": 0,
+    "rot": false
+   },
+   "ppl": 23.577601214874417,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 0.20167494789897766,
+   "delta_pct_se": 0.08838805395420915,
+   "top1_agree": 0.985812133072407,
+   "n_tokens": 2044,
+   "seconds": 9.0
+  },
+  "kv4 per-token-head": {
+   "config": {
+    "lo": 4,
+    "hi": 0,
+    "sink": 0,
+    "recent": 0,
+    "rot": false
+   },
+   "ppl": 30.317377121448704,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 28.844827763045732,
+   "delta_pct_se": 2.396279555893098,
+   "top1_agree": 0.7314090019569471,
+   "n_tokens": 2044,
+   "seconds": 8.3
+  },
+  "kv4 hadamard": {
+   "config": {
+    "lo": 4,
+    "hi": 0,
+    "sink": 0,
+    "recent": 0,
+    "rot": true
+   },
+   "ppl": 24.6451343980931,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 4.7385492484741665,
+   "delta_pct_se": 0.9917879718087811,
+   "top1_agree": 0.8639921722113503,
+   "n_tokens": 2044,
+   "seconds": 8.7
+  },
+  "kv4/8 sink8+recent120 (no rot)": {
+   "config": {
+    "lo": 4,
+    "hi": 8,
+    "sink": 8,
+    "recent": 120,
+    "rot": false
+   },
+   "ppl": 23.697288013998506,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 0.7103279542879593,
+   "delta_pct_se": 0.34482629021585437,
+   "top1_agree": 0.952054794520548,
+   "n_tokens": 2044,
+   "seconds": 9.0
+  },
+  "kv4/8 sink8+recent120 hadamard": {
+   "config": {
+    "lo": 4,
+    "hi": 8,
+    "sink": 8,
+    "recent": 120,
+    "rot": true
+   },
+   "ppl": 23.5804345329049,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 0.21371617337084814,
+   "delta_pct_se": 0.18134894721849992,
+   "top1_agree": 0.9779843444227005,
+   "n_tokens": 2044,
+   "seconds": 8.6
+  },
+  "kv3/8 sink8+recent120 hadamard": {
+   "config": {
+    "lo": 3,
+    "hi": 8,
+    "sink": 8,
+    "recent": 120,
+    "rot": true
+   },
+   "ppl": 23.81067368658164,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 1.1922020094295993,
+   "delta_pct_se": 0.4621666931748322,
+   "top1_agree": 0.9315068493150684,
+   "n_tokens": 2044,
+   "seconds": 8.1
+  },
+  "kv4/8 sink4+recent28 hadamard": {
+   "config": {
+    "lo": 4,
+    "hi": 8,
+    "sink": 4,
+    "recent": 28,
+    "rot": true
+   },
+   "ppl": 23.59966505698452,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 0.29544334762166,
+   "delta_pct_se": 0.29039901813072544,
+   "top1_agree": 0.9574363992172211,
+   "n_tokens": 2044,
+   "seconds": 8.3
+  }
+ },
+ "combined": {
+  "tile 39.8 dB + kv16": {
+   "config": null,
+   "tile": "w int8/ch, a int8/token, rows 8, FS 32 sigma, hadamard, noise 39.8 dB",
+   "ppl": 23.666175258854384,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 0.5781028755247108,
+   "delta_pct_se": 0.3155534781688418,
+   "top1_agree": 0.9412915851272016,
+   "n_tokens": 2044,
+   "seconds": 133.1
+  },
+  "tile 39.8 dB + kv4/8 sink8+recent120 hadamard": {
+   "config": {
+    "lo": 4,
+    "hi": 8,
+    "sink": 8,
+    "recent": 120,
+    "rot": true
+   },
+   "tile": "w int8/ch, a int8/token, rows 8, FS 32 sigma, hadamard, noise 39.8 dB",
+   "ppl": 23.774050947957875,
+   "ppl_ref": 23.53014680356777,
+   "delta_pct": 1.0365602323956669,
+   "delta_pct_se": 0.35900248907559756,
+   "top1_agree": 0.9324853228962818,
+   "n_tokens": 2044,
+   "seconds": 149.3
+  }
+ }
+}

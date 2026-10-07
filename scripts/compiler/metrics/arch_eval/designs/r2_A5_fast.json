@@ -1,0 +1,29 @@
+{
+ "name": "r2_A5_fast",
+ "frame": "joint",
+ "label": "projected",
+ "note": "N9_r2.md: round-1 pick tile, bit-serial drive, wire_x 4, dual-Vt SAR (quiet RVT, logic SLVT), MOS decaps under the MOM array, rail_headroom 2. Best TT tok/s of this node; FAILS the SS/FF corner gate by 2.1/1.7 dB.",
+ "nodes": {
+  "n4_formats": "w8a8_lead_tokact",
+  "n6_readout": "sar_direct_pool_k4",
+  "n7_dataflow": "tdm_noc",
+  "n8_quality": "lv_hadamard",
+  "n9_circuits": "bitserial_dual"
+ },
+ "params": {
+  "adc_bits": 12,
+  "k_dig": 0,
+  "mcast": 16,
+  "rail_headroom": 2.0,
+  "share_fins": 16,
+  "buffer_MB": 16,
+  "kv_bits": 4,
+  "nn_kv": true,
+  "kv_lo_bits": 4,
+  "kv_hi_bits": 8,
+  "kv_sink": 8,
+  "kv_recent": 120,
+  "kv_scale_group": 128,
+  "wire_x": 4
+ }
+}
