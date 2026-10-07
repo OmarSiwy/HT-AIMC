@@ -44,8 +44,8 @@ Justification:
   write path (B1) and reuse the first-order costs.
 - **Charge domain, passive share.** The multiply-accumulate is charge sharing: no static current
   and 3.66 fJ per MAC in the array (P). Time-domain/PWM inputs need 2ᵇ steps per pass, and
-  current-mode unary packets are dominated (N2_r2: 60.1k, below the lead).
-- **Gain cell, no SRAM (user constraint).** Weights are analog charge. The 3T gain cell (N3_r2)
+  current-mode unary packets are dominated (60.1k tok/s, below the chosen design).
+- **Gain cell, no SRAM (user constraint).** Weights are analog charge. The 3T gain cell
   cut transistors per weight by 30 %. The transistor run then showed the bottom-plate kick needs a
   buffered output (M).
 - **W8 as two slices, merged in charge.** W8A8 with Hadamard rotation is the lossless quality tier
@@ -77,42 +77,52 @@ converter INL (6.8 vs 4 LSB) still fail (M).
 
 ### Tradeoffs between blocks (The pareto set)
 
-**Design-level points** (ARCH conditions; joint frame unless marked, all P):
+The front runs between tok/s and TOPS/W (tok/W tracks TOPS/W). Each point below is one concrete
+combination of blocks. All scores are P, ARCH conditions, the evaluator's ranking frame, before
+the judges' pessimistic penalties. "Infeasible" means a measured check failed.
 
-| Design | tok/s | TOPS/W | tok/W | tok/J | Where it sits |
-|---|---|---|---|---|---|
-| Round-1 pick, as scored | 67,922 | 15.56 | 825 | 834 | Rested on the four-level drive, which failed |
-| Round-1 pick, judge-corrected | 48,700 | 9.3 | 551 | 550 | Pessimistic converter and corner penalties |
-| **Upgraded tile, bank caps in shared metal** | **66,565** | 11.60 | | | BS6H, E-trim, 3 columns per converter |
-| **Upgraded tile, bank caps priced** | **49,168** | **13.21** | | | The same, with 18.4k µm² of caps per tile |
-| r2_A5 (2 b per slot on two extra supply nets) | 68,488 | 10.47 | 611 | 625 | Highest tok/s; needs mid-rail nets ≤ 1.3 Ω |
-| r2_A2 (bottom-plate sampled, constant charge) | 64,188 | 9.78 | 559 | 571 | No new nets; low TOPS/W |
-| r2_A1 (residue-amp SAR on 4 pooled tiles) | 60,835 | 11.22 | 629 | 643 | Fewer, faster converters |
-| Robust tile + KV 4/8, corrected | 47,500 | 6.9 | 393 | 403 | Corners already closed |
-| Search p08 (KV8, round-1 frame) | 52,157 | 16.38 | 767 | 945 | Balanced point |
-| Search p22 (KV8, round-1 frame) | 34,976 | 27.17 | 1,069 | 1,115 | TOPS/W end: slow reference, 32 MB buffer |
-| Systolic, lever-matched, synthesized PE | 46,398 | 10.61 | 600 | 968 | Baseline |
-| Systolic, lever-matched, literature PE | 61,005 | 18.30 | 939 | 1,705 | Strongest baseline |
+**The points on and near the front**
 
-The upper-left of the front (tok/s) is set by the system ceiling: batch at the KV limit and decode
-on HBM. Dozens of designs tie there, and moving along the front trades tok/s for TOPS/W through
-the tile's converters, reference and logic voltage. The search's p01 → p22 walk gives up 35 % of
-tok/s for 2.6× TOPS/W.
+| Row drive | Readout | Cell and caps | Other | tok/s | TOPS/W | tok/W | tok/J | What it trades |
+|---|---|---|---|---|---|---|---|---|
+| **Bit-serial, 6-tick slots (5.94 ns word)** | **E-trim double-tail SAR, 3 columns per converter, ping-pong banks** | **Buffered gain cell; 1 / 0.25 fF units; bank caps in their own MOM area (18.4k µm² per tile)** | KV 4/8, 16 MB, class-A reference | **49,168** | **13.21** | | | The chosen design, with every known cost priced |
+| same | same | bank caps placed under the array in shared metal | same | 66,565 | 11.60 | | | +35 % tok/s and −12 % TOPS/W, if layout can stack the caps |
+| same | E-trim SAR, **4** columns per converter | bank caps priced | same | 43,196 | 12.78 | | | 22 fewer converters (−1.2k µm² per tile); conversion binds the pass at 7.36 ns: −12 % tok/s |
+| 4-level, 2 b per slot, levels from **two extra die supply nets** | Sampled 11-b SAR | 2 fF units | KV 4/8, 16 MB, LVT logic | 68,488 | 10.47 | 611 | 625 | Fastest feasible-on-paper point, closes SS and FF. Needs the two mid-level nets at ≤ 1.3 Ω per tile (not extracted). −21 % TOPS/W against the chosen design |
+| Bit-serial from VDD/GND, 7-tick slots | Sampled 11-b SAR | 2 fF units | KV 4/8, 16 MB, LVT logic | 61,495 | 9.65 | 568 | 568 | The same tile without the extra nets: corner-clean, −10 % tok/s |
+| Bit-serial, bottom-plate sampled, constant-charge rows (32-fin) | Direct 12-b SAR shared by 4 pooled tiles | 1 fF units | KV 4/8, 16 MB | 64,188 | 9.78 | 559 | 571 | No extra nets and no droop calibration; 6.56 ns pass, 20.9k µm² tile, G2 margin only +0.14 dB |
+| 4-level, buffered levels per tile | Pipelined residue-amp SAR, 6 columns per converter on 4 pooled tiles, 3 b per cycle | 1.25 fF units | KV 4/8, 16 MB | 60,835 | 11.22 | 629 | 643 | Fewest converters. The pooling bus wire and preamp area are the risk, and pooling is incompatible with block-8 scales |
+| 4-level, buffered levels per tile | Residue-amp 12-b SAR, 4 columns per converter, bridge merge | 1.75 fF units | KV 4/8, 16 MB | 47,129 | 10.05 | | | TT only. With 2.5 fF units it closes the corners at 33.6k (−28 %) |
+| 4-level, buffered levels per tile | Direct 12-b StrongARM SAR on 4 pooled tiles | 3T gain cell, 0.2 fF LSB units | KV 4/8, 16 MB | 68,890 | 10.88 | 613 | 629 | **Infeasible**: the level buffers do not settle (0.64 %, M) and the StrongARM noise fails G2 by 7.9 dB (M) |
+| 4-level, buffered levels per tile | Direct 12-b StrongARM SAR on 4 pooled tiles, 86 µV comparator assumed | 1 / 0.25 fF units | KV 4/8, 16 MB, bandgap-free reference | 67,922 | 15.56 | 825 | 834 | **Infeasible**, same two reasons. The level buffers alone would draw about 140 W per die (D) |
+| none (weight-MSB digital hybrid) | Sampled 11-b SAR | 2 fF units | KV 8, 2 MB, LVT logic | 47,766 | 9.63 | 512 | 549 | Built for corners: +0.52 dB at SS, +0.86 dB at FF with no adaptive VDD. Adding KV 4/8 and 16 MB gives 62,014 / 10.42 |
+| 4-level | 11-b SAR | 1 fF units | KV 8, 8 MB, SLVT logic | 53,864 | 10.45 | 547 | 690 | The KV8 tok/s end. Fails SS by 1.60 dB; SLVT leakage puts the FF die over 1 W/mm² |
+| 4-level | Time-domain (VTC) SAR on pooled tiles | 1 fF units | KV 8, 32 MB, LVT logic, lean INT8 rail | 52,157 | 16.38 | 767 | 945 | −3 % tok/s for 1.57× TOPS/W against the line above |
+| 4-level | Time-domain (VTC) SAR | 1 fF units | KV 8, 32 MB, charge-reservoir reference, lean rail | 34,976 | 27.17 | 1,069 | 1,115 | The TOPS/W end: the reservoir reference is cheap but slow. Against the KV8 tok/s end: −35 % tok/s for 2.6× TOPS/W |
+| PWM inputs (2⁸ time steps) | Time-domain SAR | pure charge domain | KV 8, 8 MB | 17,548 | 27.55 | 1,078 | 1,078 | Shows why PWM is rejected: −50 % tok/s for no TOPS/W gain over the line above |
+| — | — | — | Systolic, synthesized INT8 PE, same formats | 46,398 | 10.61 | 600 | 968 | The baseline |
+| — | — | — | Systolic, literature INT8 PE, same formats | 61,005 | 18.30 | 939 | 1,705 | The strongest baseline |
 
-**Block-level tradeoffs** (what each knob buys and costs):
+The last four analog rows assume a 6 dB quality credit that was later disallowed, so their tok/s is
+optimistic. They are here for the shape of the front: at a fixed system ceiling, the tile choices
+move TOPS/W far more than tok/s.
 
-| Block | Options | Gain | Cost | Choice |
-|---|---|---|---|---|
-| Row drive | ml2 (2 b/slot) · bit-serial 7-tick · **BS6H** · BS6H-cc · cr2 (capacitor ratio) | cr2 is a faster word (3.96 ns with the merge hidden); ml2 5.66 ns | ml2 does not settle; cr2 +12 % area and G2 at 0.00 dB; cc doubles drive energy | BS6H (cc as the fallback) |
-| Comparator | StrongARM · DT ×4 · **E-trim** · DT ×2 binary · FIA preamp · residue-amp SAR | More decisions on the quiet class → more margin | Energy ∝ 1/σ² (κ law): StrongARM ×16 → −40 % tok/s; FIA 2.5–4.9 ns per conversion; residue-amp 3.7× energy | E-trim (DT ×2 as fallback) |
-| Converter share | 2 · **3** · 4 · 6 (pooled) | Fewer converters → less area and energy | Conversion binds the pass from 4 up | 3 |
-| Bank caps | priced MOM · shared metal | Hidden merge (no merge slot) | 88 pF per tile; −26 % ARCH tok/s if they need their own area | Open: decided by layout |
-| Gain cell | 3T · **buffered 5T** · round-1 cell | 3T: −30 % transistors | 3T gives 3.3 % share error (M) | Buffered, cost not yet priced |
-| C_col / unit cap | 56 fF; cu 1.25–2.5 fF | Larger C: more kT/C margin, closes corners | Energy and area grow with C (cu 2.5 closes SS at −28 % tok/s) | 56 fF; SS closed with adaptive VDD |
-| Weights | **W8 two-slice** · W4 | W4 halves HBM bytes and doubles KV room | Acceptable tier only, not lossless | W8 |
-| KV cache | 16 · 8 · **4/8 sink+recent** | Batch 368 → 587 at the KV limit | +0.21 % PPL | 4/8 |
-| Buffer | 2 · **16** · 32 MB | Hides prefill spill | Area from the unused margin | 16 MB |
-| Reference | bandgap+LDO · **class-A** · reservoir | Reservoir and bandgap save energy | Bandgap cannot be signed off at ASAP7; reservoir costs tok/s | Class-A |
+**What each block trades**
+
+| Block | The axis | Numbers |
+|---|---|---|
+| **Row drive** | Bits per slot (speed) against settling, supply stiffness and energy | **2 b per slot**: 4.5–5.7 ns per word, but it needs two mid-level voltages. Per-tile buffers settle to 0.64 % against 0.1 % (M) and would draw about 140 W per die. Die-level nets work only if ≤ 1.3 Ω per tile. **1 b per slot, 7 ticks**: 7.95 ns; at 0.4 Ω it settles even at SS (0.043 %), at today's 1.3 Ω it does not (0.742 %, M). **6 ticks** (chosen): 5.94 ns, needs R_PDN ≤ 0.4 Ω; otherwise constant-charge dummies double the drive energy (108 → 205 pJ per pass). **Capacitor-ratio 2 b per slot**: 3.96 ns and half the drive energy (57 pJ), for +12 % tile area and zero G2 margin |
+| **Comparator** | Noise against energy and time (energy ∝ 1/σ²) | StrongARM: 4.05 mV at 2.9 fJ, fails G2 by 7.9 dB; ×16 to reach about 1 mV costs 724 fJ per conversion and −40 % tok/s. **E-trim** (chosen): 1.82 mV fast + 0.65 mV quiet decisions, 277 fJ, 1.61 ns, +0.84 dB. FIA preamp: 0.47 mV but 2.5–4.9 ns per conversion, −24 % tok/s. Residue amplifier: 3.7× energy and 7.9× area per conversion |
+| **Converters per tile** | Count against pass time | 64 (4 columns each): conversion binds at 7.36 ns. **86 (3 each)**: the drive binds at 5.94 ns, +12 to +16 % tok/s for +1.2k µm². 128 (2 each): conversion fully hidden but the tile grows 45 % (19.0k → 27.5k µm²) |
+| **Tile pooling** | Fewer converters against flexibility | Sharing one converter across K tiles saves converters but needs a bus wire and equal scales on the pooled tiles, which block-8 operands break |
+| **Merge** | Hidden merge against capacitance | Ping-pong banks remove the 1.13 ns merge slot from every pass (+19 % pass rate) for 88 pF per tile. In their own MOM area that is −26 % ARCH tok/s |
+| **Unit capacitor** | kT/C margin against energy and area | 1 / 0.25 fF (chosen) passes TT and FF; SS needs the signal rail held at 0.7 V. 2 fF units close every corner with no adaptive supply. 2.5 fF closes them at −28 % tok/s |
+| **Gain cell** | Transistor count against charge-share error | 3T: 112 transistors per weight (−30 %), but the share kick gives 3.3 % error (M). Buffered (chosen): +2 transistors per bit, settles to 0.067 % (M), area not priced yet |
+| **Reference** | Energy against speed and sign-off | Class-A buffered (chosen): 46 pJ per pass, signable. Bandgap + LDO: cheaper, but ASAP7 has no BJT or resistor models. Charge reservoir: highest TOPS/W (27), lowest tok/s |
+| **Logic threshold** | Speed against leakage | SLVT is fastest, but its leakage pushes the FF die past 1 W/mm². LVT and RVT stay inside the cap |
+| **Weights in HBM** | Bytes against quality | W8 (chosen) is the lossless tier. W4 halves weight bytes and leaves more KV room, but it is only the acceptable tier |
+| **KV cache** | Batch against quality | KV 16 → 8 → 4/8 raises the KV-limited batch 184 → 368 → 587 streams (W8). 4/8 costs +0.21 % PPL (M, proxy) |
+| **Activation buffer** | Spill against area | 2 MB spills prefill activations to HBM. 16 MB (chosen, 4.7 mm²) removes the spill, out of the 17 mm² of unused die |
 
 ### Application where it can beat turn Decode from memory bound into Compute Bound
 
@@ -135,7 +145,7 @@ Under Sohu conditions (ridge 2,626, decode 348 at B = 1,000), speculative decodi
 **Where the analog die then beats the systolic die.** Once decode is compute-bound, throughput is
 the lower of the compute roof and the power roof (1 W/mm² × TOPS/W), and both machines sit near
 their power roofs. The analog advantage becomes its TOPS/W ratio:
-- 1.04× with the round-1 tile against the synthesized systolic PE (P);
+- 1.04× with the four-level-drive tile as scored by `cli.py`, against the synthesized systolic PE (P);
 - about 1.2× for the upgraded tile with its bank caps priced (13.21 against 10.61, P, from two different scoring frames);
 - a loss (about 0.7×) against the literature systolic PE at 18.3 TOPS/W.
 
