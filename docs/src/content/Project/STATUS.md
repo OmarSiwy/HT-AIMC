@@ -658,3 +658,9 @@ make -C digital/analogioc flow-harden       # config + LibreLane harden + macros
   (0.72 % FS) and the converter INL (6.8 LSB rms) are open.
 - Two new ESPice issues in `analog/docs/TOOL_ISSUES.md` (tstep/PWL-corner TimestepTooSmall; vector ports
   sized from defaults).
+
+### 2026-10-07: next research step, an analog varactor weight cell
+
+Documented in `ARCH_CHOSEN.md` §11, not started. The cell is 4 MOS capacitors plus 1 TG, holding an
+analog weight voltage that sets their capacitance, in place of today's ~130 T + 14 MOM bit cell.
+Area what-if (P): 1.39× tok/s/mm² with per-cell calibration; 0.81× to 0.53× without it.

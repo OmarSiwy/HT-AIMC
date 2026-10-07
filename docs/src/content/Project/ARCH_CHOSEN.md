@@ -499,3 +499,67 @@ and loses on tok/J (0.6×).
 **Model issue for #1.** The evaluator's tile timing is about 2× slower than the Verilog-A
 measurement. It converts both slices (512 conversions per pass), while the Verilog-A tile merges
 first and converts 256. The tile upgrade recalibrates it.
+
+## 11. Next research step: an analog varactor weight cell (documented 2026-10-07, not started)
+
+**Why.** Today's weight cell is a DRAM-style bit store driving a binary capacitor DAC. Each side of a
+W8 weight has 8 gain cells (5 T each, buffered), a 4 T sign mux, 7 crosspoint switches (3 T each)
+and 7 binary-weighted MOM units: about **130 transistors and 14 MOM capacitors per weight**. With
+two weight banks, the cells are 12.0k of the tile's 18.0k µm² (`arch_eval`, round-1 pick). This
+goes against the lightweight-tile direction in `ARCH_METRIC.md`. It came from the rule "store bits,
+not levels" (notes 27c4, 27c8, 27c9; N3 #19 failed retention at the corner). The cell below was
+never built or simulated.
+
+**The cell (user proposal).** At most 4 MOS capacitors and one transmission gate per weight
+(6 T). The TG writes an analog weight voltage V_w and holds it. V_w biases the MOS capacitors in
+the linear part of their C–V curve, so it sets their capacitance. The bit-serial row drive (0/V
+steps, unchanged) pushes Q = ∫C(v) dv onto the column.
+
+- **Exact multiply.** With a linear C–V slope, C = a + b·v, and a binary step of V:
+  Q = V·(a + b·V_w) − b·V²/2. That is affine in V_w. The −b·V²/2 term is a constant per
+  bit-plane and cancels between the two sides of the differential pair.
+- **Non-destructive.** The weight sets a capacitance, and no charge is shared away from it.
+- **Starting topology** (to confirm with the user): the TG holds weight node W. Two MOS
+  capacitors couple W to the row line, and two couple W to the column. NMOS goes on one side and
+  PMOS on the other, so a rising V_w moves the two sides in opposite directions and gives a signed
+  weight. Variants to try: the 4 in parallel as one tunable capacitor, and stacked capacitors for
+  more range.
+
+**Risks to measure** (estimates are D/P from this repo's ASAP7 data):
+
+| Risk | Estimate | Way out |
+|---|---|---|
+| Tuning range | MOS C moves about 1.8:1 (38–70 aF per fin, N3_r2) | Complementary NMOS/PMOS, differential |
+| Mismatch | V_th shifts the C–V curve. Weight error ≈ 0.07/√N_fins of full scale, so ≤ 0.3 % needs about 550 fins per side uncalibrated | Per-cell offset/gain calibration folded into the write code |
+| Write kT/C | 4.5 mV rms on 0.2 fF of gate (about 35 dB against the 40 dB gate) | Storage node ≥ 2–3 fF (about 40–60 fins) |
+| Retention | Thin-oxide gate leakage and TG leakage; a prefill weight is held for milliseconds | Refresh from the stage bank's digital copy |
+| Temperature | The C–V curve moves with kT/q and V_th(T) | Reference cells that track it |
+| Write path | Every weight is an 8-b DAC write (2,048 per tile load). A tile load hides under ≥ B vectors (≥ 4 µs in decode), so a few shared DACs per tile suffice | Price the DAC energy and area |
+
+**Area what-if (P, `arch_eval`, round-1 pick, ARCH; only the cell's area per weight changes).**
+Fin area is about 0.0045 µm² including overhead (27 nm fin pitch × 54 nm CPP × 3).
+
+| Cell | µm² per weight | Tile µm² | tok/s | tok/s/mm² |
+|---|---|---|---|---|
+| Today's booking (MOM-bound) | 2.93 | 18,014 | 50,963 | 510 |
+| Today's 130 T cell at FEOL density | ~3.5 | 20,352 | 47,058 (0.92×) | 471 |
+| **Varactor, per-cell calibration** (60 fins, plus 1.5k µm² of calibration SRAM per tile) | 0.4 | 9,403 | **70,935 (1.39×)** | **709** |
+| Varactor, uncalibrated (500 fins per side) | 4.5 | 24,448 | 41,511 (0.81×) | 415 |
+| Varactor, uncalibrated (1,000 fins per side) | 9.0 | 42,880 | 26,849 (0.53×) | 268 |
+
+Calibration decides it. With per-cell calibration the cell halves the tile and raises tok/s/mm²
+by about 40 %, until the power cap binds (§10, #2). Without calibration, mismatch forces large
+capacitors and costs 20–50 %.
+
+**Plan (one agent, ESPice on ASAP7).**
+1. NMOS/PMOS MOS-capacitor C–V at 0.7 V, TT/SS/FF, and the window where the slope is linear.
+2. The 4-capacitor + TG cell under bit-serial 0/V steps. Measure Q against V_w and the affine
+   residual, and compare topologies.
+3. Write: kT/C, TG charge injection, settling to 8 b, DAC energy.
+4. Retention: gate and TG leakage at 25 and 85 °C; refresh interval.
+5. Mismatch: V_th sensitivity of Q, and the fins needed with and without per-cell calibration.
+6. Score it in `arch_eval` against today's cell; if it wins, replace the cell in
+   `analog/imc_tile/netlist/imc_tile.py`.
+
+**Gate to adopt.** Affine residual ≤ 0.1 % of full scale after calibration, the 40 dB weight term
+met at TT/SS/FF, retention ≥ 10× the refresh interval, and tok/s/mm² at or above today's.
