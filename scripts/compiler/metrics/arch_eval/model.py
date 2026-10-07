@@ -182,6 +182,10 @@ def system_point(ctx, t, d, plan, B):
                 tile_macs_s_die=tokens * wl["weight_macs_per_token"] / T / (D * nd),
                 hbm_Bps_die=hbm_bytes / T / (D * nd), hbm_Bps_decode_die=hbm_step / T_step / (D * nd),
                 hbm_bytes_per_token=hbm_bytes / tokens,
+                phases=dict(prefill=dict(ops=2 * B * (P * wl["weight_macs_per_token"] + wl["att_macs_prefill"]),
+                                         bytes=hbm_pre, s=T_pre),
+                            decode=dict(ops=2 * B * (wl["weight_macs_per_token"] + wl["att_macs_per_ctx"] * ctx_avg),
+                                        bytes=hbm_step, s=T_step)),   # whole system, per phase (one decode step)
                 kv_ok=B <= b_max, quality_ok=t["quality"]["passed"],
                 binding=dict(prefill=b_pre, decode=b_step), T_wave_s=T, T_prefill_s=T_pre, T_step_s=T_step,
                 energy_per_token_J=dict({n: v / tokens for n, v in e.items()}, external_memory=e_ext / tokens))
