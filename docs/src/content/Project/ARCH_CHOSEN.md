@@ -20,10 +20,12 @@ The design is a streaming charge-domain IMC with a position-tiered digital KV ca
 
 - **Weights.** It stores W8 weights as two 4-b slices of gain-cell charge on MOM6 capacitors,
   differential.
-- **Inputs.** Every pair of input bits is applied as one of four rail levels on the row bottom
-  plates (the charge rail).
-- **Readout.** The two slices are merged 1:16 in charge, then read by pooled 12-b SAR converters,
-  one conversion per weight column.
+- **Inputs.** Bit-serial: one bit-plane of |x| per 0.849 ns slot on 0/V rails (BS6H, `DRIVE_ALT.md`).
+  Round 1's four-level drive (ml2) is replaced: it does not settle (0.64 % against 0.1 %).
+- **Readout.** The two slices are merged 1:16 in charge on ping-pong accumulation banks, under the
+  next pass, then read by E-trim noise-aware 12-b SARs (`COMPARATOR_ALT.md`), 3 columns per converter.
+- **Operands.** Block-8 scaling: every 8-row block of x and w carries a scale byte, and a dequant
+  multiply per conversion restores it. The accuracy target needs it (tokact fails G2 by 12 dB).
 - **Partial sums.** Each column's partial sum is added digitally into a 24-b accumulator chain
   that runs down the K-adjacent tiles.
 - **Data path.** Weights stream from HBM just ahead of the activations. Activations are INT8 per
@@ -36,6 +38,10 @@ The design is a streaming charge-domain IMC with a position-tiered digital KV ca
 | | **judge-corrected (P)** | **48,700** | **9.3** | **551** | **550** |
 | Sohu (Llama-3-70B FP8, 2048/128, B 1000, TP-8, 1,063 mm²) | as scored (P) | 101,125 | 14.94 | 97.2 | 104.1 |
 | | **judge-corrected (P)** | **72,500** | **9.0** | **64.8** | **68.7** |
+
+These are the round-1 scores. The upgraded tile, scored in a scratch patch of the live frame (§B4), reads
+66,565 / 11.60 (ARCH) and 72,220 / 11.00 (Sohu) with the ping-pong bank caps in shared BEOL, and
+49,168 / 13.21 and 69,002 / 12.60 with them priced at MOM density (P).
 
 The ARCH operating point:
 
@@ -93,15 +99,15 @@ row drive, these two joint-frame credits are worth 1.52x tok/s. Without them, th
   v                        v                                         |
   3,181 IMC tiles, 60.3 mm2, 18,962 um2 each (~138 um pitch)         |
   +------------------------------------------------------------+     |
-  | B2 row drive: 4 rails (0, V/3, 2V/3, V), 2 b per slot      |     |
-  |    -> 8 rows x 7.47 pF bottom-plate rails                  |     |
+  | B2 row drive: bit-serial 0/V rails, 1 b per 0.849 ns slot  |     |
+  |    -> 8 rows x 7.47 pF bottom-plate rails, R_PDN <= 0.4 ohm|     |
   | B1 array: 8 rows x 256 diff cols x 2 slices                |     |
   |    gain cell + MOM6 units, MSB 1 fF / LSB 0.25 fF          |     |
   | B3 column: bootstrapped share/reset switch, C_col 56 fF    |     |
-  |    + 1:16 charge merge of the MSB and LSB slice columns    |     |
-  | B4 readout: 12 b SAR, direct (column = sampler), pool K=4  |     |
+  |    + 2 ping-pong acc banks, 1:16 merge under the next pass |     |
+  | B4 readout: E-trim 12 b SAR, direct (bank = C-DAC), 3 cols |     |
   | B5 reference: class-A buffered, tile-shared                |     |
-  | B6 digital: per-column affine cal                          |     |
+  | B6 digital: per-column affine cal + block-8 dequant        |     |
   | B10 accumulator: 24 b add + register per column            |     |
   +------------------------------------------------------------+     |
        psum_in (24 b x 256) --> tile k --> psum_out --> tile k+1 ... |
@@ -136,11 +142,14 @@ analog). VDD_L = 0.5 V for logic, at a 0.524 GHz clock. RVT logic.
 
 One pass is 2,048 MACs: the full 8 × 256 differential tile, both slices.
 
-| pass timing (P) | value |
-|---|---|
-| t_word | 5.66 ns: 4 drive slots of 1.132 ns, plus 1 slot for the merge share |
-| t_conv | 6.30 ns: 4 pooled rounds × 1.576 ns |
-| **t_pass** | **6.30 ns** (conversion-bound) |
+| pass timing | value | label |
+|---|---|---|
+| t_word | 5.94 ns: 7 bit-serial slots of 0.849 ns (6 ticks of 141.5 ps). The merge runs on the other bank under the next pass; a weight-change pass adds an 8-tick write window | D (RTL: 5.96 ns at a 142 ps tick, M) |
+| t_conv | 5.52 ns: 3 rounds × 13 ticks; one E-trim conversion is 1.61 ns | D (RTL 5.54 ns) |
+| **t_pass** | **5.94 ns** (drive-bound) | D (RTL 42 ticks) |
+
+Replaced: ml2's 4 slots + a merge slot (5.66 ns) against 4 pooled rounds (6.30 ns). AdcShare 4 would be
+conversion-bound at 52 ticks (7.36 ns); §B4 has the choice.
 
 ### B1. Gain-cell weight store (N3)
 
@@ -156,18 +165,18 @@ One pass is 2,048 MACs: the full 8 × 256 differential tile, both slices.
 | unit mismatch | σ(ΔC/C) ≤ 1 % at 1 fF and ≤ 2 % at 0.25 fF, so that the mismatch term reaches ≥ 46.0 dB (P: ASAP7 has no MOM mismatch data) |
 | constraint | no SRAM bitcells in the tile (ARCH_METRIC constraint 2) |
 
-### B2. Row drive (N9 `ml2_rails`)
+### B2. Row drive (BS6H, `DRIVE_ALT.md`)
 
 | spec | target |
 |---|---|
-| function | puts 2 activation bits per slot on each row's bottom-plate rail by switching between 4 levels |
-| levels | V/3 and 2V/3 come from two trimmed, tile-shared class-AB buffers |
-| slot | 1.132 ns; 4 slots per 8-b word |
-| load | 8 rows × 7.47 pF, which is 10 to 14 pC of data-dependent charge per slot |
-| level accuracy | code-dependent droop and INL ≤ 0.1 % of V (drive-INL term ≥ 54.8 dB) |
-| energy | ≤ 4.8 pJ per pass |
-| excitation | v_exc = 0.35 V per side. The reported `n9_exc_V` of 1.19 V is a reporting artefact (§9) |
-| fallback | `drv_inv_bitserial`: rail-only drive, 8 slots, 61,740 / 14.04 (P), +0.15 dB of margin |
+| function | bit-serial: slot s puts bit s of \|x\| on the row's rp rail (x ≥ 0) or rn rail (x < 0) as 0 or V, from a 4096-fin-class inverter per rail on the tile supply |
+| slot | 0.849 ns = 6 ticks: 1 reset tick, 4 ticks of rail time to the share edge (0.566 ns), the share closing one tick before the slot ends; 7 slots per word |
+| tile supply | R_PDN ≤ 0.4 Ω per tile, no slow local decap (decap turns the sag into a slow droop) |
+| settling | ≤ 0.1 % of V at the share edge with 8 rows on V: 0.078 % at TT (M, DRIVE_ALT E3). SS gives 0.238 % (M), so SS dies run 7-tick slots (0.043 %, M) |
+| drive law | the measured table (golden `E_TAB`), not the linear level-net law, which understates the 8-row error 14x at 1.3 Ω |
+| energy | 108 pJ per pass delivered from the supply (D, imc_tile accounting) |
+| fallback | BS6H-cc: constant-charge dummies make the droop a calibrated static gain (3 % tracking residual); 205 pJ per pass |
+| replaced | `ml2_rails` (4 levels, 2 b per slot): fails the 0.1 % settling (0.64 %), V2's kT/C rule and the adversarial job |
 
 ### B3. Column, share switch and slice merge (N2 charge rail, N4 merge, N5, N9 `bootstrap`)
 
@@ -175,27 +184,44 @@ One pass is 2,048 MACs: the full 8 × 256 differential tile, both slices.
 |---|---|
 | function | the passive charge share sums weight × input-plane products on each slice column. Then a 1:16 charge share merges the MSB and LSB slice columns into one sample |
 | C_col | 56 fF, so kT/C gives a thermal term ≥ 43.3 dB |
-| merge | 1:16 ratio error ≤ 0.1 % (P: about 10-b ratio accuracy, so the merge stays below the ADC term). Occupies 1 slot (1.132 ns) |
+| banks | two ping-pong accumulation banks per column side (C_acc = C_slice: 56 + 30 fF). Pass p accumulates on bank p mod 2; the RTL flips `bank` one tick after each hand-off, resets the new bank in slot 0 (`phi_brst`) and merges the old one under the next pass's first slot. The MSB bank is also the C-DAC of the direct SAR (B4) |
+| bank capacitance | 88 pF of MOM per tile (2 banks × 2 sides × 86 fF × 256): 18.4k µm² at 4.78 fF/µm² (D). Neither ARCH nor the evaluator priced it: priced, ARCH tok/s falls 26 % (§B4 table) |
+| merge | 1:16 ratio error ≤ 0.1 % (P: about 10-b ratio accuracy, so the merge stays below the ADC term). Hidden: it runs on the idle bank (replaced: a 1.132 ns merge slot per pass) |
 | array energy | 3.66 fJ per MAC (15.4 pJ per pass) |
 | switch | bootstrapped NMOS, constant V_GS. τ_sw ≤ 64.5 ps (N9 model: 20.8 ps); colsw ≤ 17.3 pJ per pass |
 | error terms (dB) | injection ≥ 73.9; coupling ≥ 63.0; row coupling ≥ 74.8; column hold droop ≥ 60.7; row gain after calibration ≥ 76.9 |
 | reliability | the bootstrapped gate (about 1.3 V) must stay inside the ASAP7 V_GS limit |
 
-### B4. Column ADC (N6 `sar_direct_pool_k4`)
+### B4. Column ADC (E-trim noise-aware SAR, `COMPARATOR_ALT.md`)
 
 | spec | target |
 |---|---|
-| function | converts the merged differential column charge directly, with the column as the sampler (no driver) |
-| sharing | 128 converters per tile, with charge pooling K = 4 (4 rounds per pass) |
-| resolution | 12 b nominal, 13 decisions (5 of them quiet); **≥ 9.63 ENOB** |
-| speed | **t_conv ≤ 1.576 ns** (≥ 635 MS/s) |
-| energy | **≤ 253.5 fJ per conversion** in total; ≤ 129.8 pJ per pass for the converters |
-| full scale | v_eff 0.705 V differential; LSB 172 µV |
-| noise budget | comparator ≤ 86 µV rms; C-DAC ≤ 193 µV; reference ≤ 137 µV |
-| ADC term | ≥ 43.3 dB (class weight +3 dB, N8) |
-| area | 43.45 µm² each (2,781 µm² per tile) |
-| range | clip-free to ±32 σ of the column partial sum (G2 range rule) |
-| FoM | Schreier 182.7 dB, 5 to 8 dB past the published envelope above 500 MS/s (P). **The top risk** |
+| function | converts the merged differential bank charge directly: the MSB accumulation bank is the C-DAC (12 step caps per side, bottom plates GND while accumulating, then VCM and ±VREF from the converter's lines) |
+| sharing | **AdcShare 3**: 86 converters per tile (85 × 3 columns + 1 × 1), 3 rounds per pass. No pooling (block-8 scales differ per tile) |
+| search | bipolar, 13 decisions: 6 on a minimum double-tail (1.82 mV, M), one redundant 32-LSB step, 7 on a tail-starved double-tail ×2 (0.654 mV, M). 12-b code |
+| corner trim | the quiet class is three switchable ×2 slices; all three on SS dies (0.585 mV, D, κ law from the measured ×4 SS point) |
+| speed | t_conv 1.61 ns per conversion (D on M), 13-tick rounds (1.84 ns) |
+| energy | 276.8 fJ per conversion (D); 70.9 pJ per pass |
+| full scale | vref 1.411 V differential peak-to-peak, LSB 344.5 µV (one code = 64 MAC, golden). The transistor DAC (VREF = VDD, 56 fF of step caps) gives 337 µV ideal-cap and about ±0.62 V of range (D) |
+| ADC term | 41.5 dB unweighted at TT (quantization 58.0, comparator 43.8, C-DAC 45.7; D) |
+| fallback | D: tail-starved ×2 for every decision, binary 12 b, same SS trim: 1.62 ns, 303.7 fJ, the same G2 |
+| replaced | the 86 µV comparator budget and the IMC StrongARM (4.05 mV, M): all-StrongARM fails G2 by 8.5 dB |
+
+**AdcShare 3 or 4.** At 4 columns per converter the conversion (4 × 13 ticks) binds the pass at 7.36 ns
+(RTL). At 3 it is 39 ticks and the 42-tick drive binds (5.94 ns), at +34 % converters (86 against 64).
+Scored with `arch_eval` (live frame, a scratch patch of `model.tile`: BS6H word, E-trim conversions,
+256 × 276.8 fJ, converters × 1.30 area, 108 pJ drive delivery, the ping-pong caps):
+
+| | ARCH tok/s | ARCH TOPS/W | Sohu tok/s | Sohu TOPS/W |
+|---|---|---|---|---|
+| **AdcShare 3**, bank caps priced (18.4k µm²) | **49,168** | **13.21** | **69,002** | **12.60** |
+| AdcShare 4, bank caps priced | 43,196 | 12.78 | 59,615 | 12.16 |
+| AdcShare 3, bank caps in shared BEOL | 66,565 | 11.60 | 72,220 | 11.00 |
+| AdcShare 4, bank caps in shared BEOL | 61,312 | 11.20 | 72,220 | 10.80 |
+| round-1 design as scored (ml2, booked converter) | 67,760 | 11.25 | 72,220 | 10.56 |
+
+AdcShare 3 wins on tok/s in every frame (+8.6 % to +16 %) and on TOPS/W (+3 to +4 %). The extra
+converters cost 1.2k µm² per tile; the bank caps cost far more and apply to both.
 
 ### B5. Reference (N9 `lead`, class-A buffered)
 
@@ -248,59 +274,66 @@ One pass is 2,048 MACs: the full 8 × 256 differential tile, both slices.
 | spec | target |
 |---|---|
 | function | an output-stationary partial-sum chain. Each tile adds its 256 calibrated column codes to the incoming 24-b partial sums and passes them to the K-adjacent tile. Only completed outputs leave the chain |
-| width | 24 b per column: 12-b codes accumulated over K/8 ≤ 1,792 tiles needs ≤ 23 b |
+| width | 52 b per column with block-8: the dequantized code (12 b × two 6-b significands, shift ≤ 14) over K/8 ≤ 1,792 tiles; 24 b for per-tensor INT8 operands |
 | energy | ≤ 90 fJ per column-pass: 7 fJ add + 83 fJ hop over a 138 µm tile pitch at 0.7 V (D estimate, not synthesized) |
 | timing | one hop per t_pass (6.3 ns). The chain is pipelined, so it adds latency of K/8 × t_pass (≤ 11.3 µs per layer for FFN-down, D) but no throughput loss |
 | placement | the K-chunks of one output column must sit on physically adjacent tiles |
 | exactness | bit-exact. It changes neither the model nor the SNR |
 | gain (P) | ARCH TOPS/W 14.84 → 15.56 (+4.9 %; +10.5 % at the study's 50 µm hop). Sohu tok/s 97,064 → 101,125 (+4.2 %): the die is power-capped, so lower energy buys VDD |
 
-### Per-pass energy budget (P, with T2: 256 pJ per 2,048 MACs = 125 fJ/MAC)
+### Per-pass energy budget (with T2 and block-8: 351 pJ per 2,048 MACs = 172 fJ/MAC)
 
-| part | pJ per pass |
-|---|---|
-| converters | 129.8 |
-| reference | 46.0 |
-| recombination / calibration | 18.7 |
-| column switch | 17.3 |
-| array | 15.4 |
-| accumulator chain (T2) | 23.6 |
-| drivers | 4.8 |
-| format side | 0.4 |
+| part | pJ per pass | label |
+|---|---|---|
+| drive delivery (BS6H rails, supply-integrated CV²) | 108 | D (imc_tile, DRIVE_ALT) |
+| converters (256 × 276.8 fJ, E-trim) | 70.9 | D on M |
+| dequant (block-8, 200 fJ per output-pass) | 51 | P (N5) |
+| reference | 46.0 | P |
+| accumulator chain (T2) | 23.6 | P |
+| recombination / calibration | 18.7 | P |
+| column switch | 17.3 | P |
+| array | 15.4 | P |
+| format side | 0.4 | P |
 
-Without T2 the buffer line would be 36.5 pJ and the total 269 pJ.
+Replaced: round 1's 256 pJ booked the drive at 4.8 pJ (the evaluator's law, not the delivered
+charge) and the converters at 129.8 pJ (512 conversions of 253.5 fJ).
 
-### SNR budget (P, dB)
+### SNR budget (dB; golden error model on the Verilog-A laws, block-8 SmolLM2 data, 24 chunks)
 
-| term | dB |
-|---|---|
-| thermal | 43.31 |
-| mismatch | 46.02 |
-| ADC | 43.30 (class-weighted +3) |
-| ref droop | 53.98 |
-| drive INL | 54.81 |
-| hold droop | 60.7 |
-| coupling | 63.0 |
-| injection | 73.9 |
-| row coupling | 74.8 |
-| row gain | 76.9 |
-| **unweighted total** | **38.96** |
-| **class-weighted SNR_eff** | **39.84**, against a G2 target of **39.78**: margin **+0.05 dB** |
+| term | TT (the pick) | SS (373 K, 0.63 V) | SS, adaptive VDD 0.7 V | FF (358 K) | label |
+|---|---|---|---|---|---|
+| thermal kT/C | 44.42 | 42.54 | 43.46 | 43.63 | D |
+| mismatch (1 % / 2 % units) | 48.12 | 48.12 | 48.12 | 48.12 | P |
+| ADC (quant 58.5 + comparator + C-DAC), unweighted | 41.72 | 41.75 | 42.19 | 41.08 | D on M |
+| comparator alone | 44.14 | 44.17 | 44.99 | 43.07 | D on M |
+| drive (measured table, R_PDN 0.4 Ω) | 72.7 | 60.6 | 60.6 | 72.7 | D on M |
+| ref droop (after calibration) | 85.2 | 85.2 | 85.2 | 85.2 | D |
+| merge / acc ratio | 82.3 / 73.9 | same | same | same | P |
+| booked, not simulated: hold, coupling, injection, row coupling, row gain | 60.7, 63.0, 73.9, 74.8, 76.9 | same | same | same | P |
+| **total (incl. booked)** | **39.33** | 38.67 | 39.26 | 38.74 | |
+| **class-weighted SNR_eff** (G2 39.78) | **40.62 [40.30, 40.94]: +0.84** | 39.71: **−0.07** | 40.31 [39.99, 40.64]: **+0.53** | 40.03 [39.71, 40.37]: +0.25 | |
+
+SS fails by 0.07 dB on the measured comparator and drive at 0.63 V: kT/C, not the drive, binds (7-tick slots
+give 39.74). Holding the signal rail at 0.7 V on SS dies (adaptive VDD, ARCH V3's closure) passes. The 90 %
+interval is a bootstrap over the 24 K-chunks. Round 1's budget (P): 38.96 / 39.84 dB, +0.05, at an 86 µV
+comparator and tokact operands; tokact fails by 12.6 dB on the upgraded tile.
 
 ## 3. Interfaces (tile boundary)
 
 | port | direction | width / level | timing |
 |---|---|---|---|
 | `w_data` | in | 32,768 b per load (8 rows × 256 cols × 2 slices × 8 b, differential pairs), from the NoC | one load per t_load (0.253 ns of array occupancy, rewritten just in time) |
-| `x_in` | in | 8 rows × INT8, Hadamard-rotated; the per-token scale is held at the rail | one word per t_pass |
-| `psum_in` | in | 256 × 24 b, from the K-previous tile (zero at the chain head) | one per t_pass |
-| `psum_out` | out | 256 × 24 b, to the K-next tile; at the chain end, to requant | one per t_pass (≤ 6.3 ns) |
-| `phi_drv[4]`, `phi_merge`, `phi_share`, `phi_reset`, `phi_samp`, `sar_clk` | in | 0.5 V logic | from the DLL replica timebase: 1.132 ns slots, a 1.576 ns conversion window |
+| `x_in` | in | 8 rows × INT8, Hadamard-rotated, block-8 scaled, plus the block's scale byte (3-b exponent, 5-b mantissa) | one word per t_pass |
+| `w_scale` | in | 256 scale bytes per tile load (+12.5 % of the weight stream) | with the weights |
+| `psum_in` | in | 256 × 52 b (block-8 dequantized), from the K-previous tile (zero at the chain head) | one per t_pass |
+| `psum_out` | out | 256 × 52 b, to the K-next tile; at the chain end, to requant (6-b shift) | one per t_pass (≤ 5.94 ns) |
+| `phi_drv`, `phi_rst`, `phi_sh`, `phi_mrg`, `phi_samp`, `phi_brst`, `bank`, `sar_clk` | in | 0.5 V logic | from the DLL replica timebase: 0.849 ns slots (6 ticks), 13-tick conversion rounds |
 | `refresh` | in | per row | ≤ 0.04 % occupancy |
 | `cal` | in | per column: gain and offset words | written once per die |
 | VDD_A, VDD_L | supply | 0.7 V / 0.5 V | |
-| V_1/3, V_2/3 | analog | from the tile-shared class-AB buffers | settle inside one 1.132 ns slot |
-| VREF | analog | buffered, 0.705 V full scale | |
+| VDD_DRV | supply | the row drivers' tile supply, R_PDN ≤ 0.4 Ω | |
+| VREF, VCM | analog | the C-DAC levels: VREF from VDD_A, VCM from a class-A buffer | |
+| `trim` | in | one bit per die (or tile): the quiet comparator's slices 2-3 | static |
 
 ## 4. Quality gate (settled; `DECISION.md` §1)
 
@@ -409,7 +442,17 @@ Every ESPice run is serialized under the machine-wide flock with a 4 GB cap.
 ## 9. Known model issues to carry into the phase
 
 - **Frame dependence.** The joint frame credits the 1:16 merge and the 4-level drive (1.52x). The
-  core frame (`cli.py`) does not. V2 and V4 settle it.
+  core frame (`cli.py`) does not. The upgrade drops the 4-level drive (BS6H) and keeps the merge; its
+  scores (§B4) come from a scratch patch of `model.tile`, not from the evaluator's own n2/n6 laws.
+- **Tile upgrade, transistor level** (`analog/imc_tile/docs/architecture.md` §5, ASAP7 ESPice, M):
+  - the comparators reproduce COMPARATOR_ALT (fast 1.82 mV, quiet 0.60 mV);
+  - BS6H settles to 0.067 % at the share edge only with a buffered gain-cell output (gc5t, +2 T per bit),
+    2-fin crosspoint TGs and a 64-fin top-plate reset. N3_r2's gc3t gives 3.3 %: the share kicks the
+    bottom plates, which DRIVE_ALT's rail measurement did not include;
+  - the bank C-DAC needs step-scaled enables, pull-downs and drivers;
+  - open: a 0.72 % FS MAC residual after gain/offset on the 8 × 4 tile, and 6.8 LSB rms converter INL.
+  None of these sizings is priced yet; the larger FEOL per weight would exceed the MOM's 2.93 µm².
+- **Ping-pong bank caps.** 88 pF per tile, unpriced: −26 % ARCH tok/s if they need their own MOM area (§B4).
 - **Reporting artefact.** `n9_exc_V` reads 1.19 V, above VDD. It is a reporting artefact in
   `_excursion`, and the real swing is about ±0.25 V per side. V2 must show every node stays
   inside 0 to 0.7 V.
@@ -434,7 +477,7 @@ on its own to see what binds next. Drive and conversion overlap, so a pass takes
 
 | # | Bottleneck | Phase | Owner | Evidence | Fix direction | Status |
 |---|---|---|---|---|---|---|
-| 1 | Tile pass time | prefill (about 60 % of the wave) | **analog** | Evaluator: drive 13.4 ns, conversion 12.6 ns. Verilog-A: drive 7.95 ns bit-serial (4.54 ns ml2), conversion 6.25 ns. ADC alone 2× faster: +0 %. Drive alone: +4 %. Both: 1.34×, then #2 binds | BS6H drive (`DRIVE_ALT.md`), E-trim SAR (`COMPARATOR_ALT.md`), AdcShare 3 or 4 | in the tile upgrade |
+| 1 | Tile pass time | prefill (about 60 % of the wave) | **analog** | Evaluator: drive 13.4 ns, conversion 12.6 ns. Verilog-A: drive 7.95 ns bit-serial (4.54 ns ml2), conversion 6.25 ns. ADC alone 2× faster: +0 %. Drive alone: +4 %. Both: 1.34×, then #2 binds | BS6H drive (`DRIVE_ALT.md`), E-trim SAR (`COMPARATOR_ALT.md`), AdcShare 3 | **upgraded**: t_pass 5.94 ns, drive-bound (RTL 5.96 ns); the bank caps are the next area item (§B3) |
 | 2 | Power density cap (1 W/mm²) | both | **analog** | ARCH die goes from 73 W to the 100 W cap after a 1.34× faster tile. Under Sohu it is at 852 of 1,063 W already, so a faster tile gains nothing. With the cap lifted: 1.45× | Less energy per pass. Drive delivery (about 108 pJ) and converters (about 71 pJ) dominate | documented only |
 | 3 | HBM bandwidth | decode (about 37 %) | **digital / system** | A decode step moves 7.5 GB of W8 weights plus 13.9 GB of KV4 (B = 736) at 819 GB/s = 26 ms. 2×: 1.2× | Fewer bytes per token: KV and weight formats, speculative decoding (k tokens per weight and KV read), more HBM | documented only |
 | 4 | KV capacity | concurrency | **digital / system** | B = 736 is the KV limit. 2× capacity gives +4 to 8 %, because KV is already 65 % of decode bytes | KV compression, more HBM | documented only |

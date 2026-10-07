@@ -1,269 +1,295 @@
-# imc_tile: Verilog-A verification of the chosen IMC tile
+# imc_tile: the upgraded IMC tile, Verilog-A and ASAP7 transistor level
 
-2026-10-06. This block checks the round-1 pick (`docs/src/content/Project/ARCH_CHOSEN.md`) with the
-round-2 ASAP7 measurements (`ArchResearch/nodes/N2_r2, N3_r2, N5_r2, N6_r2, N9_r2`). It covers B1 to B6
-and B10. A digital driver (`digital/imc_driver`) runs the tiles the way a weight-stationary systolic
-array is run, on the same jobs as the systolic reference (`digital/sysreference`).
+2026-10-06. This block implements the tile of `docs/src/content/Project/ARCH_CHOSEN.md` after the tile
+upgrade: BS6H bit-serial row drive (`ArchResearch/nodes/DRIVE_ALT.md`), the E-trim noise-aware SAR
+(`ArchResearch/nodes/COMPARATOR_ALT.md`), 3 columns per converter, and block-8 operands with the dequant
+multiply in the RTL. It covers B1 to B6 and B10 in Verilog-A (`va/`) and, for B1 to B5, as a
+transistor-level ASAP7 netlist (`netlist/imc_tile.py`, §5). A digital driver (`digital/imc_driver`) runs the
+tiles the way a weight-stationary systolic array is run, on the same jobs as the systolic reference
+(`digital/sysreference`).
 
-**Labels.** M = measured (ASAP7 ESPice, from the round-2 reports). D = derived (a law applied to M).
-P = projected (ARCH_CHOSEN target). **Every result in the tables below is a simulation of these models.**
-The models' parameters are M, D or P as listed. Nothing here is a transistor-level result.
+**Labels.** M = measured (ASAP7 ESPice: this block's transistor runs, or the round-2 / DRIVE_ALT /
+COMPARATOR_ALT reports). D = derived (a law applied to M). P = projected (an ARCH_CHOSEN target). The
+Verilog-A results are simulations of models whose parameters are M, D or P as listed.
 
 ## 1. What is built
 
 | block | file | what it models |
 |---|---|---|
 | B1 gain-cell store | `va/imc_gc.va` | One weight per instance: 8 storage nodes (sign + 7 magnitude bits), a continuous sample-and-hold write through WL, retention droop to vmin1 in t_ret |
-| B1/B3 crosspoint | `va/imc_xp.va` | Unit caps of one weight (2^b units per bit, frozen mismatch σ·√units). Each row's contribution to the four top plates (2 slices × 2 sides) is `q = units·cu·V(rail)/C_slice`. Sign steering: side + follows rp for w ≥ 0 and rn for w < 0 |
-| B2 row drive | `va/imc_rowdrv.va` | Per row: two rails (rp, rn) of c_row through r_sw onto the selected level net. ml2 uses V/3, 2V/3 and V. Bit-serial uses V. Optional constant-charge dummies |
-| B5 reference / level nets | `va/imc_ref.va` | A Thevenin source (v0, r_out, c_dec) with class-A supply accounting. Used for the C-DAC reference, the ml2 mid levels and the V rail (R_PDN) |
-| B3 column + merge | `va/imc_col.va` | Event model: top-plate reset with kT/C. Per-slot share onto C_acc (r_acc = 1/3 for ml2, 1 for bit-serial) with incomplete settling and kT/C. 1:16 slice merge with ratio error and kT/C. Ping-pong accumulators |
-| B4 SAR | `va/imc_sar.va` | Behavioural pooled-round SAR: samples AS columns, then converts one per sar_clk round in BITS + 1 timed steps. Each step draws its C-DAC switching charge from the vref node, and each decision reads V(vref) at its own instant, so droop during bit cycling reaches the code. Offset-binary search over mismatched DAC weights, comparator noise per decision, code on `b[]` and on the `cv` monitor |
-| B6, B10, requant | `digital/imc_driver/src/imc_chain.v` | Code capture, per-column affine calibration, the 24-b chain across K-adjacent tiles, the edge accumulator for K > chain, and requant to INT8 |
-| driver | `digital/imc_driver/src/imc_driver.v`, `imc_seq.v`, `imc_wstage.v` | Descriptor schedule with systolic skew, HBM weight stream into ping-pong stage banks, just-in-time array writes in the merge slot, a stall when weights are late, gain-cell refresh from the stage bank every `RefreshPasses` (default 128) passes, the phase generator (conversions back to back, no handoff gap), and row codes |
-| golden | `scripts/golden/imc_tile.py` (+ `test_imc_tile.py`) | Bit-true integer path plus the analog-error model with the same laws and parameter names as the `.va` files |
+| B1/B3 crosspoint | `va/imc_xp.va` | Unit caps of one weight (2^b units per bit, frozen mismatch σ·√units). Each row's contribution to the four top plates is `q = units·cu·V(rail)/C_slice`. Sign steering: side + follows rp for w ≥ 0 and rn for w < 0 |
+| B2 row drive | `va/imc_rowdrv.va` | Per row: two rails (rp, rn) of c_row. Bit-serial (`law 1`): every rail on V charges with τ(n) from the measured droop table (n rows on V, dummies counted), the golden's `E_TAB` at R_PDN 0.4 Ω. ml2 (`law 0`, replaced): r_sw onto the level nets. Optional constant-charge dummies |
+| B5 reference / level nets | `va/imc_ref.va` | A Thevenin source (v0, r_out, c_dec) with class-A supply accounting: the C-DAC reference and the ml2 levels |
+| B3 column + merge | `va/imc_col.va` | Event model: top-plate reset with kT/C; per-slot share onto bank `V(bank)` (two banks) with incomplete settling and kT/C; at `phi_mrg` the idle bank merges 1:16 (ratio error, kT/C) and resets |
+| B4 SAR | `va/imc_sar.va` | Pooled-round SAR: samples AS columns, converts one per sar_clk round in NDEC + 1 timed steps of the E-trim bipolar search (6 fast decisions, the redundant 32-LSB step, 7 quiet ones, a σ per class). Each step draws its C-DAC charge from vref and each decision reads V(vref) at its instant |
+| B4 SAR logic | `va/imc_sar_logic.va` | The transistor converter's asynchronous decision loop: comparator clocks, bank/column enables, the 12 step caps' bottom-plate controls, the code |
+| transistor tile | `netlist/imc_tile.py` | ASAP7 SpiceRack netlist of B1-B5 (§5) |
+| B6, B10, requant | `digital/imc_driver/src/imc_chain.v` | Code capture (converters may serve fewer columns than AdcShare), per-column affine calibration, the block-8 dequant `(c·sig_x·sig_w) << (14 − e_x − e_w)`, the chain (24 b, 52 b with block-8) across K-adjacent tiles, the edge accumulator, requant to INT8 (6-b shift) |
+| driver | `digital/imc_driver/src/imc_driver.v`, `imc_seq.v`, `imc_wstage.v` | Descriptor schedule with systolic skew, HBM weight stream into ping-pong stage banks, just-in-time array writes in a write window that opens only on weight-change or refresh passes, stalls when weights are late, refresh every `RefreshPasses`. `imc_seq`: BS6H slots, the hand-off of each driven bank to a merge engine (merge and sample under the next pass), `bank`, `phi_brst`, back-to-back conversions |
+| golden | `scripts/golden/imc_tile.py` (+ `test_imc_tile.py`) | Bit-true integer path (incl. block8 codes and dequant) plus the analog-error model with the same laws and parameter names as the `.va` files |
 
 The tile contract is fixed by the golden's docstring:
 
-- **Weights.** Sign-magnitude, |w| ≤ 127 (−128 is written as −127). There are two slices: hi = |w| >> 4
-  (7 × 1 fF) and lo = |w| & 15 (15 × 0.25 fF).
-- **Activations.** Sign-magnitude rows, |x| ≤ 127. ml2 drives the digits of 2|x|, 2 bits per slot. Bit-serial
-  drives 7 planes of |x|. Either way each column swings 0 to VDD.
-- **Converter scaling.** One code is 64 MAC units (vref = 1.411 V differential peak-to-peak), so the ideal
-  code is `floor((S + 32) / 64)`. The full 8-row range never clips.
-- **Calibration and requant.** cal is `(g·code + o + 2^13) >> 14`. The chain is 24 b. Requant is
-  `requant_int8(64·acc, …)`, the systolic reference's own function.
+- **Weights.** Sign-magnitude, |w| ≤ 127. Two slices: hi = |w| >> 4 (7 × 1 fF) and lo = |w| & 15 (15 × 0.25 fF).
+- **Activations.** Sign-magnitude rows, |x| ≤ 127, 7 bit-serial planes on 0/V rails; each column swings 0 to VDD.
+- **Converter scaling.** One code is 64 MAC units (vref = 1.411 V differential peak-to-peak): the ideal code is
+  `floor((S + 32) / 64)`, and the E-trim search reaches it exactly when noise-free.
+- **Block-8.** Each 8-row block of x (per token) and w (per column) carries a scale byte (3-b exponent, 5-b
+  mantissa) under a per-tensor / per-column base. Dequant per conversion; the chain sum is
+  `acc · base_x · base_w / 2^20`.
+- **Calibration and requant.** cal is `(g·code + o + 2^13) >> 14`. Requant is the systolic reference's formula
+  on `64·acc` with a 6-b shift.
 
-### Choices the documents left open (made here, stated plainly)
+### Choices made here (stated plainly)
 
-1. **Signed activations.** ARCH gives 4 unipolar rails, so the activation sign rides a second rail per row
-   (rp/rn). The weight's sign then picks which rail its units follow. Offset-binary was rejected: with a
-   1 % unit mismatch it costs about 12 dB.
-2. **Using the full rail.** |x| ≤ 127 is driven as 2|x| over the 4 ml2 slots, or as 7 bit-serial planes.
-   This puts each column at up to VDD instead of VDD/2 and is worth +6 dB on every noise term. Bit-serial
-   then needs 7 slots, not 8.
-3. **Conversion rounds.** Each converter serves AdcShare = 4 columns, one conversion per merged column:
-   4 rounds of 11 ticks, 6.25 ns, matching ARCH's 4 × 1.576 ns. ARCH's "128 converters per tile" with
-   4 rounds would be 512 conversions per pass, which is inconsistent with one conversion per weight
-   column after the merge. We use 256 conversions per pass (64 converters).
-4. **Overlapped passes.** For conversion to overlap the next drive (ARCH's t_pass = max of the two), the
-   merged sample has to leave the column. The default is therefore ping-pong accumulation banks: the
-   merge happens on C_acc only and its kT/C is on that smaller cap. `merge_on_top = True` is the
-   column-as-sampler alternative: merge on C_col + C_acc, with no overlap.
-5. **Pooling K.** `pool_k` exists in the golden, and the RTL implements the per-tile T2 chain
-   (pool_k = 1). Pooling across tiles is valid only when the pooled row blocks share their scales
-   (N5_r2 finding 1).
+1. **Signed activations.** The activation sign rides a second rail per row (rp/rn); the weight sign picks
+   which rail its units follow. Offset-binary would cost about 12 dB at 1 % unit mismatch.
+2. **Full rail.** 7 bit-serial planes put each column at up to VDD (+6 dB on every noise term against VDD/2).
+3. **AdcShare 3** (§4.1): 3 rounds of 13 ticks hide under the 42-tick drive. 256 / 3 leaves one converter with
+   one column (86 converters); the RTL and the golden handle the short converter.
+4. **Hidden merge.** At the end of a pass the sequencer hands the bank to a merge engine and starts the next
+   pass at once; `bank` flips one tick later (never on the edge that closes the last share), the merge
+   falls two ticks into the next pass, and the sample waits for the converter. The RTL waits (StWait) only
+   when the previous bank has not been sampled yet. The write window opens only when a tile needs new
+   weights or a refresh.
+5. **Block-8 scale format.** 5-b mantissa: 0.11 dB below exact scales; E4M3's 3-b mantissa costs 0.45 dB
+   (quick budget, 6 chunks: exact 40.75 / 3-b 40.30 / 5-b 40.64 dB at TT). The x scale rides the activation
+   word; the w scales come from a per-(group, tile) table (ponytail: a real tile latches its 256 bytes with
+   the weight load, +12.5 % of the stream).
+6. **Pooling.** pool_k = 1: block-8 scales differ per tile, so tiles cannot be charge-pooled.
 
 ## 2. Parameters (defaults)
 
 | parameter | value | label / source |
 |---|---|---|
 | rows × cols, slices | 8 × 256 differential, 2 (7 × 1 fF, 15 × 0.25 fF) | P (ARCH B1) |
-| C_slice | 56 fF (MSB), 30 fF (LSB); the merge ratio rho = 0.134 gives the 1:16 weighting | D |
+| C_slice, C_acc | 56 fF (MSB), 30 fF (LSB); C_acc = C_slice per bank, 2 banks; merge rho = 0.134 (1:16) | D |
 | VDD_A | 0.7 V | P |
-| t_tick, slot | 142 ps; ml2 8 ticks = 1.136 ns; bit-serial 7 ticks = 0.99 ns | P (ml2), D (bit-serial; M lead 0.94 ns, N2_r2) |
-| phases per slot | reset 1 tick (top plate released mid-tick, rails dropped half a tick before the reset), rails driven to share edge 6 ticks, share 3 ticks ending 1 tick before slot end | D |
-| SAR | 12 b, 4 rounds × 11 ticks (1.562 ns, P ≤ 1.576), t_conv 1.3 ns | P |
-| c_row, τ_row | 7.47 pF, 16.1 ps | P, M-fit (N2_r2) |
-| level nets | mid r = 2.54 Ω (class-AB SSF), top r = 1.30 Ω (R_PDN) | M-fit (N9_r2 §2.3), D (N9_r2) |
-| τ_col | 39.2 ps | M-fit (N2_r2) |
+| t_tick, slot | 141.5 ps (RTL 142 ps); BS6H 6 ticks = 0.849 ns: reset 1, rails to the share edge 4 (0.566 ns), share 3 ending one tick before the slot end | D (DRIVE_ALT) |
+| drive law | measured plate error at the share edge, R_PDN 0.4 Ω (golden `E_TAB`, TT and SS; 1.3 Ω kept for comparison): 8 rows on V 0.078 % (TT), 0.238 % (SS) | M (DRIVE_ALT E3) |
+| c_row, τ_row | 7.47 pF, 16.1 ps (ml2 level-net law only) | P, M-fit (N2_r2) |
+| τ_col | 39.2 ps | M-fit (N2_r2); the transistor tile measures far slower share settling (§5) |
 | unit mismatch | 1 % at 1 fF, 2 % at 0.25 fF | P |
 | merge / acc ratio σ | 0.1 % / 0.1 % | P |
-| comparator σ | 86 µV (budget); sensitivity at 4.05 mV | P; M (N9_r2) |
-| C-DAC unit σ | 2.45 % | D (from the 193 µV budget) |
-| C-DAC, reference | c_dac 60 fF per converter; reference r_ref 0.5 Ω behind c_ref 200 pF, shared by the tile's 64 converters | P; P; D (B5 area 5,798 µm² × ~35 fF/µm² MOS decap) |
-| gain-cell refresh | every 128 passes (0.80 µs at 6.25 ns) | D (inside ARCH's 1.32 µs 6σ retention) |
-| gain cell | write 0.631 / −0.072 V, 44.3 ps to 99 % (τ 9.6 ps), 0.52 fJ per '1', retention 2.08 µs to vmin1 0.58 V | M (N3_r2) |
-| energy events | conversion 253.5 fJ, column switches 67.6 fJ per column-pass | P |
+| SAR | E-trim: 13 decisions (steps 1024 .. 32, 32, 16 .. 1), σ 1.82 mV fast / 0.654 mV quiet at TT, 1.99 / 0.747 FF, 3.35 / 0.585 (trimmed) SS; t_conv 1.61 ns; 276.8 fJ; 13-tick rounds; AdcShare 3 | M (σ), D (schedule, time, energy) |
+| C-DAC | unit σ 2.45 %, mid-scale and every step cap carry σ·√units (bipolar search); c_dac 60 fF | D; P |
+| reference | r_ref 0.5 Ω behind c_ref 200 pF, shared by the tile's converters | P; D |
+| block-8 scales | per-tensor x base, per-column w base; scale byte 3-b exponent + 5-b mantissa | D (this block) |
+| gain-cell refresh | every 128 passes (0.76 µs at 5.94 ns) | D (inside ARCH's 1.32 µs 6σ retention) |
+| gain cell | write 0.631 / −0.072 V, 44.3 ps to 99 %, 0.52 fJ per '1', retention 2.08 µs to vmin1 0.58 V | M (N3_r2) |
 
 ## 3. How to run
 
 ```sh
-./env.sh mixed                                  # vera, espice, iverilog, numpy
+./env.sh mixed                                  # vera, espice, iverilog, numpy, cktimg-json
 python3 scripts/golden/test_imc_tile.py         # golden self-check
-make -C digital/imc_driver test                 # driver RTL + ideal tiles, systolic jobs, bit-exact
+make -C digital/imc_driver test                 # driver RTL + ideal tiles, systolic + block8 jobs, bit-exact
 make -C analog/imc_tile lint units              # vera lint + ESPice unit benches of B1-B5
-make -C analog/imc_tile cosim                   # RTL -> Verilog-A tiles -> RTL chain, ml2 + bit-serial
-make -C analog/imc_tile timing accuracy         # t_pass / stalls / settling; SNR per term
-cd analog/imc_tile/test && python3 tb_va_snr.py bitserial 4   # SNR of Verilog-A codes vs golden, pooled
-cd analog/imc_tile/test && python3 tb_quality.py              # V9: PPL of tokact vs block8 (heavy: lock + 4 GB)
+make -C analog/imc_tile cosim                   # RTL -> Verilog-A tiles -> RTL chain, bit-serial (BS6H)
+make -C analog/imc_tile timing accuracy         # t_pass / stalls / settling; SNR per term, corners
+make -C analog/imc_tile netlist schematics      # transistor netlist -> output/netlist, cktImg -> output/schematics
+make -C analog/imc_tile spice                   # ESPice checks of the transistor netlist (about 40 min)
+python3 analog/imc_tile/netlist/imc_tile.py --sim settle --gcbuf --fins xp_tg=4,smx=8   # sizing sweeps
+cd analog/imc_tile/test && python3 tb_cosim.py ml2 ideal                                 # ml2 (replaced)
 ```
 
-Do not wrap these benches in an outer `flock` on the shared lock file: `va_lib` takes the lock per
-ESPice run, and an outer holder deadlocks it. A caller that already holds the lock sets
-`SPICE_LOCK_HELD=1`.
+Do not wrap these benches in an outer `flock` on the shared lock file: `va_lib` and `netlist/imc_tile.py` take
+the lock per ESPice run (an outer holder sets `SPICE_LOCK_HELD=1` for `va_lib`). Every run is capped at 4 GB.
 
-Every ESPice run takes the shared lock with a 4 GB cap (`test/va_lib.py`). The co-simulation is
-**open loop**. ESPice compiles each device with 64-bit unknown masks, so a VerA `.v` device takes at most
-64 pins in this build (VerA itself allows 256), and this configuration needs 192. The tile's inputs never
-depend on its outputs, so the loop is cut exactly:
+The co-simulation is **open loop**, as before: ESPice holds at most 64 unknowns per device, so the 192-pin driver
+cannot be a `.v` device. (1) the driver RTL runs in iverilog with ideal tiles and writes a pin trace (now with
+`bank`); (2) ESPice runs the Verilog-A tiles from that trace; (3) the RTL runs again with each tile replaced by
+its ESPice codes. Configuration: 2 tiles of 8 rows × 8 columns, 3 E-trim SARs per tile (3, 3 and 2 columns).
 
-1. the driver RTL runs in iverilog with ideal tiles and writes a pin trace;
-2. ESPice runs the Verilog-A tiles from PWL sources built from that trace;
-3. the same RTL runs again with each tile replaced by its ESPice codes, round by round.
-
-The co-simulated configuration is 2 tiles of 8 rows × 8 columns (2 SARs per tile, AdcShare 4). Row
-capacitance and level resistances are scaled by cols/256, which keeps the full-tile time constants.
-
-## 4. Results (re-run 2026-10-06 after the review)
+## 4. Results (2026-10-06, the upgrade)
 
 ### 4.0 Verdict
 
-**ARCH_CHOSEN as written does not work.** In its own operand format (n4 `w8a8_lead_tokact`:
-INT8 per-token x and per-channel w, the format the interface specifies and the systolic reference
-computes), the class-weighted per-pass SNR_eff is 26.1 dB in ml2 and 29.1 dB in bit-serial against
-39.78 dB (G2). With B4's pooling K = 4 it is 25.3 dB. Each case fails by 10.7 to 14.5 dB. The ideal
-12-b quantizer alone gives 44.0 dB on this data. The V9 quality check of that path also fails: +2.81 %
-PPL of analog increment against +1.0 %.
+- **The upgraded tile meets G2 at TT in its own operand format** (Verilog-A laws, block-8 SmolLM2 data,
+  24 chunks): class-weighted 40.62 dB, 90 % interval [40.30, 40.94], margin **+0.84 dB**, no V2 per-term
+  failure. FF passes at +0.25 dB but its interval reaches 39.71 (MARGINAL).
+- **SS fails by 0.07 dB** at 0.63 V and 373 K (kT/C 42.5 dB binds, not the drive: 7-tick slots give −0.04).
+  Holding the signal rail at 0.7 V on SS dies (adaptive VDD) passes at **+0.53 dB**.
+- **t_pass 5.96 ns** on the RTL (42 ticks, drive-bound), against round 1's 6.30 ns target and 7.95 ns for the
+  plain bit-serial tile. AdcShare 4 would be 7.38 ns.
+- **The digital path is bit-exact**: 25 driver cases including block-8 dequant, the 4-tile chain, refresh,
+  starved HBM, AdcShare 2/3/4 and SmolLM2 attn_q; the Verilog-A co-simulation matches the golden.
+- **The transistor-level tile does not yet meet the BS6H slot** (§5). The comparators reproduce their measured
+  noise and the converter converts, but the share event kicks the bottom plates, and the crosspoint chain of
+  N3_r2's gain cell recovers in about 130 ps: 5.4 % plate error at the 6-tick share edge (the golden assumes
+  39 ps; run through the golden, 133 ps costs about 8 dB of G2). DRIVE_ALT's 0.078 % measured the rail
+  without the share. Buffered gate drive and 4× crosspoint switches bring it to 0.51 %, still 5× the spec.
 
-**A modified variant passes conditionally:** bit-serial drive, block8 operands (scales per 8-row block
-of x and w), no pooling, and the 86 µV comparator budget. It gives 42.25 dB, with a 90 % interval of
-41.92 to 42.62 dB and no V2 per-term failure. It still needs four things closed:
+### 4.1 AdcShare 3 or 4
 
-1. a dequant multiply per conversion and a per-block x quantizer (neither is in the RTL; §5.2);
-2. a converter whose comparator noise meets about 0.46 mV or better. The measured IMC StrongARM's
-   4.05 mV fails by 7.9 dB; N6_r2's residue-amp SAR would pass at +1.8 dB (D);
-3. a pass time of 7.95 ns, not 6.30 ns (0.79× the ARCH throughput);
-4. corners (V3), which none of this simulates. N9_r2 measured the bit-serial lead failing SS by 2.1 dB
-   and FF by 1.7 dB (M).
+The conversion takes AdcShare × 13 ticks: 52 ticks at 4 columns per converter, which binds the pass (7.38 ns on
+the RTL), and 39 ticks at 3, which hides under the 42-tick drive (5.96 ns). Scored with `arch_eval` (live frame;
+a scratch patch of `model.tile` with the BS6H word, the E-trim conversion, 256 × 276.8 fJ, converters at 1.30×
+area, the 108 pJ drive delivery and the ping-pong bank caps; `arch_eval` itself untouched):
 
-ml2 with block8 is **marginal and fails V2**. Its 39.89 dB has a 90 % interval of 39.55 to 40.27, and
-its kT/C term is 41.1 dB against a budget of 43.31 − 0.5. Its rails also miss the 0.1 % settling spec
-at the worst popcount, and the adversarial job fails G2 by 2.1 dB.
+| | ARCH tok/s | ARCH TOPS/W | Sohu tok/s | Sohu TOPS/W |
+|---|---|---|---|---|
+| **AdcShare 3**, bank caps priced (88 pF, 18.4k µm²) | **49,168** | **13.21** | **69,002** | **12.60** |
+| AdcShare 4, bank caps priced | 43,196 | 12.78 | 59,615 | 12.16 |
+| AdcShare 3, bank caps in shared BEOL | 66,565 | 11.60 | 72,220 | 11.00 |
+| AdcShare 4, bank caps in shared BEOL | 61,312 | 11.20 | 72,220 | 10.80 |
 
-### 4.1 Unit benches (ESPice, `test/tb_va_units.py`)
+AdcShare 3 wins on tok/s in every frame (+8.6 to +16 %) and on TOPS/W (+3 to +4 %), for 86 instead of 64
+converters (+1.2k µm² per tile). The ping-pong bank caps, which neither ARCH nor the evaluator priced, cost
+26 % of ARCH tok/s if they need their own MOM area.
+
+### 4.2 Unit benches (ESPice, `test/tb_va_units.py`)
 
 | block | check | measured | result |
 |---|---|---|---|
 | B1 | write levels; '1' at 1 µs | within 0.06 mV of 0.631 / −0.072 V; 0.6065 V (law 0.6065) | PASS |
-| B2 | top level V, 8 rows on it, share edge | ml2 0.0130 % (law 0.0117 %); bit-serial 0.0587 % (law 0.0529 %) | PASS (model = law) |
-| B2 | **ml2 mid levels V/3 and 2V/3, 8 rows on one level** (new) | 0.674 % of the level on both (law 0.637 %) | PASS as model = law; **the 0.1 % spec is MISSED** |
-| B2 | ml2 levels, sign steering; constant-charge dummies | exact; l3 sag 570 / 572 mV at 1 / 7 rows with cc | PASS |
-| B3 | merged differential vs k·S | ≤ 1.2 ppm of full scale, both modes | PASS |
-| B4 | ideal codes and clipping (now sequential bit steps) | equal to `floor(v/LSB + ½)`; 0.2535 pJ per conversion | PASS |
-| B5 | **64 and 128 converters on one reference, decisions read per step** (new) | Verilog-A codes = golden `sar_convert` codes exactly (8/8 and 8/8). Droop at the 12 decisions: Verilog-A 8.47 / 15.83 mV against golden 8.54 / 15.83 mV, worst difference 5.5 / 6.4 % of the peak | PASS (model = law) |
-| B5 | **droop against ARCH B5's 3.7 µV per conversion** (new) | 144.5 µV per conversion (peak 9.25 mV / 64) and 144.9 µV (18.5 mV / 128), with r_ref 0.5 Ω and c_ref 200 pF | **FAIL by 39×** |
+| B2 | bit-serial rails on the measured law, share edge (0.566 ns), n = 1 / 4 / 8 rows on V | 0.0032 / 0.0180 / 0.0885 % against the table's 0.0027 / 0.0154 / 0.0780 % | PASS (model = table) |
+| B2 | constant-charge dummies: one row sees the 8-row error | 0.0885 % at 1 and 7 rows (0.0032 / 0.0594 % without) | PASS |
+| B2 | ml2 (replaced): levels, sign steering, mid levels at n = 8 | exact; mid levels 0.674 % (law 0.637 %), the 0.1 % spec missed | PASS as model = law |
+| B3 | merged differential vs k·S, pass on bank 0 merged under bank 1 | ≤ 1.2 ppm of full scale, both modes | PASS |
+| B4 | E-trim codes (13 decisions, redundant step) over the range and at the clips | equal to `floor(v/LSB + ½)` at 9 inputs; 0.2768 pJ per conversion | PASS |
+| B5 | 86 and 128 converters on one reference, decisions read per step | Verilog-A codes = golden codes exactly; droop at the 13 decisions within 4.6 / 5.1 % of the golden law | PASS (model = law) |
+| B5 | droop against ARCH B5's 3.7 µV per conversion | 130 µV per conversion (86 and 128 converters) | **FAIL by 35×** (a calibrated static error: the ref term is 85 dB) |
 
-The B5 spec miss is real for any reference whose decap fits B5's area. A 12-b conventional C-DAC on
-60 fF takes about c_dac·vref ≈ 85 fC per conversion (D). For 128 simultaneous conversions to drop the
-reference by only 128 × 3.7 µV, the decap alone would need about 23 nF (D), against about 200 pF in
-5,798 µm². What saves the SNR is that most of the droop repeats from conversion to conversion: it acts
-as a fixed bit-weight error that calibration removes. After calibration the reference term is
-74.4 dB, against a budget of 53.98 dB (§4.3). The reference is therefore an energy and V5 item, not an
-SNR blocker, **provided** calibration runs on the same reference load.
-
-### 4.2 Checks against the task's targets
+### 4.3 Checks
 
 | # | check | target | measured | result |
 |---|---|---|---|---|
-| a1 | driver RTL + ideal tiles vs the bit-true golden (24-b chain, INT8 requant). Systolic-reference jobs in both modes, 4-tile chain, 8 × 16 tile, starved HBM, **refresh every 4 passes (new)**, **SmolLM2 attn_q 9 × 576 → 32 in both modes (new)** | bit-exact | **21 of 21 cases** bit-exact. Refresh: 6 rewrites per job, outputs unchanged. (The previous report said 20; the run had 18.) | PASS |
-| a2 | co-sim, ideal models vs the bit-true golden (4 jobs × 2 modes) | ≤ 1 code per K-chunk | {A2} | {A2R} |
-| a3 | vs the systolic array's exact INT8 result, ideal converter | (format property) | rms 2.9–158 MAC against rms(S) 4k–216k; 84–100 % of INT8 outputs equal | report |
-| a4 | co-sim, all error terms on: Verilog-A vs golden rms error per job | ratio 0.75–1.33 (tightened from 0.5–2) | {A4} | {A4R} |
-| a5 | **SNR of Verilog-A codes, pooled** (`tb_va_snr`, new): 4 runs × 18 tokens × 16 columns, block8 data, own static draws, against the golden over 8 seed sets | \|ΔSNR\| ≤ 0.5 dB | {A5} | {A5R} |
-| b1 | class-weighted SNR_eff, **tokact** (the architecture as specified), 24 K-chunks | ≥ 39.78 dB | ml2 26.07 [22.96, 28.17]; bit-serial 29.07 [25.96, 31.14]; bit-serial with pool_k = 4 25.26. V2 per-term fails: kT/C, mismatch, ADC | **FAIL by 10.7–14.5 dB** |
-| b2 | the same with **block8**, bit-serial | ≥ 39.78 dB, CI above it, V2 per-term | **42.25 [41.92, 42.62]**, no V2 fail | PASS (variant) |
-| b3 | block8, ml2 | as b2 | 39.89 [39.55, 40.27]; V2 fail: kT/C 41.1 dB against 43.31 − 0.5 | **MARGINAL / FAIL by V2** |
-| b4 | block8 sensitivities | as b2 | ml2 class-A level buffers 39.50 (FAIL). ml2 with merge on the column 42.10 (PASS, but no overlap, t_pass about 11.9 ns). Bit-serial: merge on the column 42.98; cc 42.22; ARCH LSB 172 µV 42.31; ideal reference 42.25 (the reference costs < 0.01 dB after calibration). **Measured comparator 4.05 mV: 31.92 (FAIL by 7.86)**; N6_r2 residue-amp SAR at 0.46 mV (D): 41.60 (PASS) | mixed |
-| b5 | **adversarial popcount** (new): every row on one level in every slot, block8 w | ≥ 39.78 dB | ml2 37.71 (drive term 43.9 dB; **FAIL by 2.07**); bit-serial 43.95 (drive 65.4 dB, PASS) | ml2 FAIL |
-| b6 | **V9 quality** (new, `tb_quality`, SmolLM2-135M, 2,044 tokens, Hadamard) | analog increment ≤ +1.0 % PPL | tokact: digital INT8 +0.26 ± 0.23 %, analog path (8 rows, 12 b, measured bit-serial error power) +3.07 ± 0.66 %, **increment +2.81 %: FAIL**. block8: digital +0.35 ± 0.11 % (top-1 98.6 %). Its analog path is not run, because the harness's analog path takes one x scale per token | tokact FAIL; block8 incomplete |
-| c1 | t_pass on the RTL schedule | ≤ 6.30 ns | **ml2 6.248 ns** (44 ticks: the 2-tick handoff is removed, conversions run back to back); bit-serial 7.952 ns (56 ticks) | ml2 PASS; bit-serial **FAIL** (+26 %) |
-| c2 | no stall, weights before activations | 0 after fill | 0 in both modes (M = 16 and 32); starved HBM stalls 607 ticks, still exact | PASS |
-| c3 | GEMV at the ARCH per-tile HBM share | B9 law | 28,153 ticks against the 28,032 law; tile busy 1.9 % | PASS |
-| c4 | ml2 rails settle, worst popcount | ≤ 0.1 % | class-AB SSF 0.637 % (needs 1.160 ns of the 0.849 ns); class-A 7.8 %. Verilog-A gives 0.674 % | **FAIL (gating for ml2)** |
-| c5 | bit-serial rails settle | ≤ 0.1 % | 0.053 % (needs 0.648 ns of 0.707) | PASS |
-| d | 24-b chain bit-exact across tiles | bit-exact | bit-exact (a1) | PASS |
-| e | energy per pass per 256-column tile (supplies integrated, booked events) | ≤ 256 pJ | {E} | {ER} |
+| a1 | driver RTL + ideal tiles vs the bit-true golden: systolic jobs (bit-serial and ml2), 4-tile chain, 8 × 16 tile, AdcShare 2 and 4, **block-8 GEMM / GEMV with dequant**, starved HBM, refresh every 4 passes, SmolLM2 attn_q | bit-exact | **25 of 25** bit-exact; block-8 GEMM 0.7 % rms against the float GEMM | PASS |
+| a2 | co-sim, ideal models vs the bit-true golden (4 jobs) | ≤ 1 code per K-chunk | max 1 code; 72–99 % exact | PASS |
+| a4 | co-sim, all error terms on: Verilog-A vs golden rms error per job | ratio 0.75–1.33 | 1.27, 1.01, 1.29, 1.12 | PASS |
+| b1 | class-weighted SNR_eff, the pick (block-8, BS6H 0.4 Ω, E-trim, AdcShare 3), 24 chunks | ≥ 39.78 dB, interval above, V2 per term | **40.62 [40.30, 40.94]**, no V2 fail | **PASS** |
+| b2 | corners | ≥ 39.78 dB | SS 39.71 (FAIL −0.07); SS + 7-tick slots 39.74 (FAIL); **SS + adaptive VDD 0.7 V 40.31 (PASS +0.53)**; FF 40.03 [39.71, 40.37] (MARGINAL) | SS needs the VDD closure |
+| b3 | fallbacks and sensitivities | as b1 | BS6H-cc 40.59; dt_x2 (fallback D) 40.65; AdcShare 4 40.64; ideal reference 40.62; linear drive law 40.62; R_PDN 1.3 Ω 39.80 (drive term 47.5 dB, V2 FAIL); 86 µV comparator 41.72 | PASS / MARGINAL |
+| b4 | replaced choices | as b1 | all-StrongARM 31.76 (−8.0); ml2 38.82 (−0.96, kT/C 40.9); tokact operands 27.22 (−12.6) | FAIL (as expected) |
+| b5 | adversarial popcount (every row on V in every slot) | as b1 | 42.47 (drive 62.3 dB) | PASS |
+| c1 | t_pass on the RTL schedule | ≤ the golden plan | bit-serial AdcShare 3: **5.964 ns** (42 ticks); AdcShare 4: 7.384 ns (52); ml2: 5.538 ns (39, conversion-bound) | PASS |
+| c2 | no stall, weights before activations | 0 after fill | 0 in all three | PASS |
+| c3 | GEMV at the ARCH per-tile HBM share | B9 law | 28,144 ticks against the 28,032 law; tile busy 1.8 % | PASS |
+| c4 | BS6H settling, 8 rows on V (measured table) | ≤ 0.1 % | TT 0.078 %; SS 0.238 % (open; 7-tick slots 0.043 %); 1.3 Ω 2.23 % | PASS at TT |
+| e | energy per pass per 256-column tile (supplies integrated + booked events) | — | 138–187 pJ (supplies 39–88, events 98: conversions 276.8 fJ, column switches) | report |
 
-### 4.3 Per-term SNR, block8 operands (dB, each term alone over the ideal quantizer, 24 K-chunks)
+### 4.4 Per-term SNR, the pick (dB, each term alone over the ideal quantizer, 24 K-chunks)
 
-| term | ARCH budget | ml2 | bit-serial |
+| term | TT | SS 0.63 V | SS 0.7 V | FF | budget (ARCH_CHOSEN) |
+|---|---|---|---|---|---|
+| quantization (12 b, one code = 64 MAC) | 58.5 | 58.5 | 58.5 | 58.5 | — |
+| comparator (E-trim) | 44.1 | 44.2 | 45.0 | 43.1 | — |
+| C-DAC | 45.6 | 45.6 | 45.6 | 45.6 | — |
+| ADC class (unweighted) | 41.7 | 41.8 | 42.2 | 41.1 | 41.5 |
+| thermal kT/C | 44.4 | 42.5 | 43.5 | 43.6 | 43.31 |
+| unit mismatch | 48.1 | 48.1 | 48.1 | 48.1 | 46.02 |
+| drive (measured table) | 72.7 | 60.6 | 60.6 | 72.7 | 54.81 |
+| reference droop (after calibration) | 85.2 | 85.2 | 85.2 | 85.2 | 53.98 |
+| merge / acc ratio | 82.3 / 73.9 | same | same | same | — |
+| booked: hold, coupling, injection, row coupling, row gain | 60.7, 63.0, 73.9, 74.8, 76.9 | same | same | same | |
+| **total / class-weighted** | **39.33 / 40.62** | 38.67 / 39.71 | 39.26 / 40.31 | 38.74 / 40.03 | 39.78 |
+
+The block-8 scale format costs: 5-b mantissa 0.11 dB under exact scales; E4M3 (3-b) 0.45 dB (quick budget).
+
+## 5. Transistor-level netlist (`netlist/imc_tile.py`)
+
+One SpiceRack file. The top holds the configuration as plain constants (ROWS, COLS, SLICES, N_TILES,
+DRIVE_MODE `bs6h` | `bs6h_cc`, ADC_SHARE, COMPARATOR `etrim` | `dt_x2` | `strongarm`, fins per device class,
+VDD, CORNER, R_PDN, plus SHARE_SW and GC_BUF). Devices go through `analog/common/devices.fet` (W → fins; this
+block added the `nfet_hvt` = `nmos_sram` kind), MOM units are ideal C as the PDK declares, and the PDN, row
+strap and rail wire are interconnect elements. The SAR logic is Verilog-A (`va/imc_sar_logic.va`).
+
+| subckt | what it is |
+|---|---|
+| `gc3t` | gain bit: SRAM-Vt write FET + inverter; with GC_BUF (default) a second inverter drives the crosspoint gates (gc5t) |
+| `xp`, `smx`, `half`, `wcell` | crosspoint TG + ground leg per bit, sign mux per column side, 7 MOM units per side, one W8 weight |
+| `rdrv`, `rows` | bit-serial row driver per row (NAND2 + rail inverter on the tile supply, strap, rail wire; bs6h_cc adds the dummy), 8 rows |
+| `bsw`, `bank`, `col`, `ctl` | bootstrapped share switch; one accumulation bank (share switches, LSB acc + C_m merge cap, MSB acc as the 12 step caps of the C-DAC with sized enable TGs and idle pull-downs, bank reset); a column pair (4 top-plate resets, 4 banks); the per-bank phase decode |
+| `dtf`, `dtq`, `sarm` | fast double-tail, quiet tail-starved double-tail (three ×2 slices, slices 2-3 on the trim bit), StrongARM |
+| `bpd2_<f>`, `refbuf`, `conv` | 3-level bottom-plate drivers sized per step; class-A Miller follower for VCM; one converter (column/bank mux, comparators, drivers, logic) |
+| `arr`, `cgrp`, `tile`, `tiles` | the array; 3 columns + their converter; a tile; N_TILES tiles on their R_PDN with the shared VCM buffer |
+
+`--emit` writes `output/netlist/imc_tile.spice` (the full 8 × 256 tile ×2: 356 MOSFET cards in the subcircuit
+bodies, 373,878 transistors per tile flattened, 130 per weight). `--draw` writes a cktImg schematic per subcircuit to
+`output/schematics/` (block views of `tiles`, `tile`, `cgrp`, `arr`, `col`, `conv` at 2 rows × 6 columns,
+transistor views of the leaf cells), with port sides from `*@` hints and index runs drawn as buses where every
+use bundles them the same way. `--sim` runs the checks below (ESPice, the shared lock, 4 GB, `.tran 2p`).
+
+### 5.1 Results (M = this ESPice run, D = derived)
+
+| check | target | measured | result |
 |---|---|---|---|
-| quantization (12 b, one code = 64 MAC) | — | 58.7 | 58.7 |
-| ADC class (quantization + comparator + C-DAC, unweighted) | 43.30 | 47.9 | 47.9 |
-| thermal kT/C | 43.31 | **41.1 (V2 FAIL)** | 44.6 |
-| unit mismatch | 46.02 | 48.2 | 48.2 |
-| drive (settling + code-dependent droop) | 54.81 | 84.3 (adversarial 43.9, FAIL) | 85.3 (adversarial 65.4) |
-| reference droop (per-step, after calibration) | 53.98 | 74.4 | 74.4 |
-| merge ratio / acc ratio | — | 82.5 / 78.8 | 82.5 / 74.2 |
-| booked, not simulated: hold droop, coupling, injection, row coupling, row gain | 60.7, 63.0, 73.9, 74.8, 76.9 | at budget | at budget |
-| **total (incl. booked) / class-weighted** | 38.96 / 39.84 | **39.60 / 39.89** | **41.70 / 42.25** |
+| bit-serial MAC, 8 × 4 tile, 3 passes on banks 0 / 1 / 0, merged V_diff against the golden's k·S | gain 0.80–1.05, residual after gain/offset ≤ 0.2 % FS | gc5t, 2/4-fin TGs, 64-fin reset: gain 0.922, offset 1.35 mV, residual 0.72 % FS, worst 16.8 mV (M). gc3t (N3_r2 sizing): gain 0.832, residual 2.12 % FS | FAIL (residual) |
+| plate settling at the 6-tick share edge, 8 rows on V (worst popcount), share included | ≤ 0.1 % | 0.067 % (M; rail 0.020 %, tile supply min 0.579 V); gc3t 3.3 %, gc5t with 1-fin TGs 0.44 % | PASS |
+| comparator noise, `.trannoise`, 198 decisions each | within COMPARATOR_ALT's band | fast 1.823 mV (1.645–2.017) against 1.82; quiet 0.601 mV (0.544–0.660) against 0.654 (M) | PASS |
+| 8 full conversions on the bank C-DAC (VREF 0.7 V, VCM from `refbuf`) | gain ≤ 1.05, residual ≤ 4 LSB rms | codes 607, −448, −1, 1791, −1305, 156, −32, −1505 against the ideal-cap law 594, −446, 0, 1782, −1277, 148, −30, −1485; gain 1.012, residual 6.8 LSB rms (worst 10.8); 27.8 fC per conversion from VREF | FAIL (INL) |
 
-The booked terms cost 0.15 to 0.25 dB. Without them the totals would read 39.8 dB (ml2) and 41.9 dB
-(bit-serial).
+How the transistor runs moved the design (each a sizing the behavioural models had hidden):
 
-## 5. Findings
+1. **The share kicks the bottom plates.** Opening the share moves the top plate (about 0.35 V for an all-ones
+   plane) and kicks every unit's bottom plate through its cap; the drive must restore it inside the share.
+   DRIVE_ALT's 0.078 % measured the rails without that event. With N3_r2's gc3t (the TG NMOS gated by the
+   floating storage node, 1-fin TGs) the plate is 3.3 % off at the share edge (M); a buffered gate (gc5t)
+   gives 0.44 %, and 2-fin bit TGs with a 4-fin sign mux 0.075 % (M, PASS; 4/8 fins 0.035 %). Before the
+   bank fix below, larger TGs on the raw storage node made it worse (23.7 % at 4/8 fins, M): the rail swing
+   couples into the floating node.
+2. **The C-DAC bank must be held hard while it accumulates.** With 1-fin idle pull-downs the 27.6 fF MSB step
+   cap's bottom floats on a 276 ps time constant, the share settles in about 130 ps (the golden assumes 39 ps;
+   run through the golden, 133 ps costs about 8 dB of G2, D), and conversions inherit the previous bank state.
+   Pull-downs and enable TGs now scale with the step (8 and 32 fins on the 1024 cap).
+3. **The top-plate reset must clear 56 fF in half a tick.** With 4 fins the plane weights drift (the first
+   plane counts 2.7× too much, plane ratio 23 instead of 64); 64 fins restore 64.9 (M).
+4. **The DAC drivers and enables are sized per step** (32 fins for the 1024 cap) to settle inside t_dac
+   45 ps; the redundant step absorbs the early residue.
+5. **Converter INL.** 6.8 LSB rms over 8 points, ±11 LSB, with ideal caps: CM-dependent comparator input
+   capacitance and the VCM start (+0.30 V on both sides) pushing a side towards VDD at large inputs (D).
+   The golden has no INL term; at this size it would cap the ADC term near 33 dB (D). Next item.
+6. **The reference buffer's feedback had to go to the mirror's diode side** (the PMOS output stage inverts).
 
-1. **The digital architecture is correct.** The schedule, systolic skew, JIT weights, refresh,
-   calibration, 24-b chain and requant are bit-exact on 21 jobs. The Verilog-A tiles reproduce the
-   golden within one code per K-chunk with errors off.
-2. **The analog architecture as specified fails G2 by 10.7 to 14.5 dB in its own operand format, and
-   fails V9.** Block8 operands recover the per-pass SNR, but they are an architecture change:
-   - **Dequant cost** (N5_r2, P). One 30 µm² unit (12 × 4-b multiply, exponent shift, 24-b
-     accumulate, x-scale apply) per 2 converters is 32 units, about 960 µm² per tile for this tile's
-     64 converters (+1,920 µm² at ARCH's 128). It also costs 2 INT8-MAC equivalents of energy per
-     conversion, i.e. 512 per pass of 2,048 MACs, and E4M3 weight-scale bytes add 12.5 % to the
-     weight stream.
-   - **x-block quantizer.** 72 x-scales per token at K = 576, computed once per token on the digital
-     rail (absmax and scale per 8 values). That is negligible beside the MVM, but it is a new datapath.
-   - **The chain.** It accumulates dequantized values, so the integer T2 chain is no longer
-     bit-comparable to the INT8 systolic reference.
-   - **Pooling.** B4's K = 4 pooling cannot be used (N5_r2 finding 1).
-   - **Quality.** Block8 digital quantization costs +0.35 % PPL (tokact +0.26 %). The block8 analog
-     increment remains to be measured: the harness needs a per-conversion x scale for that.
-   - **Not done here.** Neither the dequant nor the block-x path is in the RTL. Nothing has been
-     re-scored in ARCH_METRIC.
-3. **ml2 fails on three independent counts:**
-   - settling, 0.637 % at the worst popcount against 0.1 %;
-   - V2's kT/C rule, because the merge sits on the ping-pong C_acc. Merging on the column passes but
-     loses the overlap;
-   - the adversarial job, 37.71 dB.
-   Its t_pass now meets 6.30 ns (6.248 ns).
-4. **Bit-serial is the only drive mode that passes, and only conditionally** (§4.0). Its 7.95 ns pass
-   is word-bound (7 × 0.99 ns + merge). N2_r2's 0.94 ns slot would give about 7.6 ns.
-5. **The comparator stays gating.** At 4.05 mV the variant fails by 7.86 dB. The residue-amp SAR of
-   N6_r2 brings the input-referred noise to about 0.46 mV, i.e. sqrt((4.05/9.54)² + 0.182²) mV (D,
-   assuming redundancy absorbs the coarse decisions), and passes at +1.82 dB. That converter costs
-   947 fJ per conversion (N6_r2), not 253.5 fJ, which ARCH_METRIC must re-price.
-6. **The reference misses B5 by 39×** but costs < 0.01 dB after calibration (§4.1). That holds only if
-   calibration sees the same reference load. Its energy (CV² of 64 × 85 fC per round) belongs in V5.
-7. **Retention is handled.** The driver rewrites a group's rows from its stage bank every 128 passes
-   (0.80 µs), inside the 1.32 µs 6σ retention. The bank now stays full while its group is live, and
-   the loader runs one group ahead instead of two. A refresh is 16 write ticks on this 2-tile build
-   (shared bit lines, one row per tick). It stretches its pass by about 5 ticks in ml2 and 10 in
-   bit-serial, which is an occupancy of about 0.09 % and 0.14 % (D), against ARCH's ≤ 0.04 %. The fix
-   is a write port per tile instead of shared bit lines. The same serial write makes a GEMV with
-   fast HBM run at 7.24 ns per pass in ml2, though GEMV is HBM-bound anyway (c3).
-8. **Energy.** Only the rail, level and reference-load CV² is simulated. The converter and
-   column-switch energies are ARCH's per-event values (P). The class-A reference bias is not modelled.
+Not done at transistor level: corners and Monte Carlo, the LSB-slice radix with the larger reset (plane ratio
+94 for 64), the V7 bootstrap reliability check, energy of the drivers, and the full RTL schedule in ESPice.
 
-### 5.1 Logs
+## 6. Findings
 
-- `output/accuracy.json`, `output/accuracy.log`: §4.2 b and §4.3.
-- `output/quality.log`, `output/quality_b8.log`, `output/quality.json`: b6.
-- `output/cosim_all.log`, `output/cosim_*`: a2, a4, a5 and e.
+1. **The digital path is correct and now hides the merge.** The hand-off sequencer runs BS6H at 42 ticks per
+   pass with the conversion of the previous pass underneath, the write window opens only on weight-change and
+   refresh passes, and the block-8 dequant is bit-exact against the golden (25 driver cases).
+2. **AdcShare 3 is the pick** (§4.1): the drive binds at 5.94 ns, +8.6 to +16 % tok/s against AdcShare 4 for
+   +34 % converters.
+3. **G2 holds at TT (+0.84 dB) and FF (+0.25, marginal); SS needs adaptive VDD** (−0.07 dB at 0.63 V,
+   +0.53 at 0.7 V). Its binding term is kT/C, so the 7-tick SS slots of DRIVE_ALT do not close it.
+4. **The ping-pong banks are the largest unpriced cost**: 88 pF per tile, −26 % ARCH tok/s at MOM density
+   if they need their own area. The MSB bank doubles as the C-DAC, which ARCH booked as 60 fF per converter.
+5. **The transistor tile changes four sizings and one cell** (§5.1): the gain cell needs a buffered output
+   (gc5t, +2 T per bit) and 2-fin crosspoint TGs; the top-plate reset needs 64 fins; the C-DAC enables,
+   pull-downs and drivers scale with the step. The share event, not the rail rise, sets the slot.
+6. **Open at transistor level:** the MAC residual (0.72 % FS after gain/offset, §5.1), the converter's INL (6.8 LSB rms), the LSB-slice
+   radix with the larger reset, corners, and the B5 reference droop (130 µV per conversion against 3.7 µV;
+   a calibrated static error in the Verilog-A budget, ref term 85 dB).
+7. **The cost of the cell and switch fixes is not priced**: gc5t and 2-fin TGs raise the FEOL per weight
+   past the 2.93 µm² BEOL MOM, so the array area grows; the arch_eval rows in §4.1 do not include it.
+
+### 6.1 Logs
+
+- `output/accuracy.json`, `output/accuracy.log`: §4.3 b and §4.4.
+- `output/cosim_all.log`, `output/cosim_*`: a2, a4, e.
+- `output/spice/results.json`, `output/spice/*/deck.sp`: §5.1 (keys tagged with the cell and sizing).
 - `digital/imc_driver/build/test/*`: the driver traces and replays.
 
-### 5.2 Tool limits hit (for REQUIRED_TOOLING / TOOL_ISSUES; not filed from here)
+### 6.2 Tool limits hit
 
-- An ESPice device holds at most 64 unknowns. This applies to Verilog-A and to `.v` devices, which
-  are therefore limited to 64 pins, not VerA's 256. Hence the per-weight `imc_gc` / `imc_xp` split and
-  the open-loop co-simulation.
-- An ESPice B-source takes at most 8 probes, so event energies are booked in python.
-- A Verilog-A device with `@(cross)` events that probes fast-moving inputs continuously drives the
-  ESPice timestep to 0.1 fs. `imc_col` therefore probes its q inputs only inside its events.
-- `vera --check` fails on every model, including the reference block `strongarm.va` (a contract
-  `isDenseEnum` comptime error). Lint is the gate used here.
-- VerA's event engine is IEEE 1364 only, so the RTL is Verilog-2001 with the `_d/_q` discipline.
-- The quality harness's analog path asserts one x scale per token, so block8's analog path cannot be
-  scored there.
-- The shared lock is per ESPice run. An outer `flock` on the same file deadlocks `va_lib`, and a
-  long heavy-python holder made a queued ESPice run time out once at a 900 s wait. The wait is now
-  3,600 s.
+- An ESPice device holds at most 64 unknowns, ports and branch currents included: the driver co-simulates
+  open loop, and `imc_sar_logic` drives its 35 outputs as Norton sources (a `V()` contribution per output
+  would add 35 branch currents).
+- A Verilog-A vector port is sized from the module's default parameter (`imc_sar AS=4` on a default-3 module
+  fails `WrongNodeCount`): every converter instance uses AS = 3 and a short converter repeats its last column.
+- `.tran 1p` with a PWL corner half-way between grid points (the 141.5 ps tick) collapses the step to
+  2.6e-23 s (`TimestepTooSmall`); the transistor benches use `.tran 2p` with corners on the grid.
+- An ESPice B-source takes at most 8 probes (event energies are booked in python); `@(cross)` on fast inputs
+  drives the timestep to 0.1 fs (`imc_col` probes its inputs only inside events); `vera --check` fails on
+  every model (lint is the gate).
+- The shared lock is per ESPice run: an outer `flock` on the same file deadlocks `va_lib`.
 
-## 6. Review responses
+## 7. Review responses (the pre-upgrade Verilog-A review, kept for the record)
 
-Each item is a finding of the adversarial review, what was changed, and the re-run evidence.
+The numbers in this table are the pre-upgrade run (ml2 / bit-serial 7-tick, StrongARM budget, AdcShare 4);
+§4 supersedes them.
 
 | # | finding (verdict) | response | evidence |
 |---|---|---|---|

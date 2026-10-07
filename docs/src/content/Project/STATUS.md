@@ -641,3 +641,20 @@ make -C digital/analogioc flow-harden       # config + LibreLane harden + macros
   (3) HBM bandwidth and (4) KV capacity, digital and system. Documented, not researched.
 - Row-drive and comparator research landed: `ArchResearch/nodes/DRIVE_ALT.md` (BS6H) and
   `ArchResearch/nodes/COMPARATOR_ALT.md` (E-trim double-tail SAR).
+
+### 2026-10-06: tile upgrade (BS6H, E-trim, AdcShare 3, block-8) and the transistor-level tile
+
+- Golden, Verilog-A and driver RTL moved to the BS6H drive (6-tick slots, measured R_PDN 0.4 Ω droop
+  table, the merge hidden on ping-pong banks), the E-trim SAR (bipolar 13-decision search, 13-tick
+  rounds) and block-8 operands (5-b-mantissa scale bytes, dequant in `imc_chain`). 25 driver cases
+  bit-exact; bit-serial co-simulation PASS; RTL t_pass 5.96 ns.
+- AdcShare 3 chosen by `arch_eval` (scratch patch): +8.6 to +16 % tok/s against 4. The 88 pF of ping-pong
+  bank caps are unpriced and cost 26 % of ARCH tok/s if they need their own area.
+- G2 (block-8, 24 chunks): TT 40.62 dB (+0.84), FF +0.25, SS −0.07 (passes at +0.53 with the signal rail
+  held at 0.7 V).
+- `analog/imc_tile/netlist/imc_tile.py`: the tile as ASAP7 SpiceRack circuits (374k transistors per tile),
+  cktImg schematics, ESPice checks. Comparator noise and plate settling PASS after resizing (buffered
+  gain-cell output, larger crosspoint TGs and top-plate reset, step-scaled C-DAC switches); the MAC residual
+  (0.72 % FS) and the converter INL (6.8 LSB rms) are open.
+- Two new ESPice issues in `analog/docs/TOOL_ISSUES.md` (tstep/PWL-corner TimestepTooSmall; vector ports
+  sized from defaults).
