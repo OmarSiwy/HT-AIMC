@@ -15,7 +15,7 @@ from pdk_specs import get_pdk  # noqa: E402
 
 import spicerack as ps  # noqa: E402
 
-_KINDS = ("nfet", "pfet", "nfet_lvt", "pfet_lvt", "pfet_hvt")
+_KINDS = ("nfet", "pfet", "nfet_lvt", "pfet_lvt", "pfet_hvt", "nfet_hvt")
 
 
 def fet(sub, name, d, g, s, b, kind, W, L, nf=1, m=1, pdk=None):

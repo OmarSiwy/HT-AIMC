@@ -1,0 +1,104 @@
+// B4 SAR logic of one transistor-level converter (netlist/imc_tile.py `conv`): the asynchronous
+// decision loop of the E-trim bipolar search, behavioural. The C-DAC is the column's MSB accumulation
+// bank (direct SAR, the column is the sampler): 12 step caps per side whose bottom plates the
+// converter drives through bpd2 (c = 1 -> VCM; else d = 1 -> + side VREF / - side GND, d = 0 the
+// reverse) once the bank's enable is on (off = GND, the accumulation state).
+//   phi_samp falling  the merged bank is the idle one: cb = !bank; the round counter resets
+//   sar_clk rising    round k converts column k: en[2k + cb] = 1, every c = 1 (bottoms GND -> VCM,
+//                     the top plates move up by VCM r), then NDEC decisions: clock comparator f
+//                     (first n_fast decisions) or q (the rest) for t_f / t_q, read its latch (a > b
+//                     means V(+) > V(-), d = +1), release the clock, switch step cap i (c_i = 0,
+//                     d_i = [d < 0]: d = +1 lowers + and raises -, the threshold moves up by step_i),
+//                     wait t_dac. Code = est - [d_last < 0] (est from mid-scale +- step_i), on cv
+//                     (x 1 mV) at the end; en drops at the next sar_clk or phi_samp.
+// Steps 2^(BITS-2) .. 1 with `red` inserted after n_fast decisions (E-trim: 1024 .. 32, 32, 16 .. 1).
+// Defaults: t_f 50 ps (fast double-tail 26 ps + latch margin), t_q 80 ps (quiet x2 48 ps), t_dac
+// 45 ps (D: bottom-plate driver + TG + caps), t_cm 60 ps: 60 + 6 x 95 + 7 x 125 = 1.5 ns <= 1.61 ns.
+`include "disciplines.vams"
+module imc_sar_logic(samp, sclk, bank, fa, fb, qa, qb, cf, cfb, cq, cqb, c, d, en, cv);
+    parameter integer BITS = 12 from [2:14];
+    parameter integer AS = 3 from [1:4];
+    parameter integer red = 32 from [0:1024];
+    parameter integer n_fast = 6 from [0:15];
+    parameter real t_f = 50e-12 from (0:inf);
+    parameter real t_q = 80e-12 from (0:inf);
+    parameter real t_dac = 45e-12 from (0:inf);
+    parameter real t_cm = 60e-12 from (0:inf);
+    parameter real vlogic = 0.7;
+    parameter real vth = 0.35;
+    parameter real r_out = 100 from (0:inf);
+    input samp, sclk, bank, fa, fb, qa, qb;
+    output cf, cfb, cq, cqb, cv;
+    output [0:11] c, d;
+    output [0:2*AS-1] en;
+    electrical samp, sclk, bank, fa, fb, qa, qb, cf, cfb, cq, cqb, cv;
+    electrical [0:11] c, d;
+    electrical [0:2*AS-1] en;
+    real stp[0:15], cc[0:11], dd[0:11], ee[0:7];
+    real est, h, t_next, vf, vq, cvv, dec;
+    integer j, k, nd, ns, rnd, cb, i, ph, busy;
+    genvar g;
+    analog begin
+        @(initial_step) begin
+            j = 0;
+            for (k = BITS - 2; k >= 0; k = k - 1) begin
+                if (red > 0 && j == n_fast) begin stp[j] = red; j = j + 1; end
+                stp[j] = pow(2, k); j = j + 1;
+            end
+            ns = j; nd = j + 1;
+            h = pow(2, BITS - 1);
+            for (k = 0; k < 12; k = k + 1) begin cc[k] = 0; dd[k] = 0; end
+            for (k = 0; k < 8; k = k + 1) ee[k] = 0;
+            rnd = 0; cb = 0; i = 0; ph = 0; busy = 0; est = h; vf = 0; vq = 0; cvv = 0; t_next = 1; dec = 1;
+        end
+        @(cross(V(samp) - vth, -1)) begin
+            cb = (V(bank) > vth) ? 0 : 1;
+            rnd = 0;
+            for (k = 0; k < 8; k = k + 1) ee[k] = 0;
+        end
+        @(cross(V(sclk) - vth, 1)) begin
+            for (k = 0; k < 8; k = k + 1) ee[k] = 0;
+            if (rnd < AS) ee[2 * rnd + cb] = 1;
+            for (k = 0; k < 12; k = k + 1) begin cc[k] = 1; dd[k] = 0; end
+            est = h; i = 0; ph = 0; busy = 1;
+            t_next = $abstime + t_cm;
+            rnd = rnd + 1;
+        end
+        @(timer(t_next)) begin
+            if (busy == 1) begin
+                if (ph == 0) begin                       // clock the comparator of decision i
+                    if (i < n_fast) vf = 1; else vq = 1;
+                    ph = 1;
+                    t_next = t_next + ((i < n_fast) ? t_f : t_q);
+                end else begin                           // read it, release it, switch the step cap
+                    if (i < n_fast) dec = (V(fa) > V(fb)) ? 1 : -1;
+                    else dec = (V(qa) > V(qb)) ? 1 : -1;
+                    vf = 0; vq = 0;
+                    if (i < nd - 1) begin
+                        est = est + dec * stp[i];
+                        cc[i] = 0; dd[i] = (dec < 0) ? 1 : 0;
+                        i = i + 1; ph = 0;
+                        t_next = t_next + t_dac;
+                    end else begin
+                        est = est - ((dec < 0) ? 1 : 0);
+                        est = (est < 0) ? 0 : ((est > 2 * h - 1) ? 2 * h - 1 : est);
+                        cvv = (est - h) * 1e-3;
+                        busy = 0; t_next = 1;
+                    end
+                end
+            end
+        end
+        // outputs as Norton sources (r_out): a V() contribution per output adds a branch-current unknown,
+        // and 35 of them would break ESPice's 64-unknown device limit (analog/docs/TOOL_ISSUES.md)
+        I(cf) <+ (V(cf) - transition(vf * vlogic, 0, 8p)) / r_out;
+        I(cfb) <+ (V(cfb) - transition((1 - vf) * vlogic, 0, 8p)) / r_out;
+        I(cq) <+ (V(cq) - transition(vq * vlogic, 0, 8p)) / r_out;
+        I(cqb) <+ (V(cqb) - transition((1 - vq) * vlogic, 0, 8p)) / r_out;
+        for (g = 0; g < 12; g = g + 1) begin
+            I(c[g]) <+ (V(c[g]) - transition(cc[g] * vlogic, 0, 8p)) / r_out;
+            I(d[g]) <+ (V(d[g]) - transition(dd[g] * vlogic, 0, 8p)) / r_out;
+        end
+        for (g = 0; g < 2 * AS; g = g + 1) I(en[g]) <+ (V(en[g]) - transition(ee[g] * vlogic, 0, 8p)) / r_out;
+        I(cv) <+ (V(cv) - transition(cvv, 0, 8p)) / r_out;
+    end
+endmodule

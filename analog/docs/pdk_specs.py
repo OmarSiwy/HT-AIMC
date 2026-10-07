@@ -65,6 +65,7 @@ class PDKConfig:
     nfet_lvt: str = ""
     pfet_lvt: str = ""
     pfet_hvt: str = ""
+    nfet_hvt: str = ""
     # -- how devices are written (python format strings; W/L already unit-formatted)
     geom_suffix: str = "u"       # appended to W/L in um; "" when the lib sets scale=1u
     fet_card: str = "X{name} {d} {g} {s} {b} {model} W={w} L={l}{extra}"
@@ -327,7 +328,8 @@ class Asap7(PDKConfig):
             nfet="nmos_rvt", pfet="pmos_rvt",
             nfet_lvt="nmos_lvt", pfet_lvt="pmos_lvt",
             pfet_hvt="pmos_sram",  # highest-Vt P device ASAP7 has (SRAM: no LDD, lowest Ioff)
-            # also in the cards: nmos/pmos_slvt, nmos_sram
+            nfet_hvt="nmos_sram",  # its N twin (the gain-cell write FET, N3_r2)
+            # also in the cards: nmos/pmos_slvt
             # M: the bsimcmg module is a 4-terminal device; NFIN per finger, NF fingers.
             # ESPice VA devices take no m= ($mfactor), so devices.fet folds m into NF.
             fet_card="M{name} {d} {g} {s} {b} {model} L={l} NFIN={nfin}{extra}",
