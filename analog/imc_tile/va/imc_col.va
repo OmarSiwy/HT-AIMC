@@ -7,9 +7,11 @@
 //   phi_sh  falling  the slot: V_top = sum_r (q_r(now) - q_r(reset)) + reset noise, shared onto
 //                    C_acc = r_acc C_slice (r_acc 1/3 ml2, 1 bitserial), incompletely
 //                    (1 - exp(-t_share / tau_col)), plus kT/(C_slice + C_acc)
-//   phi_mrg  falling MSB and LSB accumulators merged with rho (LSB slice weighs 1/16), kT/C of the
-//                    merge node; outp/outn hold the merged side voltages; the accumulators reset
-//                    (ping-pong banks: the next pass starts while the SAR converts this one)
+//                    The share goes to accumulator bank V(bank) (two banks, ping-pong).
+//   phi_mrg  falling the idle bank (1 - V(bank)) is merged: MSB and LSB accumulators with rho (LSB
+//                    slice weighs 1/16), kT/C of the merge node; outp/outn hold the merged side
+//                    voltages and that bank resets. BS6H: the RTL toggles bank at the start of each
+//                    pass, so a pass's merge runs under the next pass's first slots on the other bank.
 // The q inputs are probed only inside the events: probing them continuously makes ESPice's event
 // timestep control collapse to 0.1 fs whenever a crosspoint input moves (found in tb_cosim).
 // q[4r + slice*2 + side]: slice 0 MSB, 1 LSB; side 0 drives outp, side 1 outn.
@@ -17,8 +19,8 @@
 // ratio sigmas 0.1 % (P); e_sw 67.6 fJ per column-pass = 17.3 pJ / 256 (P, column switches).
 `include "disciplines.vams"
 `include "constants.vams"
-module imc_col(q, phi_rst, phi_sh, phi_mrg, outp, outn, emon);
-    parameter integer ROWS = 8 from [1:14];  // 4 ROWS + 6 pins <= 64 unknowns per ESPice device
+module imc_col(q, phi_rst, phi_sh, phi_mrg, bank, outp, outn, emon);
+    parameter integer ROWS = 8 from [1:14];  // 4 ROWS + 7 pins <= 64 unknowns per ESPice device
     parameter integer mode = 0 from [0:1];
     parameter integer noise = 1 from [0:1];
     parameter integer merge_on_top = 0 from [0:1];
@@ -32,18 +34,18 @@ module imc_col(q, phi_rst, phi_sh, phi_mrg, outp, outn, emon);
     parameter real temp_k  = 300;
     parameter real vth     = 0.35;
     parameter real e_sw    = 67.6e-15;
-    input [0:ROWS*4-1] q; input phi_rst, phi_sh, phi_mrg;
+    input [0:ROWS*4-1] q; input phi_rst, phi_sh, phi_mrg, bank;
     output outp, outn, emon;
-    electrical [0:ROWS*4-1] q; electrical phi_rst, phi_sh, phi_mrg;
+    electrical [0:ROWS*4-1] q; electrical phi_rst, phi_sh, phi_mrg, bank;
     electrical outp, outn, emon;
 
     real qv[0:63], q0[0:63];
-    real vacc[0:3];          // [slice*2 + side], slice 0 = MSB, 1 = LSB
+    real vacc[0:7];          // [bank*4 + slice*2 + side], slice 0 = MSB, 1 = LSB
     real nrst[0:3];
     real racc[0:3], rho[0:1];
     real vm[0:1];
     real c_msb, c_lsb, r_acc, rho0, kt, t_sh0, settle, cs, ca, vtop, a, cm, etot;
-    integer j, sd, sl, sd_seed;
+    integer j, sd, sl, sd_seed, bk, ib;
     genvar g;
     analog begin
         @(initial_step) begin
@@ -55,8 +57,9 @@ module imc_col(q, phi_rst, phi_sh, phi_mrg, outp, outn, emon);
             kt    = `P_K * temp_k;
             for (j = 0; j < 4; j = j + 1) begin
                 racc[j] = r_acc * (1 + $rdist_normal(sd_seed, 0, 1) * sig_racc);
-                vacc[j] = 0; nrst[j] = 0;
+                nrst[j] = 0;
             end
+            for (j = 0; j < 8; j = j + 1) vacc[j] = 0;
             for (j = 0; j < 2; j = j + 1) begin rho[j] = rho0 * (1 + $rdist_normal(sd_seed, 0, 1) * sig_merge); vm[j] = 0; end
             for (j = 0; j < 64; j = j + 1) q0[j] = 0;
             t_sh0 = 0; etot = 0;
@@ -71,6 +74,7 @@ module imc_col(q, phi_rst, phi_sh, phi_mrg, outp, outn, emon);
         @(cross(V(phi_sh) - vth, 1)) t_sh0 = $abstime;
         @(cross(V(phi_sh) - vth, -1)) begin
             for (g = 0; g < ROWS * 4; g = g + 1) qv[g] = V(q[g]);
+            bk = (V(bank) > vth) ? 4 : 0;
             settle = 1 - exp(-($abstime - t_sh0) / tau_col);
             for (sl = 0; sl < 2; sl = sl + 1)
                 for (sd = 0; sd < 2; sd = sd + 1) begin
@@ -80,15 +84,17 @@ module imc_col(q, phi_rst, phi_sh, phi_mrg, outp, outn, emon);
                     vtop = vtop + nrst[sl * 2 + sd];
                     ca = cs * racc[sl * 2 + sd];
                     a = ca / (cs + ca);
-                    vacc[sl * 2 + sd] = vacc[sl * 2 + sd] + (a * vacc[sl * 2 + sd] + (1 - a) * vtop - vacc[sl * 2 + sd]) * settle
-                                        + noise * $rdist_normal(sd_seed, 0, 1) * sqrt(kt / (cs + ca));
+                    ib = bk + sl * 2 + sd;
+                    vacc[ib] = vacc[ib] + (a * vacc[ib] + (1 - a) * vtop - vacc[ib]) * settle
+                               + noise * $rdist_normal(sd_seed, 0, 1) * sqrt(kt / (cs + ca));
                 end
         end
         @(cross(V(phi_mrg) - vth, -1)) begin
             cm = c_msb * (r_acc + merge_on_top) * (1 + rho0);
+            bk = (V(bank) > vth) ? 0 : 4;                    // the idle bank
             for (sd = 0; sd < 2; sd = sd + 1) begin
-                vm[sd] = (vacc[sd] + rho[sd] * vacc[2 + sd]) / (1 + rho[sd]) + noise * $rdist_normal(sd_seed, 0, 1) * sqrt(kt / cm);
-                vacc[sd] = 0; vacc[2 + sd] = 0;
+                vm[sd] = (vacc[bk + sd] + rho[sd] * vacc[bk + 2 + sd]) / (1 + rho[sd]) + noise * $rdist_normal(sd_seed, 0, 1) * sqrt(kt / cm);
+                vacc[bk + sd] = 0; vacc[bk + 2 + sd] = 0;
             end
             etot = etot + e_sw;
         end

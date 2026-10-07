@@ -7,11 +7,14 @@ Full 8 x 256 tiles, the golden's analog-error model (scripts/golden/imc_tile.py,
 parameters as the Verilog-A models; tb_va_snr and tb_cosim cross-check the two). The signal is the
 per-pass column partial sum S = sum_8 w x of real operands: SmolLM2-135M blk.0 attn_q,
 Hadamard-rotated, in the two operand formats the architecture documents name:
-  tokact  INT8 per-token x and per-output-channel INT8 w (n4 w8a8_lead_tokact, ARCH_CHOSEN's
-          interface: what the systolic reference computes). THIS IS THE ARCHITECTURE AS SPECIFIED.
   block8  every 8-row block of x and w rescaled to full scale (the n5 'block' rho the ARCH SNR
-          budget is computed with). An architecture change: a dequant multiply per conversion and a
-          per-block x quantizer, neither in the RTL; pooling (B4's K = 4) is incompatible with it.
+          budget is computed with): the adopted format, with the dequant multiply per conversion in
+          the RTL (imc_chain); pooling (B4's K = 4) is incompatible with it (pool_k = 1).
+  tokact  INT8 per-token x and per-output-channel INT8 w (n4 w8a8_lead_tokact): round 1's interface,
+          replaced; one row kept to show why.
+The default tile is the upgrade: BS6H drive on the measured R_PDN 0.4 ohm table, E-trim SAR (6 fast
++ 7 quiet decisions, one redundant step), AdcShare 3. Corner rows (SS 373 K / 0.63 V signal, FF 358 K)
+change only what was measured at the corner: comparator sigmas, the drive table, kT.
 Each K-chunk runs on its own tile draw (seed). Error terms are switched on one at a time over the
 ideal quantizer, then all together. The ARCH section 2 terms the models do not simulate are booked at
 their budget (golden BOOKED_DB). Class weight (N8): quantization, comparator and C-DAC count 3 dB less.
@@ -40,7 +43,7 @@ W_ADC = 10 ** -0.3
 def passes(fmt, n_chunks, rot, adversarial=None, seed=0):
     X, W = rot["X"], rot["W"][:, :256]
     if fmt == "block8":
-        X, W = G.block_scale(X, W, 8)
+        X, W = G.block_codes(X, W, 8)[:2]           # the RTL's scale codes (4-b significand)
     ks = np.linspace(0, X.shape[1] // 8 - 1, n_chunks).astype(int)
     out = []
     rng = np.random.default_rng(seed)
@@ -132,22 +135,25 @@ def pooled_budget(p, data):
                 rms_S=math.sqrt(ps), n_chunks=len(data))
 
 
+SS = dict(corner="ss", temp=373.0, vdd=0.63)
+FF = dict(corner="ff", temp=358.0)
 CASES = [
     # (fmt, mode, overrides, note)
-    ("tokact", "ml2", {}, "as specified (round-1 pick)"),
-    ("tokact", "bitserial", {}, "as specified, round-2 drive"),
-    ("tokact", "bitserial", dict(pool_k=4), "as specified incl. B4 pooling K=4"),
-    ("block8", "ml2", {}, "variant"),
-    ("block8", "bitserial", {}, "variant"),
-    ("block8", "ml2", dict(r_lvl_mid=5.3), "class-A level buffers (E3, N2_r2)"),
-    ("block8", "ml2", dict(merge_on_top=True), "merge on the column, no overlap"),
-    ("block8", "bitserial", dict(merge_on_top=True), "merge on the column, no overlap"),
-    ("block8", "bitserial", dict(cc=True), "constant-charge dummies"),
-    ("block8", "bitserial", dict(sig_cmp=4.05e-3), "measured IMC StrongARM sigma (N9_r2, M)"),
-    ("block8", "bitserial", dict(sig_cmp=462e-6), "N6_r2 residue-amp SAR: sqrt((4.05 mV/9.54)^2 + 182 uV^2) (D)"),
-    ("block8", "bitserial", dict(lsb_mac=32), "ARCH LSB 172 uV (vref 0.705 V)"),
+    ("block8", "bitserial", {}, "THE PICK: BS6H 0.4 ohm (M table) + E-trim (M sigmas) + AdcShare 3"),
+    ("block8", "bitserial", SS, "pick at SS: E-trim with the three-slice trim, SS drive table"),
+    ("block8", "bitserial", dict(SS, slot_ticks_bs=7), "SS with 7-tick slots: the drive is not what binds"),
+    ("block8", "bitserial", dict(SS, vdd=0.7), "SS closure: adaptive VDD holds the signal rail at 0.7 V"),
+    ("block8", "bitserial", FF, "pick at FF"),
+    ("block8", "bitserial", dict(cc=True), "fallback BS6H-cc (dummies, 3 % tracking)"),
+    ("block8", "bitserial", dict(comparator="dt_x2"), "fallback D: tail-starved x2 alone, binary 12 b"),
+    ("block8", "bitserial", dict(adc_share=4), "AdcShare 4 (same SNR; the pass is conversion-bound)"),
+    ("block8", "bitserial", dict(r_lvl_top=1.3), "tile PDN 1.3 ohm (M table): fails the 0.1 % drive spec"),
+    ("block8", "bitserial", dict(drive_law="law"), "linear level-net law (what the measured table replaced)"),
+    ("block8", "bitserial", dict(comparator="strongarm"), "replaced: all-StrongARM SAR, 4.05 mV (M)"),
+    ("block8", "bitserial", dict(comparator="budget"), "ARCH's 86 uV comparator budget (P)"),
     ("block8", "bitserial", dict(r_ref=1e-9, c_ref=1.0), "ideal reference (what the B5 placeholder costs)"),
-    ("block8", "ml2", {}, "ADVERSARIAL popcount"),
+    ("block8", "ml2", dict(slot_ticks_ml2=8, drive_law="law"), "replaced: ml2 drive (round-1 pick)"),
+    ("tokact", "bitserial", {}, "replaced: tokact operands (round-1 interface)"),
     ("block8", "bitserial", {}, "ADVERSARIAL popcount"),
 ]
 
@@ -176,13 +182,11 @@ def main(argv):
     out = HERE.parent / "output" / ("accuracy_quick.json" if quick else "accuracy.json")
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(rows, indent=1))
-    spec = [r for r in rows if r["fmt"] == "tokact" and r["cfg"] in ("default", "pool_k=4")]
-    var = [r for r in rows if r["fmt"] == "block8" and r["cfg"] == "default" and not r["note"].startswith("ADV")]
-    print("ACCURACY, architecture as specified (tokact): " +
-          ("PASS" if any(r["verdict"] == "PASS" for r in spec) else "FAIL in every drive mode"))
-    print("ACCURACY, block8 variant at default parameters: " +
-          ", ".join(f"{r['mode']} {r['verdict']}" for r in var))
-    return 0 if any(r["verdict"] == "PASS" for r in spec) else 1
+    pick = rows[0]
+    print(f"ACCURACY, the pick (block8, BS6H, E-trim, AdcShare 3): {pick['verdict']} "
+          f"({pick['weighted_db']:.2f} dB, margin {pick['margin_db']:+.2f})")
+    print("ACCURACY, corners: " + ", ".join(f"{r['note'].split(':')[0]} {r['verdict']} {r['margin_db']:+.2f}" for r in rows[1:5]))
+    return 0 if pick["verdict"] == "PASS" else 1
 
 
 if __name__ == "__main__":

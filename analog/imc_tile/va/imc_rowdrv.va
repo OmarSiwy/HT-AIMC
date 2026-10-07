@@ -7,8 +7,15 @@
 // see every row that switches onto them at once: the code-dependent droop is in the circuit.
 // cc = 1 (bitserial only): a dummy c_row charges from l3 when the row's bit is 0 while phi_drv is
 // high, so the l3 charge per slot does not depend on the input (constant-charge coding, N2_r2).
+// law = 1 (bitserial): the measured law. Every rail on V charges with tau(n) = t_r / -ln e(n), n the
+// rows on V (cc dummies count), ln e(n) piecewise linear through le1 / le4 / le8 at n = 1 / 4 / 8:
+// the DRIVE_ALT E3 table of grid-driven ASAP7 inverters on one tile PDN (golden E_TAB, M), which the
+// linear Thevenin law understates 14x at 1.3 ohm because the tile supply sags and the inverters
+// weaken with it. t_r = rail time to the share edge. The l3 net is then a stiff source (R_PDN is
+// inside the table). law = 0: each rail is c_row through r_sw onto the level net (the ml2 levels).
 // Defaults are for the full 256-column row (c_row 7.47 pF, P); tau_row = r_sw c_row = 16.1 ps
-// (M-fit, N2_r2 lead). A reduced-width simulation scales c_row and r_sw together.
+// (M-fit, N2_r2 lead); table at R_PDN 0.4 ohm, TT, 6-tick slots. A reduced-width simulation scales
+// c_row and r_sw together.
 `include "disciplines.vams"
 module imc_rowdrv(drv, phi_drv, rp, rn, l1, l2, l3);
     parameter integer ROWS = 8 from [1:64];
@@ -18,15 +25,26 @@ module imc_rowdrv(drv, phi_drv, rp, rn, l1, l2, l3);
     parameter real r_sw  = 2.155 from (0:inf);
     parameter real vth   = 0.35;
     parameter real vs    = 0.02;         // logic-input smoothing (V), keeps Newton away from a hard step
+    parameter integer law = 1 from [0:1];
+    parameter real t_r = 0.566e-9 from (0:inf);
+    parameter real le1 = -10.52;         // ln(2.7e-5)  at n = 1
+    parameter real le4 = -8.778;         // ln(1.54e-4) at n = 4
+    parameter real le8 = -7.156;         // ln(7.8e-4)  at n = 8
     input [0:ROWS*3-1] drv; input phi_drv; inout [0:ROWS-1] rp, rn; inout l1, l2, l3;
     electrical [0:ROWS*3-1] drv; electrical phi_drv; electrical [0:ROWS-1] rp, rn; electrical l1, l2, l3;
     electrical [0:ROWS-1] dm;
-    real a0, a1, sg, en, s1, s2, s3, g;
+    real a0, a1, sg, en, s1, s2, s3, g, g3, n3, le;
     genvar r;
     analog function real lg; input x, th, w; real x, th, w; lg = 0.5 * (1 + tanh((x - th) / w)); endfunction
     analog begin
         g = 1 / r_sw;
         en = lg(V(phi_drv), vth, vs);
+        // rows on V (bit-serial plane popcount, dummies included): the measured law's n
+        n3 = 0;
+        for (r = 0; r < ROWS; r = r + 1) n3 = n3 + lg(V(drv[3 * r]), vth, vs) + cc * en * (1 - lg(V(drv[3 * r]), vth, vs));
+        n3 = (n3 < 1) ? 1 : n3;
+        le = (n3 < 4) ? le1 + (le4 - le1) * (n3 - 1) / 3 : le4 + (le8 - le4) * (n3 - 4) / 4;
+        g3 = (law == 1 && mode == 1) ? -le * c_row / t_r : g;
         for (r = 0; r < ROWS; r = r + 1) begin
             a0 = lg(V(drv[3 * r]), vth, vs);
             a1 = lg(V(drv[3 * r + 1]), vth, vs);
@@ -37,16 +55,16 @@ module imc_rowdrv(drv, phi_drv, rp, rn, l1, l2, l3);
                 s1 = 0; s2 = 0; s3 = a0;
             end
             // active rail: rp when sign = 0, rn when sign = 1; the off rail and digit 0 go to ground
-            I(rp[r]) <+ c_row * ddt(V(rp[r])) + g * (1 - sg) * (s1 * V(rp[r], l1) + s2 * V(rp[r], l2) + s3 * V(rp[r], l3))
+            I(rp[r]) <+ c_row * ddt(V(rp[r])) + (1 - sg) * (g * s1 * V(rp[r], l1) + g * s2 * V(rp[r], l2) + g3 * s3 * V(rp[r], l3))
                         + g * (1 - (1 - sg) * (s1 + s2 + s3)) * V(rp[r]);
-            I(rn[r]) <+ c_row * ddt(V(rn[r])) + g * sg * (s1 * V(rn[r], l1) + s2 * V(rn[r], l2) + s3 * V(rn[r], l3))
+            I(rn[r]) <+ c_row * ddt(V(rn[r])) + sg * (g * s1 * V(rn[r], l1) + g * s2 * V(rn[r], l2) + g3 * s3 * V(rn[r], l3))
                         + g * (1 - sg * (s1 + s2 + s3)) * V(rn[r]);
             I(l1) <+ g * (1 - sg) * s1 * V(l1, rp[r]) + g * sg * s1 * V(l1, rn[r]);
             I(l2) <+ g * (1 - sg) * s2 * V(l2, rp[r]) + g * sg * s2 * V(l2, rn[r]);
-            I(l3) <+ g * (1 - sg) * s3 * V(l3, rp[r]) + g * sg * s3 * V(l3, rn[r]);
+            I(l3) <+ g3 * (1 - sg) * s3 * V(l3, rp[r]) + g3 * sg * s3 * V(l3, rn[r]);
             // constant-charge dummy (bitserial): on l3 while the row is in its drive window with bit 0
-            I(dm[r]) <+ c_row * ddt(V(dm[r])) + g * cc * en * (1 - a0) * V(dm[r], l3) + g * (1 - cc * en * (1 - a0)) * V(dm[r]);
-            I(l3) <+ g * cc * en * (1 - a0) * V(l3, dm[r]);
+            I(dm[r]) <+ c_row * ddt(V(dm[r])) + g3 * cc * en * (1 - a0) * V(dm[r], l3) + g * (1 - cc * en * (1 - a0)) * V(dm[r]);
+            I(l3) <+ g3 * cc * en * (1 - a0) * V(l3, dm[r]);
         end
     end
 endmodule

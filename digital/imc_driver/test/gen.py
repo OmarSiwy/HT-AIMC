@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from golden import imc_tile as G   # noqa: E402
 
 SRC = [str(p) for p in sorted((HERE.parent / "src").glob("*.v"))]
-HALF_PS = 71                      # tick 142 ps: ml2 slot 8 ticks = 1.136 ns (P 1.132 ns)
+HALF_PS = 71                      # tick 142 ps: BS6H slot 6 ticks = 0.852 ns (P 0.849 ns)
 
 
 @dataclass
@@ -26,14 +26,18 @@ class Cfg:
     rows: int = 8
     cols: int = 8
     ntiles: int = 2
-    adc_share: int = 4
+    adc_share: int = 3
     bits: int = 12
-    mode: str = "ml2"
+    mode: str = "bitserial"
     acc_depth: int = 16
     hbm_lat: int = 4              # ticks before the first row
     hbm_gap: int = 1              # ticks per row word (1 = a row per tick)
     code_shift: int = 6           # log2(lsb_mac)
     refresh: int = 128            # passes between gain-cell refresh rewrites (B1 retention)
+    block: bool = False           # block8 operands: scale codes + the dequant multiply (52-b chain)
+
+    def acc_w(self):
+        return 52 if self.block else 24
 
     def params(self):
         """Golden parameters that match this RTL configuration."""
@@ -44,9 +48,12 @@ class Cfg:
         p = self.params()
         return dict(Rows=self.rows, Cols=self.cols, NTiles=self.ntiles, AdcShare=self.adc_share,
                     Bits=self.bits, Mode=0 if self.mode == "ml2" else 1, SlotTicks=p.slot_ticks(),
-                    RstTicks=p.rst_ticks, ShTicks=p.sh_ticks, MergeTicks=p.merge_ticks,
-                    RoundTicks=p.round_ticks, CodeShift=self.code_shift, AccDepth=self.acc_depth,
-                    RefreshPasses=self.refresh)
+                    RstTicks=p.rst_ticks, ShTicks=p.sh_ticks, RoundTicks=p.round_ticks,
+                    BlockScale=int(self.block), AccW=self.acc_w(), CodeShift=self.code_shift,
+                    AccDepth=self.acc_depth, RefreshPasses=self.refresh)
+
+    def nconv(self):
+        return -(-self.cols // self.adc_share)
 
 
 def hexw(vals, width):
@@ -69,17 +76,26 @@ def layout(cfg, job):
     sc, sh, of = pad(job["scale"]), pad(job["shift"]), pad(job["offset"])
     D = cfg.acc_depth
     MC = -(-M // D)
-    x_words = [hexw(Xp[m, c * R:(c + 1) * R], 8) for m in range(M) for c in range(Kp // R)]
+    nk = Kp // R
+    # block8 scale codes (zero = unused in the per-tensor format)
+    cx, cw = np.zeros((M, nk), np.int64), np.zeros((nk, Np), np.int64)
+    if cfg.block:
+        cx[:, :job["cx"].shape[1]] = job["cx"]
+        cw[:job["cw"].shape[0], :Nout] = job["cw"]
+    x_words = [hexw(Xp[m, c * R:(c + 1) * R], 8) | (int(cx[m, c]) << (8 * R)) for m in range(M) for c in range(nk)]
     w_rows = [hexw(Wp[(kg * N + t) * R + r, nb * C:(nb + 1) * C], 8)
               for nb in range(NB) for mc in range(MC) for kg in range(G_) for t in range(N) for r in range(R)]
-    rq = [hexw([(int(sc[c]) & 0xFF) | ((int(sh[c]) & 0x1F) << 8) | ((int(of[c]) & 0xFF) << 13)
-                for c in range(nb * C, (nb + 1) * C)], 21) for nb in range(NB)]
+    ws = [hexw(cw[kg * N + t, nb * C:(nb + 1) * C], 8)            # per (gseq, tile), gseq = (nb, mc, kg)
+          for nb in range(NB) for mc in range(MC) for kg in range(G_) for t in range(N)]
+    rq = [hexw([(int(sc[c]) & 0xFF) | ((int(sh[c]) & 0x3F) << 8) | ((int(of[c]) & 0xFF) << 14)
+                for c in range(nb * C, (nb + 1) * C)], 22) for nb in range(NB)]
     p = cfg.params()
-    acc, _ = G.gemm(Xp, Wp, p)                       # ideal codes, identity cal
+    acc, _ = G.gemm(Xp, Wp, p, cx=cx if cfg.block else None, cw=cw if cfg.block else None,
+                    acc_w=cfg.acc_w())               # ideal codes, identity cal
     y8 = G.requant(acc, p, sc, sh, of)
     exp = [(m, nb, acc[m, nb * C:(nb + 1) * C], y8[m, nb * C:(nb + 1) * C])
            for nb in range(NB) for m in range(M)]
-    return dict(M=M, G=G_, NB=NB, x=x_words, w=w_rows, rq=rq, exp=exp, Np=Np, Kp=Kp)
+    return dict(M=M, G=G_, NB=NB, x=x_words, w=w_rows, ws=ws, rq=rq, exp=exp, Np=Np, Kp=Kp)
 
 
 def body(cfg, L, target, cal=None, replay=None, trace=False):
@@ -88,12 +104,13 @@ def body(cfg, L, target, cal=None, replay=None, trace=False):
     trace=True dumps every tile-facing pin at both clock edges (the PWL stimulus for ESPice)."""
     v = cfg.vparams()
     R, C, N = cfg.rows, cfg.cols, cfg.ntiles
-    NC, B = C // cfg.adc_share, cfg.bits
-    init = [f"x_mem[{i}] = {R*8}'h{w:x};" for i, w in enumerate(L["x"])]
+    NC, B, AW, XW = cfg.nconv(), cfg.bits, cfg.acc_w(), R * 8 + 8
+    init = [f"x_mem[{i}] = {XW}'h{w:x};" for i, w in enumerate(L["x"])]
     init += [f"w_mem[{i}] = {C*8}'h{w:x};" for i, w in enumerate(L["w"])]
-    init += [f"rq_mem[{i}] = {C*21}'h{w:x};" for i, w in enumerate(L["rq"])]
+    init += [f"ws_mem[{i}] = {C*8}'h{w:x};" for i, w in enumerate(L["ws"])]
+    init += [f"rq_mem[{i}] = {C*22}'h{w:x};" for i, w in enumerate(L["rq"])]
     for k, (m, nb, a, y) in enumerate(L["exp"]):
-        init.append(f"ea_mem[{k}] = {C*24}'h{hexw(a, 24):x}; ey_mem[{k}] = {C*8}'h{hexw(y, 8):x}; "
+        init.append(f"ea_mem[{k}] = {C*AW}'h{hexw(a, AW):x}; ey_mem[{k}] = {C*8}'h{hexw(y, 8):x}; "
                     f"em_mem[{k}] = {m}; enb_mem[{k}] = {nb};")
     cal = cal or []
     init += [f"cg_mem[{i}] = 16'd{g}; co_mem[{i}] = 20'h{int(o) & 0xFFFFF:x};" for i, (g, o) in enumerate(cal)]
@@ -108,7 +125,7 @@ def body(cfg, L, target, cal=None, replay=None, trace=False):
         tiles = "\n".join(
             f"    {mod(t)} u_tile{t} (\n"
             f"        .wl(wl[{t*R} +: {R}]), .wbl(wbl), .drive(drive[{t*R*3} +: {R*3}]), .phi_rst(phi_rst),\n"
-            f"        .phi_sh(phi_sh), .phi_mrg(phi_mrg), .phi_samp(phi_samp), .sar_clk(sar_clk),\n"
+            f"        .phi_sh(phi_sh), .phi_mrg(phi_mrg), .phi_samp(phi_samp), .sar_clk(sar_clk), .bank(bank),\n"
             f"        .codes(codes[{t*NC*B} +: {NC*B}]));" for t in range(N))
     if target == "beh":
         report = """
@@ -168,24 +185,25 @@ def body(cfg, L, target, cal=None, replay=None, trace=False):
     tr = ""
     if trace:
         tr = """
-    // pin trace (ns, hex): {sar_clk, phi_samp, phi_mrg, phi_sh, phi_rst, phi_drv, wbl, wl, drive}, LSB = drive[0]
+    // pin trace (ns, hex): {bank, sar_clk, phi_samp, phi_mrg, phi_sh, phi_rst, phi_drv, wbl, wl, drive}, LSB = drive[0]
     integer ft;
     reg [%d:0] pins_q;
-    wire [%d:0] pins = {sar_clk, phi_samp, phi_mrg, phi_sh, phi_rst, phi_drv, wbl, wl, drive};
+    wire [%d:0] pins = {bank, sar_clk, phi_samp, phi_mrg, phi_sh, phi_rst, phi_drv, wbl, wl, drive};
     initial begin ft = $fopen({TRF}, "w"); pins_q = 0; end
     always @(posedge clk or negedge clk) begin
         #0.001;
         if (pins !== pins_q) begin $fwrite(ft, "%%0.4f %%h\\n", $realtime, pins); pins_q = pins; end
     end
-""" % (N * R * 3 + N * R + C * 8 + 5, N * R * 3 + N * R + C * 8 + 5)
+""" % (N * R * 3 + N * R + C * 8 + 6, N * R * 3 + N * R + C * 8 + 6)
     report = report.replace("{TRACE}", tr)
     report = report.replace("{NE}", str(ne)).replace("{TMAX}", str(4000 * 1000 + 300 * nx * 1000))
     return f"""
     // ---- job: M={L['M']} K={L['Kp']} N={L['Np']} (G={L['G']} k-groups, NB={L['NB']} n-blocks)
-    reg [{R*8-1}:0]  x_mem  [0:{nx-1}];
+    reg [{XW-1}:0]  x_mem  [0:{nx-1}];
     reg [{C*8-1}:0]  w_mem  [0:{nw-1}];
-    reg [{C*21-1}:0] rq_mem [0:{len(L['rq'])-1}];
-    reg [{C*24-1}:0] ea_mem [0:{ne-1}];
+    reg [{C*8-1}:0]  ws_mem [0:{len(L['ws'])-1}];
+    reg [{C*22-1}:0] rq_mem [0:{len(L['rq'])-1}];
+    reg [{C*AW-1}:0] ea_mem [0:{ne-1}];
     reg [{C*8-1}:0]  ey_mem [0:{ne-1}];
     integer          em_mem [0:{ne-1}];
     integer          enb_mem [0:{ne-1}];
@@ -198,21 +216,26 @@ def body(cfg, L, target, cal=None, replay=None, trace=False):
     wire [{N*R-1}:0] wl;
     wire [{C*8-1}:0] wbl;
     wire [{N*R*3-1}:0] drive;
-    wire phi_drv, phi_rst, phi_sh, phi_mrg, phi_samp, sar_clk;
+    wire phi_drv, phi_rst, phi_sh, phi_mrg, phi_samp, sar_clk, bank;
     wire [{N*NC*B-1}:0] codes;
     wire w_ready, out_valid, job_done;
     wire [{N*32-1}:0] x_addr;
+    wire [{N*16-1}:0] ws_addr;
+    reg  [{N*C*8-1}:0] ws_data;
     wire [15:0] rq_addr, out_m, out_nb;
     wire [{C*8-1}:0] out_y;
-    wire [{C*24-1}:0] out_acc;
+    wire [{C*AW-1}:0] out_acc;
     wire [31:0] stalls, passes, refreshes;
-    reg  [{N*R*8-1}:0] x_data;
+    reg  [{N*XW-1}:0] x_data;
     reg  w_valid, start, cal_we;
     reg  [{C*8-1}:0] w_data;
     reg  [15:0] cal_addr, cal_g;
     reg  [19:0] cal_o;
     integer wp, hcnt, ci, nout, nbad, tick, t;
-    always @* for (t = 0; t < {N}; t = t + 1) x_data[t*{R*8} +: {R*8}] = x_mem[x_addr[t*32 +: 32] % {nx}];
+    always @* for (t = 0; t < {N}; t = t + 1) begin
+        x_data[t*{XW} +: {XW}] = x_mem[x_addr[t*32 +: 32] % {nx}];
+        ws_data[t*{C*8} +: {C*8}] = ws_mem[ws_addr[t*16 +: 16] % {len(L['ws'])}];
+    end
 
     // HBM model: first row after hbm_lat ticks, then one row per hbm_gap ticks, in use order
     initial begin wp = 0; hcnt = {cfg.hbm_lat}; w_valid = 0; w_data = 0; start = 0; cal_we = 0; ci = 0;
@@ -234,10 +257,11 @@ def body(cfg, L, target, cal=None, replay=None, trace=False):
     imc_driver #({pv}) u_drv (
         .clk_i(clk), .rst_ni(rst_n), .start_i(start), .cfg_m_i(16'd{L['M']}), .cfg_g_i(16'd{L['G']}),
         .cfg_nb_i(16'd{L['NB']}), .w_valid_i(w_valid), .w_ready_o(w_ready), .w_data_i(w_data),
-        .x_addr_o(x_addr), .x_data_i(x_data), .rq_addr_o(rq_addr), .rq_data_i(rq_mem[rq_addr]),
+        .x_addr_o(x_addr), .x_data_i(x_data), .ws_addr_o(ws_addr), .ws_data_i(ws_data),
+        .rq_addr_o(rq_addr), .rq_data_i(rq_mem[rq_addr]),
         .cal_we_i(cal_we), .cal_addr_i(cal_addr), .cal_g_i(cal_g), .cal_o_i(cal_o),
         .wl_o(wl), .wbl_o(wbl), .drive_o(drive), .phi_drv_o(phi_drv), .phi_rst_o(phi_rst), .phi_sh_o(phi_sh),
-        .phi_mrg_o(phi_mrg), .phi_samp_o(phi_samp), .sar_clk_o(sar_clk), .codes_i(codes),
+        .phi_mrg_o(phi_mrg), .phi_samp_o(phi_samp), .sar_clk_o(sar_clk), .bank_o(bank), .codes_i(codes),
         .out_valid_o(out_valid), .out_m_o(out_m), .out_nb_o(out_nb), .out_y_o(out_y),
         .out_acc_o(out_acc), .done_o(job_done), .stall_ticks_o(stalls), .passes_o(passes),
         .refreshes_o(refreshes));
@@ -261,7 +285,7 @@ endmodule
 
 def parse_trace(path, cfg):
     """(outputs [(m, nb, acc[C], y[C])], sample ticks) from the tb's output file."""
-    C = cfg.cols
+    C, AW = cfg.cols, cfg.acc_w()
     outs, samp = [], []
     for line in Path(path).read_text().split("\n"):
         f = line.split()
@@ -273,7 +297,7 @@ def parse_trace(path, cfg):
         if f[0] == "R":
             continue
         a, y = int(f[2], 16), int(f[3], 16)
-        acc = [((a >> (24 * c)) & 0xFFFFFF) - (1 << 24) * (((a >> (24 * c)) >> 23) & 1) for c in range(C)]
+        acc = [((a >> (AW * c)) & ((1 << AW) - 1)) - (1 << AW) * (((a >> (AW * c)) >> (AW - 1)) & 1) for c in range(C)]
         yy = [((y >> (8 * c)) & 0xFF) - 256 * (((y >> (8 * c)) >> 7) & 1) for c in range(C)]
         outs.append((int(f[0]), int(f[1]), acc, yy))
     return outs, samp

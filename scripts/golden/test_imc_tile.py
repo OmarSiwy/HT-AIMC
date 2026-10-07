@@ -46,20 +46,24 @@ def main():
     # reference model: an ideal reference (ref term off) gives ideal codes; the droop at the decisions
     # grows with the number of converters on the node and is gone when the decap is huge
     v = rng.uniform(-0.6, 0.6, (50, 16))
-    dw = np.tile(2.0 ** np.arange(12), (16, 1))
+    dw = G.ideal_dac(p, 16)
     ci = np.clip(np.floor(v / p.lsb() + 0.5), -2048, 2047)
-    c0, _ = G.sar_convert(v, replace(p, terms=()), dw)
+    c0, _ = G.sar_convert(v, replace(p, terms=()), *dw)
     assert np.all((c0 == ci) | (np.abs(v / p.lsb() % 1 - 0.5) < 1e-9))
     pr = replace(p, terms=("ref",))
     tr1, tr4 = [], []
-    G.sar_convert(v, pr, dw, mult=1, trace=tr1)
-    G.sar_convert(v, pr, dw, mult=4, trace=tr4)
+    G.sar_convert(v, pr, *dw, mult=1, trace=tr1)
+    G.sar_convert(v, pr, *dw, mult=4, trace=tr4)
     assert 3.5 < np.max(tr4) / np.max(tr1) < 4.5
-    cbig, _ = G.sar_convert(v, replace(pr, c_ref=1e-3, r_ref=1e-6), dw, mult=4)
+    cbig, _ = G.sar_convert(v, replace(pr, c_ref=1e-3, r_ref=1e-6), *dw, mult=4)
     assert np.all(cbig == c0)
-    # timing law
+    # timing law: BS6H 7 x 6 ticks, merge hidden; E-trim 3 rounds of 13 ticks
     t = G.timing(G.P())
-    assert abs(t["t_word"] - 5 * 1.132) < 0.01 and abs(t["t_conv"] - 4 * 11 * 1.132 / 8) < 1e-9
+    tk = 1.132 / 8
+    assert abs(t["t_word"] - 42 * tk) < 1e-9 and abs(t["t_conv"] - 39 * tk) < 1e-9 and t["t_pass"] == t["t_word"]
+    assert abs(G.timing(G.P(adc_share=4))["t_pass"] - 52 * tk) < 1e-9
+    # measured drive table: 8 rows on V at the 6-tick share edge, 0.4 ohm (DRIVE_ALT 0.078 %)
+    assert abs(G.drive_settle_err(G.P(), 8)["top"] - 7.8e-4) < 1e-6
     print("PASS test_imc_tile: formats, cal arithmetic, requant equivalence, kT/C law, reference law, timing law")
     return 0
 

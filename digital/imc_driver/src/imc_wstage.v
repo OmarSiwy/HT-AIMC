@@ -6,11 +6,12 @@
 // and is released when the next group is written, so the loader runs one group ahead.
 // Refresh (B1 retention): a tile whose group has been in the array for RefreshPasses passes is
 // rewritten from its bank in the next merge slot, the same write as a just-in-time load. Default
-// 128 passes = 0.84 us at 6.53 ns, inside the 1.32 us 6-sigma retention (ARCH B1, P) and the
+// 128 passes = 0.76 us at 5.94 ns, inside the 1.32 us 6-sigma retention (ARCH B1, P) and the
 // 2.08 us nominal design retention (N3_r2, M).
-// At the merge slot of pass p the writer copies the banks the tiles need for pass p+1 into the
-// array, one row per tick, tile after tile, on the shared bit lines (WBL). The rails are at 0 V
-// during the merge, so moving a unit between rail and ground moves no charge.
+// At the end of pass p (merge_start, every pass) the writer latches which tiles need their array
+// rewritten for pass p+1; if any, the sequencer opens its write window (StWrite) and the writer copies
+// those banks into the array, one row per tick, tile after tile, on the shared bit lines (WBL). The
+// rails are at 0 V during the window, so moving a unit between rail and ground moves no charge.
 //
 // Bit-line format per column: [7] sign, [6:0] |w|, -128 written as -127 (sign-magnitude cell).
 // WL is high for the first half of its tick (negedge pulse shaper) so WBL is stable at WL fall.
@@ -33,6 +34,7 @@ module imc_wstage #(
     input  wire [NTiles*CW-1:0]   nxt_gseq_i,
     input  wire                   merge_start_i,
     output wire                   ready_o,       // every needed bank is staged
+    output wire                   wr_need_o,     // the next pass needs array writes (new group or refresh)
     output wire                   wr_busy_o,
     output wire [31:0]            refreshes_o,   // refresh rewrites (tile-groups), for the testbench
     // array write port
@@ -76,6 +78,7 @@ module imc_wstage #(
         end
     endgenerate
     assign ready_o   = &(~need | staged);
+    assign wr_need_o = |(need | refr);
     assign w_ready_o = !fbusy;
 
     function [31:0] cnt1(input [NTiles-1:0] v);

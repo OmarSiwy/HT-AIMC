@@ -8,8 +8,14 @@
 // edge buffer (one entry per token of the m-chunk); the last group requantizes and emits the row.
 //
 //   cal:     c = (g * code + o + 2^(CalF-1)) >>> CalF        g unsigned 16 b, o signed 20 b
+//   dequant: (BlockScale 1) c' = (c * sig_x * sig_w) <<< (14 - e_x - e_w), sig = 32 + code[4:0],
+//            e = code[7:5]: the block8 scale bytes of the sample's x block (xs_i, carried with the
+//            descriptor) and of each column's w block (ws_data_i, table read at (gseq, tile));
+//            AccW 52 (golden imc_tile.dequant)
 //   requant: y8 = sat8(((acc <<< CodeShift) * scale + half) >>> shift + offset)
-//            (golden.model.requant_int8 on the MAC-domain sum; scale u8, shift 0..24, offset s8)
+//            (golden.model.requant_int8 on the MAC-domain sum; scale u8, shift 0..63, offset s8)
+// Converter j of a tile serves columns j*AdcShare .. j*AdcShare + AdcShare - 1 (the last one fewer
+// when AdcShare does not divide Cols, e.g. 256 / 3 -> 86 converters).
 `timescale 1ns/1ps
 module imc_chain #(
     parameter integer Cols     = 8,
@@ -21,21 +27,25 @@ module imc_chain #(
     parameter integer CodeShift = 6,
     parameter integer AccDepth = 16,
     parameter integer CW       = 16,
-    parameter integer DW       = 5 * 16 + 3      // descriptor width, see imc_driver
+    parameter integer DW       = 5 * 16 + 3,     // descriptor width, see imc_driver
+    parameter integer BlockScale = 0
 ) (
     input  wire                                    clk_i,
     input  wire                                    rst_ni,
     input  wire                                    cap_i,
     input  wire [3:0]                              cap_round_i,
-    input  wire [NTiles*(Cols/AdcShare)*Bits-1:0]  codes_i,
+    input  wire [NTiles*((Cols+AdcShare-1)/AdcShare)*Bits-1:0] codes_i,
     input  wire                                    conv_done_i,
     input  wire [NTiles*DW-1:0]                    desc_cv_i,   // element each tile's sample holds
+    input  wire [NTiles*8-1:0]                     xs_i,        // its x block scale code
+    output wire [NTiles*CW-1:0]                    ws_addr_o,   // gseq * NTiles + tile
+    input  wire [NTiles*Cols*8-1:0]                ws_data_i,
     input  wire                                    cal_we_i,
     input  wire [CW-1:0]                           cal_addr_i,  // tile * Cols + column
     input  wire [15:0]                             cal_g_i,
     input  wire [19:0]                             cal_o_i,
     output wire [CW-1:0]                           rq_addr_o,
-    input  wire [Cols*21-1:0]                      rq_data_i,
+    input  wire [Cols*22-1:0]                      rq_data_i,
     output wire                                    out_valid_o,
     output wire [CW-1:0]                           out_m_o,
     output wire [CW-1:0]                           out_nb_o,
@@ -43,11 +53,12 @@ module imc_chain #(
     output wire [Cols*AccW-1:0]                    out_acc_o,
     output wire                                    busy_o
 );
-    localparam integer NConv = Cols / AdcShare;
+    localparam integer NConv = (Cols + AdcShare - 1) / AdcShare;
     localparam integer DmW   = (AccDepth > 1) ? $clog2(AccDepth) : 1;
 
     // descriptor fields (imc_driver packs {valid, gseq, nb, kg, mc, mi, first, last})
     function        d_valid; input [DW-1:0] d; d_valid = d[DW-1]; endfunction
+    function [CW-1:0] d_gs;  input [DW-1:0] d; d_gs  = d[2 + 4*CW +: CW]; endfunction
     function [CW-1:0] d_nb;  input [DW-1:0] d; d_nb  = d[2 + 3*CW +: CW]; endfunction
     function [CW-1:0] d_mc;  input [DW-1:0] d; d_mc  = d[2 + CW +: CW]; endfunction
     function [CW-1:0] d_mi;  input [DW-1:0] d; d_mi  = d[2 +: CW]; endfunction
@@ -60,6 +71,7 @@ module imc_chain #(
     reg signed [AccW-1:0] psum_q [0:NTiles*Cols-1];
     reg [DW-1:0]          pdesc_q [0:NTiles-1];
     reg [NTiles*DW-1:0]   dsc_q;                      // descriptors of the conversion in flight
+    reg [NTiles*8-1:0]    xsc_q;                      // their x block scale codes
     reg signed [AccW-1:0] edge_q [0:AccDepth*Cols-1];
     reg                   estep_q;                    // chain end holds a valid element
     reg                   ovalid_q;
@@ -78,7 +90,14 @@ module imc_chain #(
             wire signed [Bits+17:0] prod = code_q[t] * $signed({1'b0, calg_q[t]});
             wire signed [Bits+18:0] sum  = prod + calo_q[t] + (1 <<< (CalF - 1));
             wire signed [Bits+18:0] shr  = sum >>> CalF;
-            assign calv[t] = shr[AccW-1:0];
+            wire [7:0]              cx   = xsc_q[(t / Cols)*8 +: 8];
+            wire [7:0]              cw   = ws_data_i[t*8 +: 8];
+            wire signed [Bits+31:0] dq   = $signed(shr) * $signed({1'b0, 6'd32 + cx[4:0]}) * $signed({1'b0, 6'd32 + cw[4:0]});
+            wire signed [Bits+45:0] dqs  = $signed(dq) <<< (5'd14 - cx[7:5] - cw[7:5]);
+            assign calv[t] = BlockScale ? dqs[AccW-1:0] : shr[AccW-1:0];
+        end
+        for (t = 0; t < NTiles; t = t + 1) begin : g_wsa
+            assign ws_addr_o[t*CW +: CW] = d_gs(dsc_q[t*DW +: DW]) * NTiles + t;
         end
         for (c = 0; c < Cols; c = c + 1) begin : g_edge
             assign esum[c] = (d_first(eend) ? {AccW{1'b0}} : edge_q[emi * Cols + c]) + psum_q[(NTiles-1)*Cols + c];
@@ -93,7 +112,7 @@ module imc_chain #(
                 psum_q[i] <= {AccW{1'b0}};
             end
             for (i = 0; i < NTiles; i = i + 1) pdesc_q[i] <= {DW{1'b0}};
-            dsc_q <= {NTiles*DW{1'b0}};
+            dsc_q <= {NTiles*DW{1'b0}}; xsc_q <= {NTiles*8{1'b0}};
             estep_q <= 1'b0; ovalid_q <= 1'b0;
             om_q <= {CW{1'b0}}; onb_q <= {CW{1'b0}}; oacc_q <= {Cols*AccW{1'b0}}; oy_q <= {Cols*8{1'b0}};
         end else begin
@@ -103,11 +122,12 @@ module imc_chain #(
             end
             // capture: converter j of tile t, round r -> column j*AdcShare + r
             // the next sample may overwrite desc_cv before this conversion is done: hold it from round 0
-            if (cap_i && cap_round_i == 4'd0) dsc_q <= desc_cv_i;
+            if (cap_i && cap_round_i == 4'd0) begin dsc_q <= desc_cv_i; xsc_q <= xs_i; end
             if (cap_i)
                 for (i = 0; i < NTiles; i = i + 1)
                     for (j = 0; j < NConv; j = j + 1)
-                        code_q[i * Cols + j * AdcShare + cap_round_i] <= codes_i[(i * NConv + j) * Bits +: Bits];
+                        if (j * AdcShare + cap_round_i < Cols)
+                            code_q[i * Cols + j * AdcShare + cap_round_i] <= codes_i[(i * NConv + j) * Bits +: Bits];
             // chain step, once per pass
             estep_q <= 1'b0;
             if (conv_done_i) begin
@@ -129,24 +149,24 @@ module imc_chain #(
                     ovalid_q <= 1'b1;
                     om_q  <= d_mc(eend) * AccDepth + d_mi(eend);
                     onb_q <= d_nb(eend);
-                    for (j = 0; j < Cols; j = j + 1) oy_q[j*8 +: 8] <= requant8(esum[j], rq_data_i[j*21 +: 21]);
+                    for (j = 0; j < Cols; j = j + 1) oy_q[j*8 +: 8] <= requant8(esum[j], rq_data_i[j*22 +: 22]);
                 end
             end
         end
     end
 
-    // y8 = sat8(((a << CodeShift) * scale + half) >>> shift + offset); rq = {offset, shift, scale}
+    // y8 = sat8(((a << CodeShift) * scale + half) >>> shift + offset); rq = {offset s8, shift u6, scale u8}
     function [7:0] requant8;
         input signed [AccW-1:0] a;
-        input [20:0]            rq;
+        input [21:0]            rq;
         reg signed [AccW+CodeShift+9:0] p;
         reg signed [AccW+CodeShift+9:0] v;
-        reg [4:0]                       sh;
+        reg [5:0]                       sh;
         begin
-            sh = rq[12:8];
+            sh = rq[13:8];
             p  = ($signed({{(CodeShift+10){a[AccW-1]}}, a}) <<< CodeShift) * $signed({1'b0, rq[7:0]});
-            if (sh != 5'd0) p = p + ($signed({{(AccW+CodeShift+9){1'b0}}, 1'b1}) <<< (sh - 1));
-            v  = (p >>> sh) + $signed(rq[20:13]);
+            if (sh != 6'd0) p = p + ($signed({{(AccW+CodeShift+9){1'b0}}, 1'b1}) <<< (sh - 1));
+            v  = (p >>> sh) + $signed(rq[21:14]);
             requant8 = (v > 127) ? 8'sd127 : (v < -128) ? 8'h80 : v[7:0];
         end
     endfunction

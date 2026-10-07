@@ -3,16 +3,17 @@
     python3 test/tb_timing.py
 
   t_pass      measured on the driver RTL (iverilog, ideal tiles): median sample-to-sample interval of
-              a streaming GEMM, both drive modes, against ARCH's 6.30 ns
+              a streaming GEMM. BS6H + E-trim at AdcShare 3 against its 42-tick drive word (5.94 ns, D),
+              AdcShare 4 (conversion-bound) and ml2 (replaced) reported
   no stall    weights in place before activations: zero stall ticks after the initial fill when the
               weight stream delivers a row word per tick (one tile load per pass)
   HBM-bound   the same GEMV with the ARCH per-tile HBM share (819 GB/s over 3,181 tiles): stall
               fraction measured vs the bandwidth law (decode is HBM-bound, as ARCH B9 says)
-  settling    rail error at the share edge for n rows on one level (law validated against the
-              Verilog-A drive network in tb_va_units), against the 0.1 % drive spec (B2)
+  settling    rail error at the share edge for n rows on one level: BS6H on the measured table (golden
+              E_TAB, ASAP7 ESPice of the grid-driven rails at R_PDN 0.4 ohm, M), against the 0.1 % drive
+              spec (B2). SS is reported (the open corner item: 7-tick slots close it)
 """
 import importlib.util
-import math
 import sys
 from dataclasses import replace
 from pathlib import Path
@@ -31,7 +32,6 @@ _spec = importlib.util.spec_from_file_location("imc_driver_tests", ROOT / "digit
 DRV = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(DRV)
 FAILS = []
-T_PASS_ARCH = 6.30
 HBM_B_PER_NS_TILE = 819.0 / 3181         # 819 GB/s shared by 3,181 tiles (ARCH B9, P)
 
 
@@ -47,15 +47,18 @@ def main():
     tick = 2 * gen.HALF_PS / 1000
     job = J.SR.rand_job(rng, 32, 64, 16)
     nominal = {}
-    for mode in ("ml2", "bitserial"):
-        ok, r = DRV.run(f"timing_{mode}", replace(base, mode=mode), job)
-        nominal[mode] = r["t_pass"]
-        p = replace(base, mode=mode).params()
-        tm = G.timing(p)
-        check(f"t_pass {mode}", r["t_pass"] <= T_PASS_ARCH,
-              f"RTL median {r['t_pass']:.3f} ns ({r['t_pass'] / tick:.0f} ticks of {tick * 1e3:.0f} ps) vs ARCH {T_PASS_ARCH} ns; "
-              f"drive word {tm['t_word']:.2f} ns, conversion {tm['t_conv']:.2f} ns (4 rounds x 11 ticks)")
-        check(f"no stall {mode}", ok and r["stall"] == 0,
+    for mode, AS in (("bitserial", 3), ("bitserial", 4), ("ml2", 3)):
+        cfg = replace(base, mode=mode, adc_share=AS)
+        ok, r = DRV.run(f"timing_{mode}_as{AS}", cfg, job)
+        nominal[(mode, AS)] = r["t_pass"]
+        tm = G.timing(cfg.params())
+        law = tm["t_pass"]
+        check(f"t_pass {mode} AdcShare {AS}", abs(r["t_pass"] - law) < 0.5 * tick,
+              f"RTL median {r['t_pass']:.3f} ns ({r['t_pass'] / tick:.0f} ticks of {tick * 1e3:.0f} ps) vs the "
+              f"golden plan {law:.3f} ns: drive word {tm['t_word']:.3f} ns ({tm['t_word'] / tick:.0f} ticks, merge "
+              f"hidden), conversion {tm['t_conv']:.3f} ns ({AS} rounds x {cfg.params().round_ticks} ticks)"
+              + (" <- the pick" if (mode, AS) == ("bitserial", 3) else ""))
+        check(f"no stall {mode} AdcShare {AS}", ok and r["stall"] == 0,
               f"{r['stall']} stall ticks after the initial fill, M=32 tokens per weight group, bit-exact {ok}")
     # HBM-bound GEMV: a row word of Cols bytes arrives every Cols / (B/ns) ns
     gap = max(1, round(base.cols / HBM_B_PER_NS_TILE / tick))
@@ -67,21 +70,20 @@ def main():
     check("HBM-bound GEMV", ok and r["stall"] > 0 and abs(ticks - law) / law < 0.15,
           f"ARCH per-tile HBM share {HBM_B_PER_NS_TILE:.3f} B/ns -> one {base.cols}-B row word per {gap} ticks; "
           f"run {ticks} ticks vs weight-stream law {law} ticks ({rows} rows); {r['stall']} stall ticks after fill; "
-          f"tile busy {100 * int(r['passes']) * nominal['ml2'] / (ticks * tick):.1f} % (decode is HBM-bound, B9)")
-    # drive settling at the share edge (the slot's rail time), worst popcount
-    for mode, rmid in (("ml2", 2.54), ("ml2", 5.3), ("bitserial", None)):
-        p = G.P(mode=mode) if rmid is None else G.P(mode=mode, r_lvl_mid=rmid)
-        e = {n: G.drive_settle_err(p, n) for n in (1, 4, 8)}
-        worst = max(max(v.values()) for v in e.values())
-        lv = "mid (V/3, 2V/3)" if mode == "ml2" else "V"
-        r_used = rmid if rmid else p.r_lvl_top
-        tau8 = p.tau_row + max(r_used, p.r_lvl_top) * 8 * p.c_row
-        t_need = tau8 * math.log(1e3)
-        tag = f"{mode}" + (f" r_lvl_mid={rmid} ohm" if rmid else "")
-        check(f"settle {tag}", worst <= 1e-3,
-              f"rails get {p.t_settle():.3f} ns of a {p.slot():.3f} ns slot; worst error at the share edge "
-              f"(n = 8 rows on the {lv} level) {worst * 100:.3f} % of the level vs 0.1 %; "
-              f"0.1 % needs {t_need * 1e9:.3f} ns at n = 8")
+          f"tile busy {100 * int(r['passes']) * nominal[('bitserial', 3)] / (ticks * tick):.1f} % (decode is HBM-bound, B9)")
+    # drive settling at the share edge (the slot's rail time), worst popcount: BS6H on the measured table
+    for tag, p, gate in (("BS6H TT 0.4 ohm (M)", G.P(), True),
+                         ("BS6H SS 0.4 ohm (M, open corner item)", G.P(corner="ss"), False),
+                         ("BS6H SS 0.4 ohm, 7-tick slots (M)", G.P(corner="ss", slot_ticks_bs=7), True),
+                         ("BS6H TT 1.3 ohm (M, the old tile PDN)", G.P(r_lvl_top=1.3), False)):
+        e = {n: G.drive_settle_err(p, n)["top"] for n in (1, 4, 8)}
+        ok = e[8] <= 1e-3
+        line = (f"rails get {p.t_settle():.3f} ns of a {p.slot():.3f} ns slot; error at the share edge "
+                f"(n = 1 / 4 / 8 rows on V) {e[1] * 100:.4f} / {e[4] * 100:.4f} / {e[8] * 100:.4f} % vs 0.1 %")
+        if gate:
+            check(f"settle {tag}", ok, line)
+        else:
+            print(f"{'PASS' if ok else 'OPEN'} settle {tag}: {line} (reported, not gating)", flush=True)
     print("ALL TIMING CHECKS PASS" if not FAILS else f"TIMING CHECKS FAILED: {FAILS}")
     return 0 if not FAILS else 1
 

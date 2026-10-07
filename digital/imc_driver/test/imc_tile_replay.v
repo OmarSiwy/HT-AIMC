@@ -15,9 +15,10 @@ module imc_tile_replay #(
     input  wire                             phi_mrg,
     input  wire                             phi_samp,
     input  wire                             sar_clk,
-    output reg  [(Cols/AdcShare)*Bits-1:0]  codes
+    input  wire                             bank,
+    output reg  [((Cols+AdcShare-1)/AdcShare)*Bits-1:0] codes
 );
-    reg [(Cols/AdcShare)*Bits-1:0] mem [0:NRounds-1];
+    reg [((Cols+AdcShare-1)/AdcShare)*Bits-1:0] mem [0:NRounds-1];
     integer k;
     initial begin $readmemh(FILE, mem); k = 0; codes = 0; end
     always @(posedge sar_clk) begin

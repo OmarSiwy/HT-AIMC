@@ -3,11 +3,14 @@
     python3 test/tb_va_units.py [gc|drive|col|sar|ref]     (inside ./env.sh analog, PDK not needed)
 
 B1 imc_gc     write levels, retention droop slope, write energy per '1'
-B2 imc_rowdrv rail settling into the level nets (ml2 and bitserial), code-dependent droop at
-              share time against the golden's level-net law, constant-charge dummies
-B3 imc_col    merged differential voltage = k * S for a known 4-slot ml2 / 7-slot bitserial pass
-              (no noise, no mismatch), against scripts/golden/imc_tile.py
-B4 imc_sar    ideal codes = floor(v / LSB + 1/2) over the range, clip at the ends
+B2 imc_rowdrv bit-serial rails on the measured law (n = 1 / 4 / 8 rows on V) against the golden's
+              measured table at the share edge; ml2 (replaced) against the level-net law;
+              constant-charge dummies (n = 1 with cc sees the n = 8 error)
+B3 imc_col    merged differential voltage = k * S for a known 4-slot ml2 / 7-slot bitserial pass on
+              bank 0, merged while the next pass writes bank 1 (no noise, no mismatch), against
+              scripts/golden/imc_tile.py
+B4 imc_sar    E-trim bipolar search (13 decisions, redundant step): ideal codes = floor(v / LSB + 1/2)
+              over the range, clip at the ends
 B5 imc_ref    a tile's simultaneous conversions on one reference, the SAR drawing its C-DAC charge per
               bit step: Verilog-A codes vs the golden's reference law, droop vs ARCH's 3.7 uV/conversion
 Each prints PASS/FAIL with the numbers; exit 1 on any FAIL.
@@ -60,12 +63,19 @@ def t_gc():
           f"'1' at 1 us {v1us:.4f} V (retention law {exp1:.4f}); '0' holds {hold:.4f} V")
 
 
+def drive_law(p):
+    """imc_rowdrv parameters of the golden's measured table at this slot (law 1, bit-serial)."""
+    ns, es = G.E_TAB[(p.corner, p.r_lvl_top)][p.slot_ticks()]
+    le = {n: math.log(float(G.level_err(p, n))) for n in (1, 4, 8)}
+    return f"law=1 t_r={p.t_settle() * 1e-9:.6e} le1={le[1]:.5f} le4={le[4]:.5f} le8={le[8]:.5f}"
+
+
 def drive_deck(mode, codes, cc=0, cols=256, t_on=1e-9, t_off=2.0e-9, name="drive"):
     """One tile's 8 rows; codes[r] = (digit, sign); the drive window is [t_on, t_off]."""
     p = G.P(mode=mode)
     sc = cols / 256
     crow, rsw = p.c_row * sc, p.tau_row / (p.c_row * sc)
-    rmid, rtop = p.r_lvl_mid / sc, p.r_lvl_top / sc
+    rmid, rtop = p.r_lvl_mid / sc, (p.r_lvl_top / sc if mode == "ml2" else 1e-4)
     lines = [f"* B2 imc_rowdrv unit {mode}", '.hdl "imc_rowdrv.va"', '.hdl "imc_ref.va"', "Vdd vdd 0 0.7",
              f"Nl1 l1 vdd imc_ref v0={0.7 / 3} r_out={rmid}", f"Nl2 l2 vdd imc_ref v0={1.4 / 3} r_out={rmid}",
              f"Nl3 l3 vdd imc_ref v0=0.7 r_out={rtop}",
@@ -76,25 +86,27 @@ def drive_deck(mode, codes, cc=0, cols=256, t_on=1e-9, t_off=2.0e-9, name="drive
             lines.append(f"Vd{r}_{k} d{r}_{k} 0 " + (L.pwl([(t_on, t_off, L.VDD)]) if bitv else "0"))
             drv.append(f"d{r}_{k}")
     lines += [f"Nrd {' '.join(drv)} pdrv {' '.join(f'rp{r}' for r in range(8))} {' '.join(f'rn{r}' for r in range(8))} "
-              f"l1 l2 l3 imc_rowdrv mode={0 if mode == 'ml2' else 1} cc={cc} c_row={crow} r_sw={rsw}",
+              f"l1 l2 l3 imc_rowdrv mode={0 if mode == 'ml2' else 1} cc={cc} c_row={crow} r_sw={rsw} "
+              + (drive_law(p) if mode != "ml2" else "law=0"),
               ".tran 2e-12 3e-9", ".end", ""]
     return L.espice("\n".join(lines), name), p
 
 
 def t_drive():
     t_on = 1e-9
-    for mode, full in (("ml2", 3), ("bitserial", 1)):
-        p = G.P(mode=mode)
+    for mode, full, ns in (("bitserial", 1, (1, 4, 8)), ("ml2", 3, (1, 8))):
+        p = G.P(mode=mode, drive_law="meas" if mode != "ml2" else "law")
         ts = p.t_settle() * 1e-9
-        # one row alone, then all 8 rows on the top level (worst popcount)
-        for n in (1, 8):
+        # one row alone, then n rows on the top level (worst popcount at 8)
+        for n in ns:
             codes = [(full, 0)] * n + [(0, 0)] * (8 - n)
             res, _ = drive_deck(mode, codes, name=f"unit_drive_{mode}_{n}")
             v = L.at(res, "v(rp0)", t_on + ts)
             err = abs(0.7 - v) / 0.7
             law = G.drive_settle_err(p, n)["top"]
-            check(f"B2 imc_rowdrv {mode} n={n}", abs(err - law) < 0.25 * law + 2e-5,
-                  f"rail error at share edge ({ts * 1e9:.3f} ns) {err * 100:.4f} % of V; level-net law {law * 100:.4f} %")
+            check(f"B2 imc_rowdrv {mode} n={n}", abs(err - law) < 0.25 * law + 2e-6,
+                  f"rail error at share edge ({ts * 1e9:.3f} ns) {err * 100:.4f} % of V; golden "
+                  f"{'measured table (R_PDN 0.4 ohm, M)' if mode != 'ml2' else 'level-net law'} {law * 100:.4f} %")
         if mode == "ml2":
             # the mid levels (the class-AB SSF buffers, r_lvl_mid) with every row on one of them: the
             # worst popcount, which fails the 0.1 % spec in tb_timing; here the Verilog-A network is
@@ -116,16 +128,21 @@ def t_drive():
             ok = abs(v13 - 0.7 / 3) < 1e-3 and abs(v23 - 1.4 / 3) < 1e-3 and abs(vn13 - 0.7 / 3) < 1e-3 and abs(vp_off) < 1e-4
             check("B2 imc_rowdrv ml2 levels + sign steering", ok,
                   f"V/3 {v13:.4f}, 2V/3 {v23:.4f}, negative row on rn {vn13:.4f}, its rp {vp_off * 1e3:.3f} mV")
-    # constant-charge coding: the l3 sag does not depend on how many bits are 1
-    sag = {}
+    # constant-charge coding: with the dummies every plane draws 8 rows' charge, so one row on V sees
+    # the 8-row error (a static gain), whatever the popcount
+    p = G.P()
+    ts = p.t_settle() * 1e-9
+    err = {}
     for cc in (0, 1):
         for n in (1, 7):
             codes = [(1, 0)] * n + [(0, 0)] * (8 - n)
             res, _ = drive_deck("bitserial", codes, cc=cc, name=f"unit_drive_cc{cc}_{n}")
-            sag[(cc, n)] = 0.7 - min(res["v(l3)"])
-    check("B2 imc_rowdrv constant charge", abs(sag[(1, 1)] - sag[(1, 7)]) < 0.05 * sag[(1, 7)] and sag[(0, 1)] < 0.5 * sag[(0, 7)],
-          f"l3 sag without cc {sag[(0, 1)] * 1e3:.1f} / {sag[(0, 7)] * 1e3:.1f} mV (1 / 7 rows on), "
-          f"with cc {sag[(1, 1)] * 1e3:.1f} / {sag[(1, 7)] * 1e3:.1f} mV")
+            err[(cc, n)] = abs(0.7 - L.at(res, "v(rp0)", t_on + ts)) / 0.7
+    e8 = G.drive_settle_err(p, 8)["top"]
+    check("B2 imc_rowdrv constant charge", abs(err[(1, 1)] - err[(1, 7)]) < 0.1 * err[(1, 7)] and abs(err[(1, 1)] - e8) < 0.25 * e8
+          and err[(0, 1)] < 0.5 * err[(0, 7)],
+          f"rail error without cc {err[(0, 1)] * 100:.4f} / {err[(0, 7)] * 100:.4f} % (1 / 7 rows on), "
+          f"with cc {err[(1, 1)] * 100:.4f} / {err[(1, 7)] * 100:.4f} % (the 8-row table value {e8 * 100:.4f} %)")
 
 
 def col_deck(mode, w, x, name):
@@ -162,7 +179,8 @@ def col_deck(mode, w, x, name):
     tend = t0 + d.shape[1] * ST * tk
     lines += [f"Vrst prst 0 {L.pwl(rst)}", f"Vsh psh 0 {L.pwl(sh)}",
               f"Vmrg pmrg 0 {L.pwl([(tend + tk, tend + 5 * tk, L.VDD)])}",
-              f"Ncol {' '.join(f'q{k}' for k in range(32))} prst psh pmrg outp outn emon imc_col "
+              f"Vbank pbank 0 {L.pwl([(tend + 0.5 * tk, tend + 9 * tk, L.VDD)])}",     # next pass on bank 1
+              f"Ncol {' '.join(f'q{k}' for k in range(32))} prst psh pmrg pbank outp outn emon imc_col "
               f"mode={0 if mode == 'ml2' else 1} noise=0 sig_racc=0 sig_merge=0",
               f".tran 5e-12 {tend + 8 * tk:.4e}", ".end", ""]
     res = L.espice("\n".join(lines), name)
@@ -184,89 +202,94 @@ def t_col():
 
 
 def sar_deck(v4, name):
+    """One converter (AS = the module default, 3: ESPice sizes vector ports from the defaults)."""
     p = G.P()
-    tk = 142e-12
+    tk, RT = 142e-12, p.round_ticks
+    AS = len(v4)
     lines = ["* B4 imc_sar unit", '.hdl "imc_sar.va"', f"Vref vref 0 {p.vref}",
              f"Vsamp psamp 0 {L.pwl([(0.5e-9, 0.7e-9, L.VDD)])}"]
     for j, v in enumerate(v4):
         lines += [f"Vi{j} ip{j} 0 {v / 2}", f"Vn{j} in{j} 0 {-v / 2}"]
-    rounds = [(1e-9 + r * 11 * tk, 1e-9 + r * 11 * tk + 5 * tk, L.VDD) for r in range(4)]
+    rounds = [(1e-9 + r * RT * tk, 1e-9 + r * RT * tk + 5 * tk, L.VDD) for r in range(AS)]
     bits = " ".join(f"b{k}" for k in range(12))
     lines += [f"Vclk pclk 0 {L.pwl(rounds)}",
-              f"Nsar {' '.join(f'ip{j}' for j in range(4))} {' '.join(f'in{j}' for j in range(4))} psamp pclk vref {bits} cv emon "
-              f"imc_sar noise=0 sig_dac=0", ".tran 5e-12 8e-9", ".end", ""]
+              f"Nsar {' '.join(f'ip{j}' for j in range(AS))} {' '.join(f'in{j}' for j in range(AS))} psamp pclk vref {bits} cv emon "
+              f"imc_sar noise=0 sig_dac=0", ".tran 5e-12 7.5e-9", ".end", ""]
     res = L.espice("\n".join(lines), name)
     codes = []
-    for r in range(4):
-        t = 1e-9 + r * 11 * tk + 10 * tk
+    for r in range(AS):
+        t = 1e-9 + r * RT * tk + (RT - 1) * tk
         u = sum((1 << k) * (L.at(res, f"v(b{k})", t) > 0.35) for k in range(12))
         codes.append(u - 4096 if u >= 2048 else u)
-    return codes, L.at(res, "v(emon)", 7e-9), p
+    return codes, L.at(res, "v(emon)", 7.4e-9), p
 
 
 def t_sar():
     lsb = G.P().lsb()
-    vs = [0.0, 0.3, 0.6, -0.6, 123.4, -2000.2, 2100, -2100]
-    ok, msg = True, []
-    for half in (0, 1):
-        v4 = [v * lsb for v in vs[4 * half:4 * half + 4]]
-        codes, e, p = sar_deck(v4, f"unit_sar_{half}")
-        for v, c in zip(vs[4 * half:4 * half + 4], codes):
+    vs = [0.0, 0.3, 0.6, -0.6, 123.4, -2000.2, 2100, -2100, 31.5]
+    ok, msg, e = True, [], 0.0
+    for part in range(3):
+        v3 = [v * lsb for v in vs[3 * part:3 * part + 3]]
+        codes, e, p = sar_deck(v3, f"unit_sar_{part}")
+        for v, c in zip(vs[3 * part:3 * part + 3], codes):
             exp = int(np.clip(math.floor(v + 0.5), -2048, 2047))
             ok &= c == exp
             msg.append(f"{v:+.1f}->{c}")
-    check("B4 imc_sar", ok and abs(e - 4 * 0.2535) < 1e-6, "LSB in / code: " + ", ".join(msg) + f"; energy {e:.4f} pJ / 4 conv")
+    check("B4 imc_sar", ok and abs(e - 3 * p.e_conv * 1e12) < 1e-6,
+          "E-trim, 13 decisions; LSB in / code: " + ", ".join(msg) + f"; energy {e:.4f} pJ / 3 conv")
 
 
 def t_ref():
     """B5: the C-DAC reference under one tile's simultaneous conversions, decisions read per step.
 
     4 SAR instances with different inputs, each drawing the charge of n/4 converters (nload), on one
-    imc_ref (r_ref, c_ref of the golden). Two rounds. Checks (1) the Verilog-A codes equal the golden
-    sar_convert on the same inputs (the golden's ref law is the Verilog-A mechanism), (2) reports the
-    droop against ARCH B5's 3.7 uV per conversion (n = 64: this tile; n = 128: ARCH's count)."""
+    imc_ref (r_ref, c_ref of the golden). Two rounds of the E-trim search. Checks (1) the Verilog-A
+    codes equal the golden sar_convert on the same inputs (the golden's ref law is the Verilog-A
+    mechanism), (2) reports the droop against ARCH B5's 3.7 uV per conversion (n = 86: this tile at
+    AdcShare 3; n = 128: ARCH's count)."""
     p = G.P()
-    tk = 142e-12
+    tk, RT = 142e-12, p.round_ticks
+    nd = len(p.sar_sched()[1])
     rng = np.random.default_rng(4)
-    for n in (64, 128):
+    for n in (86, 128):
         vin = rng.uniform(-0.65, 0.65, (2, 4, 4)) * p.vref / 2        # [round-pair, instance, column]
         lines = ["* B5 imc_ref unit", '.hdl "imc_sar.va"', '.hdl "imc_ref.va"', "Vdd vdd 0 0.7",
                  f"Nref vref vdd imc_ref v0={p.vref} r_out={p.r_ref} c_dec={p.c_ref}",
                  f"Vsamp psamp 0 {L.pwl([(0.5e-9, 0.7e-9, L.VDD)])}",
-                 f"Vclk pclk 0 {L.pwl([(1e-9 + r * 11 * tk, 1e-9 + r * 11 * tk + 5 * tk, L.VDD) for r in range(2)])}"]
+                 f"Vclk pclk 0 {L.pwl([(1e-9 + r * RT * tk, 1e-9 + r * RT * tk + 5 * tk, L.VDD) for r in range(2)])}"]
         for k in range(4):
-            for j in range(4):
-                lines += [f"Vi{k}_{j} ip{k}_{j} 0 {vin[0, k, j] / 2 if j < 2 else vin[1, k, j - 2] / 2}",
-                          f"Vn{k}_{j} in{k}_{j} 0 {-(vin[0, k, j] if j < 2 else vin[1, k, j - 2]) / 2}"]
-            lines.append(f"Ns{k} {' '.join(f'ip{k}_{j}' for j in range(4))} {' '.join(f'in{k}_{j}' for j in range(4))} "
+            for j in range(3):
+                lines += [f"Vi{k}_{j} ip{k}_{j} 0 {vin[0, k, j] / 2 if j < 2 else vin[1, k, 0] / 2}",
+                          f"Vn{k}_{j} in{k}_{j} 0 {-(vin[0, k, j] if j < 2 else vin[1, k, 0]) / 2}"]
+            lines.append(f"Ns{k} {' '.join(f'ip{k}_{j}' for j in range(3))} {' '.join(f'in{k}_{j}' for j in range(3))} "
                          f"psamp pclk vref {' '.join(f'b{k}_{j}' for j in range(12))} cv{k} e{k} "
-                         f"imc_sar noise=0 sig_dac=0 nload={n // 4}")
+                         f"imc_sar noise=0 sig_dac=0 nload={n / 4:g}")
         lines += [".tran 5e-12 5e-9", ".end", ""]
         res = L.espice("\n".join(lines), f"unit_ref_{n}")
         t0 = 1e-9
-        win = [(t, v) for t, v in zip(res["time"], res["v(vref)"]) if t0 < t < t0 + 2 * 11 * tk]
+        win = [(t, v) for t, v in zip(res["time"], res["v(vref)"]) if t0 < t < t0 + 2 * RT * tk]
         droop = p.vref - min(v for _, v in win)
         # Verilog-A codes per round vs the golden on the same inputs (instances = converters, load x n/4)
-        va = np.array([[round(L.at(res, f"v(cv{k})", t0 + r * 11 * tk + 1.38e-9) * 1e3) for k in range(4)]
+        va = np.array([[round(L.at(res, f"v(cv{k})", t0 + r * RT * tk + p.t_conv + 80e-12) * 1e3) for k in range(4)]
                        for r in range(2)])
-        dw = np.tile(2.0 ** np.arange(12), (4, 1))
+        dw = G.ideal_dac(p, 4)
         pr = replace(p, terms=("ref",), noise=False)
         cin = np.array([[vin[0, k, 0] for k in range(4)], [vin[0, k, 1] for k in range(4)]])
-        g0, d = G.sar_convert(cin[:1], pr, dw, mult=n / 4)
-        d = d * math.exp(-(11 * tk - p.t_conv) / (p.r_ref * p.c_ref))
-        g1, _ = G.sar_convert(cin[1:], pr, dw, mult=n / 4, d0=d)
+        g0, d = G.sar_convert(cin[:1], pr, *dw, mult=n / 4)
+        d = d * math.exp(-(RT * tk - p.t_conv) / (p.r_ref * p.c_ref))
+        g1, _ = G.sar_convert(cin[1:], pr, *dw, mult=n / 4, d0=d)
         gi = np.clip(np.floor(cin / p.lsb() + 0.5), -2048, 2047)
         gold = np.vstack([g0, g1])
         tr = []
-        G.sar_convert(cin[:1], pr, dw, mult=n / 4, trace=tr)
+        G.sar_convert(cin[:1], pr, *dw, mult=n / 4, trace=tr)
         # the Verilog-A reference at its own decision instants (sar_clk crosses vth ~10 ps into its ramp)
-        tb = p.t_conv / 13
-        vd = np.array([p.vref - L.at(res, "v(vref)", t0 + 10e-12 + (i + 1) * tb - 1e-13) for i in range(12)])
+        tb = p.t_conv / (nd + 1)
+        vd = np.array([p.vref - L.at(res, "v(vref)", t0 + 10e-12 + (i + 1) * tb - 1e-13) for i in range(nd)])
         gd = np.array([float(x.ravel()[0]) for x in tr])
         dev = np.max(np.abs(vd - gd)) / np.max(gd)
         check(f"B5 imc_ref + imc_sar, {n} converters (model vs golden law)", np.all(np.abs(va - gold) <= 1) and dev < 0.1,
               f"Verilog-A codes {va.ravel().tolist()} vs golden {gold.ravel().tolist()} (ideal reference "
-              f"{gi.astype(int).ravel().tolist()}); droop at the 12 decisions: Verilog-A max {np.max(vd) * 1e6:.0f} uV, "
+              f"{gi.astype(int).ravel().tolist()}); droop at the {nd} decisions: Verilog-A max {np.max(vd) * 1e6:.0f} uV, "
               f"golden {np.max(gd) * 1e6:.0f} uV, worst difference {dev * 100:.1f} % of the peak; "
               f"peak between decisions {droop * 1e6:.0f} uV")
         check(f"B5 droop spec, {n} converters", droop / n <= 3.7e-6,

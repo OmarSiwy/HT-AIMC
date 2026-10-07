@@ -10,9 +10,14 @@
 //              first uses it: just in time, and a pass that would run ahead of its weights stalls.
 //   activations INT8 per token (Hadamard-rotated upstream), Rows per tile per pass, read from the
 //              activation buffer one word per tile per pass.
-//   drive      sign-magnitude rows: |x| clipped to 127; ml2 (Mode 0) slot s drives the 2-b digit
-//              (2|x| >> 2s) & 3, bitserial (Mode 1) slot s drives bit s of |x|; the sign picks rail rp/rn.
-//              drive_o per row: {sgn, d1, d0}, zero outside the drive window.
+//   drive      sign-magnitude rows: |x| clipped to 127; bitserial (Mode 1, BS6H) slot s drives bit s
+//              of |x|; ml2 (Mode 0, replaced) slot s drives the 2-b digit (2|x| >> 2s) & 3; the sign
+//              picks rail rp/rn. drive_o per row: {sgn, d1, d0}, zero outside the drive window.
+//   banks      the tile accumulates pass p on bank_o and merges/samples it under pass p+1 (imc_seq);
+//              the element a sample belongs to is captured at the hand-off and again at the sample.
+//   block8     (BlockScale 1) each activation word carries its 8-row block's scale code in its top
+//              byte; the weight scale codes come from a table addressed by (group, tile); the chain
+//              applies the dequant multiply per conversion (imc_chain).
 //
 // Verilog-2001 so that the same source runs as a VerA .v device inside ESPice.
 `timescale 1ns/1ps
@@ -20,14 +25,15 @@ module imc_driver #(
     parameter integer Rows       = 8,
     parameter integer Cols       = 8,
     parameter integer NTiles     = 2,
-    parameter integer AdcShare   = 4,
+    parameter integer AdcShare   = 3,
     parameter integer Bits       = 12,
-    parameter integer Mode       = 0,      // 0 ml2 (4 slots), 1 bitserial (7 slots)
-    parameter integer SlotTicks  = 8,
+    parameter integer Mode       = 1,      // 1 bitserial (7 slots, BS6H), 0 ml2 (4 slots, replaced)
+    parameter integer SlotTicks  = 6,
     parameter integer RstTicks   = 1,
     parameter integer ShTicks    = 3,
-    parameter integer MergeTicks = 8,
-    parameter integer RoundTicks = 11,
+    parameter integer MrgTicks   = 2,
+    parameter integer RoundTicks = 13,
+    parameter integer BlockScale = 0,
     parameter integer CalF       = 14,
     parameter integer AccW       = 24,
     parameter integer CodeShift  = 6,
@@ -45,12 +51,16 @@ module imc_driver #(
     input  wire                                   w_valid_i,
     output wire                                   w_ready_o,
     input  wire [Cols*8-1:0]                      w_data_i,
-    // activation buffer: one read per tile, word = Rows INT8, address = token * (G*NTiles) + chunk
+    // activation buffer: one read per tile, word = Rows INT8 + the block scale code (top byte),
+    // address = token * (G*NTiles) + chunk
     output wire [NTiles*2*CW-1:0]                 x_addr_o,
-    input  wire [NTiles*Rows*8-1:0]               x_data_i,
-    // requant table, per n-block: Cols x {offset s8, shift u5, scale u8}
+    input  wire [NTiles*(Rows*8+8)-1:0]           x_data_i,
+    // block8 weight scale codes, per (group, tile): Cols x u8
+    output wire [NTiles*CW-1:0]                   ws_addr_o,
+    input  wire [NTiles*Cols*8-1:0]               ws_data_i,
+    // requant table, per n-block: Cols x {offset s8, shift u6, scale u8}
     output wire [CW-1:0]                          rq_addr_o,
-    input  wire [Cols*21-1:0]                     rq_data_i,
+    input  wire [Cols*22-1:0]                     rq_data_i,
     // calibration words, written once
     input  wire                                   cal_we_i,
     input  wire [CW-1:0]                          cal_addr_i,
@@ -66,7 +76,8 @@ module imc_driver #(
     output wire                                   phi_mrg_o,
     output wire                                   phi_samp_o,
     output wire                                   sar_clk_o,
-    input  wire [NTiles*(Cols/AdcShare)*Bits-1:0] codes_i,
+    output wire                                   bank_o,
+    input  wire [NTiles*((Cols+AdcShare-1)/AdcShare)*Bits-1:0] codes_i,
     // results
     output wire                                   out_valid_o,
     output wire [CW-1:0]                          out_m_o,
@@ -80,14 +91,17 @@ module imc_driver #(
 );
     localparam integer NSlots = (Mode == 0) ? 4 : 7;
     localparam integer DW     = 5 * CW + 3;            // {valid, gseq, nb, kg, mc, mi, first, last}
+    localparam integer XW     = Rows * 8 + 8;          // activation word + block scale code
 
     // ---- descriptor generator (the element tile 0 runs next pass)
     reg            gvalid_q;
     reg [CW-1:0]   gnb_q, gmc_q, gkg_q, gmi_q, ggs_q;
     reg            started_q;
     reg [DW-1:0]   desc_q [0:NTiles-1];                 // element of each tile in this pass
-    reg [Rows*8-1:0] xr_q [0:NTiles-1];
-    reg [DW-1:0]   dcv_q [0:NTiles-1];                  // element each tile's sample belongs to
+    reg [XW-1:0]   xr_q [0:NTiles-1];
+    reg [DW-1:0]   dcv_q [0:NTiles-1];                  // element of the bank handed to the merge
+    reg [DW-1:0]   sdv_q [0:NTiles-1];                  // element each tile's sample belongs to
+    reg [7:0]      xsh_q [0:NTiles-1], xss_q [0:NTiles-1];   // its x block scale, at hand-off / sample
     reg [31:0]     stall_q, pass_q;
 
     wire [CW-1:0]  mrem   = cfg_m_i - gmc_q * AccDepth;
@@ -99,6 +113,7 @@ module imc_driver #(
     wire [DW-1:0]  gdesc  = {gvalid_q, ggs_q, gnb_q, gkg_q, gmc_q, gmi_q, (gkg_q == {CW{1'b0}}), g_lkg};
 
     wire pass_go, merge_start, cap, conv_done, stall, seq_done, row_en, wr_busy, ready, chain_busy, drv_cut;
+    wire hand, samp, wr_need;
     wire [3:0] slot, cap_round;
 
     integer i;
@@ -107,18 +122,22 @@ module imc_driver #(
             gvalid_q <= 1'b0; gnb_q <= {CW{1'b0}}; gmc_q <= {CW{1'b0}}; gkg_q <= {CW{1'b0}};
             gmi_q <= {CW{1'b0}}; ggs_q <= {CW{1'b0}}; started_q <= 1'b0;
             for (i = 0; i < NTiles; i = i + 1) begin
-                desc_q[i] <= {DW{1'b0}}; xr_q[i] <= {Rows*8{1'b0}}; dcv_q[i] <= {DW{1'b0}};
+                desc_q[i] <= {DW{1'b0}}; xr_q[i] <= {XW{1'b0}}; dcv_q[i] <= {DW{1'b0}}; sdv_q[i] <= {DW{1'b0}};
+                xsh_q[i] <= 8'd0; xss_q[i] <= 8'd0;
             end
             stall_q <= 32'd0; pass_q <= 32'd0;
         end else begin
             if (start_i && !started_q) begin started_q <= 1'b1; gvalid_q <= 1'b1; end
             if (stall) stall_q <= stall_q + 32'd1;
+            for (i = 0; i < NTiles; i = i + 1) begin
+                if (hand) begin dcv_q[i] <= desc_q[i]; xsh_q[i] <= xr_q[i][Rows*8 +: 8]; end
+                if (samp) begin sdv_q[i] <= dcv_q[i]; xss_q[i] <= xsh_q[i]; end
+            end
             if (pass_go) begin
                 pass_q <= pass_q + 32'd1;
                 for (i = 0; i < NTiles; i = i + 1) begin
-                    dcv_q[i]  <= desc_q[i];
                     desc_q[i] <= (i == 0) ? gdesc : desc_q[i-1];
-                    xr_q[i]   <= x_data_i[i*Rows*8 +: Rows*8];
+                    xr_q[i]   <= x_data_i[i*XW +: XW];
                 end
                 if (gvalid_q) begin
                     gmi_q <= gmi_q + 1'b1;
@@ -167,7 +186,7 @@ module imc_driver #(
         // ---- row codes
         for (t = 0; t < NTiles; t = t + 1) begin : g_tile
             for (r = 0; r < Rows; r = r + 1) begin : g_row
-                wire [7:0] x   = xr_q[t][r*8 +: 8];
+                wire [7:0] x   = xr_q[t][r*8 +: 8];   // (XW-wide word, scale byte on top)
                 wire       sgn = x[7];
                 wire [6:0] mag = sgn ? ((x == 8'h80) ? 7'd127 : 7'd0 - x[6:0]) : x[6:0];
                 wire [7:0] v2  = {mag, 1'b0};
@@ -179,31 +198,37 @@ module imc_driver #(
     endgenerate
 
     imc_seq #(.NSlots(NSlots), .SlotTicks(SlotTicks), .RstTicks(RstTicks), .ShTicks(ShTicks),
-              .MergeTicks(MergeTicks), .RoundTicks(RoundTicks), .AdcShare(AdcShare),
+              .MrgTicks(MrgTicks), .RoundTicks(RoundTicks), .AdcShare(AdcShare),
               .DrainPass(NTiles + 1)) u_seq (
         .clk_i(clk_i), .rst_ni(rst_ni), .start_i(started_q), .more_i(gvalid_q), .ready_i(ready),
-        .wr_busy_i(wr_busy), .row_en_o(row_en), .phi_drv_o(phi_drv_o), .drv_cut_o(drv_cut), .slot_o(slot), .phi_rst_o(phi_rst_o),
+        .wr_need_i(wr_need), .wr_busy_i(wr_busy), .row_en_o(row_en), .phi_drv_o(phi_drv_o), .drv_cut_o(drv_cut),
+        .slot_o(slot), .phi_rst_o(phi_rst_o),
         .phi_sh_o(phi_sh_o), .phi_mrg_o(phi_mrg_o), .phi_samp_o(phi_samp_o), .sar_clk_o(sar_clk_o),
+        .bank_o(bank_o), .hand_o(hand), .samp_o(samp),
         .merge_start_o(merge_start), .pass_go_o(pass_go), .cap_o(cap), .cap_round_o(cap_round),
         .conv_done_o(conv_done), .conv_busy_o(), .stall_o(stall), .done_o(seq_done));
 
     imc_wstage #(.Rows(Rows), .Cols(Cols), .NTiles(NTiles), .CW(CW), .RefreshPasses(RefreshPasses)) u_wst (
         .clk_i(clk_i), .rst_ni(rst_ni), .w_valid_i(w_valid_i), .w_ready_o(w_ready_o),
         .w_data_i(w_data_i), .nxt_valid_i(nxt_valid), .nxt_gseq_i(nxt_gseq),
-        .merge_start_i(merge_start), .ready_o(ready), .wr_busy_o(wr_busy), .refreshes_o(refreshes_o),
+        .merge_start_i(merge_start), .ready_o(ready), .wr_need_o(wr_need), .wr_busy_o(wr_busy), .refreshes_o(refreshes_o),
         .wl_o(wl_o), .wbl_o(wbl_o));
 
     wire [NTiles*DW-1:0] dcv_flat;
+    wire [NTiles*8-1:0]  xs_flat;
     generate
         for (t = 0; t < NTiles; t = t + 1) begin : g_dcv
-            assign dcv_flat[t*DW +: DW] = dcv_q[t];
+            assign dcv_flat[t*DW +: DW] = sdv_q[t];
+            assign xs_flat[t*8 +: 8]    = xss_q[t];
         end
     endgenerate
 
     imc_chain #(.Cols(Cols), .NTiles(NTiles), .AdcShare(AdcShare), .Bits(Bits), .CalF(CalF),
-                .AccW(AccW), .CodeShift(CodeShift), .AccDepth(AccDepth), .CW(CW), .DW(DW)) u_chain (
+                .AccW(AccW), .CodeShift(CodeShift), .AccDepth(AccDepth), .CW(CW), .DW(DW),
+                .BlockScale(BlockScale)) u_chain (
         .clk_i(clk_i), .rst_ni(rst_ni), .cap_i(cap), .cap_round_i(cap_round), .codes_i(codes_i),
-        .conv_done_i(conv_done), .desc_cv_i(dcv_flat), .cal_we_i(cal_we_i), .cal_addr_i(cal_addr_i),
+        .conv_done_i(conv_done), .desc_cv_i(dcv_flat), .xs_i(xs_flat), .ws_addr_o(ws_addr_o),
+        .ws_data_i(ws_data_i), .cal_we_i(cal_we_i), .cal_addr_i(cal_addr_i),
         .cal_g_i(cal_g_i), .cal_o_i(cal_o_i), .rq_addr_o(rq_addr_o), .rq_data_i(rq_data_i),
         .out_valid_o(out_valid_o), .out_m_o(out_m_o), .out_nb_o(out_nb_o), .out_y_o(out_y_o),
         .out_acc_o(out_acc_o), .busy_o(chain_busy));

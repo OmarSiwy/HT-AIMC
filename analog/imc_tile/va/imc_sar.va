@@ -1,60 +1,74 @@
 // B4 pooled-round SAR converter (ARCH_CHOSEN B4, N6). Behavioural, one converter serving AS columns.
 //   phi_samp falling  samples every input pair (direct: the column is the sampler, c_samp = 0 adds
 //                     no kT/C; c_samp > 0 models a separate sampling cap)
-//   sar_clk rising    round k starts converting column k: BITS + 1 steps of t_bit = t_conv / (BITS + 1).
-//                     Step i switches the C-DAC to its next trial and draws that switching charge from
-//                     vref (as a current over the step); the decision at the end of step i reads
-//                     V(vref) at that moment, so the reference droop built up during bit cycling (by
-//                     this converter and every other one on the node) reaches the code. The last step
-//                     switches to the final code. Offset-binary search over BITS weights
-//                     2^b (1 + delta_b), delta_b ~ sigma_dac/sqrt(2^b) (frozen), comparator noise
-//                     sig_cmp per decision; ideal code = clip(floor(v/LSB + 1/2)), LSB = V(vref)/2^BITS
-//                     (vref is the differential peak-to-peak span). The code appears on b[] (two's
-//                     complement, vlogic) and on the monitor cv = code x 1 mV at the end of the conversion.
+//   sar_clk rising    round k starts converting column k: NDEC + 1 steps of t_bit = t_conv / (NDEC + 1).
+//                     Step 0 switches the C-DAC to mid-scale; the decision at the end of step i reads
+//                     V(vref) at that moment (the droop built up by every converter on the node reaches
+//                     the code) and moves the threshold by +-step_i (bipolar search, the golden's
+//                     sar_convert); the last step switches to the final code est - [d < 0]. Steps:
+//                     2^(BITS-2) .. 1 with one redundant step `red` after the first n_fast decisions
+//                     (E-trim: 1024 .. 32, 32, 16 .. 1, NDEC = 13). Caps: mid-scale and every step carry
+//                     sigma_dac sqrt(units) (frozen). Comparator noise per decision: sig_fast on the
+//                     first n_fast decisions (minimum double-tail), sig_cmp after (tail-starved double-
+//                     tail x2). Ideal code = clip(floor(v/LSB + 1/2)), LSB = V(vref)/2^BITS (vref is the
+//                     differential peak-to-peak span). The code appears on b[] (two's complement,
+//                     vlogic) and on the monitor cv = code x 1 mV at the end of the conversion.
 //   reference charge  conventional (top-plate) C-DAC on c_dac: the DAC-side node sits at
 //                     vx = (u - T) LSB for trial code T (u = input in LSB, offset binary); a step from
-//                     trial T_p to T_n, with accepted bits A, takes q = c_dac/2^B (T_n (vref - vx_n) -
-//                     A (vref - vx_p)) from vref (D: ideal-cap charge bookkeeping, A = T_p & T_n).
+//                     trial T_p to T_n keeps A = T_n - step units on vref (A = T_n on the last step) and
+//                     takes q = c_dac/2^B (T_n (vref - vx_n) - A (vref - vx_p)) from vref (D: ideal-cap
+//                     bookkeeping; with binary steps it is the offset-binary search's A = T_p & T_n).
 //                     nload > 1 makes this instance draw the charge of nload identical converters
 //                     (a reduced-width bench standing in for a full tile on one reference).
 //   energy            e_conv per conversion -> emon (comparator + C-DAC + logic, P 253.5 fJ)
-// Defaults: BITS 12, AS 4 (P); sig_cmp 86 uV (P budget; M 4.05 mV at the IMC StrongARM size,
-// N9_r2); sigma_dac 2.45 % per unit (D from the 193 uV C-DAC budget); c_dac 60 fF (P); t_conv
-// 1.30 ns (inside the RTL's 11-tick round of 1.56 ns).
+// Defaults (E-trim, COMPARATOR_ALT): BITS 12, AS 3, red 32 after n_fast 6; sig_fast 1.82 mV, sig_cmp
+// 0.654 mV (M, ASAP7 .trannoise at TT); t_conv 1.61 ns inside the RTL's 13-tick round of 1.84 ns;
+// e_conv 276.8 fJ (D); sigma_dac 2.45 % per unit (D from the 193 uV C-DAC budget); c_dac 60 fF (P).
+// Fallback D (dt_x2): red 0, n_fast 0, t_conv 1.62 ns, e_conv 303.7 fJ.
 `include "disciplines.vams"
 `include "constants.vams"
 module imc_sar(inp, inn, phi_samp, sar_clk, vref, b, cv, emon);
     parameter integer BITS = 12 from [2:16];
-    parameter integer AS   = 4 from [1:16];
+    parameter integer AS   = 3 from [1:16];
+    parameter integer red  = 32 from [0:1024];
+    parameter integer n_fast = 6 from [0:15];
     parameter integer seed = 3;
     parameter integer noise = 1 from [0:1];
-    parameter integer nload = 1 from [1:1024];
-    parameter real sig_cmp   = 86e-6;
+    parameter real nload = 1 from [1:inf);
+    parameter real sig_fast  = 1.82e-3;
+    parameter real sig_cmp   = 0.654e-3;
     parameter real sig_dac   = 0.0245;
     parameter real c_samp    = 0.0;
     parameter real c_dac     = 60e-15;
-    parameter real t_conv    = 1.3e-9 from (0:inf);
-    parameter real e_conv    = 253.5e-15;
+    parameter real t_conv    = 1.61e-9 from (0:inf);
+    parameter real e_conv    = 276.8e-15;
     parameter real temp_k    = 300;
     parameter real vth       = 0.35;
     parameter real vlogic    = 0.7;
     input [0:AS-1] inp, inn; input phi_samp, sar_clk; inout vref; output [0:BITS-1] b; output cv, emon;
     electrical [0:AS-1] inp, inn; electrical phi_samp, sar_clk, vref; electrical [0:BITS-1] b; electrical cv, emon;
-    real vin[0:15], smp[0:15], dw[0:15], bit[0:15];
-    real u, acc, trial, lsb, lsbn, nz, iref, etot, h, t_next, t_bit, cvv, vs, vr0, q, s2;
-    integer j, k, rnd, code, sd, cu, step, busy, ia, tp, tn;
+    real vin[0:15], smp[0:15], stp[0:16], dst[0:16], bit[0:15];
+    real u, est, est_a, dmid, lsb, lsbn, nz, iref, etot, h, t_next, t_bit, cvv, vs, vr0, q, s2, tp, dd, sg;
+    integer j, k, rnd, code, sd, cu, step, busy, nd;
     genvar g;
     analog begin
         @(initial_step) begin
             sd = seed;
-            for (k = 0; k < BITS; k = k + 1) begin
-                dw[k] = pow(2, k) * (1 + $rdist_normal(sd, 0, 1) * sig_dac / sqrt(pow(2, k)));
-                bit[k] = 0;
+            // steps of the bipolar search, MSB first: 2^(BITS-2) .. 1, the redundant one after n_fast
+            j = 0;
+            for (k = BITS - 2; k >= 0; k = k - 1) begin
+                if (red > 0 && j == n_fast) begin stp[j] = red; j = j + 1; end
+                stp[j] = pow(2, k); j = j + 1;
             end
+            nd = j + 1;                                      // decisions = steps + 1
+            h = pow(2, BITS - 1);
+            dmid = h * (1 + $rdist_normal(sd, 0, 1) * sig_dac / sqrt(h));
+            for (k = 0; k < nd - 1; k = k + 1) dst[k] = stp[k] * (1 + $rdist_normal(sd, 0, 1) * sig_dac / sqrt(stp[k]));
+            for (k = 0; k < BITS; k = k + 1) bit[k] = 0;
             for (j = 0; j < 16; j = j + 1) smp[j] = 0;
             rnd = 0; iref = 0; etot = 0; cvv = 0; busy = 0; step = 0; t_next = 1;
-            t_bit = t_conv / (BITS + 1);
-            ia = 0; tp = 0; tn = 0; acc = 0; u = 0; vs = 0; vr0 = 1; lsb = 1;
+            t_bit = t_conv / (nd + 1);
+            est = 0; est_a = 0; tp = 0; u = 0; vs = 0; vr0 = 1; lsb = 1;
         end
         for (g = 0; g < AS; g = g + 1) vin[g] = V(inp[g], inn[g]);
         @(cross(V(phi_samp) - vth, -1)) begin
@@ -69,9 +83,8 @@ module imc_sar(inp, inn, phi_samp, sar_clk, vref, b, cv, emon);
             lsb = vr0 / s2;
             vs = smp[(rnd < AS) ? rnd : AS - 1];
             u = vs / lsb + h;
-            acc = 0; ia = 0; tp = 0; tn = 1 << (BITS - 1);
-            q = c_dac / s2 * tn * (vr0 - (u - tn) * lsb);
-            tp = tn;
+            est = h; est_a = dmid;
+            q = c_dac / s2 * est * (vr0 - (u - est) * lsb);
             iref = nload * q / t_bit;
             step = 0; busy = 1;
             t_next = $abstime + t_bit;
@@ -79,21 +92,26 @@ module imc_sar(inp, inn, phi_samp, sar_clk, vref, b, cv, emon);
         end
         @(timer(t_next)) begin
             if (busy == 1) begin
-                if (step < BITS) begin
-                    k = BITS - 1 - step;
+                if (step < nd) begin
                     lsbn = V(vref) / s2;                         // the reference as it is now
-                    trial = acc + dw[k];
-                    nz = noise * $rdist_normal(sd, 0, 1) * sig_cmp / lsbn;
-                    if (vs / lsbn + h + 0.5 + nz >= trial) begin acc = trial; ia = ia + (1 << k); end
-                    tn = (k > 0) ? ia + (1 << (k - 1)) : ia;     // next trial, or the final code
-                    q = c_dac / s2 * (tn * (vr0 - (u - tn) * lsb) - ia * (vr0 - (u - tp) * lsb));
-                    tp = tn;
+                    sg = (step < n_fast) ? sig_fast : sig_cmp;
+                    nz = noise * $rdist_normal(sd, 0, 1) * sg / lsbn;
+                    dd = (vs / lsbn + h + 0.5 + nz >= est_a) ? 1 : -1;
+                    tp = est;
+                    if (step < nd - 1) begin
+                        est = est + dd * stp[step]; est_a = est_a + dd * dst[step];
+                        q = c_dac / s2 * (est * (vr0 - (u - est) * lsb) - (est - stp[step]) * (vr0 - (u - tp) * lsb));
+                    end else begin
+                        est = est - ((dd < 0) ? 1 : 0);          // the final code
+                        q = c_dac / s2 * (est * (vr0 - (u - est) * lsb) - est * (vr0 - (u - tp) * lsb));
+                    end
                     iref = nload * q / t_bit;
                     step = step + 1;
                     t_next = t_next + t_bit;
                 end else begin
                     iref = 0; busy = 0; t_next = 1;
-                    code = ia - (1 << (BITS - 1));                   // two's complement value
+                    est = (est < 0) ? 0 : ((est > s2 - 1) ? s2 - 1 : est);
+                    code = est - (1 << (BITS - 1));                  // two's complement value
                     cu = (code < 0) ? code + (1 << BITS) : code;
                     for (k = 0; k < BITS; k = k + 1) bit[k] = ((cu >> k) & 1) * vlogic;
                     cvv = code * 1e-3;
