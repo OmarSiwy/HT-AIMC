@@ -8,11 +8,13 @@
 //   y = sat8( ((acc * scale + half) >>> shift) + offset ),  half = shift ? 2^(shift-1) : 0
 // computed as round-half-up after a shift of shift-1, which is the same integer:
 //   (p + 2^(s-1)) >>> s == ((p >>> (s-1)) + 1) >>> 1     for s >= 1
-// Seven stages (slot read | add | byte-slice products | product | shift | round | offset+sat), so no
-// stage holds more than one carry chain, the barrel shifter or the slot read mux; the
-// edge is per column, so its flops are amortized over Rows PEs. The read-modify-write
-// of a slot spans two cycles: safe because one slot recurs at most once per K-tile, and
-// K-tiles of the same token issue >= Rows >= 2 cycles apart (one weight row per cycle). The requant parameters are double-banked like the
+// Eight stages (slot read | low-half add | high-half carry | byte-slice products | product |
+// shift | round | offset+sat), so no stage holds more than one 16-bit carry chain, the
+// barrel shifter or the slot read mux; the edge is per column, so its flops are amortized
+// over Rows PEs. The 32-bit accumulate is split in two 16-bit halves (v2: the single 32-bit
+// add was the measured fmax limiter, 1150 MHz). The read-modify-write of a slot spans three
+// cycles: safe because one slot recurs at most once per K-tile, and K-tiles of the same
+// token issue >= Rows >= 3 cycles apart (one weight row per cycle). The requant parameters are double-banked like the
 // weights: the token's tag selects the bank (rqsel), the host writes the other one,
 // so back-to-back output tiles with different per-channel scales never stall.
 //
@@ -58,6 +60,11 @@ module sa_edge #(
   logic                    in_v_q, first_q, last_q, rqsel_q;
   logic signed [AccW-1:0]  sum;
   logic signed [AccW-1:0]  sum_q;
+  logic signed [AccW-1:0]  psum_x;      // psum sign-extended to the accumulator
+  logic [AccW/2:0]         lo_q;        // low-half sum with its carry out
+  logic [AccW/2-1:0]       hi_q;        // high-half sum without the low carry
+  logic [IdxW-1:0]         idx2_q;
+  logic                    in_v2_q, last2_q, rqsel2_q;
   logic signed [17:0]      pp_q [NSl];  // byte slice * scale; top slice signed, rest unsigned
   logic signed [ProdW-1:0] pp_sum;
   logic signed [ProdW-1:0] prod_q, shr_q;
@@ -77,11 +84,13 @@ module sa_edge #(
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
-      in_v_q <= 1'b0;
-      v_q    <= '0;
+      in_v_q  <= 1'b0;
+      in_v2_q <= 1'b0;
+      v_q     <= '0;
     end else begin
-      in_v_q <= valid_i;
-      v_q    <= {v_q[4:0], in_v_q && last_q};
+      in_v_q  <= valid_i;
+      in_v2_q <= in_v_q;
+      v_q     <= {v_q[4:0], in_v2_q && last2_q};
     end
   end
 
@@ -99,10 +108,17 @@ module sa_edge #(
       rqsel_q <= rqsel_i;
     end
     if (valid_i && !first_i) rd_q <= acc_q[idx_i];
-    if (in_v_q && !last_q) acc_q[idx_q] <= sum;
-    if (in_v_q &&  last_q) begin
+    if (in_v_q) begin
+      lo_q     <= {1'b0, first_q ? '0 : rd_q[AccW/2-1:0]} + {1'b0, psum_x[AccW/2-1:0]};
+      hi_q     <= (first_q ? '0 : rd_q[AccW-1:AccW/2]) + psum_x[AccW-1:AccW/2];
+      idx2_q   <= idx_q;
+      last2_q  <= last_q;
+      rqsel2_q <= rqsel_q;
+    end
+    if (in_v2_q && !last2_q) acc_q[idx2_q] <= sum;
+    if (in_v2_q &&  last2_q) begin
       sum_q    <= sum;
-      sel_q[0] <= rqsel_q;
+      sel_q[0] <= rqsel2_q;
     end
     if (v_q[0]) begin
       for (int j = 0; j < NSl; j++) begin
@@ -134,7 +150,8 @@ module sa_edge #(
                                               biased[OutW-1:0];
   end
 
-  assign sum       = first_q ? AccW'(psum_q) : rd_q + AccW'(psum_q);
+  assign psum_x    = AccW'(psum_q);
+  assign sum       = {hi_q + (AccW/2)'(lo_q[AccW/2]), lo_q[AccW/2-1:0]};
   always_comb begin
     pp_sum = '0;
     for (int j = 0; j < NSl; j++) pp_sum = pp_sum + (ProdW'(pp_q[j]) <<< (8 * j));

@@ -12,6 +12,8 @@
 // Constraints (sa_top header):
 //   load tile t   >= last issue of tile t-2 + Cols - 1   (bank reuse, bank_rel)
 //   issue tile t  >= load start of tile t + 1             (tiles_ahead)
+//   issue tile t  >= issue start of tile t-1 + 3           (gap: sa_edge slot RMW is 3 cycles;
+//                    binds only for tiles of < 3 tokens after a stall preloaded both banks)
 //   issue group g >= rq write of group g + 1              (rq_ahead)
 //   rq group g    >= last issue of group g-2 + Lat + 1    (requant bank reuse, rq_rel)
 //
@@ -102,6 +104,13 @@ module sa_ctrl #(
   logic                  running, ld_go, ld_end, st_go, st_end, rq_go, o_done;
   logic [CfgW-1:0]       st_rem, st_mc;
   logic                  cur_bank, cur_gb, cur_first, cur_last;   // tile issuing now
+  logic [1:0]            gap_q;                                    // cycles until the next tile may start
+
+  always_ff @(posedge clk_i or negedge rst_ni) begin
+    if (!rst_ni)    gap_q <= '0;
+    else if (st_go) gap_q <= 2'd2;
+    else if (gap_q != '0) gap_q <= gap_q - 1'b1;
+  end
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
@@ -145,7 +154,7 @@ module sa_ctrl #(
   assign ld_go   = running && !ld_active_q && !ld_all_q
                    && !bank_busy_q[ld_bank_q] && (bank_rel_q[ld_bank_q] == '0);
   assign ld_end  = ld_active_q && (ld_row_q == RowW'(Rows - 1));
-  assign st_go   = running && !st_active_q && !st_all_q
+  assign st_go   = running && !st_active_q && !st_all_q && (gap_q == '0)
                    && (tiles_ahead_q != 2'd0) && (rq_ahead_q != 2'd0);
   assign st_rem  = m_q - st_m0_q;
   assign st_mc   = (st_rem > Depth) ? Depth : st_rem;

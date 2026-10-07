@@ -44,7 +44,7 @@ module sa_sys #(
   input  logic [ObufAw-1:0]   obuf_addr_i,
   output logic [Cols*8-1:0]   obuf_data_o
 );
-  localparam int Lat = Rows + Cols + (PipeMul ? 1 : 0) + 7;   // sa_top port -> y_valid_o
+  localparam int Lat = Rows + Cols + (PipeMul ? 1 : 0) + 8;   // sa_top port -> y_valid_o
 
   // controller issue
   logic              w_re, a_re, rq_re;

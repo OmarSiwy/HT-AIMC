@@ -41,6 +41,13 @@ CONFIGS["s16_nocg"] = dict(Rows=16, Cols=16, AccDepth=16, _cg=0)
 CONFIGS["s16_nobooth"] = dict(Rows=16, Cols=16, AccDepth=16, _booth=0)
 # ponytail: s64/s128 are not synthesized (s128 ran > 45 min); array area is fit to s8/s16/s32
 PERIOD_PS = 400   # abc delay target; fmax comes from STA, not from this
+# Variants measured end to end at s16 (synth, place+CTS, GL VCD power on real data):
+# name -> (synth config, placement utilization %). The 128x128 numbers are derived from
+# the s8/s16/s32 base fit plus the variant's measured s16 delta. DEFAULT is the shipped
+# configuration (build/ppa.json top level, what the scorer reads); VERSIONS.md has the scores.
+VARIANTS = {"base": ("s16", 70), "int4w": ("s16_int4w", 70), "nopipe": ("s16_nopipe", 70),
+            "int4w_u80": ("s16_int4w", 80)}
+DEFAULT = "int4w"
 
 
 def libs(corner):
@@ -107,11 +114,12 @@ def cmd_synth():
 
 
 # ------------------------------------------------------------------ placement + CTS + STA
-def place_tcl(name, corner, period_ps):
+def place_tcl(name, corner, period_ps, util=60, tag=None):
     """Floorplan at 60 % utilization, global + detailed placement, RC from the ORFS asap7
     setRC (correlated on aes/ibex/cva6), repair_design, CTS with propagated clock,
     repair_timing to the target period. No routing: parasitics are placement estimates."""
     d = OUT / "place"
+    out = tag or f"{name}_{corner}"
     tag = f"{name}_{corner}"
     lib_lines = "\n".join(f"read_liberty {x}" for x in libs(corner))
     return f"""
@@ -125,10 +133,10 @@ set_input_delay  [expr {period_ps} * 0.2] -clock clk [delete_from_list [all_inpu
 set_output_delay [expr {period_ps} * 0.2] -clock clk [all_outputs]
 set_load 1.0 [all_outputs]
 set_false_path -from [get_ports rst_ni]
-initialize_floorplan -utilization 60 -aspect_ratio 1 -core_space 2 -site asap7sc7p5t
+initialize_floorplan -utilization {util} -aspect_ratio 1 -core_space 2 -site asap7sc7p5t
 source {ORFS_T}/asap7.tracks.tcl
 place_pins -hor_layers M4 -ver_layers M5
-global_placement -density 0.65 -skip_io
+global_placement -density {min(0.95, util / 100 + 0.05)} -skip_io
 source {ORFS_T}/setRC.tcl
 estimate_parasitics -placement
 repair_design
@@ -140,39 +148,42 @@ estimate_parasitics -placement
 repair_timing -setup -skip_pin_swap
 detailed_placement
 estimate_parasitics -placement
-report_checks -path_delay max -group_path_count 1 -format full_clock_expanded -digits 1 > {d}/{tag}.timing.rpt
-report_wns > {d}/{tag}.wns.rpt
-report_tns >> {d}/{tag}.wns.rpt
+report_checks -path_delay max -group_path_count 1 -format full_clock_expanded -digits 1 > {d}/{out}.timing.rpt
+report_wns > {d}/{out}.wns.rpt
+report_tns >> {d}/{out}.wns.rpt
 report_design_area
-report_power > {d}/{tag}.power_novcd.rpt
-write_db {d}/{tag}.odb
-write_verilog {d}/{tag}.v
+report_power > {d}/{out}.power_novcd.rpt
+write_db {d}/{out}.odb
+write_verilog {d}/{out}.v
 exit
 """
 
 
-PERIODS = {"TT": 800, "FF": 600, "SS": 1400}
+# TT target tightened from 800 ps (v2): with the edge add split, the PE path sets fmax
+# and repair_timing only works as hard as the target asks.
+PERIODS = {"TT": 650, "FF": 600, "SS": 1400}
 
 
-def place(name, corner):
+def place(name, corner, util=60):
     d = OUT / "place"
     d.mkdir(parents=True, exist_ok=True)
     period_ps = PERIODS[corner]
-    tcl = d / f"{name}_{corner}.tcl"
+    tag = f"{name}_{corner}" + ("" if util == 60 else f"_u{util}")
+    tcl = d / f"{tag}.tcl"
     log = tcl.with_suffix(".log")
     # ponytail: resume = reuse a finished run (odb written after the reports)
-    if not ((d / f"{name}_{corner}.odb").exists() and "Design area" in
+    if not ((d / f"{tag}.odb").exists() and "Design area" in
             (log.read_text() if log.exists() else "")):
-        tcl.write_text(place_tcl(name, corner, period_ps))
+        tcl.write_text(place_tcl(name, corner, period_ps, util, tag))
         sh(["openroad", "-no_init", "-exit", str(tcl)], log)
     # fmax from register-to-register paths: the port paths see the full clock insertion
     # delay against an ideal external clock, an artifact of a block with no neighbours
     # (in sa_sys the ports face SRAM macros clocked off the same tree).
-    r2r = d / f"{name}_{corner}.r2r.rpt"
+    r2r = d / f"{tag}.r2r.rpt"
     if not r2r.exists():
-        t = d / f"{name}_{corner}.r2r.tcl"
+        t = d / f"{tag}.r2r.tcl"
         t.write_text("\n".join(f"read_liberty {x}" for x in libs(corner)) + f"""
-read_db {d}/{name}_{corner}.odb
+read_db {d}/{tag}.odb
 create_clock -name clk -period {period_ps} [get_ports clk_i]
 set_propagated_clock [all_clocks]
 source {ORFS_T}/setRC.tcl
@@ -181,28 +192,30 @@ report_checks -path_delay max -from [all_registers] -to [all_registers] -format 
 exit
 """)
         sh(["openroad", "-no_init", "-exit", str(t)], t.with_suffix(".log"))
-    io_rpt = (d / f"{name}_{corner}.timing.rpt").read_text()
+    io_rpt = (d / f"{tag}.timing.rpt").read_text()
     io_wns = float(re.search(r"(-?[\d.]+)\s+slack \(", io_rpt).group(1))
     rpt = r2r.read_text()
     wns = float(re.search(r"(-?[\d.]+)\s+slack \(", rpt).group(1))
     area = float(re.findall(r"Design area ([\d.]+) um\^2", tcl.with_suffix(".log").read_text())[-1])
     # fmax = 1 / (period - wns): exact when wns < 0, a slack-implied estimate when wns > 0
     fmax = 1e6 / (period_ps - wns)
-    res = dict(name=name, corner=corner, period_ps=period_ps, wns_ps=wns, fmax_mhz=fmax,
+    res = dict(name=name, corner=corner, util=util, period_ps=period_ps, wns_ps=wns, fmax_mhz=fmax,
                io_wns_ps=io_wns, fmax_mhz_with_io=1e6 / (period_ps - io_wns),
                cell_area_um2=area,
                startpoint=re.search(r"Startpoint: (\S+)", rpt).group(1),
                endpoint=re.search(r"Endpoint: (\S+)", rpt).group(1))
-    (d / f"{name}_{corner}.json").write_text(json.dumps(res, indent=1))
-    print(f"place {name}_{corner}: wns {wns} ps @ {period_ps} ps -> fmax {fmax:.0f} MHz "
+    (d / f"{tag}.json").write_text(json.dumps(res, indent=1))
+    print(f"place {tag}: wns {wns} ps @ {period_ps} ps -> fmax {fmax:.0f} MHz "
           f"({res['startpoint']} -> {res['endpoint']})", flush=True)
     return res
 
 
 def cmd_place():
     # ponytail: serial; another openroad on this box holds ~15 GB
-    for name, corner in (("s8", "TT"), ("s8", "FF"), ("s8", "SS"), ("s16", "TT")):
+    for name, corner in (("s8", "TT"), ("s8", "FF"), ("s8", "SS")):
         place(name, corner)
+    for cfg, util in dict.fromkeys(VARIANTS.values()):
+        place(cfg, "TT", util)
 
 
 # ------------------------------------------------------------------ gate-level VCD power
@@ -241,7 +254,7 @@ def cells_v(corner="TT"):
     return out
 
 
-def power_case(name, job, tag="s16_TT"):
+def power_case(name, job, tag="s16_TT", cfg_name="s16"):
     """RTL-checked stimulus -> gate-level sim of the synthesized netlist (also a GL
     functional check) -> VCD -> OpenSTA report_power on the placed+CTS design."""
     sys.path.insert(0, str(BLK / "test"))
@@ -249,15 +262,17 @@ def power_case(name, job, tag="s16_TT"):
     import sched as S
     d = OUT / "power" / name
     d.mkdir(parents=True, exist_ok=True)
-    cfg = S.Cfg()
+    P = CONFIGS[cfg_name]
+    cfg = S.Cfg(P["Rows"], P["Cols"], P.get("WW", 8), P["AccDepth"], P.get("PipeMul", 1))
     assert RT.run_case(name, cfg, [job], vcd_dir=d), "RTL check of the power stimulus failed"
     ncyc = len((d / "stim.hex").read_text().split())
     nexp = len((d / "exp.hex").read_text().split())
     pargs = [f"-Ptb_sa_top.{k}={v}" for k, v in
-             dict(Rows=16, Cols=16, WW=8, AccDepth=16, PipeMul=1, NCyc=ncyc, NExp=nexp).items()]
+             dict(Rows=cfg.R, Cols=cfg.C, WW=cfg.WW, AccDepth=cfg.D, PipeMul=cfg.P,
+                  NCyc=ncyc, NExp=nexp).items()]
     vvp = d / "gl.vvp"
     sh(["iverilog", "-g2012", "-DGL", "-o", str(vvp), *pargs, f'-Ptb_sa_top.Dir="{d}"',
-        str(BLK / "test" / "tb_sa_top.sv"), str(OUT / "synth" / f"{tag}.v"), str(cells_v())],
+        str(BLK / "test" / "tb_sa_top.sv"), str(OUT / "synth" / f"{cfg_name}_TT.v"), str(cells_v())],
        d / "gl_build.log")
     sh(["vvp", "-n", str(vvp), "+vcd"], d / "gl_sim.log")
     log = (d / "gl_sim.log").read_text()
@@ -323,16 +338,19 @@ exit
     return res
 
 
-def real_power_job():
+def real_power_job(ww=8):
     """SmolLM2 blk.0 attn_q real INT8 weights/activations, cut to a 32 x 128 x 48 GEMM
-    (the 9 prompt tokens' activation slices at 4 channel offsets make 32 real rows)."""
+    (the 9 prompt tokens' activation slices at 4 channel offsets make 32 real rows).
+    ww=4: the same weights requantized per output channel to INT4 (the W4 HBM format)."""
     sys.path.insert(0, str(BLK / "test"))
     import run_tests as RT
     j = RT.real_job()
     X = np.concatenate([j["X"][:, o:o + 128] for o in (0, 128, 256, 384)])[:32]
     n = slice(0, 48)
-    return dict(X=X, W=j["W"][:128, n], scale=j["scale"][n], shift=j["shift"][n],
-                offset=j["offset"][n])
+    W = j["W"][:128, n]
+    if ww == 4:
+        W = np.clip(np.rint(W * 7 / np.abs(W).max(axis=0, keepdims=True)), -8, 7).astype(np.int64)
+    return dict(X=X, W=W, scale=j["scale"][n], shift=j["shift"][n], offset=j["offset"][n])
 
 
 def cmd_power():
@@ -340,7 +358,10 @@ def cmd_power():
     import run_tests as RT
     rng = np.random.default_rng(7)
     power_case("rand_dense", RT.rand_job(rng, 32, 128, 48))
-    power_case("smollm2_real", real_power_job())
+    for v, (cfg, util) in VARIANTS.items():
+        tag = f"{cfg}_TT" + ("" if util == 60 else f"_u{util}")
+        power_case("smollm2_real" + ("" if v == "base" else "_" + v),
+                   real_power_job(CONFIGS[cfg].get("WW", 8)), tag, cfg)
 
 
 # ------------------------------------------------------------------ report
@@ -368,50 +389,72 @@ def cmd_report(N=128):
     ns = np.array([8, 16, 32])
     A = np.array([syn[f"s{n}"]["area_um2"] for n in ns])
     coef = np.polyfit(ns, A, 2)
-    area_N = float(np.polyval(coef, N))
-    util = 0.70   # placement utilization for the footprint (s16 placed at 60 % here)
     s16 = syn["s16"]
     pe16, edge16 = pe_area(s16), edge_area(s16)
     other16 = s16["area_um2"] - 256 * pe16 - 16 * edge16
     fmax = {k: v["fmax_mhz"] for k, v in pl.items()}
-    f_tt = pl.get("s16_TT", pl.get("s8_TT", {})).get("fmax_mhz")
-    real = pw.get("smollm2_real") or {}
     rnd = pw.get("rand_dense") or {}
+
     # energy/MAC at N x N (derived): PE + array-proportional parts constant per MAC,
     # the edge (one requant per token per column) amortized over N rows instead of 16
     def e_at(p, n):
         s = p["dyn_split_fj_per_mac"]
         return s["pe"] + s["other"] + s["clock"] + s["edge"] * 16 / n
-    leak16 = (real or rnd).get("p_leak_w")
-    leak_pe = leak16 / s16["area_um2"] * (area_N / N**2) if leak16 else None
-    e_mac = e_at(real, N) if real else None
-    gops = 2 * N * N * f_tt * 1e6 / 1e12 if f_tt else None
-    p_N = (e_mac * 1e-15 * N * N * f_tt * 1e6 + leak_pe * N * N) if e_mac and f_tt else None
+
+    def variant(v, n=N):
+        """Derived n x n numbers: base fit + the variant's measured s16 area delta (per PE),
+        footprint at the utilization it was placed and timed at, fmax and energy measured."""
+        cfg, u = VARIANTS[v]
+        tag = f"{cfg}_TT" + ("" if u == 60 else f"_u{u}")
+        real = pw["smollm2_real" + ("" if v == "base" else "_" + v)]
+        a_n = float(np.polyval(coef, n)) + (syn[cfg]["area_um2"] - s16["area_um2"]) * n * n / 256
+        f = pl[tag]["fmax_mhz"]
+        e = e_at(real, n)
+        leak = real["p_leak_w"] / syn[cfg]["area_um2"] * a_n / (n * n)
+        return dict(label=f"derived from measured s16 {cfg} (synth, place {u} %, CTS, GL VCD "
+                          f"power on SmolLM2 real data)", config=cfg, place_util=u / 100,
+                    array_rows=n, array_cols=n, area_um2_per_pe=a_n / (u / 100) / n**2,
+                    area_um2_per_pe_cell_only=a_n / n**2, fmax_mhz=f, energy_per_mac_fJ=e,
+                    leak_W_per_pe=leak, s16_fmax_path=f"{pl[tag]['startpoint']} -> {pl[tag]['endpoint']}",
+                    tops=2 * n * n * f * 1e6 / 1e12,
+                    power_w_at_fmax=e * 1e-15 * n * n * f * 1e6 + leak * n * n)
+
+    variants = {v: variant(v) for v in VARIANTS if
+                "smollm2_real" + ("" if v == "base" else "_" + v) in pw}
+    for n in (64, 256):   # array shape, default PE (derived; the fit is extrapolated past s32)
+        variants[f"{DEFAULT}_{n}x{n}"] = variant(DEFAULT, n)
+    d = variants[DEFAULT]
+    area_N = d["area_um2_per_pe_cell_only"] * N**2
+    util = d["place_util"]
+    f_tt, e_mac, leak_pe = d["fmax_mhz"], d["energy_per_mac_fJ"], d["leak_W_per_pe"]
+    gops, p_N = d["tops"], d["power_w_at_fmax"]
     sram_bits = 1 << 20
     ppa = dict(
         label="measured: yosys/ASAP7 RVT synth, OpenROAD place+CTS+STA, OpenSTA VCD power at "
               "s8/s16/s32; derived: everything at array_rows x array_cols",
+        default_variant=DEFAULT,
         corner="TT 0.7 V 25 C (asap7sc7p5t_28 RVT TT nldm)",
         array_rows=N, array_cols=N,
         area_um2_per_pe=area_N / util / N**2,
         area_um2_per_pe_cell_only=area_N / N**2,
         fmax_mhz=f_tt,
         energy_per_mac_fJ=e_mac,
-        energy_per_mac_fJ_random_data=e_at(rnd, N) if rnd else None,
+        energy_per_mac_fJ_random_data=e_at(rnd, N) if rnd else None,   # base PE
         leak_W_per_pe=leak_pe,
         notes=dict(
             area_um2_per_pe=f"derived: quadratic fit of synthesized cell area (s8/s16/s32) at "
-                            f"N={N}, / {util} placement utilization; includes edge accumulators, "
-                            f"requant, skew/deskew, input regs, clock gating",
-            fmax_mhz="measured: s16 TT after placement + CTS + repair_timing, placement RC "
-                     "(no detailed route); 128x128 broadcast nets not checked (projected same "
+                            f"N={N} + the {d['config']} s16 delta, / {util} placement utilization "
+                            f"(s16 placed and timed at it); includes edge accumulators, requant, "
+                            f"skew/deskew, input regs, clock gating",
+            fmax_mhz=f"measured: {d['config']} TT after placement + CTS + repair_timing, placement "
+                     "RC (no detailed route); 128x128 broadcast nets not checked (projected same "
                      "with one extra weight-bus pipeline stage)",
             energy_per_mac_fJ="derived from measured s16 gate-level VCD power on SmolLM2 real "
-                              "INT8 data; edge share scaled 16/N; excludes SRAM and HBM; "
+                              "data; edge share scaled 16/N; excludes SRAM and HBM; "
                               "open-source flow (no power-aware sizing, placement RC): an upper "
                               "bound, a commercial flow is expected lower",
-            power_density="derived: 128x128 at fmax is ~2.3 W/mm2, over the 1 W/mm2 "
-                          "ARCH_METRIC cap; the scorer must derate clock/VDD",
+            power_density=f"derived: {N}x{N} at fmax is {p_N / (area_N / util / 1e6):.2f} W/mm2 "
+                          "(ARCH_METRIC cap is 1 W/mm2 per die; the scorer checks die power)",
         ),
         measured=dict(
             synth_area_um2={k: v["area_um2"] for k, v in syn.items()},
@@ -425,6 +468,7 @@ def cmd_report(N=128):
                                    for n in ("s8", "s16") for c in ("TT", "FF", "SS")
                                    if (OUT / "synth" / f"{n}_{c}.json").exists()},
         ),
+        variants=variants,
         array=dict(
             label="derived",
             rows=N, cols=N, cell_area_mm2=area_N / 1e6, footprint_mm2=area_N / util / 1e6,

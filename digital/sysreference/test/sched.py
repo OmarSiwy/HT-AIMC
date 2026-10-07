@@ -29,8 +29,8 @@ class Cfg:
         self.R, self.C, self.WW, self.D, self.P = rows, cols, ww, acc_depth, pipe
         self.row_w = max(1, (rows - 1).bit_length())
         self.idx_w = max(1, (acc_depth - 1).bit_length())
-        # issue -> y_valid_o of the last column (see sa_top tag alignment + 7 edge stages)
-        self.lat = 1 + rows + pipe + (cols - 1) + 7
+        # issue -> y_valid_o of the last column (see sa_top tag alignment + 8 edge stages)
+        self.lat = 1 + rows + pipe + (cols - 1) + 8
 
 
 def schedule(cfg, jobs, data=True):
@@ -48,6 +48,7 @@ def schedule(cfg, jobs, data=True):
         return ev.setdefault(t, {})
 
     wbus_free = act_free = rq_free = 0
+    prev_s = -10**9                        # issue start of the previous tile
     last_issue = [-10**9, -10**9]          # per weight bank
     group_last = []                        # last issue cycle per output group
     tile_i = group_i = 0
@@ -87,7 +88,10 @@ def schedule(cfg, jobs, data=True):
                         for r in range(R):
                             at(L + r)["w"] = (r, b, Wp[kt * R + r, n0:n0 + C])
                     wbus_free = L + R
-                    S = max(act_free, L + 1, q + 1)
+                    # sa_edge's slot read-modify-write spans 3 cycles: a tile of < 3 tokens
+                    # must not be followed sooner (possible when a stall preloaded both banks)
+                    S = max(act_free, L + 1, q + 1, prev_s + 3)
+                    prev_s = S
                     for m in range(mc):
                         e = at(S + m)
                         e["a"] = (b, kt == 0, kt == nk - 1, gb, m,

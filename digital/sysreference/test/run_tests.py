@@ -198,6 +198,8 @@ def main(argv):
                 W=rng.choice([-128, -1, 0, 1, 127], (64, 16)),
                 scale=np.full(16, 1), shift=rng.integers(0, 25, 16),
                 offset=rng.integers(-128, 128, 16))]),
+            # job boundaries stall the rq bank so both weight banks preload: 2-token K-tiles
+            # then issue back to back and only the 3-cycle tile gap protects the edge RMW
             ("back_to_back_jobs", c16, [rand_job(rng, 1, 96, 32), rand_job(rng, 16, 64, 48),
                                         rand_job(rng, 7, 16, 16), rand_job(rng, 2, 128, 64)]),
             ("cfg8x8_comb", S.Cfg(8, 8, pipe=0, acc_depth=8), [rand_job(rng, 9, 40, 20)]),

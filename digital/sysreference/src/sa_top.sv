@@ -54,7 +54,7 @@ module sa_top #(
   localparam int PsumW   = AW + WW + $clog2(Rows);   // exact bound after Rows products
   localparam int TagW    = 4 + IdxW;                 // {valid, first, last, rqsel, idx}
   localparam int Pipe    = PipeMul ? 1 : 0;
-  localparam int EdgeLat = 7;                        // sa_edge requant pipeline depth
+  localparam int EdgeLat = 8;                        // sa_edge requant pipeline depth
 
   // ---------------------------------------------------------------- input registers
   logic                 w_valid_q, w_bank_q;
