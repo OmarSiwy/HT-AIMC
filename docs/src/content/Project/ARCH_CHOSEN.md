@@ -547,9 +547,18 @@ Fin area is about 0.0045 µm² including overhead (27 nm fin pitch × 54 nm CPP 
 | Varactor, uncalibrated (500 fins per side) | 4.5 | 24,448 | 41,511 (0.81×) | 415 |
 | Varactor, uncalibrated (1,000 fins per side) | 9.0 | 42,880 | 26,849 (0.53×) | 268 |
 
-Calibration decides it. With per-cell calibration the cell halves the tile and raises tok/s/mm²
-by about 40 %, until the power cap binds (§10, #2). Without calibration, mismatch forces large
-capacitors and costs 20–50 %.
+**Per-cell calibration is part of the cell (user decision, 2026-10-07).** With it, the cell halves
+the tile and raises tok/s/mm² by about 40 %, until the power cap binds (§10, #2). The
+uncalibrated rows are context only: there, mismatch forces large capacitors and costs 20–50 %.
+
+**Calibration scheme to design:**
+- Measure each cell's offset and gain by writing two known V_w codes and reading them through
+  the column ADC.
+- Store them in a per-tile table: about 2 × 6 b per weight, 1.5k µm² of SRAM, already in the
+  area row above.
+- Fold the correction into the write code, so the write DAC applies it with no extra datapath.
+- Track temperature drift with reference cells per tile and set the recalibration interval
+  from their drift.
 
 **Plan (one agent, ESPice on ASAP7).**
 1. NMOS/PMOS MOS-capacitor C–V at 0.7 V, TT/SS/FF, and the window where the slope is linear.
@@ -557,7 +566,8 @@ capacitors and costs 20–50 %.
    residual, and compare topologies.
 3. Write: kT/C, TG charge injection, settling to 8 b, DAC energy.
 4. Retention: gate and TG leakage at 25 and 85 °C; refresh interval.
-5. Mismatch: V_th sensitivity of Q, and the fins needed with and without per-cell calibration.
+5. Mismatch and calibration: V_th sensitivity of Q, the residual after per-cell offset and gain
+   calibration, the fins that residual needs, and the reference-cell drift tracking.
 6. Score it in `arch_eval` against today's cell; if it wins, replace the cell in
    `analog/imc_tile/netlist/imc_tile.py`.
 
